@@ -1,0 +1,44 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main" class="file-upload">
+	<div class="service-info">
+		<div class="phase-banner">
+			<p>
+				<strong class="phase-tag">ALPHA</strong>
+				<span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+			</p>
+		</div>
+	</div>
+
+		<div class="grid-wrapper">
+			<div class="grid grid-4-4">
+				<div class="inner-block">
+					<div class="text">
+						<h3 class="heading-xlarge">
+							<span id="title">Error - {{error}}</span>
+						</h3>
+
+						<p><a href="/file-upload/feedback"><input type="submit" id="submit" value="Finish" class="button"></a></p>
+
+						<div class="text spacing">
+							<!--<p><a href="#">View your summary</a></p>-->
+							<p>
+								<a href="#content">Back to top</a>
+							</p>
+						</div>
+					</div>
+				</div><!-- /.inner-block -->
+			</div><!-- /.grid -->
+		</div><!-- /.grid-wrapper -->
+  </div>
+</main>
+
+{{/content}}
+
+{{/layout}}
