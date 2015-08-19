@@ -79,7 +79,7 @@ console.log(email);
     else
         userId = 2;
 
-    res.render('file-upload/browse');
+    res.render('file-upload/index');
 });
 
 app.get('/file-upload/send', function (req, res) {
