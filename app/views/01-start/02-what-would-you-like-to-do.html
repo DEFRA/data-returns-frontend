@@ -1,0 +1,54 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner">
+	  <p>
+	    <strong class="phase-tag">ALPHA</strong>
+	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	  </p>
+	</div>
+
+  <form method="post" class="form text">
+	
+		<h1 class="heading-xlarge">What would you like to do?</h1>
+		
+		
+		<!--	<fieldset>
+				<div class="form-group">
+				  <label class="block-label" for="radio-inline-1">
+				    <input id="radio-inline-1" type="radio" name="radio-inline-group" value="check-data">
+				    Check the format of my data
+				  </label>
+				  <label class="block-label" for="radio-inline-2">
+				    <input id="radio-inline-2" type="radio" name="radio-inline-group" value="send-data">
+				    Send my data to the Environment Agency
+				  </label>
+			  </div>
+			</fieldset>
+		-->
+	
+		<div class="form-group check">
+			<input type="submit" class="button button-secondary" name="sub-button" value="Check the format of my data" />
+			<p>Before submitting to the Environment agency, use this service to check for incomplete or incorrectly formatted data without signing in.</p>
+		</div>
+		
+		<!-- Primary button -->
+		<div class="form-group send">
+			<input type="submit" class="button" name="sub-button" value="Send my data to the Environment Agency" />
+			<p>To send data you will need an account.</p>
+		</div>
+		
+	</form>
+	
+</main> 
+
+{{/content}}
+
+{{/layout}}

@@ -1,0 +1,74 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+<main id="content" role="main">
+	<div class="phase-banner">
+		<p>
+			<strong class="phase-tag">ALPHA</strong>
+			<span>This is a new service – your
+				<a href="#">feedback</a>will help us to improve it.</span>
+		</p>
+	</div>
+	<form method="post" class="form text">
+		<div class="text">
+			<h1 class="heading-xlarge">
+				<span id="title">There is a problem</span>
+			</h1>
+			<p class="lede">Your data file contains formatting errors.</p>
+			<p>Before you can send the Environment Agency the data you should:</p>
+			<ul style="margin-bottom:25px;margin-left:35px;" class="list-bullet">
+				<li>correct all the errors in your data</li>
+				<li>
+					<a href="/mvp/upload2">upload and check the data again</a> including those that don't contain any errors</li>
+			</ul>
+			<p>You can
+				<a target="_blank" href="../../public/documents/formatting-errors-report.pdf">create a PDF of the errors</a> (opens in a new window or tab).</p>
+			<hr>
+			<h2 class="heading-24">Errors found in T008_SAMPLE CSV File_dateSt_data.csv</h2>
+			<!-- For fixed header positioning only for Sticky JS -->
+			<div style="height: 43px;" class="sticky-wrapper" id="errorTableHeader-sticky-wrapper">
+				<table class="error" id="errorTableHeader" style="display: none;">
+					<thead>
+						<tr>
+							<th width="12%">Row</th>
+							<th width="12%">Column</th>
+							<th width="76%">Error</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<!-- End hidden code for Sticky JS -->
+			<table class="error">
+				<thead>
+					<tr>
+						<th width="12%">Row</th>
+						<th width="12%">Column</th>
+						<th width="76%">Error</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>2</td>
+						<td>4</td>
+						<td>The 'dateSt' field is missing</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="form-group">
+				<input type="submit" class="button" value="Upload and check another file">
+			</div>
+			
+			<a href="#">I don't understand</a>
+		</div>
+	</form>
+	</main>
+	
+	{{/content}}
+	
+	{{/layout}}
+	

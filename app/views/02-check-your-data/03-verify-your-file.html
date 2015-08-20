@@ -1,0 +1,58 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner">
+	  <p>
+	    <strong class="phase-tag">ALPHA</strong>
+	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	  </p>
+	</div>
+	
+	  <form method="post" class="form text">
+		
+			<h1 class="heading-xlarge">Associate with site</h1>
+			
+			<p class="lede">The file you are about to check is associated with the following site.</p>
+		
+			<div class="panel-indent choose-organisation">
+					<p class="title">Permit number</p>
+					<p>AB12345XZ</p>
+					<p class="title">Site</p>
+					<p class="site">
+						<span class="address-1">ACME Mobile Plant</span>
+						<span class="city">Sheffield</span>
+					</p>
+					<p class="title">Return type</p>
+					<p>Pollution inventory</p>
+			</div>
+			
+			<details class="help-text-reg">
+			  <summary><span class="summary">This is not my site or the return type is incorrect</span></summary>
+			  <div class="panel-indent">
+			    <p>Check the permit number is correct then either:
+			    <ul class="list-bullet">
+			    		<li><a href="#">upload and check a new file</a></li>
+			    		<li><a href="#">Follow your normal route</a></li>
+			   	</ul>
+			  </div>
+			</details>
+	
+			<!-- Primary button -->
+			<div class="form-group" style="margin-top: 30px;">
+				<input type="submit" class="button" value="Continue">
+			</div>
+			
+		</form>
+	
+</main> 
+
+{{/content}}
+
+{{/layout}}

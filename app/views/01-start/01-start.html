@@ -1,0 +1,60 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner">
+	  <p>
+	    <strong class="phase-tag">ALPHA</strong>
+	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	  </p>
+	</div>
+
+
+  <form method="post" class="form text">
+	
+		<h1 class="heading-xlarge">Manage your data returns</h1>
+		
+		<div class="form-group">
+			<p class="lede">Use this service to send the Environment Agency your pollution inventory and landfill emissions data.</p>
+		
+			<details class="help-text-reg">
+			  <summary><span class="summary">Why only pollution inventory and landfill emissions data?</span></summary>
+			  <div class="panel-indent">
+			    <p>{ Explains this is a beta service where customers can only return their pollution inventory and landfill emissions data. }</p>
+			  </div>
+			</details>
+		</div>
+		
+			<!-- Primary button -->
+		<div class="form-group">
+			<input type="submit" class="button button-get-started" value="Start now">
+		</div>
+		
+		<h2 class="heading-large">Before you start</h2>
+		<p>You will need:</p>
+		<ul class="list-bullet">
+			<li>An email address and password to create or sign in to your account</li>
+			<li>Your permit number</li>
+			<li>Your data return in CSV format</li>
+		</ul>
+		
+		<details class="help-text-csv">
+		  <summary><span class="summary">Why only CSV format?</span></summary>
+		  <div class="panel-indent">
+		    <p>{ Explains this is a beta service where users can only return in CSV format. Customers don't have to use this beta service if they are not able to create a CSV file }</p>
+		  </div>
+		</details>
+		
+	</form>
+	
+</main> 
+
+{{/content}}
+
+{{/layout}}
