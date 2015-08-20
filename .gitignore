@@ -2,3 +2,5 @@
 .DS_Store
 .start.pid
 *.espressostorage
+node_modules
+uploads
