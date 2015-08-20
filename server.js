@@ -17,6 +17,8 @@ var username = process.env.USERNAME;
 var password = process.env.PASSWORD;
 var env = process.env.NODE_ENV || 'development';
 
+var userId = -1;
+
 // Authenticate against the environment-provided credentials, if running
 // the app in production (Heroku, effectively)
 if (env === 'production')
@@ -28,6 +30,9 @@ if (env === 'production')
     }
     app.use(express.basicAuth(username, password));
 }
+
+// Conflict with multer - just use get for now
+//app.use(express.bodyParser());
 
 //Configure multer
 app.use(multer({
@@ -46,6 +51,7 @@ app.use(multer({
     }
 }));
 
+
 // Application settings
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
@@ -63,6 +69,17 @@ app.use(express.favicon(path.join(__dirname, 'govuk_modules', 'govuk_template', 
 app.use(function (req, res, next) {
     res.locals({'assetPath': '/public/'});
     next();
+});
+
+app.get('/api/login', function (req, res) {
+    var email = req.param('email', "user2@test.com");
+console.log(email);
+    if(email == "user1@test.com")
+        userId = 1;
+    else
+        userId = 2;
+
+    res.render('file-upload/index');
 });
 
 app.get('/file-upload/send', function (req, res) {
@@ -136,6 +153,7 @@ app.post('/api/file-upload', function (req, res) {
             // TODO Check to see if file contains at least 1 data row
 
             var formData = {
+                userId : userId,
                 fileUpload: fs.createReadStream(thisFile.path)
             };
 

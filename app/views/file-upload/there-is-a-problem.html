@@ -40,19 +40,21 @@
 								<thead>
 									<tr>
 										<th width="15%">Reason</th>
-										<th width="10%">Row</th>
-										<th width="10%">Column</th>
-										<th>Error</th>
+										<th width="10%">Row No</th>
+										<th width="10%">Column name</th>
+										<th width="10%">Error value</th>
+										<th>Example</th>
 									</tr>
 								</thead>
 								<tbody>
 									{{#result}}
 										{{#errors}}
 											<tr>
-												<td>{{reason}}</td>
+												<td>{{meaningfulReason}}</td>
 												<td>{{lineNo}}</td>
 												<td>{{columnName}}</td>
 												<td>{{errValue}}</td>
+												<td>{{helpfulExample}}</td>
 											</tr>
 										{{/errors}}
 									{{/result}}
@@ -62,7 +64,7 @@
 						</p>
 						<!-- End hidden code for Sticky JS -->
 
-						<p><a href="/file-upload/feedback"><input type="submit" id="submit" value="Finish" class="button"></a></p>
+						<p><a href="/file-upload/browse"><input type="submit" id="submit" value="Resend" class="button"></a></p>
 
 						<div class="text spacing">
 							<!--<p><a href="#">View your summary</a></p>-->
