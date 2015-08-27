@@ -15,7 +15,7 @@
 	  </p>
 	</div>
 	
-	  <form method="post" class="form text">
+	  <form method="post" class="form text" action="/api/file-upload-validate">
 		
 			<h1 class="heading-xlarge">Associate with site</h1>
 			
@@ -23,16 +23,22 @@
 		
 			<div class="panel-indent choose-organisation">
 					<p class="title">Permit number</p>
-					<p>AB12345XZ</p>
+					<p>{{result.eaId}}</p>
 					<p class="title">Site</p>
 					<p class="site">
-						<span class="address-1">ACME Mobile Plant</span>
-						<span class="city">Sheffield</span>
+						<span class="address-1">{{result.siteName}}</span>
 					</p>
 					<p class="title">Return type</p>
-					<p>Pollution inventory</p>
+					<p>{{result.returnType}}</p>
 			</div>
-			
+
+		  	<div id="file_meta_data" style="display: none">
+				<input name="fileKey" value="{{result.fileKey}}"/>
+				<input name="eaId" value="{{result.eaId}}"/>
+				<input name="siteName" value="{{result.siteName}}"/>
+				<input name="returnType" value="{{result.returnType}}"/>
+		  	</div>
+
 			<details class="help-text-reg">
 			  <summary><span class="summary">This is not my site or the return type is incorrect</span></summary>
 			  <div class="panel-indent">

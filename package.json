@@ -35,5 +35,7 @@
     "querystring": "^0.2.0",
     "readdir": "0.0.6",
     "request": "^2.60.0"
+  },
+  "devDependencies": {
   }
 }

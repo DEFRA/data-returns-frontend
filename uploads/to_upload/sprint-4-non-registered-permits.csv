@@ -1,0 +1,9 @@
+eaID,siteName,retType,dateSt,dateEn,periodName,periodYear,sampleRef,sampledBy,monPoint,parameter,value,tValue,Unit,MeasurePeriod,testMethod,Comments,CiC,addParameter1,addParameter2,addParameter3,addParameter4,addParameter5
+AB1234Z1,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z2,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z3,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z4,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z5,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z6,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z7,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
+AB1234Z8,NJG Ltd,Landfill Gas Monitoring,05/08/2013,05/08/2013,Period 1,05/08/2013,Sample,John Smith,rrtr,123,,Test Text,Metres,Annual,Guess,Test CSV file with no errors,123,Par 1,Par 2,Par 3,Par 4,Par 5
