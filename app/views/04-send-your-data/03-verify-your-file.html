@@ -11,27 +11,26 @@
 	<div class="phase-banner">
 	  <p>
 	    <strong class="phase-tag">ALPHA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	    <span>This is a new service – your <a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
 	  </p>
 	</div>
 	
-	  <form method="post" class="form text">
+	  <form method="post" class="form text" action="/api/file-upload-validate">
 		
 			<h1 class="heading-xlarge">Associate with site</h1>
 			
 			<p class="lede">Please verify the file you are about to send is correctly associated with the following site.</p>
-		
-			<div class="panel-indent choose-organisation">
-					<p class="title">Permit number</p>
-					<p>AB12345XZ</p>
-					<p class="title">Site</p>
-					<p class="site">
-						<span class="address-1">ACME Mobile Plant</span>
-						<span class="city">Sheffield</span>
-					</p>
-					<p class="title">Return type</p>
-					<p>Pollution inventory</p>
-			</div>
+
+		  <div class="panel-indent choose-organisation">
+			  <p class="title">Permit number</p>
+			  <p>{{result.eaId}}</p>
+			  <p class="title">Site</p>
+			  <p class="site">
+				  <span class="address-1">{{result.siteName}}</span>
+			  </p>
+			  <p class="title">Return type</p>
+			  <p>{{result.returnType}}</p>
+		  </div>
 			
 			<details class="help-text-reg">
 			  <summary><span class="summary">This is not my site or the return type is incorrect</span></summary>

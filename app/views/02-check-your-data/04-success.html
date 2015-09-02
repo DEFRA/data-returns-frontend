@@ -11,11 +11,11 @@
 	<div class="phase-banner">
 	  <p>
 	    <strong class="phase-tag">ALPHA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	    <span>This is a new service – your <a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
 	  </p>
 	</div>
 
-  <form method="post" class="form text">
+  <form method="post" class="form text" action="/02-check-your-data/04-success">
 		<div class="text">
 			<h1 class="heading-xlarge">Your file has passed our validation checks</h1>
 			
@@ -27,12 +27,12 @@
 			</div>
 			
 			<p>
-				<a href="/file-upload/sent" id="nextHref">
-					<input type="button" id="nextBtn" class="button" value="Send this file">
+				<a id="nextHref">
+					<input type="submit" id="nextBtn" class="button" value="Send this file">
 				</a>
 			</p>
 	
-			<p>Go back and <a href="/01-upload-your-data">upload and check another file</a></p>
+			<p>Go back and <a href="/02-check-your-data/01-upload-your-data">upload and check another file</a></p>
 		
 			</div>
 		</div>

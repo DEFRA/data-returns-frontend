@@ -11,7 +11,7 @@
 	<div class="phase-banner">
 	  <p>
 	    <strong class="phase-tag">ALPHA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+	    <span>This is a new service – your <a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
 	  </p>
 	</div>
 	
@@ -32,20 +32,13 @@
 					<p>{{result.returnType}}</p>
 			</div>
 
-		  	<div id="file_meta_data" style="display: none">
-				<input name="fileKey" value="{{result.fileKey}}"/>
-				<input name="eaId" value="{{result.eaId}}"/>
-				<input name="siteName" value="{{result.siteName}}"/>
-				<input name="returnType" value="{{result.returnType}}"/>
-		  	</div>
-
 			<details class="help-text-reg">
 			  <summary><span class="summary">This is not my site or the return type is incorrect</span></summary>
 			  <div class="panel-indent">
 			    <p>Check the permit number is correct then either:
 			    <ul class="list-bullet">
-			    		<li><a href="#">upload and check a new file</a></li>
-			    		<li><a href="#">Follow your normal route</a></li>
+			    		<li><a href="/02-check-your-data/01-upload-your-data">upload and check a new file</a></li>
+			    		<li><a href="#" onclick="alert('Not yet implemented!');return false;">Follow your normal route</a></li>
 			   	</ul>
 			  </div>
 			</details>

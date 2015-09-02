@@ -1,36 +1,65 @@
 module.exports = {
     bind: function (app) {
 
+        // Explicit requests to make easier to understand with duplicate pages etc...
+
         app.get('/', function (req, res) {
+            log.info("GET Request : " + req.url);
             res.render('index');
         });
 
-        app.get('/01-start', function (req, res) {
+        app.get('/01-start/01-start', function (req, res) {
+            log.info("GET Request : " + req.url);
             res.render('01-start/01-start');
         });
-        app.post('/01-start', function (req, res) {
+
+        // 01-start
+        app.post('/01-start/01-start', function (req, res) {
+            log.info("POST Request : " + req.url);
             res.render('01-start/02-what-would-you-like-to-do');
         });
 
-        app.get('/01-upload-your-data', function (req, res) {
-            res.render('02-check-your-data/01-upload-your-data');
-        });
-
-        app.post('/02-what-would-you-like-to-do', function (req, res) {
+        app.post('/01-start/02-what-would-you-like-to-do', function (req, res) {
             var action = req.param('sub-button');
+
+            log.info("POST Request : " + req.url + " : Action : " + action);
 
             if (action == "Check the format of my data")
             {
+                req.session.checking_only = true;
                 res.render('02-check-your-data/01-upload-your-data');
             }
             else
             {
+                req.session.checking_only = false;
                 res.render('03-sign-in-register/01-have-account');
             }
         });
+        // END 01-start
 
-        app.post('/01-have-account', function (req, res) {
+
+        // 02-check-your-data
+        app.get('/02-check-your-data/01-upload-your-data', function (req, res) {
+            log.info("GET Request : " + req.url);
+            res.render('02-check-your-data/01-upload-your-data');
+        });
+
+        app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('02-check-your-data/01-upload-your-data');
+        });
+
+        app.post('/02-check-your-data/04-success', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('03-sign-in-register/01-have-account');
+        });
+        // END 02-check-your-data
+
+        // 03-sign-in-register
+        app.post('/03-sign-in-register/01-have-account', function (req, res) {
             var action = req.param('radio-inline-group');
+
+            log.info("POST Request : " + req.url + " : Action : " + action);
 
             if (action == "Yes")
             {
@@ -42,18 +71,35 @@ module.exports = {
             }
         });
 
-        //app.get('/api/login', function (req, res) {
-        //    var email = req.param('email', "user2@test.com");
-        //console.log(email);
-        //    if(email == "user1@test.com")
-        //        userId = 1;
-        //    else
-        //        userId = 2;
-        //
-        //    res.render('file-upload/index');
-        //});
+        app.post('/03-sign-in-register/02-account-details', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('03-sign-in-register/03-activate-account');
+        });
+
+        app.get('/03-sign-in-register/04-account-activated', function (req, res) {
+            log.info("GET Request : " + req.url);
+            res.render('03-sign-in-register/04-account-activated');
+        });
+        app.post('/03-sign-in-register/04-account-activated', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('04-send-your-data/01-upload-your-data');
+        });
+
+        app.post('/03-sign-in-register/05-sign-in', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('04-send-your-data/01-upload-your-data');
+        });
+        // END 03-sign-in-register
+
+        // 04-send-your-data
+        app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
+            log.info("POST Request : " + req.url);
+            res.render('04-send-your-data/01-upload-your-data');
+        });
+        // END 04-send-your-data
 
         app.post('/api/file-upload', function (req, res) {
+            log.info("POST Request : " + req.url);
 
             var request = require('request');
             var fs = require('fs');
@@ -69,15 +115,16 @@ module.exports = {
 
                     // Simple validations
 
+                    // Commented out as caught on select (with js on of course)
                     //Check to see if it's a csv file
-                    if (thisFile.extension !== 'csv')
-                    {
-                        res.render("file-upload/there-is-a-problem", {
-                            "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
-                            "file_name": thisFile.originalname
-                        });
-                        return;
-                    }
+                    //if (thisFile.extension !== 'csv')
+                    //{
+                    //    res.render("file-upload/there-is-a-problem", {
+                    //        "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
+                    //        "file_name": thisFile.originalname
+                    //    });
+                    //    return;
+                    //}
 
                     // TODO Check to see if file contains at least 1 data row
 
@@ -92,10 +139,16 @@ module.exports = {
                         formData: formData
                     }, function optionalCallback(err, httpResponse, body) {
 
+                        var sess = req.session;
+
                         if (err)
                         {
                             var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                            res.render('error', {errMess:  errMess});
+
+                            if(sess.checking_only)
+                                res.render('error_checking', {errMess:  errMess});
+                            else
+                                res.render('error_sending', {errMess:  errMess});
                         }
                         else
                         {
@@ -103,11 +156,22 @@ module.exports = {
 
                             if (result.outcome == "SYSTEM_FAILURE")
                             {
-                                res.render('error', {errMess:  result.outcomeMessage});
+                                if(sess.checking_only)
+                                    res.render('error_checking', {errMess:  errMess});
+                                else
+                                    res.render('error_sending', {errMess:  errMess});
                             }
                             else
                             {
-                                res.render('02-check-your-data/03-verify-your-file', {result: result});
+                                sess.fileKey = result.fileKey;
+                                sess.eaId = result.eaId;
+                                sess.siteName = result.siteName;
+                                sess.returnType = result.returnType;
+
+                                if(sess.checking_only)
+                                    res.render('02-check-your-data/03-verify-your-file', {result: result});
+                                else
+                                    res.render('04-send-your-data/03-verify-your-file', {result: result});
                             }
                         }
                     });
@@ -115,19 +179,25 @@ module.exports = {
             }
             else
             {
-                res.render("file-upload/browse");
+                // Doesn't appear to ever get called, handled anyway just in case
+                if(sess.checking_only)
+                    res.render('02-check-your-data/01-upload-your-data');
+                else
+                    res.render('03-sign-in-register/01-have-account');
             }
         });
 
         app.post('/api/file-upload-validate', function (req, res) {
+            log.info("POST Request : " + req.url);
 
             var request = require('request');
+            var sess = req.session;
 
             var formData = {
-                fileKey : req.body.fileKey,
-                eaId : req.body.eaId,
-                siteName : req.body.siteName,
-                returnType : req.body.returnType
+                fileKey : sess.fileKey,
+                eaId : sess.eaId,
+                siteName : sess.siteName,
+                returnType : sess.returnType
             };
 
             // Pass on file to data exchange
@@ -136,10 +206,17 @@ module.exports = {
                 url     : 'http://localhost:9020/file-upload-validate',
                 form:  formData
             }, function optionalCallback(err, httpResponse, body) {
+
+                var sess = req.session;
+
                 if (err)
                 {
                     var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    res.render('error', {errMess:  errMess});
+
+                    if(sess.checking_only)
+                        res.render('error_checking', {errMess:  errMess});
+                    else
+                        res.render('error_sending', {errMess:  errMess});
                 }
                 else
                 {
@@ -147,38 +224,57 @@ module.exports = {
 
                     if (result.outcome == "SYSTEM_FAILURE")
                     {
-                        res.render('error', {errMess:  result.outcomeMessage});
+                        if(sess.checking_only)
+                            res.render('error_checking', {errMess:  errMess});
+                        else
+                            res.render('error_sending', {errMess:  errMess});
                     }
                     else if (result.outcome == "SUCCESS")
                     {
-                        res.render('02-check-your-data/04-success', {"result": result});
+                        if(sess.checking_only)
+                            res.render('02-check-your-data/04-success', {"result": result});
+                        else
+                            res.render('04-send-your-data/04-success', {"result": result});
                     } else
                     {
-                        res.render('02-check-your-data/05-failure', {"result": result});
+                        if(sess.checking_only)
+                            res.render('02-check-your-data/05-failure', {"result": result});
+                        else
+                            res.render('04-send-your-data/05-failure', {result: result});
                     }
                 }
             });
         });
 
-        app.get('/file-upload/send', function (req, res) {
+        app.post('/api/file-upload-send', function (req, res) {
+            log.info("POST Request : " + req.url);
 
             var request = require('request');
+            var sess = req.session;
 
             request.post({
                 url : 'http://localhost:9020/file-upload-send',
-                form: {fileKey: result.fileKey}
+                form: {fileKey: sess.fileKey}
             }, function optionalCallback(err, httpResponse, body) {
 
                 if (err)
                 {
-                    res.render("file-upload/error", {"error": err.message});
+                    var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
+
+                    res.render('error_sending', {errMess:  errMess});
                 }
                 else
                 {
-                    result =
-                        JSON.parse(body);
+                    result = JSON.parse(body);
 
-                    res.render('file-upload/sent', {'mailOptions': result.message});
+                    if (result.outcome == "SYSTEM_FAILURE")
+                    {
+                        res.render('error_sending', {errMess:  result.outcomeMessage});
+                    }
+                    else
+                    {
+                        res.render('04-send-your-data/07-done', {"result": result});
+                    }
                 }
             });
         });

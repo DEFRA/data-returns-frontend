@@ -13,18 +13,17 @@
 				<a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a>will help us to improve it.</span>
 		</p>
 	</div>
-	<form method="post" class="form text">
+	<form method="post" class="form text" action="/04-send-your-data/01-upload-your-data">
 		<div class="text">
 			<h1 class="heading-xlarge">
-				<span id="title">This service is currently in development.</span>
+				<span id="title">There is a problem</span>
 			</h1>
-			<p>Normal routes for submitting your data are still available.</p>
-			<p>If you have not been able to successfully submit your data through this service, please use your normal route.</p>
-			
+
+			<p class="lede">Reason : {{errMess}}</p>
+
 			<div class="form-group">
-				<input type="submit" class="button" value="Upload and check another file">
+				<input type="submit" class="button" value="Start again...">
 			</div>
-			
 		</div>
 	</form>
 	</main>
@@ -32,3 +31,4 @@
 	{{/content}}
 	
 	{{/layout}}
+	
