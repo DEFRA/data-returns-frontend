@@ -14,7 +14,7 @@ var result;
 // Grab environment variables specified in Procfile or as Heroku config vars
 var username = process.env.USERNAME;
 var password = process.env.PASSWORD;
-var env = process.env.NODE_ENV || 'development';
+var env = process.env.NODE_ENV || 'aws';
 
 var stream = new Stream()
 stream.writable = true
@@ -82,24 +82,19 @@ app.set('views', __dirname + '/app/views');
 
 app.use(express.cookieParser());
 
-// Env vars not being picked up for some reason, manually change for now
-// TODO read environment type from environment variable
 // TODO use redis in aws environment
-
-// production
-//app.use(express.session({
-//    secret: '1234567890QWERTY'
-//}));
-// development
-app.use(express.session({
-    store: new redis({
-        host: 'localhost',
-        port: 6379,
-        db: 2
-        //,        pass: 'RedisPASS'
-    }),
-    secret: '1234567890QWERTY'
-}));
+var session_env = null;
+if(env === "development")
+{
+    log.info("USING redis");
+    session_env = express.session({store: new redis({host: 'localhost',port: 6379,db: 2}),secret: '1234567890QWERTY'});
+}
+else
+{
+    log.info("NOT USING redis");
+    session_env = express.session({secret: '1234567890QWERTY'});
+}
+app.use(session_env);
 
 // Middleware to serve static assets
 app.use('/public', express.static(__dirname + '/public'));
