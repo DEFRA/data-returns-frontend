@@ -3,15 +3,12 @@ var express = require('express');
 var multer = require('multer');
 var routes = require(__dirname + '/app/routes.js');
 var app = express();
-var RedisStore = require('connect-redis')(express);
+var redis = require('connect-redis')(express);
 var port = (process.env.PORT || 3000);
-//    parse = require('csv-parse'),
 var fs = require('fs');
 var request = require('request');
 var qs = require('querystring');
 var Logger = require('bunyan'), Stream = require('stream');
-// var lineReader = require('line-reader');
-// var nodemailer = require('nodemailer');
 var result;
 
 // Grab environment variables specified in Procfile or as Heroku config vars
@@ -84,8 +81,18 @@ app.set('vendorViews', __dirname + '/govuk_modules/govuk_template/views/layouts'
 app.set('views', __dirname + '/app/views');
 
 app.use(express.cookieParser());
+
+// Env vars not being picked up for some reason, manually change for now
+// TODO read environment type from environment variable
+// TODO use redis in aws environment
+
+// production
+//app.use(express.session({
+//    secret: '1234567890QWERTY'
+//}));
+// development
 app.use(express.session({
-    store: new RedisStore({
+    store: new redis({
         host: 'localhost',
         port: 6379,
         db: 2

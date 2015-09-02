@@ -157,9 +157,9 @@ module.exports = {
                             if (result.outcome == "SYSTEM_FAILURE")
                             {
                                 if(sess.checking_only)
-                                    res.render('error_checking', {errMess:  errMess});
+                                    res.render('error_checking', {errMess: result.outcomeMessage});
                                 else
-                                    res.render('error_sending', {errMess:  errMess});
+                                    res.render('error_sending', {errMess: result.outcomeMessage});
                             }
                             else
                             {
@@ -225,9 +225,9 @@ module.exports = {
                     if (result.outcome == "SYSTEM_FAILURE")
                     {
                         if(sess.checking_only)
-                            res.render('error_checking', {errMess:  errMess});
+                            res.render('error_checking', {errMess:  result.outcomeMessage});
                         else
-                            res.render('error_sending', {errMess:  errMess});
+                            res.render('error_sending', {errMess:  result.outcomeMessage});
                     }
                     else if (result.outcome == "SUCCESS")
                     {
