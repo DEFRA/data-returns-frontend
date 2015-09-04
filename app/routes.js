@@ -92,6 +92,10 @@ module.exports = {
         // END 03-sign-in-register
 
         // 04-send-your-data
+        app.get('/04-send-your-data/01-upload-your-data', function (req, res) {
+            log.info("GET Request : " + req.url);
+            res.render('04-send-your-data/01-upload-your-data');
+        });
         app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
             res.render('04-send-your-data/01-upload-your-data');
