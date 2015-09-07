@@ -1,22 +1,15 @@
 module.exports = {
     bind: function (app) {
 
-        // Explicit requests to make easier to understand with duplicate pages etc...
-
         app.get('/', function (req, res) {
             log.info("GET Request : " + req.url);
-            res.render('index');
-        });
-
-        app.get('/01-start/01-start', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.render('01-start/01-start');
+            res.redirect('index');
         });
 
         // 01-start
         app.post('/01-start/01-start', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('01-start/02-what-would-you-like-to-do');
+            res.redirect('01-start/02-what-would-you-like-to-do');
         });
 
         app.post('/01-start/02-what-would-you-like-to-do', function (req, res) {
@@ -27,31 +20,26 @@ module.exports = {
             if (action == "Check the format of my data")
             {
                 req.session.checking_only = true;
-                res.render('02-check-your-data/01-upload-your-data');
+                res.redirect('02-check-your-data/01-upload-your-data');
             }
             else
             {
                 req.session.checking_only = false;
-                res.render('03-sign-in-register/01-have-account');
+                res.redirect('03-sign-in-register/01-have-account');
             }
         });
         // END 01-start
 
 
         // 02-check-your-data
-        app.get('/02-check-your-data/01-upload-your-data', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.render('02-check-your-data/01-upload-your-data');
-        });
-
         app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('02-check-your-data/01-upload-your-data');
+            res.redirect('02-check-your-data/01-upload-your-data');
         });
 
         app.post('/02-check-your-data/04-success', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('02-check-your-data/01-upload-your-data');
+            res.redirect('01-start/02-what-would-you-like-to-do');
         });
         // END 02-check-your-data
 
@@ -63,50 +51,43 @@ module.exports = {
 
             if (action == "Yes")
             {
-                res.render('03-sign-in-register/05-sign-in.html');
+                res.redirect('03-sign-in-register/05-sign-in');
             }
             else
             {
-                res.render('03-sign-in-register/02-account-details.html');
+                res.redirect('03-sign-in-register/02-account-details');
             }
         });
 
         app.post('/03-sign-in-register/02-account-details', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('03-sign-in-register/03-activate-account');
+            res.redirect('03-sign-in-register/03-activate-account');
         });
 
         app.post('/03-sign-in-register/04-activate-account', function (req, res) {
             log.info("GET Request : " + req.url);
-            res.render('03-sign-in-register/04-account-activated');
+            res.redirect('03-sign-in-register/04-account-activated');
         });
 
-        app.get('/03-sign-in-register/04-account-activated', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.render('03-sign-in-register/04-account-activated');
-        });
         app.post('/03-sign-in-register/04-account-activated', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('04-send-your-data/01-upload-your-data');
+            res.redirect('04-send-your-data/01-upload-your-data');
         });
 
         app.post('/03-sign-in-register/05-sign-in', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('04-send-your-data/01-upload-your-data');
+            res.redirect('04-send-your-data/01-upload-your-data');
         });
         // END 03-sign-in-register
 
         // 04-send-your-data
-        app.get('/04-send-your-data/01-upload-your-data', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.render('04-send-your-data/01-upload-your-data');
-        });
         app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('04-send-your-data/01-upload-your-data');
+            res.redirect('04-send-your-data/01-upload-your-data');
         });
         // END 04-send-your-data
 
+        // API
         app.post('/api/file-upload', function (req, res) {
             log.info("POST Request : " + req.url);
 
@@ -124,16 +105,15 @@ module.exports = {
 
                     // Simple validations
 
-                    // Commented out as caught on select (with js on of course)
-                    //Check to see if it's a csv file
-                    //if (thisFile.extension !== 'csv')
-                    //{
-                    //    res.render("file-upload/there-is-a-problem", {
-                    //        "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
-                    //        "file_name": thisFile.originalname
-                    //    });
-                    //    return;
-                    //}
+                    //Check to see if it's a csv file - caught on select (with js on) so redundant
+                    if (thisFile.extension !== 'csv')
+                    {
+                        res.render("file-upload/there-is-a-problem", {
+                            "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
+                            "file_name": thisFile.originalname
+                        });
+                        return;
+                    }
 
                     // TODO Check to see if file contains at least 1 data row
 
@@ -190,9 +170,9 @@ module.exports = {
             {
                 // Doesn't appear to ever get called, handled anyway just in case
                 if(sess.checking_only)
-                    res.render('02-check-your-data/01-upload-your-data');
+                    res.redirect('02-check-your-data/01-upload-your-data');
                 else
-                    res.render('03-sign-in-register/01-have-account');
+                    res.redirect('04-check-your-data/01-upload-your-data');
             }
         });
 
@@ -287,6 +267,7 @@ module.exports = {
                 }
             });
         });
+        // END API
 
         // auto render any OTHER view that exists
         app.get(/^\/([^.]+)$/, function (req, res) {
