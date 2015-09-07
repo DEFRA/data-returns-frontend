@@ -16,10 +16,10 @@
 	</div>
 	
 	  <form method="post" class="form text" action="/api/file-upload-validate">
-		
-			<h1 class="heading-xlarge">Associate with site</h1>
-			
-			<p class="lede">The file you are about to check is associated with the following site.</p>
+
+		  <h1 class="heading-xlarge">Verify details</h1>
+
+		  <p class="lede">Verify that the file you're about to submit is linked to these details:</p>
 		
 			<div class="panel-indent choose-organisation">
 					<p class="title">Permit number</p>
@@ -33,12 +33,11 @@
 			</div>
 
 			<details class="help-text-reg">
-			  <summary><span class="summary">This is not my site or the return type is incorrect</span></summary>
+				<summary><span class="summary">I don't recognise this site, or the return type isn't correct</span></summary>
 			  <div class="panel-indent">
-			    <p>Check the permit number is correct then either:
 			    <ul class="list-bullet">
-			    		<li><a href="/02-check-your-data/01-upload-your-data">upload and check a new file</a></li>
-			    		<li><a href="#" onclick="alert('Not yet implemented!');return false;">Follow your normal route</a></li>
+					<li><a href="/04-send-your-data/01-upload-your-data">upload another file</a></li>
+					<!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
 			   	</ul>
 			  </div>
 			</details>
