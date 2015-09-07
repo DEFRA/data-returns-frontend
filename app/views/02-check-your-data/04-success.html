@@ -18,27 +18,24 @@
   <form method="post" class="form text" action="/02-check-your-data/04-success">
 		<div class="text">
 			<h1 class="heading-xlarge">Your file has passed our validation checks</h1>
-			
+
 			<p>Your file contains no formatting errors. You may submit the file as it is</p>
-			
-			
+
+
 			<div class="text panel-indent">
 				<p>{{result.fileName}}</p>
 			</div>
-			
+
 			<p>
 				<a id="nextHref">
-					<input type="submit" id="nextBtn" class="button" value="Send this file">
+					<input type="submit" id="nextBtn" class="button" value="Start again...">
 				</a>
 			</p>
-	
-			<p>Go back and <a href="/02-check-your-data/01-upload-your-data">upload and check another file</a></p>
-		
-			</div>
+
 		</div>
 	</form>
-	
-</main> 
+
+</main>
 
 {{/content}}
 

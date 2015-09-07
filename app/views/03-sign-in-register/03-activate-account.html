@@ -15,18 +15,22 @@
 	  </p>
 	</div>
 
-	<div class="text">
-		<h1 class="heading-xlarge">Activate your account</h1>
-	
-		<p>In order to use this service you must activate your account.</p>
-	
-		<p>We have sent your activation email to <strong>your.email@gmail.com</strong>. Use the link in your email to activate your account.</p>
-		
-		<p>If you have not received the email, check your email inbox or junk folder, and <a href="#" onclick="alert('Not yet implemented!');return false;">request another activation code</a>.</p>
-	</div>
-	
-	<p  style="display: block; text-align: right;"><a href="/03-sign-in-register/04-account-activated">[activate account now]</a></p>
-</main> 
+	<form method="post" class="form text" action="/03-sign-in-register/04-activate-account">
+
+		<div class="text">
+			<h1 class="heading-xlarge">Activate your account</h1>
+
+			<p>In order to use this service you must activate your account.</p>
+
+			<p>We have sent your activation email to <strong>your.email@gmail.com</strong>. Use the link in your email to activate your account.</p>
+
+			<p>If you have not received the email, check your email inbox or junk folder, and <a href="#" onclick="alert('Not yet implemented!');return false;">request another activation code</a>.</p>
+		</div>
+
+		<input type="submit" id="nextBtn" class="button" value="Activate account now">
+
+	</form>
+</main>
 
 {{/content}}
 

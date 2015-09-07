@@ -51,7 +51,7 @@ module.exports = {
 
         app.post('/02-check-your-data/04-success', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.render('03-sign-in-register/01-have-account');
+            res.render('02-check-your-data/01-upload-your-data');
         });
         // END 02-check-your-data
 
@@ -74,6 +74,11 @@ module.exports = {
         app.post('/03-sign-in-register/02-account-details', function (req, res) {
             log.info("POST Request : " + req.url);
             res.render('03-sign-in-register/03-activate-account');
+        });
+
+        app.post('/03-sign-in-register/04-activate-account', function (req, res) {
+            log.info("GET Request : " + req.url);
+            res.render('03-sign-in-register/04-account-activated');
         });
 
         app.get('/03-sign-in-register/04-account-activated', function (req, res) {
