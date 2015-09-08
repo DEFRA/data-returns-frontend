@@ -1,2 +1,2 @@
 eaID,siteName,retType,dateSt,dateEn,periodName,periodYear,sampleRef,sampledBy,monPoint,parameter,value,tValue,Unit,MeasurePeriod,testMethod,Comments,CiC,addParameter1,addParameter2,addParameter3,addParameter4,addParameter5
-AB1234Z1,njg limited,landfill gas monitoring,,30/02/2015,,3000,Sample Ref,Sampled by 1,Test,Temperature,100,Test Text,Mzzetres,Annual,Test method 1,Test CSV file with no errors,True,Par 1,Par 2,Par 3,Par 4,Par 5
+AB12£34Z1,ABC Limited,Landfill Gas Monitoring,,30/02/2015,Q3 2013,3000,Sample Ref,Sampled by 1,Mbbar,Temperature,100,Test Text,Mzzetres,Annual,Test method 1,Test CSV file with no errors,True,Par 1,Par 2,Par 3,Par 4,Par 5
