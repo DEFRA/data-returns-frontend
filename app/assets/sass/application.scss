@@ -51,3 +51,23 @@
 		margin-top:15px;
 	}
 }
+
+.button-get-started {
+  background-image: url("/public/images/icons/icon-pointer.png");
+  }
+  
+.choose-organisation {
+	margin-bottom:30px;
+	p {
+		span {
+			display:block;
+		}
+		.name	{
+			font-weight: bold;
+		}
+	}
+	.title {
+		font-weight:600;
+		margin-bottom:0;
+	}
+}

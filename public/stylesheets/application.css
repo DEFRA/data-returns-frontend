@@ -1101,3 +1101,16 @@ ul, ol {
     margin: 15px 0; }
 .file-upload #banner-notification {
   margin-top: 15px; }
+
+.button-get-started {
+  background-image: url("/public/images/icons/icon-pointer.png"); }
+
+.choose-organisation {
+  margin-bottom: 30px; }
+  .choose-organisation p span {
+    display: block; }
+  .choose-organisation p .name {
+    font-weight: bold; }
+  .choose-organisation .title {
+    font-weight: 600;
+    margin-bottom: 0; }
