@@ -1034,7 +1034,7 @@ ul, ol {
     border: 0;
     background: #fff; }
 
-.file-upload .button-secondary {
+.button-secondary {
   background-color: #dee0e2;
   position: relative;
   display: -moz-inline-stack;
@@ -1054,30 +1054,30 @@ ul, ol {
   -webkit-font-smoothing: antialiased;
   cursor: pointer;
   color: #0b0c0c; }
-  .file-upload .button-secondary:visited {
+  .button-secondary:visited {
     background-color: #dee0e2; }
-  .file-upload .button-secondary:hover, .file-upload .button-secondary:focus {
+  .button-secondary:hover, .button-secondary:focus {
     background-color: #d0d3d6; }
-  .file-upload .button-secondary:active {
+  .button-secondary:active {
     top: 2px;
     -webkit-box-shadow: 0 0 0 #dee0e2;
     -moz-box-shadow: 0 0 0 #dee0e2;
     box-shadow: 0 0 0 #dee0e2; }
-  .file-upload .button-secondary.disabled, .file-upload .button-secondary[disabled="disabled"], .file-upload .button-secondary[disabled] {
+  .button-secondary.disabled, .button-secondary[disabled="disabled"], .button-secondary[disabled] {
     zoom: 1;
     filter: alpha(opacity=50);
     opacity: 0.5; }
-    .file-upload .button-secondary.disabled:hover, .file-upload .button-secondary[disabled="disabled"]:hover, .file-upload .button-secondary[disabled]:hover {
+    .button-secondary.disabled:hover, .button-secondary[disabled="disabled"]:hover, .button-secondary[disabled]:hover {
       cursor: default;
       background-color: #dee0e2; }
-    .file-upload .button-secondary.disabled:active, .file-upload .button-secondary[disabled="disabled"]:active, .file-upload .button-secondary[disabled]:active {
+    .button-secondary.disabled:active, .button-secondary[disabled="disabled"]:active, .button-secondary[disabled]:active {
       top: 0;
       -webkit-box-shadow: 0 2px 0 #b5babe;
       -moz-box-shadow: 0 2px 0 #b5babe;
       box-shadow: 0 2px 0 #b5babe; }
-  .file-upload .button-secondary:link, .file-upload .button-secondary:hover, .file-upload .button-secondary:focus, .file-upload .button-secondary:visited {
+  .button-secondary:link, .button-secondary:hover, .button-secondary:focus, .button-secondary:visited {
     color: #0b0c0c; }
-  .file-upload .button-secondary:before {
+  .button-secondary:before {
     content: "";
     height: 110%;
     width: 100%;
@@ -1086,14 +1086,15 @@ ul, ol {
     position: absolute;
     top: 0;
     left: 0; }
-  .file-upload .button-secondary:active:before {
+  .button-secondary:active:before {
     top: -10%;
     height: 120%; }
-  .file-upload .button-secondary[rel="external"]:after {
+  .button-secondary[rel="external"]:after {
     display: none;
     content: none;
     margin-left: 0;
     margin-right: 0; }
+
 .file-upload .well {
   margin-bottom: 30px; }
   .file-upload .well .button-choose-file {

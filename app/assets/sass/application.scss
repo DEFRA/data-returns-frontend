@@ -36,11 +36,11 @@
 // Add extra styles here, or re-organise the Sass files in whichever way makes most sense to you,
 // either add and import new partial files, or modify those in GOV.UK elements to fit your user needs.
 
+.button-secondary {
+	@include button($grey-3);
+}
+
 .file-upload {
-	.button-secondary {
-		@include button($grey-3);
-	}
-	
 	.well {
 		margin-bottom:30px;
 		.button-choose-file {
