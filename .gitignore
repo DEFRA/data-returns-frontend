@@ -4,3 +4,5 @@
 *.espressostorage
 node_modules
 uploads
+govuk_modules
+public
