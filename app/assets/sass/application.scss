@@ -57,8 +57,16 @@
   }
   
 .documentation {  
+	section {
+		display: inline-block;
+		width: 100%;
+	}
 	.heading-small {
 		clear:both;
+		overflow:hidden;
+	}
+	.heading-small:first-child {
+		margin-top:0;
 	}
 	.attachment {
 		.assistive-technology {
