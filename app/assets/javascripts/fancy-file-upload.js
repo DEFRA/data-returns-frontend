@@ -36,10 +36,6 @@ $(document).ready( function() {
     }
     $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
         if (label !== '') {
-            if (!label.includes(".csv")) {
-                alert("The file must be in csv format");
-                return;
-            }
             $('#statusbar-header').show();
             $('.file-label').html(label);
             $('.del-label').html('<a id="remove-link" href="#">Remove</a>');
@@ -62,6 +58,10 @@ $(document).ready( function() {
                 var control = $('#file-select-button')
                 control.replaceWith( control = control.clone( true ) );
             });
+            if (!label.includes(".csv")) {
+                $('#remove-link').click();
+                window.location.assign("/invalid_csv_file");
+            }
         }
     });
 });

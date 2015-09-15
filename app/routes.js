@@ -1,12 +1,13 @@
 module.exports = {
     bind: function (app) {
 
+        // Default
         app.get('/', function (req, res) {
             log.info("GET Request : " + req.url);
             res.redirect('index');
         });
 
-        // 01-start
+        // START 01-start
         app.post('/01-start/01-start', function (req, res) {
             log.info("POST Request : " + req.url);
             res.redirect('01-start/02-what-would-you-like-to-do');
@@ -31,7 +32,7 @@ module.exports = {
         // END 01-start
 
 
-        // 02-check-your-data
+        // START 02-check-your-data
         app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
             res.redirect('02-check-your-data/01-upload-your-data');
@@ -43,7 +44,7 @@ module.exports = {
         });
         // END 02-check-your-data
 
-        // 03-sign-in-register
+        // START 03-sign-in-register
         app.post('/03-sign-in-register/01-have-account', function (req, res) {
             var action = req.param('radio-inline-group');
 
@@ -80,14 +81,27 @@ module.exports = {
         });
         // END 03-sign-in-register
 
-        // 04-send-your-data
+        // START 04-send-your-data
         app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
             res.redirect('04-send-your-data/01-upload-your-data');
         });
         // END 04-send-your-data
 
-        // API
+        // START Misc
+        app.get('/invalid_csv_file', function (req, res) {
+            log.info("GET Request : " + req.url);
+
+            var sess = req.session;
+
+            if(sess.checking_only)
+                res.render('error_checking', {errMess: "Not a CSV File"});
+            else
+                res.render('error_sending', {errMess: "Not a CSV File"});
+        });
+        // END Misc
+
+        // START API
         app.post('/api/file-upload', function (req, res) {
             log.info("POST Request : " + req.url);
 
