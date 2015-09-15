@@ -10,25 +10,26 @@
 		<p>
 			<strong class="phase-tag">ALPHA</strong>
 			<span>This is a new service – your
-				<a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
+				<a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.
+			</span>
 		</p>
 	</div>
-	<form method="post" class="form text" action="/02-check-your-data/01-upload-your-data">
+	<form method="post" class="form text" action="{{result.errButtonAction}}">
 		<div class="text">
 			<h1 class="heading-xlarge">
-				<span id="title">There is a problem</span>
+				<span id="title">{{result.pageText}}</span>
 			</h1>
 
-			<p class="lede">Reason : {{errMess}}</p>
+			<p class="lede">Reason : {{result.errMess}}</p>
 
 			<div class="form-group">
-				<input type="submit" class="button" value="Start again...">
+				<input type="submit" class="button" value="{{result.errButtonText}}">
 			</div>
 		</div>
 	</form>
-	</main>
-	
-	{{/content}}
-	
-	{{/layout}}
+</main>
+
+{{/content}}
+
+{{/layout}}
 	

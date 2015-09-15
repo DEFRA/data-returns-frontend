@@ -31,7 +31,6 @@ module.exports = {
         });
         // END 01-start
 
-
         // START 02-check-your-data
         app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
@@ -92,12 +91,27 @@ module.exports = {
         app.get('/invalid_csv_file', function (req, res) {
             log.info("GET Request : " + req.url);
 
+            // TODO JG set result property(s)
+            var result = {
+                pageText        : 'There is a problem',
+                errMess         : 'Not a CSV File',
+                errButtonText   : 'Start again...'
+            };
+
             var sess = req.session;
 
-            if(sess.checking_only)
-                res.render('error_checking', {errMess: "Not a CSV File"});
+            if (sess.checking_only)
+            {
+                // TODO JG set result property(s)
+                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
+                res.render('error_checking', {result: result});
+            }
             else
-                res.render('error_sending', {errMess: "Not a CSV File"});
+           {
+               // TODO JG set result property(s)
+               result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+               res.render('error_sending', {result: result});
+            }
         });
         // END Misc
 
@@ -147,11 +161,25 @@ module.exports = {
                         if (err)
                         {
                             var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
+                            // TODO JG set result property(s)
+                            var result = {
+                                pageText        : 'There is a problem',
+                                errMess        : errMess,
+                                errButtonText  : 'Start again...'
+                            };
 
-                            if(sess.checking_only)
-                                res.render('error_checking', {errMess:  errMess});
+                            if (sess.checking_only)
+                            {
+                                // TODO JG set result property(s)
+                                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
+                                res.render('error_checking', {result: result});
+                            }
                             else
-                                res.render('error_sending', {errMess:  errMess});
+                            {
+                                // TODO JG set result property(s)
+                                result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                                res.render('error_sending', {result: result});
+                            }
                         }
                         else
                         {
@@ -159,10 +187,23 @@ module.exports = {
 
                             if (result.outcome == "SYSTEM_FAILURE")
                             {
-                                if(sess.checking_only)
-                                    res.render('error_checking', {errMess: result.outcomeMessage});
+                                // TODO JG set result property(s)
+                                result.pageText = 'There is a problem';
+                                result.errMess = result.outcomeMessage;
+                                result.errButtonText = 'Start again...';
+
+                                if (sess.checking_only)
+                                {
+                                    // TODO JG set result property(s)
+                                    result.errButtonAction = '/02-check-your-data/01-upload-your-data';
+                                    res.render('error_checking', {result: result});
+                                }
                                 else
-                                    res.render('error_sending', {errMess: result.outcomeMessage});
+                                {
+                                    // TODO JG set result property(s)
+                                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                                    res.render('error_sending', {result: result});
+                                }
                             }
                             else
                             {
@@ -215,11 +256,25 @@ module.exports = {
                 if (err)
                 {
                     var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
+                    // TODO JG set result property(s)
+                    var result = {
+                        pageText        : 'There is a problem',
+                        errMess        : errMess,
+                        errButtonText  : 'Start again...'
+                    };
 
-                    if(sess.checking_only)
-                        res.render('error_checking', {errMess:  errMess});
+                    if (sess.checking_only)
+                    {
+                        // TODO JG set result property(s)
+                        result.errButtonAction = '/02-check-your-data/01-upload-your-data';
+                        res.render('error_checking', {result: result});
+                    }
                     else
-                        res.render('error_sending', {errMess:  errMess});
+                    {
+                        // TODO JG set result property(s)
+                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                        res.render('error_sending', {result: result});
+                    }
                 }
                 else
                 {
@@ -227,10 +282,23 @@ module.exports = {
 
                     if (result.outcome == "SYSTEM_FAILURE")
                     {
-                        if(sess.checking_only)
-                            res.render('error_checking', {errMess:  result.outcomeMessage});
+                        // TODO JG set result property(s)
+                        result.pageText = 'There is a problem';
+                        result.errMess = result.outcomeMessage;
+                        result.errButtonText = 'Start again...';
+
+                        if (sess.checking_only)
+                        {
+                            // TODO JG set result property(s)
+                            result.errButtonAction = '/02-check-your-data/01-upload-your-data';
+                            res.render('error_checking', {result: result});
+                        }
                         else
-                            res.render('error_sending', {errMess:  result.outcomeMessage});
+                        {
+                            // TODO JG set result property(s)
+                            result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                            res.render('error_sending', {result: result});
+                        }
                     }
                     else if (result.outcome == "SUCCESS")
                     {
@@ -263,8 +331,16 @@ module.exports = {
                 if (err)
                 {
                     var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
+                    // TODO JG set result property(s)
+                    var result = {
+                        pageText        : 'There is a problem',
+                        errMess        : errMess,
+                        errButtonText  : 'Start again...'
+                    };
 
-                    res.render('error_sending', {errMess:  errMess});
+                    // TODO JG set result property(s)
+                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                    res.render('error_sending', {result: result});
                 }
                 else
                 {
@@ -272,7 +348,13 @@ module.exports = {
 
                     if (result.outcome == "SYSTEM_FAILURE")
                     {
-                        res.render('error_sending', {errMess:  result.outcomeMessage});
+                        // TODO JG set result property(s)
+                        result.pageText = 'There is a problem';
+                        result.errMess = result.outcomeMessage;
+                        result.errButtonText = 'Start again...';
+                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+
+                        res.render('error_sending', {"result": result});
                     }
                     else
                     {
