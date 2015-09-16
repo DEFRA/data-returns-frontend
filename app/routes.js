@@ -320,12 +320,14 @@ module.exports = {
         app.post('/api/file-upload-send', function (req, res) {
             log.info("POST Request : " + req.url);
 
+            var emailcc = req.param('email_cc');
+
             var request = require('request');
             var sess = req.session;
 
             request.post({
                 url : 'http://localhost:9020/file-upload-send',
-                form: {fileKey: sess.fileKey}
+                form: {fileKey: sess.fileKey, emailcc : emailcc}
             }, function optionalCallback(err, httpResponse, body) {
 
                 if (err)
