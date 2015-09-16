@@ -94,8 +94,8 @@ module.exports = {
             // TODO JG set result property(s)
             var result = {
                 pageText        : 'There is a problem',
-                errMess         : 'Not a CSV File',
-                errButtonText   : 'Start again...'
+                errMess         : 'Your data must be returned as a CSV file.',
+                errButtonText   : 'Go back and check another file'
             };
 
             var sess = req.session;
@@ -165,7 +165,7 @@ module.exports = {
                             var result = {
                                 pageText        : 'There is a problem',
                                 errMess        : errMess,
-                                errButtonText  : 'Start again...'
+                                errButtonText  : 'Start again'
                             };
 
                             if (sess.checking_only)
@@ -190,7 +190,7 @@ module.exports = {
                                 // TODO JG set result property(s)
                                 result.pageText = 'There is a problem';
                                 result.errMess = result.outcomeMessage;
-                                result.errButtonText = 'Start again...';
+                                result.errButtonText = 'Start again';
 
                                 if (sess.checking_only)
                                 {
@@ -260,7 +260,7 @@ module.exports = {
                     var result = {
                         pageText        : 'There is a problem',
                         errMess        : errMess,
-                        errButtonText  : 'Start again...'
+                        errButtonText  : 'Start again'
                     };
 
                     if (sess.checking_only)
@@ -285,7 +285,7 @@ module.exports = {
                         // TODO JG set result property(s)
                         result.pageText = 'There is a problem';
                         result.errMess = result.outcomeMessage;
-                        result.errButtonText = 'Start again...';
+                        result.errButtonText = 'Start again';
 
                         if (sess.checking_only)
                         {
@@ -337,7 +337,7 @@ module.exports = {
                     var result = {
                         pageText        : 'There is a problem',
                         errMess        : errMess,
-                        errButtonText  : 'Start again...'
+                        errButtonText  : 'Start again'
                     };
 
                     // TODO JG set result property(s)
@@ -353,7 +353,7 @@ module.exports = {
                         // TODO JG set result property(s)
                         result.pageText = 'There is a problem';
                         result.errMess = result.outcomeMessage;
-                        result.errButtonText = 'Start again...';
+                        result.errButtonText = 'Start again';
                         result.errButtonAction = '/04-send-your-data/01-upload-your-data';
 
                         res.render('error_sending', {"result": result});

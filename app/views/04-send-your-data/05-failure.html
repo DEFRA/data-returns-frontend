@@ -13,7 +13,9 @@
 				<a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
 		</p>
 	</div>
-	<form method="post" class="form text" action="/04-send-your-data/01-upload-your-data">
+	<form method="post" class="form" action="/04-send-your-data/01-upload-your-data">
+		
+		
 		<div class="text">
 			<h1 class="heading-xlarge">
 				<span id="title">There's a problem</span>
@@ -27,10 +29,13 @@
 			</ul>
 			<p>You can
 				<a href="#" onclick="alert('Not yet implemented!');return false;">create a PDF of the errors</a> (opens in a new window or tab).</p>
+		</div>
+		
+		<div class="error-table">
 			<hr>
-			<h2 class="heading-24">Errors found in '{{result.fileName}}' - {{result.outcome}}</h2>
+			<h2 class="heading-small">Errors found in '{{result.fileName}}' - {{result.outcome}}</h2>
 			<!-- For fixed header positioning only for Sticky JS -->
-			<p>
+
 			<table id="errorTableHeader" class="error">
 				<thead>
 				<tr>
@@ -55,13 +60,13 @@
 				{{/result}}
 				</tbody>
 			</table>
-			
-			<div class="form-group">
-				<input type="submit" class="button" value="Upload another file">
-			</div>
-			
-			<a href="#" onclick="alert('Not yet implemented!');return false;">I don't understand</a>
 		</div>
+		
+		<div class="form-group">
+			<input type="submit" class="button" value="Upload another file">
+		</div>
+			
+		<a href="#" onclick="alert('Not yet implemented!');return false;">I don't understand</a>
 	</form>
 	</main>
 	

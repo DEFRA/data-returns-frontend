@@ -17,9 +17,9 @@
 	
 	  <form method="post" class="form text" action="/api/file-upload-validate">
 
-		  <h1 class="heading-xlarge">Verify details</h1>
+		  <h1 class="heading-xlarge">Verify your file</h1>
 
-		  <p class="lede">Verify that the file you're about to submit is linked to these details:</p>
+		  <p class="lede">The file you are about to check is associated with the following site. Please verify the information is correct.</p>
 		
 			<div class="panel-indent choose-organisation">
 					<p class="title">Permit number</p>
@@ -32,12 +32,20 @@
 					<p>{{result.returnType}}</p>
 			</div>
 				
+			<details class="help-text-reg">
+			  <summary><span class="summary">Is the information incorrect?</span></summary>
+			  <div class="panel-indent">
+				  <p><a href="/04-send-your-data/01-upload-your-data">Go back and upload another file</a>
+					  <!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
+				  </p>
+			  </div>
+			</details>
+
 			<!-- Primary button -->
 			<div class="form-group">
 				<input type="submit" class="button" value="This is my site, continue">
 			</div>
 			
-			<p><a href="/04-send-your-data/01-upload-your-data">I don't recognise this site, or the return type isn't correct</a></p>
 		</form>
 	
 </main> 
