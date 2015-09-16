@@ -16,15 +16,15 @@
 	</div>
   <form method="post" class="form text" action="/01-start/01-start">
 	
-		<h1 class="heading-xlarge">Manage your data returns</h1>
+		<h1 class="heading-xlarge">Deliver your data files online</h1>
 		
 		<div class="form-group">
-			<p class="lede">Use this service to send the Environment Agency your pollution inventory and landfill emissions data.</p>
+			<p class="lede">Use this service to send your pollution inventory and landfill emissions data to the Environment Agency.</p>
 		
 			<details class="help-text-reg">
 			  <summary><span class="summary">Why only pollution inventory and landfill emissions data?</span></summary>
 			  <div class="panel-indent">
-			    <p>{ Explains this is a beta service where customers can only return their pollution inventory and landfill emissions data. }</p>
+			    <p>This service is being developed to allow data be submitted from a range of applications. While it’s being tested, it’s limited to these two types of data only. For all other types of data submission, please use your normal data returns route.</p>
 			  </div>
 			</details>
 		</div>
@@ -34,60 +34,45 @@
 			<input type="submit" class="button button-get-started" name="sub-button" value="Start now">
 		</div>
 		
-		<h2 class="heading-large">Before you start</h2>
-		<p>You'll need:</p>
+		<div class="before-you-start">
+			<h2 class="heading-large">Before you start</h2>
+			
+			<ul>
+				<li>Your data files must be in CSV format<br>
+					<details class="help-csv">
+					  <summary><span class="summary">What's this?</span></summary>
+					  <div class="panel-indent">
+					    <p>CSV (comma separated values) format is widely used to move data between otherwise incompatible applications. In an Excel spreadsheet, for example, you can use ’Save as’ to create a CSV version of your file.</p>
+					  </div>
+					</details>
+				</li>
+				<li>All columns, rows and fields must be correctly labelled<br>
+					<details class="help-formatting">
+					  <summary><span class="summary">What does this mean?</span></summary>
+					  <div class="panel-indent">
+					    <p>This text explains more about the requisite labelling conventions. Download a sample CSV template to see what these look like.</p>
+					    <section class="attachment embedded" id="attachment">
+					    	<div class="attachment-thumb">
+					    		<a aria-hidden="true" class="thumbnail" href="/public/resources/sample.csv"><img alt="" src="/public/images/pub-cover-spreadsheet.png"></a>
+					    	</div>
+					    	<div class="attachment-details">
+					    		<h2 class="title"><a aria-describedby="attachment" href="/public/resources/sample.csv">Data returns file structure template</a></h2>
+					    		<p class="metadata">
+					    				<span class="type"><abbr title="Comma Separated File">CSV</abbr></span>, <span class="file-size">0.5KB</span>
+					    		</p>
+					    	</div>
+					    </section>
+					  </div>
+					</details>
+				</li>
+		</div>
+			
+		<p>You’ll also need:</p>
 		<ul class="list-bullet">
 			<li>an email address and password to create or sign in to your account</li>
 			<li>your permit number</li>
-			<li>your data file (in CSV format only)</li>
 		</ul>
-		
-		<details class="help-text-csv">
-		  <summary><span class="summary">Why only CSV format?</span></summary>
-		  <div class="panel-indent">
-		    <p>CSV (Comma Separated Values) Format is widely used to move data between otherwise incompatible applications</p>
-		  </div>
-		</details>
-		
-		<h2 class="heading-large">How to structure your CSV file</h2>
-		<p>The file must comprise of:</p>
-		<ul class="list-bullet">
-			<li>a header row containing the field names</li>
-			<li>the fields sequenced in the field number order indicated</li>
-		</ul>		
-		
-		<div class="documentation">
-			<h3 class="heading-medium">Data return guidance</h3>
-			
-			<h4 class="heading-small">Guidance to format your data return</h4>
-			<section class="attachment embedded" id="attachment">
-				<div class="attachment-thumb">
-					<a aria-hidden="true" class="thumbnail" href="/public/resources/ub-csv-format-guidance.pdf"><img alt="" src="/public/images/pub-csv-format-guidance.png"></a>
-				</div>
-				<div class="attachment-details">
-					<h2 class="title"><a aria-describedby="attachment" href="/public/resources/Data-Returns-File-structure.pdf">Guidance to format your data return</a></h2>
-					<p class="metadata">
-							<span class="type"><abbr title="Portable Document Format">PDF</abbr></span>, <span class="file-size">54KB</span>
-					</p>
-				</div>
-			</section>
-			
-			<h4 class="heading-small">Download a sample CSV template file</h4>
-			<section class="attachment embedded" id="attachment">
-				<div class="attachment-thumb">
-					<a aria-hidden="true" class="thumbnail" href="/public/resources/sample.csv"><img alt="" src="/public/images/pub-cover-spreadsheet.png"></a>
-				</div>
-				<div class="attachment-details">
-					<h2 class="title"><a aria-describedby="attachment" href="/public/resources/sample.csv">Data returns file structure template</a></h2>
-					<p class="metadata">
-							<span class="type"><abbr title="Comma Separated File">CSV</abbr></span>, <span class="file-size">0.5KB</span>
-					</p>
-				</div>
-			</section>
-		</div>
-		
-		
-		
+
 	</form>
 	
 </main> 
