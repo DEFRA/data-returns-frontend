@@ -15,46 +15,45 @@
 	  </p>
 	</div>
 
-  <form method="post" class="form text" action="/03-sign-in-register/02-account-details">
-	
-		<h1 class="heading-xlarge">Create a new user account</h1>
+  <form method="post" class="form" action="/03-sign-in-register/02-account-details">
+		<h1 class="heading-xlarge">Create a new user account</h1>  
+		<div class="text">
+			<p class="lede">Enter your contact details and create a password</p>
 		
-		<p class="lede">Enter your contact details and create a password</p>
+			<div class="form-group">
+			  <label class="form-label" for="first-name">First name</label>
+			  <input class="form-control" id="first-name" type="text">
+			</div>
+			<div class="form-group">
+			  <label class="form-label" for="last-name">Last name</label>
+			  <input class="form-control" id="last-name" type="text">
+			</div>
+			<div class="form-group">
+			  <label class="form-label" for="email">Email address</label>
+			  <input class="form-control" id="email" type="text">
+			</div>
+		  <div class="form-group">
+			  <label class="form-label" for="email">Confirm email address</label>
+			  <input class="form-control" id="confirmEmail" type="text">
+		  </div>
+			<div class="form-group">
+				<label class="form-label" for="create-password">
+				  Create password
+				  <span class="form-hint">Your password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter and one number</span>
+				</label>
+				<input class="form-control" id="create-password" type="text">
+			</div>
+			<div class="form-group">
+			  <label class="form-label" for="re-type-password">Re-type password</label>
+			  <input class="form-control" id="re-type-password" type="text">
+			</div>
 	
-		<div class="form-group">
-		  <label class="form-label" for="first-name">First name</label>
-		  <input class="form-control" id="first-name" type="text">
-		</div>
-		<div class="form-group">
-		  <label class="form-label" for="last-name">Last name</label>
-		  <input class="form-control" id="last-name" type="text">
-		</div>
-		<div class="form-group">
-		  <label class="form-label" for="email">Email address</label>
-		  <input class="form-control" id="email" type="text">
-		</div>
-	  <div class="form-group">
-		  <label class="form-label" for="email">Confirm email address</label>
-		  <input class="form-control" id="confirmEmail" type="text">
-	  </div>
-		<div class="form-group">
-			<label class="form-label" for="create-password">
-			  Create password
-			  <span class="form-hint">Your password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter and one number</span>
-			</label>
-			<input class="form-control" id="create-password" type="text">
-		</div>
-		<div class="form-group">
-		  <label class="form-label" for="re-type-password">Re-type password</label>
-		  <input class="form-control" id="re-type-password" type="text">
-		</div>
-
-	
-		<!-- Primary button -->
-		<div class="form-group">
-			<input type="submit" class="button" value="Create a user account">
-		</div>
 		
+			<!-- Primary button -->
+			<div class="form-group">
+				<input type="submit" class="button" value="Create a user account">
+			</div>
+		</div><!-- /text -->
 	</form>
 	
 </main> 

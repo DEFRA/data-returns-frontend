@@ -15,22 +15,21 @@
 	  </p>
 	</div>
 
-  <form method="post" class="form text" action="/02-check-your-data/04-success">
+  <form method="post" class="form" action="/02-check-your-data/04-success">
 		<div class="text">
 			<h1 class="heading-xlarge">Your file is ready to be sent</h1>
-
-            <p>Your file has been checked and is ready to be sent.</p>
-
-			<div class="text panel-indent">
-				<p>{{result.fileName}}</p>
-			</div>
-
-			<p>
-				<a id="nextHref">
-					<input type="submit" id="nextBtn" class="button" value="Finish">
-				</a>
-			</p>
-
+			<div class="text">
+	      <p class="lede">Your file has been checked and is ready to be sent.</p>
+	
+				<div class="text panel-indent">
+					<p>{{result.fileName}}</p>
+				</div>
+				<p>
+					<a id="nextHref">
+						<input type="submit" id="nextBtn" class="button" value="Finish">
+					</a>
+				</p>
+			</div><!-- /text -->
 		</div>
 	</form>
 

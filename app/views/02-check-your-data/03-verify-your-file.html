@@ -15,10 +15,9 @@
 	  </p>
 	</div>
 	
-	  <form method="post" class="form text" action="/api/file-upload-validate">
-
-		  <h1 class="heading-xlarge">Verify your file</h1>
-
+  <form method="post" class="form" action="/api/file-upload-validate">
+	  <h1 class="heading-xlarge">Verify your file</h1>
+	  <div class="text">
 		  <p class="lede">The file you are about to check is associated with the following site. Please verify the information is correct.</p>
 		
 			<div class="panel-indent choose-organisation">
@@ -45,9 +44,8 @@
 			<div class="form-group">
 				<input type="submit" class="button" value="This is my site, continue">
 			</div>
-			
-		</form>
-	
+		</div><!-- /text -->
+	</form>
 </main> 
 
 {{/content}}

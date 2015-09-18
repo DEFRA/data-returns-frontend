@@ -15,30 +15,29 @@
 	  </p>
 	</div>
 
-  <form method="post" class="form text" action="/03-sign-in-register/01-have-account">
-	
+  <form method="post" class="form" action="/03-sign-in-register/01-have-account">
 		<h1 class="heading-xlarge">Do you already have a user account?</h1>
+		<div class="text">
+			<p class="lede">If you are unsure, choose no</p>
+			
+				<fieldset>
+					<div class="form-group">
+					  <label class="block-label" for="radio-inline-1">
+					    <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
+					    Yes
+					  </label>
+					  <label class="block-label" for="radio-inline-2">
+					    <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No" checked="checked">
+					    No
+					  </label>
+				  </div>
+				</fieldset>
 		
-		<p>If you are unsure, choose no</p>
-		
-			<fieldset>
-				<div class="form-group">
-				  <label class="block-label" for="radio-inline-1">
-				    <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
-				    Yes
-				  </label>
-				  <label class="block-label" for="radio-inline-2">
-				    <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No" checked="checked">
-				    No
-				  </label>
-			  </div>
-			</fieldset>
-	
-		<!-- Primary button -->
-		<div class="form-group">
-			<input type="submit" class="button" value="Continue">
-		</div>
-		
+			<!-- Primary button -->
+			<div class="form-group">
+				<input type="submit" class="button" value="Continue">
+			</div>
+		</div><!-- /text -->
 	</form>
 	
 </main> 
