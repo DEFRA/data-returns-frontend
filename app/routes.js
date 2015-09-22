@@ -94,8 +94,8 @@ module.exports = {
             // TODO JG set result property(s)
             var result = {
                 pageText        : 'There is a problem',
-                errMess         : 'Your data must be returned as a CSV file.',
-                errButtonText   : 'Go back and check another file'
+                errMess         : 'All data files returned using this service must be in CSV format.',
+                errButtonText   : 'Select another file'
             };
 
             var sess = req.session;

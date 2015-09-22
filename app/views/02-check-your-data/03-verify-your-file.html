@@ -16,9 +16,11 @@
 	</div>
 	
   <form method="post" class="form" action="/api/file-upload-validate">
-	  <h1 class="heading-xlarge">Verify your file</h1>
+	  <h1 class="heading-xlarge">Confirm the data file before we check it</h1>
 	  <div class="text">
-		  <p class="lede">The file you are about to check is associated with the following site. Please verify the information is correct.</p>
+		  <p class="lede">The file we’re about to check is associated with the following permit number and site.</p>
+		  
+		  <p class="lede">Are these details correct?</p>
 		
 			<div class="panel-indent choose-organisation">
 					<p class="title">Permit number</p>
@@ -32,9 +34,9 @@
 			</div>
 				
 			<details class="help-text-reg">
-			  <summary><span class="summary">Is the information incorrect?</span></summary>
+			  <summary><span class="summary">These details are wrong</span></summary>
 			  <div class="panel-indent">
-				  <p><a href="/04-send-your-data/01-upload-your-data">Go back and upload another file</a>
+			    <p>If any of the details above are wrong, please <a href="/04-send-your-data/01-upload-your-data">start again.</a>
 					  <!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
 				  </p>
 			  </div>
@@ -42,7 +44,7 @@
 
 			<!-- Primary button -->
 			<div class="form-group">
-				<input type="submit" class="button" value="This is my site, continue">
+				<input type="submit" class="button" value="Yes, the details are correct">
 			</div>
 		</div><!-- /text -->
 	</form>
