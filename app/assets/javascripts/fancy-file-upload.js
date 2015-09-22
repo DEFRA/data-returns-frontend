@@ -38,7 +38,7 @@ $(document).ready( function() {
         if (label !== '') {
             $('#statusbar-header').show();
             $('.file-label').html(label);
-            $('.del-label').html('<a id="remove-link" href="#">Remove</a>');
+            $('.del-label').html('<a id="remove-link" href="#">Remove file</a>');
             $('#check-for-errors-btn').removeAttr('disabled');
             $('#file-select-button').hide();
             $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)',
