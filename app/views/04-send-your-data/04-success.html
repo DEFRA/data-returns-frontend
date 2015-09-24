@@ -16,20 +16,22 @@
 	</div>
 
   <form method="post" class="form" action="/api/file-upload-send">
-  	<h1 class="heading-xlarge">Your file is ready to be sent</h1>
+  	<h1 class="heading-xlarge">File ready to be sent</h1>
   	<div class="text">
       <p class="lede">Your file has been checked and is ready to be sent.</p>
 				<div class="text panel-indent">
 					<p>{{result.fileName}}</p>
 				</div>
 				
+				<p>We’ll confirm we’ve received it using the email address you’ve provided.</p>
+				
 				<details class="cc-email form-group">
-				  <summary><span class="summary">Send a copy to an email address</span></summary>
+				  <summary><span class="summary">Send a receipt to an additional email address</span></summary>
 				  <div class="panel-indent">
 					  <div class="form-group">
 					    <label class="form-label" for="email">Email address</label>
 					    <input class="form-control" id="email" name="email_cc" type="text">
-					    <p><a href="#">Add another email</a></p>
+					    <p><a href="#">Add email</a></p>
 					  </div>
 				  </div>
 				</details>
@@ -44,6 +46,8 @@
 						<input type="submit" id="nextBtn" class="button" value="Send this file">
 					</a>
 				</p>
+				
+				<p>Go back and <a href="/04-send-your-data/01-upload-your-data">send another file</a></p>
 			</div><!-- /text -->
 		</form>
 </main> 
