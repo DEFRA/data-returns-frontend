@@ -39,6 +39,7 @@ $(document).ready( function() {
             $('#statusbar-header').show();
             $('.file-label').html(label);
             $('.del-label').html('<a id="remove-link" href="#">Remove file</a>');
+            $('#title').html('Confirm the file you want us to check');
             $('#check-for-errors-btn').removeAttr('disabled');
             $('#file-select-button').hide();
             $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)',
@@ -48,6 +49,7 @@ $(document).ready( function() {
                 'opacity': '0.5'});
             $('#remove-link').click(function() {
                 $('#statusbar-header').hide();
+                $('#title').html('Choose the file you want us to check');
                 $('#check-for-errors-btn').attr('disabled', 'disabled');
                 $('#file-select-button').show();
                 $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)',
