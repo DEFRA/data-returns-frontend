@@ -91,10 +91,9 @@ module.exports = {
         app.get('/invalid_csv_file', function (req, res) {
             log.info("GET Request : " + req.url);
 
-            // TODO JG set result property(s)
             var result = {
                 pageText        : 'There is a problem',
-                errMess         : 'All data files returned using this service must be in CSV format.',
+                message         : 'All data files returned using this service must be in CSV format.',
                 errButtonText   : 'Select another file'
             };
 
@@ -102,13 +101,11 @@ module.exports = {
 
             if (sess.checking_only)
             {
-                // TODO JG set result property(s)
                 result.errButtonAction = '/02-check-your-data/01-upload-your-data';
                 res.render('error_checking', {result: result});
             }
             else
            {
-               // TODO JG set result property(s)
                result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                res.render('error_sending', {result: result});
             }
@@ -131,28 +128,25 @@ module.exports = {
 
                     thisFile = req.files.fileUpload[file];
 
-                    // Simple validations
-
+                    // TODO Could some basic validations here before sending to backend
                     //Check to see if it's a csv file - caught on select (with js on) so redundant
-                    if (thisFile.extension !== 'csv')
-                    {
-                        res.render("file-upload/there-is-a-problem", {
-                            "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
-                            "file_name": thisFile.originalname
-                        });
-                        return;
-                    }
-
-                    // TODO Check to see if file contains at least 1 data row
+                    // TODO make case-insensitive
+                    //if (thisFile.extension !== 'csv')
+                    //{
+                    //    res.render("file-upload/there-is-a-problem", {
+                    //        "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
+                    //        "file_name": thisFile.originalname
+                    //    });
+                    //    return;
+                    //}
 
                     var formData = {
-                        userId : userId,
                         fileUpload: fs.createReadStream(thisFile.path)
                     };
 
                     // Pass on file to data exchange
                     request.post({
-                        url     : 'http://localhost:9020/file-upload',
+                        url     : 'http://localhost:9020/submit-returns/upload',
                         formData: formData
                     }, function optionalCallback(err, httpResponse, body) {
 
@@ -161,22 +155,19 @@ module.exports = {
                         if (err)
                         {
                             var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                            // TODO JG set result property(s)
                             var result = {
                                 pageText        : 'There is a problem',
-                                errMess        : errMess,
+                                message        : errMess,
                                 errButtonText  : 'Start again'
                             };
 
                             if (sess.checking_only)
                             {
-                                // TODO JG set result property(s)
                                 result.errButtonAction = '/02-check-your-data/01-upload-your-data';
                                 res.render('error_checking', {result: result});
                             }
                             else
                             {
-                                // TODO JG set result property(s)
                                 result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                                 res.render('error_sending', {result: result});
                             }
@@ -185,22 +176,18 @@ module.exports = {
                         {
                             result = JSON.parse(body);
 
-                            if (result.outcome == "SYSTEM_FAILURE")
+                            if(httpResponse.statusCode != 200)
                             {
-                                // TODO JG set result property(s)
                                 result.pageText = 'There is a problem';
-                                result.errMess = result.outcomeMessage;
                                 result.errButtonText = 'Start again';
 
                                 if (sess.checking_only)
                                 {
-                                    // TODO JG set result property(s)
                                     result.errButtonAction = '/02-check-your-data/01-upload-your-data';
                                     res.render('error_checking', {result: result});
                                 }
                                 else
                                 {
-                                    // TODO JG set result property(s)
                                     result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                                     res.render('error_sending', {result: result});
                                 }
@@ -231,13 +218,13 @@ module.exports = {
             }
         });
 
-        app.post('/api/file-upload-validate', function (req, res) {
-            log.info("POST Request : " + req.url);
+        app.get('/api/file-upload-validate', function (req, res) {
+            log.info("GET Request : " + req.url);
 
             var request = require('request');
             var sess = req.session;
 
-            var formData = {
+            var data = {
                 fileKey : sess.fileKey,
                 eaId : sess.eaId,
                 siteName : sess.siteName,
@@ -245,10 +232,10 @@ module.exports = {
             };
 
             // Pass on file to data exchange
-            request.post({
+            request.get({
                 header: 'application/x-www-form-urlencoded',
-                url     : 'http://localhost:9020/file-upload-validate',
-                form:  formData
+                url     : 'http://localhost:9020/submit-returns/validate',
+                qs:  data
             }, function optionalCallback(err, httpResponse, body) {
 
                 var sess = req.session;
@@ -256,22 +243,19 @@ module.exports = {
                 if (err)
                 {
                     var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    // TODO JG set result property(s)
                     var result = {
                         pageText        : 'There is a problem',
-                        errMess        : errMess,
+                        message        : errMess,
                         errButtonText  : 'Start again'
                     };
 
                     if (sess.checking_only)
                     {
-                        // TODO JG set result property(s)
                         result.errButtonAction = '/02-check-your-data/01-upload-your-data';
                         res.render('error_checking', {result: result});
                     }
                     else
                     {
-                        // TODO JG set result property(s)
                         result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                         res.render('error_sending', {result: result});
                     }
@@ -280,27 +264,23 @@ module.exports = {
                 {
                     result = JSON.parse(body);
 
-                    if (result.outcome == "SYSTEM_FAILURE")
+                    if(httpResponse.statusCode != 200)
                     {
-                        // TODO JG set result property(s)
                         result.pageText = 'There is a problem';
-                        result.errMess = result.outcomeMessage;
                         result.errButtonText = 'Start again';
 
                         if (sess.checking_only)
                         {
-                            // TODO JG set result property(s)
                             result.errButtonAction = '/02-check-your-data/01-upload-your-data';
                             res.render('error_checking', {result: result});
                         }
                         else
                         {
-                            // TODO JG set result property(s)
                             result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                             res.render('error_sending', {result: result});
                         }
                     }
-                    else if (result.outcome == "SUCCESS")
+                    else if (result.appStatusCode == 800)
                     {
                         if(sess.checking_only)
                             res.render('02-check-your-data/04-success', {"result": result});
@@ -325,22 +305,26 @@ module.exports = {
             var request = require('request');
             var sess = req.session;
 
+            var formData = {
+                fileKey : sess.fileKey,
+                emailcc : emailcc
+            };
+
             request.post({
-                url : 'http://localhost:9020/file-upload-send',
-                form: {fileKey: sess.fileKey, emailcc : emailcc}
+                header: 'application/x-www-form-urlencoded',
+                url : 'http://localhost:9020/submit-returns/complete',
+                formData: formData
             }, function optionalCallback(err, httpResponse, body) {
 
                 if (err)
                 {
                     var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    // TODO JG set result property(s)
                     var result = {
                         pageText        : 'There is a problem',
-                        errMess        : errMess,
+                        message        : errMess,
                         errButtonText  : 'Start again'
                     };
 
-                    // TODO JG set result property(s)
                     result.errButtonAction = '/04-send-your-data/01-upload-your-data';
                     res.render('error_sending', {result: result});
                 }
@@ -348,11 +332,9 @@ module.exports = {
                 {
                     result = JSON.parse(body);
 
-                    if (result.outcome == "SYSTEM_FAILURE")
+                    if(httpResponse.statusCode != 200)
                     {
-                        // TODO JG set result property(s)
                         result.pageText = 'There is a problem';
-                        result.errMess = result.outcomeMessage;
                         result.errButtonText = 'Start again';
                         result.errButtonAction = '/04-send-your-data/01-upload-your-data';
 
