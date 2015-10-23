@@ -146,7 +146,7 @@ module.exports = {
 
                     // Pass on file to data exchange
                     request.post({
-                        url     : 'http://localhost:9020/submit-returns/upload',
+                        url     : 'http://localhost:9020/data-exchange/upload',
                         formData: formData
                     }, function optionalCallback(err, httpResponse, body) {
 
@@ -233,8 +233,7 @@ module.exports = {
 
             // Pass on file to data exchange
             request.get({
-                header: 'application/x-www-form-urlencoded',
-                url     : 'http://localhost:9020/submit-returns/validate',
+                url     : 'http://localhost:9020/data-exchange/validate',
                 qs:  data
             }, function optionalCallback(err, httpResponse, body) {
 
@@ -311,8 +310,7 @@ module.exports = {
             };
 
             request.post({
-                header: 'application/x-www-form-urlencoded',
-                url : 'http://localhost:9020/submit-returns/complete',
+                url : 'http://localhost:9020/data-exchange/complete',
                 formData: formData
             }, function optionalCallback(err, httpResponse, body) {
 
