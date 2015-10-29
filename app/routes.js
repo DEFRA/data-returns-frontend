@@ -224,6 +224,10 @@ module.exports = {
             var request = require('request');
             var sess = req.session;
 
+            var headers = {
+                'Content-Type':     'application/x-www-form-urlencoded'
+            }
+
             var data = {
                 fileKey : sess.fileKey,
                 eaId : sess.eaId,
@@ -234,6 +238,7 @@ module.exports = {
             // Pass on file to data exchange
             request.get({
                 url     : 'http://localhost:9020/data-exchange/validate',
+                headers: headers,
                 qs:  data
             }, function optionalCallback(err, httpResponse, body) {
 
@@ -299,18 +304,23 @@ module.exports = {
         app.post('/api/file-upload-send', function (req, res) {
             log.info("POST Request : " + req.url);
 
-            var emailcc = req.param('email_cc');
+            var userEmail = req.param('user_email');
 
             var request = require('request');
             var sess = req.session;
 
+            var headers = {
+                'Content-Type':     'application/x-www-form-urlencoded'
+            }
+
             var formData = {
                 fileKey : sess.fileKey,
-                emailcc : emailcc
+                userEmail : userEmail
             };
 
             request.post({
                 url : 'http://localhost:9020/data-exchange/complete',
+                headers: headers,
                 formData: formData
             }, function optionalCallback(err, httpResponse, body) {
 
@@ -335,6 +345,11 @@ module.exports = {
                         result.pageText = 'There is a problem';
                         result.errButtonText = 'Start again';
                         result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+
+                        if(!result.message)
+                        {
+                            result.message = result.errors[0];
+                        }
 
                         res.render('error_sending', {"result": result});
                     }
