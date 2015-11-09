@@ -1,42 +1,40 @@
-var path = require('path');
-var express = require('express');
-var multer = require('multer');
-var routes = require(__dirname + '/app/routes.js');
+var fs = require('fs'),
+    path = require('path'),
+    express = require('express'),
+    multer = require('multer'),
+    routes = require(__dirname + '/app/routes.js'),
+    Logger = require('bunyan'),
+    Stream = require('stream');
 var app = express();
-var redis = require('connect-redis')(express);
-var fs = require('fs');
-var request = require('request');
-var qs = require('querystring');
-var Logger = require('bunyan'), Stream = require('stream');
-var result;
+var redis = null;  // Don't "require" it until we know we need it.
 
 // Grab our environment-specific configuration; by default we assume a development environment.
 var config = require('./app/config/config.' + (process.env.NODE_ENV || 'development'));
 
-var stream = new Stream()
-stream.writable = true
+// Setup logging.
+var stream = new Stream();
+stream.writable = true;
 
 stream.write = function(obj) {
     // pretty-printing your message
     console.log(obj.msg)
-}
+};
 
+// TODO: Understand what purpose this *really* serves, if any?
 // 'orrible but made global to move routing out the way in to routes.js
-userId = -1;
 done = false;
-
 
 log = Logger.createLogger({
     name: 'myserver',
     streams: [{
         type: "raw",
-        stream: stream,
+        stream: stream
     }],
     serializers: {
         err: Logger.stdSerializers.err,
         req: Logger.stdSerializers.req,
-        res: Logger.stdSerializers.res,
-    },
+        res: Logger.stdSerializers.res
+    }
 });
 
 
@@ -67,6 +65,7 @@ app.use(multer({
     },
     onFileUploadComplete : function (file) {
         console.log(file.originalname + ' uploaded.');
+        // TODO: Review if we need to keep the following line?
         done = true;
     }
 }));
@@ -84,6 +83,7 @@ var session_env = null;
 if (config.sessionStorage.mode === 'redis')
 {
     log.info('Session storage: using Redis');
+    redis = require('connect-redis')(express);
     session_env = express.session({store: new redis(config.sessionStorage.redis), secret: config.sessionStorage.secret});
 }
 else
@@ -93,7 +93,7 @@ else
 }
 app.use(session_env);
 
-// Middleware to serve static assets
+// Middleware to serve static assets.
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_template/assets'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
