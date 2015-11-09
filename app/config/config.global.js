@@ -1,6 +1,16 @@
 /*
  * Default configuration for Data Returns front-end.
  * Settings below should be overridden where necessary for each environment.
+ *
+ * Some settings are likely to be set via environment variables.  In these cases,
+ * the configuration files should always prefer the environment variable value
+ * over a hard-coded default.
+ *
+ * Environment variable naming conventions:
+ *    DRF_***            "Data Returns Frontend ***"
+ *    DRF_BA_***         "Data Returns Frontend Basic Authentication ***"
+ *    DRF_SS_***         "Data Returns Frontend Session Storage ***"
+ *    DRF_SS_REDIS_***   "Data Returns Frontend Session Storage (using Redis) ***"
  */
 var config = {};
 
@@ -30,7 +40,7 @@ config.sessionStorage = {
 config.sessionStorage.redis = {
     host: process.env.DRF_SS_REDIS_HOST || 'localhost',
     port: process.env.DRF_SS_REDIS_PORT || 6379,
-    db: 2
+    db:   process.env.DRF_SS_REDIS_DBINDEX || 2 // TODO: Is this a sensible default?
 };
 
 // Google Analytics configuration.
