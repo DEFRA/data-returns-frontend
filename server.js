@@ -1,58 +1,53 @@
-var path = require('path');
-var express = require('express');
-var multer = require('multer');
-var routes = require(__dirname + '/app/routes.js');
+var fs = require('fs'),
+    path = require('path'),
+    express = require('express'),
+    multer = require('multer'),
+    routes = require(__dirname + '/app/routes.js'),
+    Logger = require('bunyan'),
+    Stream = require('stream');
 var app = express();
-var redis = require('connect-redis')(express);
-var port = (process.env.PORT || 3000);
-var fs = require('fs');
-var request = require('request');
-var qs = require('querystring');
-var Logger = require('bunyan'), Stream = require('stream');
-var result;
+var redis = null;  // Don't "require" it until we know we need it.
 
-// Grab environment variables specified in Procfile or as Heroku config vars
-var username = process.env.USERNAME;
-var password = process.env.PASSWORD;
-var env = process.env.NODE_ENV || 'aws';
+// Grab our environment-specific configuration; by default we assume a development environment.
+var config = require('./app/config/config.' + (process.env.NODE_ENV || 'development'));
 
-var stream = new Stream()
-stream.writable = true
+// Setup logging.
+var stream = new Stream();
+stream.writable = true;
 
 stream.write = function(obj) {
     // pretty-printing your message
     console.log(obj.msg)
-}
+};
 
+// TODO: Understand what purpose this *really* serves, if any?
 // 'orrible but made global to move routing out the way in to routes.js
-userId = -1;
 done = false;
-
 
 log = Logger.createLogger({
     name: 'myserver',
     streams: [{
         type: "raw",
-        stream: stream,
+        stream: stream
     }],
     serializers: {
         err: Logger.stdSerializers.err,
         req: Logger.stdSerializers.req,
-        res: Logger.stdSerializers.res,
-    },
+        res: Logger.stdSerializers.res
+    }
 });
 
 
-// Authenticate against the environment-provided credentials, if running
-// the app in production (Heroku, effectively)
-if (env === 'production')
+// If configured, require the user to provide Basic Authentication details to view
+// this site (useful when the site is hosted publicly but still in development).
+if (config.requireBasicAuth)
 {
-    if (!username || !password)
+    if (!config.basicAuthUsername || !config.basicAuthPassword)
     {
         console.log('Username or password is not set, exiting.');
         process.exit(1);
     }
-    app.use(express.basicAuth(username, password));
+    app.use(express.basicAuth(config.basicAuthUsername, config.basicAuthPassword));
 }
 
 app.use(express.urlencoded());
@@ -70,6 +65,7 @@ app.use(multer({
     },
     onFileUploadComplete : function (file) {
         console.log(file.originalname + ' uploaded.');
+        // TODO: Review if we need to keep the following line?
         done = true;
     }
 }));
@@ -82,21 +78,22 @@ app.set('views', __dirname + '/app/views');
 
 app.use(express.cookieParser());
 
-// TODO use redis in aws environment
+// TODO: Decide on session storage strategy.
 var session_env = null;
-if(env === "development")
+if (config.sessionStorage.mode === 'redis')
 {
-    log.info("USING redis");
-    session_env = express.session({store: new redis({host: 'localhost',port: 6379,db: 2}),secret: '1234567890QWERTY'});
+    log.info('Session storage: using Redis');
+    redis = require('connect-redis')(express);
+    session_env = express.session({store: new redis(config.sessionStorage.redis), secret: config.sessionStorage.secret});
 }
 else
 {
-    log.info("NOT USING redis");
-    session_env = express.session({secret: '1234567890QWERTY'});
+    log.info('Session storage: not using Redis');
+    session_env = express.session({secret: config.sessionStorage.secret});
 }
 app.use(session_env);
 
-// Middleware to serve static assets
+// Middleware to serve static assets.
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_template/assets'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
@@ -112,9 +109,8 @@ app.use(function (req, res, next) {
 // routes (found in app/routes.js)
 routes.bind(app);
 
-// start the app
-
-app.listen(port);
+// Start the app.
+app.listen(config.port);
 console.log('');
-console.log('Listening on port ' + port);
+console.log('Listening on port ' + config.port.toString());
 console.log('');
