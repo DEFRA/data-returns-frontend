@@ -6,6 +6,12 @@
 
 {{$content}}
 
+<style type="text/css">
+	.permitnotfound {
+		color: red;
+	}
+</style>
+
 <main id="content" role="main">
 
 	<div class="phase-banner beta-banner">
@@ -21,8 +27,15 @@
 					<p class="lede">Are these details correct?</p>
 
 		  <div class="panel-indent file-summary">
-			  <p class="title">Permit number</p>
-			  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span> <span style="display:none" class="confirmed">&#10003;</span></p>
+			  <div id="permit_found">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span> <span style="display:none" class="confirmed">&#10003;</span></p>
+			  </div>
+			  <div id="permit_not_found" class="permitnotfound">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> (Not recognised)</p>
+			  </div>
+
 			  <p class="title">Site</p>
 			  <p class="site">
 				  <span class="address-1">{{result.siteName}}</span>
@@ -54,10 +67,30 @@
 
 <script src="/public/javascripts/jquery-1.11.1.min.js"></script>
 <script>
-	$(document).ready(function() { 
-		$(".confirmed").delay(2000).show(0);
-		$(".checking").delay(2000).hide(0);
+	$(document).ready(function() {
+		setTimeout(permitCheckComplete, 2000);
 	 });
+	function permitCheckComplete() {
+		var sessionValue = '{{result.eaId}}';
+
+		// Failed permit lookup
+		if(sessionValue == "AB1234Z1")
+		{
+//			alert('failed');
+			$("#permit_found").hide();
+			$("#permit_not_found").show();
+			$(".confirmed").hide(0);
+			$(".checking").hide(0);
+		}
+		else
+		{
+//			alert('success');
+			$("#permit_found").show();
+			$("#permit_not_found").hide();
+			$(".confirmed").show(0);
+			$(".checking").hide(0);
+		}
+	}
 </script>
 
 {{/content}}
