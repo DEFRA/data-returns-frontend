@@ -10,82 +10,18 @@ module.exports = {
         // START 01-start
         app.post('/01-start/01-start', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.redirect('01-start/02-what-would-you-like-to-do');
-        });
-
-        app.post('/01-start/02-what-would-you-like-to-do', function (req, res) {
-            var action = req.param('sub-button');
-
-            log.info("POST Request : " + req.url + " : Action : " + action);
-
-            if (action == "Check the format of my data")
-            {
-                req.session.checking_only = true;
-                res.redirect('02-check-your-data/01-upload-your-data');
-            }
-            else
-            {
-                req.session.checking_only = false;
-                res.redirect('03-sign-in-register/01-have-account');
-            }
+            res.redirect('02-send-your-data/01-upload-your-data');
         });
         // END 01-start
 
-        // START 02-check-your-data
-        app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
+
+        // START 02-send-your-data
+        app.post('/02-send-your-data/01-upload-your-data', function (req, res) {
             log.info("POST Request : " + req.url);
-            res.redirect('02-check-your-data/01-upload-your-data');
+            res.redirect('02-send-your-data/01-upload-your-data');
         });
+        // END 02-send-your-data
 
-        app.post('/02-check-your-data/04-success', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('01-start/02-what-would-you-like-to-do');
-        });
-        // END 02-check-your-data
-
-        // START 03-sign-in-register
-        app.post('/03-sign-in-register/01-have-account', function (req, res) {
-            var action = req.param('radio-inline-group');
-
-            log.info("POST Request : " + req.url + " : Action : " + action);
-
-            if (action == "Yes")
-            {
-                res.redirect('03-sign-in-register/05-sign-in');
-            }
-            else
-            {
-                res.redirect('03-sign-in-register/02-account-details');
-            }
-        });
-
-        app.post('/03-sign-in-register/02-account-details', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('03-sign-in-register/03-activate-account');
-        });
-
-        app.post('/03-sign-in-register/04-activate-account', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.redirect('03-sign-in-register/04-account-activated');
-        });
-
-        app.post('/03-sign-in-register/04-account-activated', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-
-        app.post('/03-sign-in-register/05-sign-in', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-        // END 03-sign-in-register
-
-        // START 04-send-your-data
-        app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-        // END 04-send-your-data
 
         // START Misc
         app.get('/invalid_csv_file', function (req, res) {
@@ -106,7 +42,7 @@ module.exports = {
             }
             else
            {
-               result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+               result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                res.render('error_sending', {result: result});
             }
         });
@@ -168,7 +104,7 @@ module.exports = {
                             }
                             else
                             {
-                                result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                                result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                                 res.render('error_sending', {result: result});
                             }
                         }
@@ -188,7 +124,7 @@ module.exports = {
                                 }
                                 else
                                 {
-                                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                                    result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                                     res.render('error_sending', {result: result});
                                 }
                             }
@@ -202,7 +138,7 @@ module.exports = {
                                 if(sess.checking_only)
                                     res.render('02-check-your-data/03-verify-your-file', {result: result});
                                 else
-                                    res.render('04-send-your-data/03-verify-your-file', {result: result});
+                                    res.render('02-send-your-data/03-verify-your-file', {result: result});
                             }
                         }
                     });
@@ -260,7 +196,7 @@ module.exports = {
                     }
                     else
                     {
-                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                        result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                         res.render('error_sending', {result: result});
                     }
                 }
@@ -280,7 +216,7 @@ module.exports = {
                         }
                         else
                         {
-                            result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                            result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                             res.render('error_sending', {result: result});
                         }
                     }
@@ -289,13 +225,13 @@ module.exports = {
                         if(sess.checking_only)
                             res.render('02-check-your-data/04-success', {"result": result});
                         else
-                            res.render('04-send-your-data/04-success', {"result": result});
+                            res.render('02-send-your-data/04-success', {"result": result});
                     } else
                     {
                         if(sess.checking_only)
                             res.render('02-check-your-data/05-failure', {"result": result});
                         else
-                            res.render('04-send-your-data/05-failure', {result: result});
+                            res.render('02-send-your-data/05-failure', {result: result});
                     }
                 }
             });
@@ -333,7 +269,7 @@ module.exports = {
                         errButtonText  : 'Start again'
                     };
 
-                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                    result.errButtonAction = '/02-send-your-data/01-upload-your-data';
                     res.render('error_sending', {result: result});
                 }
                 else
@@ -344,7 +280,7 @@ module.exports = {
                     {
                         result.pageText = 'There is a problem';
                         result.errButtonText = 'Start again';
-                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
+                        result.errButtonAction = '/02-send-your-data/01-upload-your-data';
 
                         if(!result.message)
                         {
@@ -355,7 +291,7 @@ module.exports = {
                     }
                     else
                     {
-                        res.render('04-send-your-data/07-done', {"result": result});
+                        res.render('02-send-your-data/07-done', {"result": result});
                     }
                 }
             });

@@ -8,23 +8,21 @@
 
 <main id="content" role="main">
 
-	<div class="phase-banner">
-	  <p>
-	    <strong class="phase-tag">ALPHA</strong>
-	    <span>This is a new service – your <a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
+	<div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
 	
   <form method="get" class="form" action="/api/file-upload-validate">
 		<h1 class="heading-xlarge">Confirm the file before you send it to us</h1>
 		<div class="text">
-			<p class="lede">The data file you’re about to send is associated with the following permit number and site.</p>
-			
-			<p class="lede">Are these details correct?</p>
+					<p class="lede">Are these details correct?</p>
 
-		  <div class="panel-indent choose-organisation">
+		  <div class="panel-indent file-summary">
 			  <p class="title">Permit number</p>
-			  <p>{{result.eaId}}</p>
+			  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span> <span style="display:none" class="confirmed">&#10003;</span></p>
 			  <p class="title">Site</p>
 			  <p class="site">
 				  <span class="address-1">{{result.siteName}}</span>
@@ -32,7 +30,7 @@
 			  <p class="title">Return type</p>
 			  <p>{{result.returnType}}</p>
 		  </div>
-
+			
 		  <details class="help-text-reg">
 			  <summary><span class="summary">These details are wrong</span></summary>
 			  <div class="panel-indent">
@@ -43,12 +41,24 @@
 		  </details>
 			
 			<!-- Primary button -->
-			<div class="form-group">
+			<div class="form-group confirmed" style="display:none">
 				<input type="submit" class="button" value="Continue">
+			</div>
+			<div class="form-group checking">
+				<input type="submit" class="button" value="Please wait" disabled="disabled">
 			</div>
 		</div><!-- /text -->
 	</form>
 </main> 
+
+
+<script src="/public/javascripts/jquery-1.11.1.min.js"></script>
+<script>
+	$(document).ready(function() { 
+		$(".confirmed").delay(2000).show(0);
+		$(".checking").delay(2000).hide(0);
+	 });
+</script>
 
 {{/content}}
 
