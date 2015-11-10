@@ -45,7 +45,7 @@ config.sessionStorage.redis = {
 
 // Google Analytics configuration.
 config.useGoogleAnalytics = false;
-config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID;
+config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
 // Publish the configuration.
 module.exports = config;

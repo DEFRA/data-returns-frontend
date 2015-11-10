@@ -100,9 +100,17 @@ app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_too
 
 app.use(express.favicon(path.join(__dirname, 'govuk_modules', 'govuk_template', 'assets', 'images', 'favicon.ico')));
 
-// send assetPath to all views
+// Setup information we want to pass to all views.
 app.use(function (req, res, next) {
-    res.locals({'assetPath': '/public/'});
+    res.locals({
+        'assetPath': '/public/',
+        // Copy any required fields from the config variable, so that we don't expose this directly
+        // to the views (it contains data we don't want to accidentally expose).
+        analytics: {
+            useGoogleAnalytics: config.useGoogleAnalytics,
+            googleTagManagerId: config.googleTagManagerId
+        }
+    });
     next();
 });
 
