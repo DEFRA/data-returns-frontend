@@ -45,6 +45,9 @@
 	details {
 		margin-top:5px;
 	}
+	strong {
+		font-weight:bold;
+	}
 }
 
 
@@ -72,6 +75,17 @@
 .button-get-started {
   background-image: url("/public/images/icons/icon-pointer.png");
   }
+
+.helpful-documents {
+	br {
+		clear: both;
+		display: block;
+		overflow: hidden;
+		visibility: hidden;
+		width: 0;
+		height: 0;
+	}
+}
 
 .attachment {
 	.assistive-technology {
@@ -109,9 +123,18 @@
 }
 
 
-  
-.file-summary {
-	margin-bottom:30px;
+.permit-number {
+	margin-bottom:0;
+	.permitnotfound {
+		color: $red;
+	}
+	.checking {
+		.loading {
+			img {
+				vertical-align: middle;
+			}
+		}
+	}
 	p {
 		.name	{
 			font-weight: bold;
@@ -121,14 +144,26 @@
 		font-weight:600;
 		margin-bottom:0;
 	}
-	.permit-number {
-		.checking {
-			.loading {
-				img {
-					vertical-align: middle;
-				}
-			}
+	.not-recognised {
+		color:$text-colour;
+	}
+}
+
+.panel-indent.error {
+	border-left: 4px solid $red;
+}
+ 
+.file-summary {
+	margin-top:0;
+	margin-bottom:30px;
+	p {
+		.name	{
+			font-weight: bold;
 		}
+	}
+	.title {
+		font-weight:600;
+		margin-bottom:0;
 	}
 }
 

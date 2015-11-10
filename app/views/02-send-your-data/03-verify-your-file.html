@@ -6,12 +6,6 @@
 
 {{$content}}
 
-<style type="text/css">
-	.permitnotfound {
-		color: red;
-	}
-</style>
-
 <main id="content" role="main">
 
 	<div class="phase-banner beta-banner">
@@ -20,22 +14,34 @@
       <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
     </p>
   </div>
+
+
 	
   <form method="get" class="form" action="/api/file-upload-validate">
 		<h1 class="heading-xlarge">Confirm the file before you send it to us</h1>
 		<div class="text">
-					<p class="lede">Are these details correct?</p>
+	
+			<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+				<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
+					Your permit number is not recognised
+				</h1>
+				<p>Check the permit number and update the CSV</p>
+			</div>
+		
+			<p class="lede">Are these details correct?</p>
+
+		  <div class="panel-indent permit-number">
+			  <div id="permit_found" class="permit">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span></p>
+			  </div>
+			  <div id="permit_not_found" class="permitnotfound permit" style="display: none;">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="not-recognised">(Not recognised)</span></p>
+			  </div>
+			</div>
 
 		  <div class="panel-indent file-summary">
-			  <div id="permit_found">
-				  <p class="title"><span>Permit number</span></p>
-				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span> <span style="display:none" class="confirmed">&#10003;</span></p>
-			  </div>
-			  <div id="permit_not_found" class="permitnotfound">
-				  <p class="title"><span>Permit number</span></p>
-				  <p class="permit-number"><span class="result">{{result.eaId}}</span> (Not recognised)</p>
-			  </div>
-
 			  <p class="title">Site</p>
 			  <p class="site">
 				  <span class="address-1">{{result.siteName}}</span>
@@ -62,6 +68,9 @@
 			</div>
 		</div><!-- /text -->
 	</form>
+		<div class="form-group permit-not-found" style="display:none">
+			<input type="submit" class="button" value="Start again" onclick="location.href='/02-send-your-data/01-upload-your-data';">
+		</div>
 </main> 
 
 
@@ -81,6 +90,8 @@
 			$("#permit_not_found").show();
 			$(".confirmed").hide(0);
 			$(".checking").hide(0);
+			$(".permit-not-found").show(0);
+			$("div.permit-number").addClass("error");
 		}
 		else
 		{
