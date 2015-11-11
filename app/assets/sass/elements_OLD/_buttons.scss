@@ -19,7 +19,7 @@
 }
 
 .button:focus {
-  outline: 3px solid $focus-colour;
+  outline: 3px solid $yellow;
 }
 
 // Disabled buttons
@@ -32,7 +32,6 @@
 }
 
 // Start now buttons
-.button-start,
 .button-get-started {
   @include bold-24;
   background-image: file-url("icons/icon-pointer.png");
