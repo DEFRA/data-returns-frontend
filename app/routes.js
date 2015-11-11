@@ -136,9 +136,9 @@ module.exports = {
                                 sess.returnType = result.returnType;
 
                                 if(sess.checking_only)
-                                    res.render('02-check-your-data/03-verify-your-file', {result: result});
+                                    res.render('02-check-your-data/02-verify-your-file', {result: result});
                                 else
-                                    res.render('02-send-your-data/03-verify-your-file', {result: result});
+                                    res.render('02-send-your-data/02-verify-your-file', {result: result});
                             }
                         }
                     });
@@ -223,15 +223,15 @@ module.exports = {
                     else if (result.appStatusCode == 800)
                     {
                         if(sess.checking_only)
-                            res.render('02-check-your-data/04-success', {"result": result});
+                            res.render('02-check-your-data/03-email', {"result": result});
                         else
-                            res.render('02-send-your-data/04-success', {"result": result});
+                            res.render('02-send-your-data/03-email', {"result": result});
                     } else
                     {
                         if(sess.checking_only)
-                            res.render('02-check-your-data/05-failure', {"result": result});
+                            res.render('02-check-your-data/06-failure', {"result": result});
                         else
-                            res.render('02-send-your-data/05-failure', {result: result});
+                            res.render('02-send-your-data/06-failure', {result: result});
                     }
                 }
             });
