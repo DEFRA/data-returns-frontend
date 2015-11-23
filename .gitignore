@@ -7,3 +7,4 @@ uploads
 govuk_modules
 public
 .idea
+/nbproject/**
