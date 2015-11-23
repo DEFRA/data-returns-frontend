@@ -1,27 +1,128 @@
-module.exports = {
-    bind: function (app) {
+const Path = require('path');
 
-        // Default
-        app.get('/', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.redirect('index');
-        });
+const redirectToIndexHandler = function(request, reply) {
+  return reply.redirect('index');
+};
 
-        // START 01-start
-        app.post('/01-start/01-start', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('02-send-your-data/01-upload-your-data');
-        });
-        // END 01-start
+const basicTemplateHandler = function(request, reply) {
+  return reply.view(request.path.substring(1));
+};
 
+module.exports = [
+  // Static assets.
+  {
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+      directory: {
+        path: [
+          'public/',
+          'govuk_modules/govuk_template/assets',
+          'govuk_modules/govuk_frontend_toolkit'
+        ]
+      }
+    }
+  },
+  
+  // Redirect for site root.
+  {
+    method: 'GET',
+    path: '/',
+    handler: redirectToIndexHandler
+  },
+  
+  // "API".
+  // TODO: Hook up these routes to proper handlers that implement application
+  // logic.
+  {
+    method: 'POST',
+    path: '/api/file-upload',
+    handler: function (request, reply) {
+      reply.redirect('/02-send-your-data/02-verify-your-file');
+    }
+  },
+  {
+    method: 'GET',
+    path: '/api/file-upload-validate',
+    handler: function (request, reply) {
+      reply.redirect('/02-send-your-data/03-email');
+    }
+  },
+  
+  // POST handlers.
+  // TODO: Hook up these routes to proper handlers that implement application
+  // logic.
+  {
+    method: 'POST',
+    path: '/01-start/01-start',
+    handler: function (request, reply) {
+      reply.redirect('/02-send-your-data/01-upload-your-data');
+    }
+  },
+  
+  // GET handlers.
+  // TODO: Hook up these routes to proper handlers that implement application
+  // logic.
+  {
+    method: 'GET',
+    path: '/index',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/01-start/01-start',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/01-upload-your-data',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/02-verify-your-file',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/03-email',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/04-authenticate',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/05-success',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/06-failure',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/07-failure',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/08-done',
+    handler: basicTemplateHandler
+  },
+  {
+    method: 'GET',
+    path: '/05-help/01-help',
+    handler: basicTemplateHandler
+  },
+];
 
-        // START 02-send-your-data
-        app.post('/02-send-your-data/01-upload-your-data', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('02-send-your-data/01-upload-your-data');
-        });
-        // END 02-send-your-data
-
+/*
+    // TODO: All of the old routes which contained any logic are found below.
+    // This code needs to be migrated to new handlers.
 
         // START Misc
         app.get('/invalid_csv_file', function (req, res) {
@@ -318,3 +419,4 @@ module.exports = {
         });
     }
 };
+*/
