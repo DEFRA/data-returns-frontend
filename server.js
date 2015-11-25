@@ -17,12 +17,8 @@ stream.writable = true;
 
 stream.write = function(obj) {
     // pretty-printing your message
-    console.log(obj.msg)
+    console.log(obj.msg);
 };
-
-// TODO: Understand what purpose this *really* serves, if any?
-// 'orrible but made global to move routing out the way in to routes.js
-done = false;
 
 log = Logger.createLogger({
     name: 'myserver',
@@ -60,13 +56,15 @@ app.use(multer({
     rename               : function (fieldname, filename) {
         return filename;
     },
+    
     onFileUploadStart    : function (file, req, res) {
         console.log('upload of ' + file.originalname + ' is starting ...');
+        file.uploadComplete = false;
     },
-    onFileUploadComplete : function (file) {
+    
+    onFileUploadComplete: function (file, req, res) {
         console.log(file.originalname + ' uploaded.');
-        // TODO: Review if we need to keep the following line?
-        done = true;
+        file.uploadComplete = true;
     }
 }));
 
