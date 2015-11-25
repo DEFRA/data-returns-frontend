@@ -8,14 +8,14 @@
 
 <main id="content" role="main">
 
-	<div class="phase-banner">
-	  <p>
-	    <strong class="phase-tag">ALPHA</strong>
-	    <span>This is a new service – your <a href="#" onclick="alert('Not yet implemented!');return false;">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
-  <form method="post" class="form" action="/01-start/01-start">
-		<h1 class="heading-xlarge">Deliver your data files online</h1>
+	<div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+  <form method="post" class="form">
+		<h1 class="heading-xlarge">Send your data files online</h1>
 		
 		<div class="text">
 			<div class="form-group">
@@ -34,6 +34,7 @@
 				<input type="submit" class="button button-get-started" name="sub-button" value="Start now">
 			</div>
 			
+			
 			<div class="before-you-start">
 				<h2 class="heading-large">Before you start</h2>
 				
@@ -50,7 +51,6 @@
 						<details class="help-formatting">
 						  <summary><span class="summary">What does this mean?</span></summary>
 						  <div class="panel-indent">
-						    <!-- <p>This text explains more about the requisite labelling conventions.</p> -->
 						    <p>Download a sample CSV template to see how to label your columns and rows.</p>
 						    <section class="attachment embedded" id="attachment">
 						    	<div class="attachment-thumb">
@@ -71,12 +71,67 @@
 				
 			<p>You’ll also need:</p>
 			<ul class="list-bullet">
-				<li>an email address and password to create or sign in to your account</li>
 				<li>your permit number</li>
+				<li>an email address to receive a receipt</li>
 			</ul>
+		</div>
+			
+			
+			<!--
+			<div class="before-you-start">
+				<h2 class="heading-large">Before you start</h2>
+				
+				<p>You'll need</p>
+				<ul class="list-bullet">
+					<li>A CSV file containing your data
+						<details class="help-csv">
+						  <summary><span class="summary">What is a CSV file?</span></summary>
+						  <div class="panel-indent">
+						    <p>CSV (comma separated values) format is widely used to move data between otherwise incompatible applications. In an Excel spreadsheet, for example, you can use ’Save as’ to create a CSV version of your file.</p>
+						  </div>
+						</details>
+					</li>
+					<li>An email address</li>
+					</ul>
+					
+			    <p>Your file should be formatted according to our data rules.</p>
+			    
+			    <img class="img-responsive" alt="" src="/public/images/sample-csv.png">
+			    
+			    <div class="helpful-documents">
+			    
+				    <h2 class="heading-medium">Helpful documents</h2>
+				    
+				    <section class="attachment embedded" id="attachment">
+				    	<div class="attachment-thumb">
+				    		<a aria-hidden="true" class="thumbnail" href="/public/resources/sample.csv"><img alt="" src="/public/images/pub-cover-spreadsheet.png"></a>
+				    	</div>
+				    	<div class="attachment-details">
+				    		<h2 class="title"><a aria-describedby="attachment" href="/public/resources/sample.csv">Data rules for how to format your data return</a></h2>
+				    		<p class="metadata">
+				    				<span class="type"><abbr title="Comma Separated File">PDF</abbr></span>, <span class="file-size">7.5KB</span>
+				    		</p>
+				    	</div>
+				    </section>
+				    
+				    <br>
+				    
+				    <section class="attachment embedded" id="attachment">
+				    	<div class="attachment-thumb">
+				    		<a aria-hidden="true" class="thumbnail" href="/public/resources/sample.csv"><img alt="" src="/public/images/pub-cover-spreadsheet.png"></a>
+				    	</div>
+				    	<div class="attachment-details">
+				    		<h2 class="title"><a aria-describedby="attachment" href="/public/resources/sample.csv">Data returns file structure template</a></h2>
+				    		<p class="metadata">
+				    				<span class="type"><abbr title="Comma Separated File">CSV</abbr></span>, <span class="file-size">0.5KB</span>
+				    		</p>
+				    	</div>
+				    </section>
+				  </div> 
+				-->
+			</div>
 		</div><!-- /text -->
-	</form>
-	
+	</form> 
 </main> 
 
 {{/content}}

@@ -1,0 +1,109 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+
+
+	
+  <form method="get" class="form" action="/api/file-upload-validate">
+		<h1 class="heading-xlarge">Confirm the file before you send it to us</h1>
+		<div class="text">
+	
+			<div class="error-summary permit-not-found" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="display: none;">
+				<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
+					Your permit number is not recognised
+				</h1>
+				<p>Check the permit number and update the CSV</p>
+			</div>
+		
+			<p class="lede">Are these details correct?</p>
+
+		  <div class="panel-indent permit-number">
+			  <div id="permit_found" class="permit">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span></p>
+			  </div>
+			  <div id="permit_not_found" class="permitnotfound permit" style="display: none;">
+				  <p class="title"><span>Permit number</span></p>
+				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="not-recognised">(Not recognised)</span></p>
+			  </div>
+			</div>
+
+		  <div class="panel-indent file-summary">
+			  <p class="title">Site</p>
+			  <p class="site">
+				  <span class="address-1">{{result.siteName}}</span>
+			  </p>
+			  <p class="title">Return type</p>
+			  <p>{{result.returnType}}</p>
+		  </div>
+			
+		  <details class="help-text-reg">
+			  <summary><span class="summary">These details are wrong</span></summary>
+			  <div class="panel-indent">
+				  <p>If any of the details above are wrong, please <a href="/02-send-your-data/01-upload-your-data">start again.</a>
+					  <!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
+				  </p>
+			  </div>
+		  </details>
+			
+			<!-- Primary button -->
+			<div class="form-group confirmed" style="display:none">
+				<input type="submit" class="button" value="Continue">
+			</div>
+			<div class="form-group checking">
+				<input type="submit" class="button" value="Please wait" disabled="disabled">
+			</div>
+		</div><!-- /text -->
+	</form>
+		<div class="form-group permit-not-found" style="display:none">
+			<input type="submit" class="button" value="Start again" onclick="location.href='/02-send-your-data/01-upload-your-data';">
+		</div>
+</main> 
+
+
+<script src="/public/javascripts/jquery-1.11.1.min.js"></script>
+<script>
+	$(document).ready(function() {
+		setTimeout(permitCheckComplete, 2000);
+	 });
+	function permitCheckComplete() {
+		var sessionValue = '{{result.eaId}}';
+
+		// Failed permit lookup
+		if(sessionValue == "AB1234Z1")
+		{
+//			alert('failed');
+			$("#permit_found").hide();
+			$("#permit_not_found").show();
+			$(".confirmed").hide(0);
+			$(".checking").hide(0);
+			$(".permit-not-found").show(0);
+			$("div.permit-number").addClass("error");
+		}
+		else
+		{
+//			alert('success');
+			$("#permit_found").show();
+			$("#permit_not_found").hide();
+			$(".confirmed").show(0);
+			$(".checking").hide(0);
+		}
+	}
+</script>
+
+{{/content}}
+
+{{/layout}}
