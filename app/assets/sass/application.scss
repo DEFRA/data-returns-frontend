@@ -11,12 +11,14 @@
 
 // If you need a phase banner, put this inside the main content area
 // See elements _layout.scss line 22.
-.alpha-banner  {
-  @include phase-banner(alpha); // Change this to (beta) for a beta banner
+
+.beta-banner  {
+  @include phase-banner(beta); // Change this to (beta) for a beta banner
 }
-.alpha-tag {
-  @include phase-tag(alpha); // Change this to (beta) for a beta tag
+.beta-tag {
+  @include phase-tag(beta); // Change this to (beta) for a beta tag
 }
+
 
 // If you need to create a page as part of your journey, but without GOV.UK branding
 // See localhost:3000/examples/unbranded/
@@ -42,6 +44,9 @@
 	}
 	details {
 		margin-top:5px;
+	}
+	strong {
+		font-weight:bold;
 	}
 }
 
@@ -70,6 +75,17 @@
 .button-get-started {
   background-image: url("/public/images/icons/icon-pointer.png");
   }
+
+.helpful-documents {
+	br {
+		clear: both;
+		display: block;
+		overflow: hidden;
+		visibility: hidden;
+		width: 0;
+		height: 0;
+	}
+}
 
 .attachment {
 	.assistive-technology {
@@ -106,14 +122,46 @@
 	}
 }
 
+.img-responsive {
+	min-width:100%;
+	width: 100%;
+	    height: auto;
+}
 
-  
-.choose-organisation {
+.permit-number {
+	margin-bottom:0;
+	.permitnotfound {
+		color: $red;
+	}
+	.checking {
+		.loading {
+			img {
+				vertical-align: middle;
+			}
+		}
+	}
+	p {
+		.name	{
+			font-weight: bold;
+		}
+	}
+	.title {
+		font-weight:600;
+		margin-bottom:0;
+	}
+	.not-recognised {
+		color:$text-colour;
+	}
+}
+
+.panel-indent.error {
+	border-left: 4px solid $red;
+}
+ 
+.file-summary {
+	margin-top:0;
 	margin-bottom:30px;
 	p {
-		span {
-			display:block;
-		}
 		.name	{
 			font-weight: bold;
 		}
@@ -123,3 +171,11 @@
 		margin-bottom:0;
 	}
 }
+
+input.validation-code {
+	width:100px;
+}
+
+
+
+

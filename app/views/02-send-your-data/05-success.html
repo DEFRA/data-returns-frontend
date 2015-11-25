@@ -1,0 +1,46 @@
+{{<layout}}
+
+{{$pageTitle}}
+	GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+
+  <form method="get" class="form" action="/02-send-your-data/08-done">
+  	<h1 class="heading-xlarge">File ready to be sent</h1>
+  	<div class="text">
+      <p class="lede">Your file has been checked and is ready to be sent.</p>
+				<div class="text panel-indent">
+					<p>success.csv</p>
+				</div>
+				
+				<p>We’ll confirm we’ve received it using the email address you’ve provided.</p>
+	
+				<p class="warning_message_image warning-space warning-weight">
+					<img align="left" alt="Important message" src="/public/images/icon-important.png" class="icon-important">
+					By sending this data file, you confirm that the information you've provided is correct and complete.
+				</p>
+			
+				<div class="form-group">
+					<a id="nextHref">
+						<input type="submit" id="nextBtn" class="button" value="Send this file">
+					</a>
+				</div>
+				
+				<p>Go back and <a href="/02-send-your-data/01-upload-your-data">send another file</a></p>
+			</div><!-- /text -->
+		</form>
+</main> 
+
+{{/content}}
+
+{{/layout}}
