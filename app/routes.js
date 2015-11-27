@@ -19,7 +19,8 @@ module.exports = [
           'public/',
           'govuk_modules/govuk_template/assets',
           'govuk_modules/govuk_frontend_toolkit'
-        ]
+        ],
+        etagMethod: 'hash' // Allows assets to be cached by the client.
       }
     }
   },
