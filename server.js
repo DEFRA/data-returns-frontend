@@ -40,10 +40,6 @@ server.register(
   }
 );
 
-// TODO: Understand what purpose this *really* serves, if any?
-// 'orrible but made global to move routing out the way in to routes.js
-done = false;
-
 // If configured, require the user to provide Basic Authentication details to view
 // this site (useful when the site is hosted publicly but still in development).
 if (config.requireBasicAuth)
@@ -92,20 +88,22 @@ server.register({
 //Configure multer
 /*
  app.use(multer({
- dest                 : './uploads/uploaded/',
- inMemory             : false,
- putSingleFilesInArray: true,
- rename               : function (fieldname, filename) {
- return filename;
- },
- onFileUploadStart    : function (file, req, res) {
- console.log('upload of ' + file.originalname + ' is starting ...');
- },
- onFileUploadComplete : function (file) {
- console.log(file.originalname + ' uploaded.');
- // TODO: Review if we need to keep the following line?
- done = true;
- }
+   dest                 : './uploads/uploaded/',
+   inMemory             : false,
+   putSingleFilesInArray: true,
+   rename               : function (fieldname, filename) {
+     return filename;
+   },
+    
+   onFileUploadStart    : function (file, req, res) {
+   console.log('upload of ' + file.originalname + ' is starting ...');
+     file.uploadComplete = false;
+   },
+    
+    onFileUploadComplete: function (file, req, res) {
+      console.log(file.originalname + ' uploaded.');
+      file.uploadComplete = true;
+   }
  }));*/
 
 // Setup serving of static assets.
