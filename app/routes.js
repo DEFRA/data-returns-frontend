@@ -1,272 +1,287 @@
 const Path = require('path');
+const Joi = require('joi');
+const Utils = require('./lib/utils.js');
+const CsvValidator = require('./lib/csv-validator.js');
+const ApiHandler = require('./lib/api-handler.js');
 
-/* global log */
-var callbackHandler = require(__dirname + "/lib/api-callback-handler.js");
-var apiRoutes = require(__dirname + "/lib/api-routes.js");
-var errorConfig = require(__dirname + "/lib/error-messages.js");
-var apiHandler = require(__dirname + "/lib/api-handler.js");
-
-const redirectToIndexHandler = function(request, reply) {
-  return reply.redirect('index');
+const redirectToIndexHandler = function (request, reply) {
+    return reply.redirect('/index');
 };
 
-const basicTemplateHandler = function(request, reply) {
-  return reply.view(request.path.substring(1));
+const basicTemplateHandler = function (request, reply) {
+    return reply.view(request.path.substring(1));
 };
 
+// TODO: Split handlers into page-specific files (for easier management)?
+// TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
+// TODO: Think about more / better logging.
+// TODO: Move session-management code into a helper.
 module.exports = [
-  // Static assets.
-  {
-    method: 'GET',
-    path: '/public/{param*}',
-    handler: {
-      directory: {
-        path: [
-          'public/',
-          'govuk_modules/govuk_template/assets',
-          'govuk_modules/govuk_frontend_toolkit'
-        ],
-        etagMethod: 'hash' // Allows assets to be cached by the client.
-      }
+    // Static assets.
+    {
+        method: 'GET',
+        path: '/public/{param*}',
+        handler: {
+            directory: {
+                path: [
+                    'public/',
+                    'govuk_modules/govuk_template/assets',
+                    'govuk_modules/govuk_frontend_toolkit'
+                ],
+                etagMethod: 'hash' // Allows assets to be cached by the client.
+            }
+        }
+    },
+
+    // TODO: Make redirection environment-specific, and rename the index to "development" or similar.
+    // Redirect for site root.
+    {
+        method: 'GET',
+        path: '/',
+        handler: redirectToIndexHandler
+    },
+
+    // Index page (visible in development only).
+    // TODO: Rename
+    {
+        method: 'GET',
+        path: '/index',
+        handler: basicTemplateHandler
+    },
+
+    // Start page.
+    {
+        method: 'GET',
+        path: '/01-start/01-start',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/01-start/01-start',
+        handler: function (request, reply) {
+            request.session.reset();
+            reply.redirect('/02-send-your-data/01-upload-your-data');
+        }
+    },
+
+    // 01-Upload-Your-Data.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/01-upload-your-data',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/01-upload-your-data',
+        config: {
+            payload: {
+                maxBytes: 1 * Math.pow(2, 20),  // 1 megabyte
+                timeout: 20 * 1000,         // 20 seconds
+                output: 'file',
+                parse: true
+            }
+        },
+        handler: function (request, reply) {
+            // TODO: Clean-up files once transferred to API tier.
+            request.log(['info', 'file-upload'], 'Processing uploaded file...');
+
+            var contentType = request.payload.fileUpload.headers['content-type'] || null;
+            var sourceName = request.payload.fileUpload.filename;
+            var oldLocalName = request.payload.fileUpload.path;
+            var newLocalName = oldLocalName.concat(Path.extname(sourceName));
+
+            Utils.renameFile(oldLocalName, newLocalName)
+                .then(function () {
+                    return CsvValidator.validateFile(newLocalName, contentType);
+                })
+                .then(function () {
+                    return ApiHandler.uploadFileToService(newLocalName);
+                })
+                .then(function (apiResponse) {
+                    // TODO: Review whether we need a front-end database.
+                    request.session.set('returnMetaData', {
+                        fileName: sourceName,
+                        fileKey: apiResponse.fileKey,
+                        eaId: apiResponse.eaId,
+                        returnType: apiResponse.returnType,
+                        siteName: apiResponse.siteName
+                    });
+                    reply.redirect('/02-send-your-data/02-verify-your-file');
+                }).catch(function (errorData) {
+                    request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
+                    request.session.clear('returnMetaData');
+                    if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
+                        reply.view('02-send-your-data/01-upload-your-data', {
+                            uploadError: true,
+                            errorMessage: errorData.message
+                        });
+                    } else {
+                        request.session.flash('errorMessage', errorData.message);
+                        reply.redirect('/02-send-your-data/07-failure');
+                    }
+                });
+
+        }
+    },
+
+    // 02-Verify-Your-File.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/02-verify-your-file',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/02-verify-your-file', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/02-verify-your-file',
+        handler: function (request, reply) {
+            reply.redirect('/02-send-your-data/06-failure');
+        }
+    },
+
+    // 06-Failure (file content validation).
+    // TODO: Rename.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/06-failure',
+        handler: function(request, reply) {
+            ApiHandler.validateFileContents(request.session.get('returnMetaData'))
+                .then(function () {
+                    reply.redirect('/02-send-your-data/03-email');
+                })
+                .catch(function (errorData) {
+                    request.log(['error', 'file-validate'], Utils.getBestLogMessageFromError(errorData));
+                    if ((errorData !== null) && ('isUserError' in errorData) && (errorData.isUserError)) {
+                        reply.view('02-send-your-data/06-failure', {
+                            result: {
+                                errors: errorData.apiErrors
+                            }
+                        });
+                    } else {
+                        request.session.flash('errorMessage', errorData.message);
+                        reply.redirect('/02-send-your-data/07-failure');
+                    }
+                });
+        }
+    },
+
+    // 03-Email.
+    // TODO: Implement email sending.
+    // TODO: Proper PIN generation.
+    // TODO: Skip this page if user has already authenticated.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/03-email',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/03-email', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/03-email',
+        handler: function (request, reply) {
+            var validationResult = Joi.string().email().required().validate(request.payload['user_email']);
+            if (validationResult.error !== null) {
+                reply.view('02-send-your-data/03-email', {
+                    returnMetaData: request.session.get('returnMetaData'),
+                    invalidEmailAddress: true
+                });
+            } else {
+                request.session.set('user', {
+                    authenticated: false,
+                    email: request.payload['user_email'],
+                    pin: '1234'
+                });
+                reply.redirect('/02-send-your-data/04-authenticate');
+            }
+        }
+    },
+
+    // 04-Authenticate.
+    // TODO: Move PIN validation to a helper.
+    // TODO: Implement "maximum number of tries" logic.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/04-authenticate',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/04-authenticate',
+        handler: function(request, reply) {
+            var userData = request.session.get('user');
+            if (request.payload['validation_code'].toString().trim() === userData.pin) {
+                userData.authenticated = true;
+                userData.pin = Number.NaN;
+                request.session.set('user', userData);
+                reply.redirect('/02-send-your-data/05-success');
+            } else {
+                reply.view('02-send-your-data/04-authenticate', {
+                    invalidPin: true
+                });
+            }
+        }
+    },
+
+    // 05-Success.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/05-success',
+        handler: function(request, reply) {
+            reply.view('02-send-your-data/05-success', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/05-success',
+        handler: function (request, reply) {
+            var returnMetaData = request.session.get('returnMetaData');
+            var userData = request.session.get('user');
+            ApiHandler.confirmFileSubmission(returnMetaData.fileKey, userData.email)
+                .then(function () {
+                    reply.redirect('/02-send-your-data/08-done');
+                })
+                .catch(function (errorData) {
+                    request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
+                    request.session.flash('errorMessage', errorData.message);
+                    reply.redirect('/02-send-your-data/07-failure');
+                });
+        }
+    },
+
+    // 07-Failure (unrecoverable).
+    {
+        method: 'GET',
+        path: '/02-send-your-data/07-failure',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/07-failure', {
+                errorMessage: request.session.get('errorMessage')
+            });
+        }
+    },
+
+    // 08-Done.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/08-done',
+        handler: function(request, reply) {
+            reply.view('02-send-your-data/08-done', {
+                userEmail: request.session.get('user').email
+            });
+        }
+    },
+
+    // Help pages.
+    {
+        method: 'GET',
+        path: '/05-help/01-help',
+        handler: basicTemplateHandler
     }
-  },
-  
-  // Redirect for site root.
-  {
-    method: 'GET',
-    path: '/',
-    handler: redirectToIndexHandler
-  },
-  
-  // "API".
-  // TODO: Hook up these routes to proper handlers that implement application
-  // logic.
-  {
-    method: 'POST',
-    path: '/api/file-upload',
-    handler: function (request, reply) {
-      reply.redirect('/02-send-your-data/02-verify-your-file');
-    }
-  },
-  {
-    method: 'GET',
-    path: '/api/file-upload-validate',
-    handler: function (request, reply) {
-      reply.redirect('/02-send-your-data/03-email');
-    }
-  },
-  
-  // POST handlers.
-  // TODO: Hook up these routes to proper handlers that implement application
-  // logic.
-  {
-    method: 'POST',
-    path: '/01-start/01-start',
-    handler: function (request, reply) {
-      reply.redirect('/02-send-your-data/01-upload-your-data');
-    }
-  },
-  
-  // GET handlers.
-  // TODO: Hook up these routes to proper handlers that implement application
-  // logic.
-  {
-    method: 'GET',
-    path: '/index',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/01-start/01-start',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/01-upload-your-data',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/02-verify-your-file',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/03-email',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/04-authenticate',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/05-success',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/06-failure',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/07-failure',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/02-send-your-data/08-done',
-    handler: basicTemplateHandler
-  },
-  {
-    method: 'GET',
-    path: '/05-help/01-help',
-    handler: basicTemplateHandler
-  },
 ];
-
-/*
-    // TODO: All of the old routes which contained any logic are found below.
-    // This code needs to be migrated to new handlers.
-
-    app.post('/01-start/02-what-would-you-like-to-do', function (req, res) {
-      log.info("POST Request : " + req.url + " : Action : " + action);
-      var action = req.param('sub-button');
-      req.session.checking_only = (action === "Check the format of my data") ? true : false;
-      var url = req.session.checking_only ? '02-check-your-data/01-upload-your-data' : '03-sign-in-register/01-have-account';
-      res.redirect(url);
-    });
-    // END 01-start
-
-    // START 03-sign-in-register
-    app.post('/03-sign-in-register/01-have-account', function (req, res) {
-      log.info("POST Request : " + req.url + " : Action : " + action);
-      var action = req.param('radio-inline-group');
-      var route = (action === "Yes") ? '03-sign-in-register/05-sign-in' : '03-sign-in-register/02-account-details';
-      res.redirect(route);
-    });
-
-    // START Misc
-    app.get('/invalid_csv_file', function (req, res) {
-      log.info("GET Request : " + req.url);
-
-      var sess = req.session;
-
-      var result = {
-        pageText: errorConfig.API.ERRORPAGETEXT,
-        message: errorConfig.API.NOT_CSV,
-        errButtonText: errorConfig.API.SELECTANOTHERFILE,
-        errButtonAction: sess.checking_only ? '/02-check-your-data/01-upload-your-data' : '/04-send-your-data/01-upload-your-data'
-      };
-
-      var route = sess.checking_only ? apiRoutes.routing.ERRORCHECKING : apiRoutes.routing.ERRORSENDING;
-
-      res.render(route, {result: result});
-
-    });
-    // END Misc
-
-    // START API
-    app.post('/api/file-upload', function (req, res) {
-      log.info("POST Request : " + req.url);
-
-      var request = require('request');
-      var sess = req.session;
-      var isCheckingOnly = sess.checking_only ? true : false;
-
-      var files = req.files.fileUpload;
-
-      apiHandler.processUploadedFiles(request, files, isCheckingOnly, function (err, data) {
-
-        if (err) {
-          console.log(err);
-        }
-
-        var result = data.result;
-
-        if (result.fileKey) {//[NeilH] might be a better way with HAPI?
-          sess.fileKey = result.fileKey;
-          sess.eaId = result.eaId;
-          sess.siteName = result.siteName;
-          sess.returnType = result.returnType;
-        }
-
-        res.render(data.route, {"result": data.result});
-
-      });
-      
-    });
-
-    app.get('/api/file-upload-validate', function (req, res) {
-      log.info("GET Request : " + req.url);
-
-      var request = require('request');
-      var sess = req.session;
-
-      var headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      };
-
-      var data = {
-        fileKey: sess.fileKey,
-        eaId: sess.eaId,
-        siteName: sess.siteName,
-        returnType: sess.returnType
-      };
-
-      var url = apiRoutes.routing.FILEUPLOADVALIDATE;
-      // Pass on file to data exchange
-      request.get({
-        url: url,
-        headers: headers,
-        qs: data
-      }, function (err, httpResponse, body) {
-
-        var stage = 'validate';
-        var responseCode = httpResponse.statusCode;
-        var sess = req.session;
-        var isCheckingOnly = sess.checking_only ? true : false;
-
-        callbackHandler.processCallback(stage, isCheckingOnly, err, responseCode, body, function (data) {
-          res.render(data.route, {"result": data.result});
-        });
-      });
-    });
-
-    app.post('/api/file-upload-send', function (req, res) {
-      log.info("POST Request : " + req.url);
-
-      var userEmail = req.param('user_email');
-      var request = require('request');
-      var sess = req.session;
-
-      var headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      };
-
-      var formData = {
-        fileKey: sess.fileKey,
-        userEmail: userEmail
-      };
-
-      request.post({
-        url: apiRoutes.routing.FILEUPLOADSEND,
-        headers: headers,
-        formData: formData
-      }, function (err, httpResponse, body) {
-
-        var stage = 'complete';
-        var responseCode = httpResponse.statusCode;
-        var sess = req.session;
-        var isCheckingOnly = sess.checking_only ? true : false;
-
-        callbackHandler.processCallback(stage, isCheckingOnly, err, responseCode, body, function (data) {
-          res.render(data.route, {"result": data.result});
-        });
-      });
-    });
-    // END API
-};
-*/

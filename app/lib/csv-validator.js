@@ -1,50 +1,69 @@
-"USE STRICT";
+'use strict';
 
-var ERROR_MESSAGES = require(__dirname + "/error-messages.js");
+const Path = require('path');
+const FileSystem = require('fs');
+const ErrorMessages = require('./error-messages.js');
 
-//var file = require('file');
+/**
+ * Inspects an uploaded file to see if it's a valid CSV file.
+ * @param filePath Full path to the local copy of the file.
+ * @param contentType The "content-type" header from the HTTP request.
+ * @returns {Promise} A promise that will be fulfilled (with a Boolean true)
+ *   if the specified file passes validation, or will be rejected if
+ *   validation fails.  The rejection value will contain some or all of the
+ *   following fields:
+ *     isUserError  - A Boolean;
+ *     message      - A string message suitable for displaying to the user;
+ *     err          - A JavaScript error, not intended for display to the user.
+ */
+var validateFile = function (filePath, contentType) {
+    /* so what is a valid CSV file ?
+     *
+     * 1) CSV extension is required ?
+     * 2) must not be zero bytes
+     * 3) One of many mime types?
+     * 4) Have at least 2 rows, 1 header and 1 data row?
+     */
 
-var isValidCSV = function (csvfile, callback) {
+    return new Promise(function (resolve, reject) {
+        // Test Content-Type header field.
+        if ((contentType !== null) && (contentType.toLowerCase() !== 'text/csv')) {
+            reject({
+                isUserError: true,
+                message: ErrorMessages.FILE_HANDLER.INVALID_CONTENT_TYPE
+            });
+        }
 
-  /* so what is a valid CSV file ? 
-   * 
-   * 1) CSV extention is required ?
-   * 2) must not be zero bytes
-   * 3) One of many mime types?
-   * 4) Have at least 2 rows, 1 header and 1 data row?
-   */
+        // Test file extension.
+        else if (Path.extname(filePath).toLowerCase() !== '.csv') {
+            reject({
+                isUserError: true,
+                message: ErrorMessages.FILE_HANDLER.NOT_CSV
+            });
+        }
 
-  var result = true;
-  var err = null;
-  var fileExt = csvfile.extension;
-
-  var result = {
-    pageText: 'There is a problem',
-    errButtonText: 'Start again'
-  };
-
-  if (fileExt.toUpperCase() !== 'CSV') {
-    err = new Error(ERROR_MESSAGES.FILE_HANDLER.NOT_CSV);
-    result.message = ERROR_MESSAGES.FILE_HANDLER.NOT_CSV;
-  }
-
-  if (csvfile.size === 0) {
-    err = new Error(ERROR_MESSAGES.FILE_HANDLER.ZERO_BYTES);
-    result.message = ERROR_MESSAGES.FILE_HANDLER.ZERO_BYTES;
-  }
-
-  /* Check for valid mime types */
-  /* was going to implement a check, however the upload is always "application/octet-stream" with multer */
-
-  result.errButtonAction = csvfile.checking_only === true ? '/02-check-your-data/01-upload-your-data' : '/04-send-your-data/01-upload-your-data';
-
-  callback(err, result);
-
+        // Test file is not empty.
+        else {
+            FileSystem.stat(filePath, function (err, stats) {
+                if (err !== null) {
+                    // Unknown error, oh dear.
+                    reject({
+                        isUserError: false,
+                        err: err
+                    });
+                } else if (stats.size === 0) {
+                    // File is empty.
+                    reject({
+                        isUserError: true,
+                        message: ErrorMessages.FILE_HANDLER.ZERO_BYTES
+                    });
+                } else {
+                    // All tests have passed; looks like a valid file.
+                    resolve(true);
+                }
+            });
+        }
+    });
 };
 
-
-module.exports.isValidCSV = isValidCSV;
-
-
-
-
+module.exports.validateFile = validateFile;

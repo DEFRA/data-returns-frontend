@@ -29,6 +29,7 @@
     "hogan.js": "3.0.2",
     "http": "0.0.0",
     "inert": "^3.2.0",
+    "joi": "^7.0.1",
     "line-reader": "^0.2.4",
     "minimist": "0.0.8",
     "multer": "~0.1.6",

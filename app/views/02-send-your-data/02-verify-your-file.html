@@ -17,7 +17,7 @@
 
 
 	
-  <form method="get" class="form" action="/api/file-upload-validate">
+  <form method="post" class="form">
 		<h1 class="heading-xlarge">Confirm the file before you send it to us</h1>
 		<div class="text">
 	
@@ -33,21 +33,21 @@
 		  <div class="panel-indent permit-number">
 			  <div id="permit_found" class="permit">
 				  <p class="title"><span>Permit number</span></p>
-				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span></p>
+				  <p class="permit-number"><span class="result">{{returnMetaData.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span></p>
 			  </div>
 			  <div id="permit_not_found" class="permitnotfound permit" style="display: none;">
 				  <p class="title"><span>Permit number</span></p>
-				  <p class="permit-number"><span class="result">{{result.eaId}}</span> <span class="not-recognised">(Not recognised)</span></p>
+				  <p class="permit-number"><span class="result">{{returnMetaData.eaId}}</span> <span class="not-recognised">(Not recognised)</span></p>
 			  </div>
 			</div>
 
 		  <div class="panel-indent file-summary">
 			  <p class="title">Site</p>
 			  <p class="site">
-				  <span class="address-1">{{result.siteName}}</span>
+				  <span class="address-1">{{returnMetaData.siteName}}</span>
 			  </p>
 			  <p class="title">Return type</p>
-			  <p>{{result.returnType}}</p>
+			  <p>{{returnMetaData.returnType}}</p>
 		  </div>
 			
 		  <details class="help-text-reg">
@@ -80,7 +80,7 @@
 		setTimeout(permitCheckComplete, 2000);
 	 });
 	function permitCheckComplete() {
-		var sessionValue = '{{result.eaId}}';
+		var sessionValue = '{{returnMetaData.eaId}}';
 
 		// Failed permit lookup
 		if(sessionValue !== "AB3002SQ")
