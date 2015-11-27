@@ -36,8 +36,15 @@
     "querystring": "^0.2.0",
     "readdir": "0.0.6",
     "request": "^2.60.0",
-    "bunyan": "1.4.0"
+    "bunyan": "1.4.0",
+    "lab": "7.3.0",
+    "code" : "2.0.1"
   },
   "devDependencies": {
+    "lab": "7.3.0",
+    "code" : "2.0.1"
+  },
+   "scripts": {
+    "test": "lab -v -r console app/test/csv-validator-test.js"
   }
 }
