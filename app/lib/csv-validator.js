@@ -19,8 +19,8 @@ var isValidCSV = function (csvfile, callback) {
   var fileExt = csvfile.extension;
 
   var result = {
-    pageText: 'There is a problem',
-    errButtonText: 'Start again'
+    pageText: ERROR_MESSAGES.API.ERRORPAGETEXT,
+    errButtonText: ERROR_MESSAGES.API.ERRBUTTONTEXT
   };
 
   if (fileExt.toUpperCase() !== 'CSV') {
