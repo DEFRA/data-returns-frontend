@@ -1,124 +1,156 @@
-var fs = require('fs'),
-    path = require('path'),
-    express = require('express'),
-    multer = require('multer'),
-    routes = require(__dirname + '/app/routes.js'),
-    Logger = require('bunyan'),
-    Stream = require('stream');
-var app = express();
-var redis = null;  // Don't "require" it until we know we need it.
+const Path = require('path');
+const Hapi = require('hapi');
+const Hogan = require('hogan.js');
 
 // Grab our environment-specific configuration; by default we assume a development environment.
-var config = require('./app/config/config.' + (process.env.NODE_ENV || 'development'));
+// TODO: HAPI version of configuration variable.
+const config = require('./app/config/config.' + (process.env.NODE_ENV || 'development'));
 
-// Setup logging.
-var stream = new Stream();
-stream.writable = true;
-
-stream.write = function(obj) {
-    // pretty-printing your message
-    console.log(obj.msg)
-};
-
-// TODO: Understand what purpose this *really* serves, if any?
-// 'orrible but made global to move routing out the way in to routes.js
-done = false;
-
-log = Logger.createLogger({
-    name: 'myserver',
-    streams: [{
-        type: "raw",
-        stream: stream
-    }],
-    serializers: {
-        err: Logger.stdSerializers.err,
-        req: Logger.stdSerializers.req,
-        res: Logger.stdSerializers.res
-    }
+// Create and initialise the server.
+var server = new Hapi.Server();
+server.connection({
+    host: 'localhost',
+    port: config.port
 });
 
+// Setup logging.
+server.register(
+    {
+        register: require('good'),
+        options: {
+            opsInterval: 1000,
+            reporters: [
+                {
+                    reporter: require('good-console'),
+                    events: {log: '*', response: '*'}
+                },
+                {
+                    reporter: require('good-file'),
+                    events: {ops: '*'},
+                    config: './logs/ops.log'
+                }
+            ]
+        }
+    }, function (err) {
+        if (err) {
+            console.error('Failed to initialise logging components.');
+            throw err;
+        }
+    }
+);
 
 // If configured, require the user to provide Basic Authentication details to view
 // this site (useful when the site is hosted publicly but still in development).
-if (config.requireBasicAuth)
-{
-    if (!config.basicAuthUsername || !config.basicAuthPassword)
-    {
-        console.log('Username or password is not set, exiting.');
+if (config.requireBasicAuth) {
+    if (!config.basicAuthUsername || !config.basicAuthPassword) {
+        console.error('Basic Authentication username or password is not set; exiting.');
         process.exit(1);
     }
-    app.use(express.basicAuth(config.basicAuthUsername, config.basicAuthPassword));
-}
 
-app.use(express.urlencoded());
-
-//Configure multer
-app.use(multer({
-    dest                 : './uploads/uploaded/',
-    inMemory             : false,
-    putSingleFilesInArray: true,
-    rename               : function (fieldname, filename) {
-        return filename;
-    },
-    onFileUploadStart    : function (file, req, res) {
-        console.log('upload of ' + file.originalname + ' is starting ...');
-    },
-    onFileUploadComplete : function (file) {
-        console.log(file.originalname + ' uploaded.');
-        // TODO: Review if we need to keep the following line?
-        done = true;
-    }
-}));
-
-// Application settings
-app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
-app.set('view engine', 'html');
-app.set('vendorViews', __dirname + '/govuk_modules/govuk_template/views/layouts');
-app.set('views', __dirname + '/app/views');
-
-app.use(express.cookieParser());
-
-// TODO: Decide on session storage strategy.
-var session_env = null;
-if (config.sessionStorage.mode === 'redis')
-{
-    log.info('Session storage: using Redis');
-    redis = require('connect-redis')(express);
-    session_env = express.session({store: new redis(config.sessionStorage.redis), secret: config.sessionStorage.secret});
-}
-else
-{
-    log.info('Session storage: not using Redis');
-    session_env = express.session({secret: config.sessionStorage.secret});
-}
-app.use(session_env);
-
-// Middleware to serve static assets.
-app.use('/public', express.static(__dirname + '/public'));
-app.use('/public', express.static(__dirname + '/govuk_modules/govuk_template/assets'));
-app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
-
-app.use(express.favicon(path.join(__dirname, 'govuk_modules', 'govuk_template', 'assets', 'images', 'favicon.ico')));
-
-// Setup information we want to pass to all views.
-app.use(function (req, res, next) {
-    res.locals({
-        'assetPath': '/public/',
-        // Copy any required fields from the config variable, so that we don't expose this directly
-        // to the views (it contains data we don't want to accidentally expose).
-        analytics: {
-            useGoogleAnalytics: config.useGoogleAnalytics,
-            googleTagManagerId: config.googleTagManagerId
+    // TODO: Implement a basic user database, so we can grant temporary access
+    // to individual testers.
+    server.register(require('hapi-auth-basic'), function (err) {
+        if (err) {
+            console.error('Failed to initialise authorisation component.');
+            throw err;
         }
+        server.auth.strategy('simple', 'basic', 'required', {
+            validateFunc: function (request, username, password, callback) {
+                callback(null, (username === config.basicAuthUsername) && (password === config.basicAuthPassword));
+            }
+        });
     });
-    next();
+}
+
+// Configure session storage.
+// TODO: Is a cookie sufficient?  Do we need to hook into a database?
+// TODO: Only allow insecure cookies in development environment.
+server.register(
+    {
+        register: require('yar'),
+        options: {
+            storeBlank: true,
+            name: 'data-returns-session',
+            cookieOptions: {
+                isSecure: false,
+                password: config.sessionStorage.secret
+            }
+        },
+        maxCookieSize: 2048
+    }, function (err) {
+        if (err) {
+            console.error('Failed to initialise session storage component.');
+            throw err;
+        }
+    }
+);
+
+// Setup serving of static assets.
+server.register(require('inert'), function (err) {
+    if (err) {
+        console.error('Failed to initialise static file server component.');
+        throw err;
+    }
 });
 
-// routes (found in app/routes.js)
-routes.bind(app);
+// Setup context we want to pass to all views.
+var sharedViewContext = {
+    'assetPath': '/public/',
+    // Copy any required fields from the config variable, so that we don't expose this directly
+    // to the views (it contains data we don't want to accidentally expose).
+    analytics: {
+        useGoogleAnalytics: config.useGoogleAnalytics,
+        googleTagManagerId: config.googleTagManagerId
+    }
+};
 
-// Start the app.
-app.listen(config.port);
-console.log('');
-console.log('Listening on port ' + config.port.toString());
-console.log('');
+// Setup serving of dynamic views.
+server.register(require('vision'), function (err) {
+    const partialsCache = {};
+    if (err) {
+        console.error('Failed to initialise views component.');
+        throw err;
+    }
+    server.views({
+        engines: {
+            html: {
+                compile: function (template) {
+                    var compiledTemplate = Hogan.compile(template);
+                    return function (context) {
+                        return compiledTemplate.render(context, partialsCache);
+                    };
+                },
+                registerPartial: function (name, template) {
+                    // There is a bug in Hogan.js that causes compiled partials to cache
+                    // rendered versions of their children.  See:
+                    // https://github.com/twitter/hogan.js/issues/206
+                    // For this reason, we currently cache only the source of each
+                    // partial, rather than its compiled version.
+                    partialsCache[name] = template;
+                }
+            }
+        },
+        relativeTo: __dirname,
+        path: 'app/views',
+        partialsPath: [
+            './app/views/includes',
+            './govuk_modules/govuk_template/views/layouts'
+        ],
+        context: sharedViewContext
+    });
+});
+
+// Configure server routes.
+server.route(require('./app/routes'));
+
+// Start the server.
+server.start(function (err) {
+    if (err) {
+        console.error('Failed to start server.');
+        throw err;
+    }
+    server.log(
+        ['info', 'status'],
+        'Data Returns Frontend: listening on port ' + config.port.toString()
+    );
+});

@@ -1,320 +1,287 @@
-module.exports = {
-    bind: function (app) {
+const Path = require('path');
+const Joi = require('joi');
+const Utils = require('./lib/utils.js');
+const CsvValidator = require('./lib/csv-validator.js');
+const ApiHandler = require('./lib/api-handler.js');
 
-        // Default
-        app.get('/', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.redirect('index');
-        });
-
-        // START 01-start
-        app.post('/01-start/01-start', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('02-send-your-data/01-upload-your-data');
-        });
-        // END 01-start
-
-
-        // START 02-send-your-data
-        app.post('/02-send-your-data/01-upload-your-data', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('02-send-your-data/01-upload-your-data');
-        });
-        // END 02-send-your-data
-
-
-        // START Misc
-        app.get('/invalid_csv_file', function (req, res) {
-            log.info("GET Request : " + req.url);
-
-            var result = {
-                pageText        : 'There is a problem',
-                message         : 'All data files returned using this service must be in CSV format.',
-                errButtonText   : 'Select another file'
-            };
-
-            var sess = req.session;
-
-            if (sess.checking_only)
-            {
-                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                res.render('error_checking', {result: result});
-            }
-            else
-           {
-               result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-               res.render('error_sending', {result: result});
-            }
-        });
-        // END Misc
-
-        // START API
-        app.post('/api/file-upload', function (req, res) {
-            log.info("POST Request : " + req.url);
-
-            var request = require('request');
-            var fs = require('fs');
-
-            if (done == true)
-            {
-                var thisFile;
-
-                for (file in req.files.fileUpload)
-                {
-
-                    thisFile = req.files.fileUpload[file];
-
-                    // TODO Could some basic validations here before sending to backend
-                    //Check to see if it's a csv file - caught on select (with js on) so redundant
-                    // TODO make case-insensitive
-                    //if (thisFile.extension !== 'csv')
-                    //{
-                    //    res.render("file-upload/there-is-a-problem", {
-                    //        "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
-                    //        "file_name": thisFile.originalname
-                    //    });
-                    //    return;
-                    //}
-
-                    var formData = {
-                        fileUpload: fs.createReadStream(thisFile.path)
-                    };
-
-                    // Pass on file to data exchange
-                    request.post({
-                        url     : 'http://localhost:9020/data-exchange/upload',
-                        formData: formData
-                    }, function optionalCallback(err, httpResponse, body) {
-
-                        var sess = req.session;
-
-                        if (err)
-                        {
-                            var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                            var result = {
-                                pageText        : 'There is a problem',
-                                message        : errMess,
-                                errButtonText  : 'Start again'
-                            };
-
-                            if (sess.checking_only)
-                            {
-                                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                                res.render('error_checking', {result: result});
-                            }
-                            else
-                            {
-                                result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-                                res.render('error_sending', {result: result});
-                            }
-                        }
-                        else
-                        {
-                            result = JSON.parse(body);
-
-                            if(httpResponse.statusCode != 200)
-                            {
-                                result.pageText = 'There is a problem';
-                                result.errButtonText = 'Start again';
-
-                                if (sess.checking_only)
-                                {
-                                    result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                                    res.render('error_checking', {result: result});
-                                }
-                                else
-                                {
-                                    result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-                                    res.render('error_sending', {result: result});
-                                }
-                            }
-                            else
-                            {
-                                sess.fileKey = result.fileKey;
-                                sess.eaId = result.eaId;
-                                sess.siteName = result.siteName;
-                                sess.returnType = result.returnType;
-
-                                if(sess.checking_only)
-                                    res.render('02-check-your-data/02-verify-your-file', {result: result});
-                                else
-                                    res.render('02-send-your-data/02-verify-your-file', {result: result});
-                            }
-                        }
-                    });
-                }
-            }
-            else
-            {
-                // Doesn't appear to ever get called, handled anyway just in case
-                if(sess.checking_only)
-                    res.redirect('02-check-your-data/01-upload-your-data');
-                else
-                    res.redirect('04-check-your-data/01-upload-your-data');
-            }
-        });
-
-        app.get('/api/file-upload-validate', function (req, res) {
-            log.info("GET Request : " + req.url);
-
-            var request = require('request');
-            var sess = req.session;
-
-            var headers = {
-                'Content-Type':     'application/x-www-form-urlencoded'
-            }
-
-            var data = {
-                fileKey : sess.fileKey,
-                eaId : sess.eaId,
-                siteName : sess.siteName,
-                returnType : sess.returnType
-            };
-
-            // Pass on file to data exchange
-            request.get({
-                url     : 'http://localhost:9020/data-exchange/validate',
-                headers: headers,
-                qs:  data
-            }, function optionalCallback(err, httpResponse, body) {
-
-                var sess = req.session;
-
-                if (err)
-                {
-                    var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    var result = {
-                        pageText        : 'There is a problem',
-                        message        : errMess,
-                        errButtonText  : 'Start again'
-                    };
-
-                    if (sess.checking_only)
-                    {
-                        result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                        res.render('error_checking', {result: result});
-                    }
-                    else
-                    {
-                        result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-                        res.render('error_sending', {result: result});
-                    }
-                }
-                else
-                {
-                    result = JSON.parse(body);
-
-                    if(httpResponse.statusCode != 200)
-                    {
-                        result.pageText = 'There is a problem';
-                        result.errButtonText = 'Start again';
-
-                        if (sess.checking_only)
-                        {
-                            result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                            res.render('error_checking', {result: result});
-                        }
-                        else
-                        {
-                            result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-                            res.render('error_sending', {result: result});
-                        }
-                    }
-                    else if (result.appStatusCode == 800)
-                    {
-                        if(sess.checking_only)
-                            res.render('02-check-your-data/03-email', {"result": result});
-                        else
-                            res.render('02-send-your-data/03-email', {"result": result});
-                    } else
-                    {
-                        if(sess.checking_only)
-                            res.render('02-check-your-data/06-failure', {"result": result});
-                        else
-                            res.render('02-send-your-data/06-failure', {result: result});
-                    }
-                }
-            });
-        });
-
-        app.post('/api/file-upload-send', function (req, res) {
-            log.info("POST Request : " + req.url);
-
-            var userEmail = req.param('user_email');
-
-            var request = require('request');
-            var sess = req.session;
-
-            var headers = {
-                'Content-Type':     'application/x-www-form-urlencoded'
-            }
-
-            var formData = {
-                fileKey : sess.fileKey,
-                userEmail : userEmail
-            };
-
-            request.post({
-                url : 'http://localhost:9020/data-exchange/complete',
-                headers: headers,
-                formData: formData
-            }, function optionalCallback(err, httpResponse, body) {
-
-                if (err)
-                {
-                    var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    var result = {
-                        pageText        : 'There is a problem',
-                        message        : errMess,
-                        errButtonText  : 'Start again'
-                    };
-
-                    result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-                    res.render('error_sending', {result: result});
-                }
-                else
-                {
-                    result = JSON.parse(body);
-
-                    if(httpResponse.statusCode != 200)
-                    {
-                        result.pageText = 'There is a problem';
-                        result.errButtonText = 'Start again';
-                        result.errButtonAction = '/02-send-your-data/01-upload-your-data';
-
-                        if(!result.message)
-                        {
-                            result.message = result.errors[0];
-                        }
-
-                        res.render('error_sending', {"result": result});
-                    }
-                    else
-                    {
-                        res.render('02-send-your-data/07-done', {"result": result});
-                    }
-                }
-            });
-        });
-        // END API
-
-        // auto render any OTHER view that exists
-        app.get(/^\/([^.]+)$/, function (req, res) {
-
-            var path = (req.params[0]);
-
-            res.render(path, function (err, html) {
-                if (err)
-                {
-                    console.log(err);
-                    res.send(404);
-                }
-                else
-                {
-                    res.end(html);
-                }
-            });
-
-        });
-    }
+const redirectToIndexHandler = function (request, reply) {
+    return reply.redirect('/index');
 };
+
+const basicTemplateHandler = function (request, reply) {
+    return reply.view(request.path.substring(1));
+};
+
+// TODO: Split handlers into page-specific files (for easier management)?
+// TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
+// TODO: Think about more / better logging.
+// TODO: Move session-management code into a helper.
+module.exports = [
+    // Static assets.
+    {
+        method: 'GET',
+        path: '/public/{param*}',
+        handler: {
+            directory: {
+                path: [
+                    'public/',
+                    'govuk_modules/govuk_template/assets',
+                    'govuk_modules/govuk_frontend_toolkit'
+                ],
+                etagMethod: 'hash' // Allows assets to be cached by the client.
+            }
+        }
+    },
+
+    // TODO: Make redirection environment-specific, and rename the index to "development" or similar.
+    // Redirect for site root.
+    {
+        method: 'GET',
+        path: '/',
+        handler: redirectToIndexHandler
+    },
+
+    // Index page (visible in development only).
+    // TODO: Rename
+    {
+        method: 'GET',
+        path: '/index',
+        handler: basicTemplateHandler
+    },
+
+    // Start page.
+    {
+        method: 'GET',
+        path: '/01-start/01-start',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/01-start/01-start',
+        handler: function (request, reply) {
+            request.session.reset();
+            reply.redirect('/02-send-your-data/01-upload-your-data');
+        }
+    },
+
+    // 01-Upload-Your-Data.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/01-upload-your-data',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/01-upload-your-data',
+        config: {
+            payload: {
+                maxBytes: 1 * Math.pow(2, 20),  // 1 megabyte
+                timeout: 20 * 1000,         // 20 seconds
+                output: 'file',
+                parse: true
+            }
+        },
+        handler: function (request, reply) {
+            // TODO: Clean-up files once transferred to API tier.
+            request.log(['info', 'file-upload'], 'Processing uploaded file...');
+
+            var contentType = request.payload.fileUpload.headers['content-type'] || null;
+            var sourceName = request.payload.fileUpload.filename;
+            var oldLocalName = request.payload.fileUpload.path;
+            var newLocalName = oldLocalName.concat(Path.extname(sourceName));
+
+            Utils.renameFile(oldLocalName, newLocalName)
+                .then(function () {
+                    return CsvValidator.validateFile(newLocalName, contentType);
+                })
+                .then(function () {
+                    return ApiHandler.uploadFileToService(newLocalName);
+                })
+                .then(function (apiResponse) {
+                    // TODO: Review whether we need a front-end database.
+                    request.session.set('returnMetaData', {
+                        fileName: sourceName,
+                        fileKey: apiResponse.fileKey,
+                        eaId: apiResponse.eaId,
+                        returnType: apiResponse.returnType,
+                        siteName: apiResponse.siteName
+                    });
+                    reply.redirect('/02-send-your-data/02-verify-your-file');
+                }).catch(function (errorData) {
+                    request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
+                    request.session.clear('returnMetaData');
+                    if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
+                        reply.view('02-send-your-data/01-upload-your-data', {
+                            uploadError: true,
+                            errorMessage: errorData.message
+                        });
+                    } else {
+                        request.session.flash('errorMessage', errorData.message);
+                        reply.redirect('/02-send-your-data/07-failure');
+                    }
+                });
+
+        }
+    },
+
+    // 02-Verify-Your-File.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/02-verify-your-file',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/02-verify-your-file', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/02-verify-your-file',
+        handler: function (request, reply) {
+            reply.redirect('/02-send-your-data/06-failure');
+        }
+    },
+
+    // 06-Failure (file content validation).
+    // TODO: Rename.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/06-failure',
+        handler: function(request, reply) {
+            ApiHandler.validateFileContents(request.session.get('returnMetaData'))
+                .then(function () {
+                    reply.redirect('/02-send-your-data/03-email');
+                })
+                .catch(function (errorData) {
+                    request.log(['error', 'file-validate'], Utils.getBestLogMessageFromError(errorData));
+                    if ((errorData !== null) && ('isUserError' in errorData) && (errorData.isUserError)) {
+                        reply.view('02-send-your-data/06-failure', {
+                            result: {
+                                errors: errorData.apiErrors
+                            }
+                        });
+                    } else {
+                        request.session.flash('errorMessage', errorData.message);
+                        reply.redirect('/02-send-your-data/07-failure');
+                    }
+                });
+        }
+    },
+
+    // 03-Email.
+    // TODO: Implement email sending.
+    // TODO: Proper PIN generation.
+    // TODO: Skip this page if user has already authenticated.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/03-email',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/03-email', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/03-email',
+        handler: function (request, reply) {
+            var validationResult = Joi.string().email().required().validate(request.payload['user_email']);
+            if (validationResult.error !== null) {
+                reply.view('02-send-your-data/03-email', {
+                    returnMetaData: request.session.get('returnMetaData'),
+                    invalidEmailAddress: true
+                });
+            } else {
+                request.session.set('user', {
+                    authenticated: false,
+                    email: request.payload['user_email'],
+                    pin: '1234'
+                });
+                reply.redirect('/02-send-your-data/04-authenticate');
+            }
+        }
+    },
+
+    // 04-Authenticate.
+    // TODO: Move PIN validation to a helper.
+    // TODO: Implement "maximum number of tries" logic.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/04-authenticate',
+        handler: basicTemplateHandler
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/04-authenticate',
+        handler: function(request, reply) {
+            var userData = request.session.get('user');
+            if (request.payload['validation_code'].toString().trim() === userData.pin) {
+                userData.authenticated = true;
+                userData.pin = Number.NaN;
+                request.session.set('user', userData);
+                reply.redirect('/02-send-your-data/05-success');
+            } else {
+                reply.view('02-send-your-data/04-authenticate', {
+                    invalidPin: true
+                });
+            }
+        }
+    },
+
+    // 05-Success.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/05-success',
+        handler: function(request, reply) {
+            reply.view('02-send-your-data/05-success', {
+                returnMetaData: request.session.get('returnMetaData')
+            });
+        }
+    },
+    {
+        method: 'POST',
+        path: '/02-send-your-data/05-success',
+        handler: function (request, reply) {
+            var returnMetaData = request.session.get('returnMetaData');
+            var userData = request.session.get('user');
+            ApiHandler.confirmFileSubmission(returnMetaData.fileKey, userData.email)
+                .then(function () {
+                    reply.redirect('/02-send-your-data/08-done');
+                })
+                .catch(function (errorData) {
+                    request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
+                    request.session.flash('errorMessage', errorData.message);
+                    reply.redirect('/02-send-your-data/07-failure');
+                });
+        }
+    },
+
+    // 07-Failure (unrecoverable).
+    {
+        method: 'GET',
+        path: '/02-send-your-data/07-failure',
+        handler: function (request, reply) {
+            reply.view('02-send-your-data/07-failure', {
+                errorMessage: request.session.get('errorMessage')
+            });
+        }
+    },
+
+    // 08-Done.
+    {
+        method: 'GET',
+        path: '/02-send-your-data/08-done',
+        handler: function(request, reply) {
+            reply.view('02-send-your-data/08-done', {
+                userEmail: request.session.get('user').email
+            });
+        }
+    },
+
+    // Help pages.
+    {
+        method: 'GET',
+        path: '/05-help/01-help',
+        handler: basicTemplateHandler
+    }
+];
