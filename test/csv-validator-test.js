@@ -6,70 +6,137 @@
  * with the https://github.com/hapijs/code assertion library
  */
 
+// Modules we depend on.
+const CsvValidator = require('../app/lib/csv-validator.js');
+const ErrorMessages = require('../app/lib/error-messages.js');
+const Code = require('code');
+const Lab = require('lab');
+const Path = require('path');
 
+// Useful aliases for this test suite.
+const lab = exports.lab = Lab.script();
+const expect = Code.expect;
 
-var csvValidator = require('../app/lib/csv-validator.js');
-var fs = require('fs');
-var Code = require('code');
-var Lab = require('lab');
-var lab = exports.lab = Lab.script();
-var Path = require('path');
-var file, filePath, fileparts, stats;
-var isTestDocsAvailable = true;
+// Useful constants for this test suite.
+const correctContentType = 'text/csv';
+const badContentType = 'application/octet-stream';
 
+// Define the parameters of each test.
 var testConfig = [
-    {title: 'CSV Validator Test 1 - A file without a .csv extention',
-        testfilepath: Path.join(__dirname, 'data/not_csv.txt'),
-        expectError: true
+    {
+        title: 'allows a valid CSV file if the content-type is correct',
+        testFilePath: Path.join(__dirname, 'data/success.csv'),
+        testContentType: correctContentType,
+        expectReject: false,
+        expectedIsUserError: null,
+        expectedMessage: null
     },
-    {title: 'CSV Validator Test 2 - An empty File',
-        testfilepath: Path.join(__dirname, 'data/empty.csv'),
-        expectError: true
+    {
+        title: 'rejects a valid CSV file if the content-type is wrong',
+        testFilePath: Path.join(__dirname, 'data/success.csv'),
+        testContentType: badContentType,
+        expectReject: true,
+        expectedIsUserError: true,
+        expectedMessage: ErrorMessages.FILE_HANDLER.INVALID_CONTENT_TYPE
     },
-    {title: 'CSV Validator Test 3 - A valid File',
-        testfilepath: Path.join(__dirname, 'data/success.csv'),
-        expectError: false
+    {
+        title: 'rejects a valid CSV file if the content-type is null',
+        testFilePath: Path.join(__dirname, 'data/success.csv'),
+        testContentType: null,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects a valid CSV file if the content-type is not a string',
+        testFilePath: Path.join(__dirname, 'data/success.csv'),
+        testContentType: 123,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects a valid CSV file if the content-type is an empty string',
+        testFilePath: Path.join(__dirname, 'data/success.csv'),
+        testContentType: '',
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects an empty file (with correct content type)',
+        testFilePath: Path.join(__dirname, 'data/empty.csv'),
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: true,
+        expectedMessage: ErrorMessages.FILE_HANDLER.ZERO_BYTES
+    },
+    {
+        title: 'rejects a file with the wrong extension (with correct content type)',
+        testFilePath: Path.join(__dirname, 'data/not_csv.txt'),
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: true,
+        expectedMessage: ErrorMessages.FILE_HANDLER.NOT_CSV
+    },
+    {
+        title: 'rejects a file if it cannot be found on disk',
+        testFilePath: Path.join(__dirname, 'data/file_does_not_exist.csv'),
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects a file if the filename is null',
+        testFilePath: null,
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects a file if the filename not a string',
+        testFilePath: 123,
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
+    },
+    {
+        title: 'rejects a file if the filename is empty',
+        testFilePath: '',
+        testContentType: correctContentType,
+        expectReject: true,
+        expectedIsUserError: false,
+        expectedMessage: null
     }
 ];
 
-/*Check we have the test documents */
-testConfig.forEach(function (item) {
-    if (!fs.existsSync(item.testfilepath)) {
-        isTestDocsAvailable = false;
-    }
-});
-
-if (isTestDocsAvailable === true) {
+// Run each test in turn.
+lab.experiment('csv-validator.js library', function() {
     testConfig.forEach(function (item) {
-
         lab.test(item.title, function (done) {
+            CsvValidator.validateFile(item.testFilePath, item.testContentType)
+                .then(function (resolveValue) {
+                    // Check that fulfillment was expected.
+                    expect(item.expectReject).to.be.false();
+                    expect(resolveValue).to.be.true();
+                    done();
+                }).catch(function (rejectValue) {
+                    // Check that rejection and "user / non-user" status is as expected.
+                    expect(item.expectReject).to.be.true();
+                    expect(rejectValue.isUserError).to.equal(item.expectedIsUserError);
 
-            filePath = item.testfilepath;
-            fileparts = filePath.split('.');
-            file = fs.createReadStream(filePath);
-            stats = fs.statSync(filePath);
-            file.size = stats['size'];
-            file.extension = fileparts[fileparts.length - 1];
-
-            csvValidator.isValidCSV(file, function (err, result) {
-                if (item.expectError === true) {
-                    /* expect an error */
-                    Code.expect(err).to.not.equal(null);
-                    /* always expect a result */
-                    Code.expect(result).to.not.equal(null);
-                } else {
-                    /* expect no errors */
-                    Code.expect(err).to.equal(null);
-                    /* always expect a result */
-                    Code.expect(result).to.not.equal(null);
-                }
-                done();
-            });
-
+                    // If user error check that the error message is as expected,
+                    // otherwise check the rejection value contains an 'err' field.
+                    if (item.expectedIsUserError) {
+                        expect(rejectValue.message).to.equal(item.expectedMessage);
+                    } else {
+                        expect(rejectValue.err).to.be.instanceOf(Error);
+                    }
+                    done();
+                });
         });
-
     });
-
-} else {
-    console.log('One or all of the test documents are missing, unable to test!');
-}
+});

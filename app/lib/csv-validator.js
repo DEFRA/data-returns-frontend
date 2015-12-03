@@ -26,8 +26,24 @@ var validateFile = function (filePath, contentType) {
      */
 
     return new Promise(function (resolve, reject) {
+        // Test that a filePath has been specified.
+        if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {
+            reject({
+                isUserError: false,
+                err: new Error('"filePath" parameter must be a non-empty string')
+            });
+        }
+
+        // Test that a content type has been specified.
+        else if ((contentType === null) || (typeof contentType !== 'string') || (contentType.length === 0)) {
+            reject({
+                isUserError: false,
+                err: new Error('"contentType" parameter must be a non-empty string')
+            });
+        }
+
         // Test Content-Type header field.
-        if ((contentType !== null) && (contentType.toLowerCase() !== 'text/csv')) {
+        else if (contentType.toLowerCase() !== 'text/csv') {
             reject({
                 isUserError: true,
                 message: ErrorMessages.FILE_HANDLER.INVALID_CONTENT_TYPE
