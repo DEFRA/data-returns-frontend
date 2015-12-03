@@ -8,25 +8,26 @@
 
 
 
-var csvValidator = require('../lib/csv-validator.js');
+var csvValidator = require('../app/lib/csv-validator.js');
 var fs = require('fs');
 var Code = require('code');
 var Lab = require('lab');
 var lab = exports.lab = Lab.script();
+var Path = require('path');
 var file, filePath, fileparts, stats;
 var isTestDocsAvailable = true;
 
 var testConfig = [
     {title: 'CSV Validator Test 1 - A file without a .csv extention',
-        testfilepath: __dirname + '/../../uploads/to_upload/NotCSV.txt',
+        testfilepath: Path.join(__dirname, 'data/not_csv.txt'),
         expectError: true
     },
     {title: 'CSV Validator Test 2 - An empty File',
-        testfilepath: __dirname + '/../../uploads/to_upload/empty.csv',
+        testfilepath: Path.join(__dirname, 'data/empty.csv'),
         expectError: true
     },
     {title: 'CSV Validator Test 3 - A valid File',
-        testfilepath: __dirname + '/../../uploads/to_upload/success.csv',
+        testfilepath: Path.join(__dirname, 'data/success.csv'),
         expectError: false
     }
 ];
@@ -70,5 +71,5 @@ if (isTestDocsAvailable === true) {
     });
 
 } else {
-	console.log('One or all of the test documents are missing, unable to test!');
+    console.log('One or all of the test documents are missing, unable to test!');
 }
