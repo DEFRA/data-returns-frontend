@@ -1,12 +1,12 @@
 {
 	"rules": {
-		"no-console": 0,
+		"strict": [2, "global"],
+		"no-console": 1,
 		"eqeqeq": 1,
 		"no-extra-semi": 2,
 		"indent": [
 			2,
-			"tab"
-
+			4
 		],
 		"quotes": [
 			2,
