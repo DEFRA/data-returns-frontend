@@ -44,7 +44,7 @@
     "lab": "7.3.0"
   },
   "scripts": {
-    "lint": "node_modules/eslint/bin/eslint.js app/lib/*.js app/test/*.js -f html -o app/test/lint-errors.html; exit 0",
     "test": "lab -v -r console app/test/csv-validator-test.js"
+    "lint": "node_modules/eslint/bin/eslint.js app/** test/** -f html -o reports/eslint.html; exit 0",
   }
 }
