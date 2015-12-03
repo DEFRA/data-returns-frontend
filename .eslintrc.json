@@ -1,29 +1,20 @@
 {
-	"rules": {
-		"strict": [2, "global"],
-		"no-console": 1,
-		"eqeqeq": 1,
-		"no-extra-semi": 2,
-		"indent": [
-			2,
-			4
-		],
-		"quotes": [
-			2,
-			"single"
-		],
-		"linebreak-style": [
-			2,
-			"unix"
-		],
-		"semi": [
-			2,
-			"always"
-		]
-	},
-	"env": {
-		"node": true,
-		"browser": true
-	},
-	"extends": "eslint:recommended"
+  "rules": {
+    "strict": [2, "global"],
+    "no-console": 1,
+    "eqeqeq": 1,
+    "no-extra-semi": 2,
+    "indent": [2, 4],
+    "quotes": [2, "single"],
+    "linebreak-style": [2, "unix"],
+    "semi": [2, "always"]
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "ecmaFeatures": {
+    "blockBindings": true
+  }
 }
