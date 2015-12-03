@@ -8,4 +8,5 @@ govuk_modules
 public
 .idea
 /nbproject/**
+reports
 logs

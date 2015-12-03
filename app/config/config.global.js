@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Default configuration for Data Returns front-end.
  * Settings below should be overridden where necessary for each environment.

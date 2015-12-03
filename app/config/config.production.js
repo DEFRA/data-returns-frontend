@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Settings for the 'production' environment.
  */
