@@ -5,11 +5,10 @@
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
+  margin: 0
 }
-
 input[type=number] {
-  -moz-appearance: textfield;
+  -moz-appearance: textfield
 }
 
 .form-date {
@@ -30,9 +29,11 @@ input[type=number] {
     input {
       width: 100%;
     }
+
   }
 
   .form-group-year {
     width: 70px;
   }
+
 }

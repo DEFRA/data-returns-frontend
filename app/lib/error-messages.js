@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports.FILE_HANDLER = {
-    ZERO_BYTES: 'The file is empty',
-    NOT_CSV: 'The file is not a CSV'
+    INVALID_CONTENT_TYPE: 'The file is not a CSV file',
+    NOT_CSV: 'The file is not a CSV file',
+    ZERO_BYTES: 'The file is empty'
 };
 
 module.exports.API = {

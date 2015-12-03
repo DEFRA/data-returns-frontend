@@ -1,0 +1,39 @@
+{{<layout}}
+
+{{$pageTitle}}
+GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+<main id="content" role="main">
+    <div class="phase-banner beta-banner">
+        <p>
+            <strong class="phase-tag">BETA</strong>
+            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+        </p>
+    </div>
+
+    <h1 class="heading-xlarge">
+        <span id="title">Something has gone wrong</span>
+    </h1>
+
+    <div class="text">
+        <p class="lede">We are sorry but something has gone wrong. Please try again, and contact
+            us if the problem continues.</p>
+
+        {{#errorMessage}}
+            <p>Technical details: {{errorMessage}}</p>
+        {{/errorMessage}}
+
+        <form method="post" action="/01-start/01-start" class="form">
+            <div class="form-group">
+                <input type="submit" class="button" value="Upload and check another file">
+            </div>
+        </form>
+    </div>
+</main>
+
+{{/content}}
+
+{{/layout}}
+	

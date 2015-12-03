@@ -1,0 +1,52 @@
+{{<layout}}
+
+{{$pageTitle}}
+GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+    <div class="phase-banner beta-banner">
+        <p>
+            <strong class="phase-tag">BETA</strong>
+            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+        </p>
+    </div>
+
+    <form method="post" class="form">
+        <h1 class="heading-xlarge">Authenticate your email address</h1>
+
+        {{#invalidPin}}
+            <div class="validation-summary">
+                <h1 class="heading-medium">Wrong authentication code</h1>
+                <p class="validation-message">You must enter the authentication code we sent to your email address</p>
+            </div>
+        {{/invalidPin}}
+
+        <div class="text">
+            <p class="lede">Enter the authentication code we sent to your email address to send your file.</p>
+
+            <div class="form-group">
+                <label class="form-label" for="validation-code">Authentication code
+                    <span class="form-hint">eg: 1234</span>
+                </label>
+                <input class="form-control validation-code" id="validation-code" name="validation_code" type="text">
+            </div>
+
+            <div class="form-group">
+                <a id="nextHref">
+                    <input type="submit" id="nextBtn" class="button" value="Continue">
+                </a>
+            </div>
+
+            <p>Go back and <a href="/02-send-your-data/01-upload-your-data">send another file</a></p>
+        </div>
+        <!-- /text -->
+    </form>
+</main>
+
+{{/content}}
+
+{{/layout}}
