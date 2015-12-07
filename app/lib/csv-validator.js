@@ -43,12 +43,17 @@ var validateFile = function (filePath, contentType) {
         }
 
         // Test Content-Type header field.
+        /*
+         * MIME type of the upload cannot be relied upon, so we currently
+         * allow any non-empty value.
+         *
         else if (contentType.toLowerCase() !== 'text/csv') {
             reject({
                 isUserError: true,
                 message: ErrorMessages.FILE_HANDLER.INVALID_CONTENT_TYPE
             });
         }
+        */
 
         // Test file extension.
         else if (Path.extname(filePath).toLowerCase() !== '.csv') {

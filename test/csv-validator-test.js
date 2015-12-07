@@ -32,12 +32,12 @@ var testConfig = [
         expectedMessage: null
     },
     {
-        title: 'rejects a valid CSV file if the content-type is wrong',
+        title: 'allows a valid CSV file even if the content-type is wrong',
         testFilePath: Path.join(__dirname, 'data/success.csv'),
         testContentType: badContentType,
-        expectReject: true,
-        expectedIsUserError: true,
-        expectedMessage: ErrorMessages.FILE_HANDLER.INVALID_CONTENT_TYPE
+        expectReject: false,
+        expectedIsUserError: null,
+        expectedMessage: null
     },
     {
         title: 'rejects a valid CSV file if the content-type is null',
