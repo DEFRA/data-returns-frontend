@@ -17,7 +17,7 @@
 @import "elements/reset";
 
 // Typography
-@import "elements/typography";
+@import "elements/elements-typography";
 
 // Layout
 @import "elements/layout";
@@ -27,6 +27,15 @@
 
 // Forms
 @import "elements/forms";
+
+// Date
+@import "elements/forms/form-date";
+
+// Block labels
+@import "elements/forms/form-block-labels";
+
+// Validation
+@import "elements/forms/form-validation";
 
 // Tables
 @import "elements/tables";

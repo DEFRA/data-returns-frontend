@@ -1,384 +1,154 @@
-module.exports = {
-    bind: function (app) {
+/* global config */
 
-        // Default
-        app.get('/', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.redirect('index');
-        });
+'use strict';
+var IndexHandler = require('./routeHandlers/indexHandler');
+var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
+var O1O1Handler = require('./routeHandlers/O1O1Handler');
+var O2O1Handler = require('./routeHandlers/O2O1Handler');
+var O2O2Handler = require('./routeHandlers/O2O2Handler');
+var O2O3Handler = require('./routeHandlers/O2O3Handler');
+var O204Handler = require('./routeHandlers/O2O4Handler');
+var O2O5Handler = require('./routeHandlers/O2O5Handler');
+var O2O6Handler = require('./routeHandlers/O2O6Handler');
+var O2O7Handler = require('./routeHandlers/O2O7Handler');
+var O2O8Handler = require('./routeHandlers/O2O8Handler');
+var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
 
-        // START 01-start
-        app.post('/01-start/01-start', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('01-start/02-what-would-you-like-to-do');
-        });
 
-        app.post('/01-start/02-what-would-you-like-to-do', function (req, res) {
-            var action = req.param('sub-button');
+// TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
+// TODO: Think about more / better logging.
 
-            log.info("POST Request : " + req.url + " : Action : " + action);
-
-            if (action == "Check the format of my data")
-            {
-                req.session.checking_only = true;
-                res.redirect('02-check-your-data/01-upload-your-data');
-            }
-            else
-            {
-                req.session.checking_only = false;
-                res.redirect('03-sign-in-register/01-have-account');
-            }
-        });
-        // END 01-start
-
-        // START 02-check-your-data
-        app.post('/02-check-your-data/01-upload-your-data', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('02-check-your-data/01-upload-your-data');
-        });
-
-        app.post('/02-check-your-data/04-success', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('01-start/02-what-would-you-like-to-do');
-        });
-        // END 02-check-your-data
-
-        // START 03-sign-in-register
-        app.post('/03-sign-in-register/01-have-account', function (req, res) {
-            var action = req.param('radio-inline-group');
-
-            log.info("POST Request : " + req.url + " : Action : " + action);
-
-            if (action == "Yes")
-            {
-                res.redirect('03-sign-in-register/05-sign-in');
-            }
-            else
-            {
-                res.redirect('03-sign-in-register/02-account-details');
-            }
-        });
-
-        app.post('/03-sign-in-register/02-account-details', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('03-sign-in-register/03-activate-account');
-        });
-
-        app.post('/03-sign-in-register/04-activate-account', function (req, res) {
-            log.info("GET Request : " + req.url);
-            res.redirect('03-sign-in-register/04-account-activated');
-        });
-
-        app.post('/03-sign-in-register/04-account-activated', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-
-        app.post('/03-sign-in-register/05-sign-in', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-        // END 03-sign-in-register
-
-        // START 04-send-your-data
-        app.post('/04-send-your-data/01-upload-your-data', function (req, res) {
-            log.info("POST Request : " + req.url);
-            res.redirect('04-send-your-data/01-upload-your-data');
-        });
-        // END 04-send-your-data
-
-        // START Misc
-        app.get('/invalid_csv_file', function (req, res) {
-            log.info("GET Request : " + req.url);
-
-            var result = {
-                pageText        : 'There is a problem',
-                message         : 'All data files returned using this service must be in CSV format.',
-                errButtonText   : 'Select another file'
-            };
-
-            var sess = req.session;
-
-            if (sess.checking_only)
-            {
-                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                res.render('error_checking', {result: result});
-            }
-            else
-           {
-               result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-               res.render('error_sending', {result: result});
-            }
-        });
-        // END Misc
-
-        // START API
-        app.post('/api/file-upload', function (req, res) {
-            log.info("POST Request : " + req.url);
-
-            var request = require('request');
-            var fs = require('fs');
-
-            if (done == true)
-            {
-                var thisFile;
-
-                for (file in req.files.fileUpload)
-                {
-
-                    thisFile = req.files.fileUpload[file];
-
-                    // TODO Could some basic validations here before sending to backend
-                    //Check to see if it's a csv file - caught on select (with js on) so redundant
-                    // TODO make case-insensitive
-                    //if (thisFile.extension !== 'csv')
-                    //{
-                    //    res.render("file-upload/there-is-a-problem", {
-                    //        "message"  : "<tr><td>-</td><td>-</td><td>The file isn't in csv format.</td></tr>",
-                    //        "file_name": thisFile.originalname
-                    //    });
-                    //    return;
-                    //}
-
-                    var formData = {
-                        fileUpload: fs.createReadStream(thisFile.path)
-                    };
-
-                    // Pass on file to data exchange
-                    request.post({
-                        url     : 'http://localhost:9020/data-exchange/upload',
-                        formData: formData
-                    }, function optionalCallback(err, httpResponse, body) {
-
-                        var sess = req.session;
-
-                        if (err)
-                        {
-                            var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                            var result = {
-                                pageText        : 'There is a problem',
-                                message        : errMess,
-                                errButtonText  : 'Start again'
-                            };
-
-                            if (sess.checking_only)
-                            {
-                                result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                                res.render('error_checking', {result: result});
-                            }
-                            else
-                            {
-                                result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-                                res.render('error_sending', {result: result});
-                            }
-                        }
-                        else
-                        {
-                            result = JSON.parse(body);
-
-                            if(httpResponse.statusCode != 200)
-                            {
-                                result.pageText = 'There is a problem';
-                                result.errButtonText = 'Start again';
-
-                                if (sess.checking_only)
-                                {
-                                    result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                                    res.render('error_checking', {result: result});
-                                }
-                                else
-                                {
-                                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-                                    res.render('error_sending', {result: result});
-                                }
-                            }
-                            else
-                            {
-                                sess.fileKey = result.fileKey;
-                                sess.eaId = result.eaId;
-                                sess.siteName = result.siteName;
-                                sess.returnType = result.returnType;
-
-                                if(sess.checking_only)
-                                    res.render('02-check-your-data/03-verify-your-file', {result: result});
-                                else
-                                    res.render('04-send-your-data/03-verify-your-file', {result: result});
-                            }
-                        }
-                    });
-                }
-            }
-            else
-            {
-                // Doesn't appear to ever get called, handled anyway just in case
-                if(sess.checking_only)
-                    res.redirect('02-check-your-data/01-upload-your-data');
-                else
-                    res.redirect('04-check-your-data/01-upload-your-data');
-            }
-        });
-
-        app.get('/api/file-upload-validate', function (req, res) {
-            log.info("GET Request : " + req.url);
-
-            var request = require('request');
-            var sess = req.session;
-
-            var headers = {
-                'Content-Type':     'application/x-www-form-urlencoded'
-            }
-
-            var data = {
-                fileKey : sess.fileKey,
-                eaId : sess.eaId,
-                siteName : sess.siteName,
-                returnType : sess.returnType
-            };
-
-            // Pass on file to data exchange
-            request.get({
-                url     : 'http://localhost:9020/data-exchange/validate',
-                headers: headers,
-                qs:  data
-            }, function optionalCallback(err, httpResponse, body) {
-
-                var sess = req.session;
-
-                if (err)
-                {
-                    var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    var result = {
-                        pageText        : 'There is a problem',
-                        message        : errMess,
-                        errButtonText  : 'Start again'
-                    };
-
-                    if (sess.checking_only)
-                    {
-                        result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                        res.render('error_checking', {result: result});
-                    }
-                    else
-                    {
-                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-                        res.render('error_sending', {result: result});
-                    }
-                }
-                else
-                {
-                    result = JSON.parse(body);
-
-                    if(httpResponse.statusCode != 200)
-                    {
-                        result.pageText = 'There is a problem';
-                        result.errButtonText = 'Start again';
-
-                        if (sess.checking_only)
-                        {
-                            result.errButtonAction = '/02-check-your-data/01-upload-your-data';
-                            res.render('error_checking', {result: result});
-                        }
-                        else
-                        {
-                            result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-                            res.render('error_sending', {result: result});
-                        }
-                    }
-                    else if (result.appStatusCode == 800)
-                    {
-                        if(sess.checking_only)
-                            res.render('02-check-your-data/04-success', {"result": result});
-                        else
-                            res.render('04-send-your-data/04-success', {"result": result});
-                    } else
-                    {
-                        if(sess.checking_only)
-                            res.render('02-check-your-data/05-failure', {"result": result});
-                        else
-                            res.render('04-send-your-data/05-failure', {result: result});
-                    }
-                }
-            });
-        });
-
-        app.post('/api/file-upload-send', function (req, res) {
-            log.info("POST Request : " + req.url);
-
-            var userEmail = req.param('user_email');
-
-            var request = require('request');
-            var sess = req.session;
-
-            var headers = {
-                'Content-Type':     'application/x-www-form-urlencoded'
-            }
-
-            var formData = {
-                fileKey : sess.fileKey,
-                userEmail : userEmail
-            };
-
-            request.post({
-                url : 'http://localhost:9020/data-exchange/complete',
-                headers: headers,
-                formData: formData
-            }, function optionalCallback(err, httpResponse, body) {
-
-                if (err)
-                {
-                    var errMess = (err.code == "ECONNREFUSED" ? "The Data Exchange Service is not available" : "Unknown Error");
-                    var result = {
-                        pageText        : 'There is a problem',
-                        message        : errMess,
-                        errButtonText  : 'Start again'
-                    };
-
-                    result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-                    res.render('error_sending', {result: result});
-                }
-                else
-                {
-                    result = JSON.parse(body);
-
-                    if(httpResponse.statusCode != 200)
-                    {
-                        result.pageText = 'There is a problem';
-                        result.errButtonText = 'Start again';
-                        result.errButtonAction = '/04-send-your-data/01-upload-your-data';
-
-                        if(!result.message)
-                        {
-                            result.message = result.errors[0];
-                        }
-
-                        res.render('error_sending', {"result": result});
-                    }
-                    else
-                    {
-                        res.render('04-send-your-data/07-done', {"result": result});
-                    }
-                }
-            });
-        });
-        // END API
-
-        // auto render any OTHER view that exists
-        app.get(/^\/([^.]+)$/, function (req, res) {
-
-            var path = (req.params[0]);
-
-            res.render(path, function (err, html) {
-                if (err)
-                {
-                    console.log(err);
-                    res.send(404);
-                }
-                else
-                {
-                    res.end(html);
-                }
-            });
-
-        });
+module.exports = [
+  // Static assets.
+  {
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+      directory: {
+        path: [
+          'public/',
+          'govuk_modules/govuk_template/assets',
+          'govuk_modules/govuk_frontend_toolkit'
+        ],
+        etagMethod: 'hash' // Allows assets to be cached by the client.
+      }
     }
-};
+  },
+  // TODO: Make redirection environment-specific, and rename the index to "development" or similar.
+  // Redirect for site root.
+  {
+    method: 'GET',
+    path: '/',
+    handler: IndexHandler.redirectToIndex
+  },
+  // Index page (visible in development only).
+  // TODO: Rename
+  {
+    method: 'GET',
+    path: '/index',
+    handler: BasicTemplateHandler.getHandler
+  },
+  // Start page.
+  {
+    method: 'GET',
+    path: '/01-start/01-start',
+    handler: BasicTemplateHandler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/01-start/01-start',
+    handler: O1O1Handler.postHandler
+  },
+  // 01-Upload-Your-Data.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/01-upload-your-data',
+    handler: BasicTemplateHandler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/02-send-your-data/01-upload-your-data',
+    config: {
+      payload: {
+        maxBytes: 1 * Math.pow(2, 20), // 1 megabyte
+        timeout: 20 * 1000, // 20 seconds
+        output: 'file',
+        parse: true
+      }
+    },
+    handler: O2O1Handler.postHandler
+  },
+  // 02-Verify-Your-File.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/02-verify-your-file',
+    handler: O2O2Handler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/02-send-your-data/02-verify-your-file',
+    handler: O2O2Handler.postHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/06-failure',
+    handler: O2O6Handler.getHandler
+  },
+  // 03-Email.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/03-email',
+    handler: O2O3Handler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/02-send-your-data/03-email',
+    handler: O2O3Handler.postHandler
+  },
+  // 04-Authenticate.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/04-authenticate',
+    handler: BasicTemplateHandler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/02-send-your-data/04-authenticate',
+    handler: O204Handler.postHandler
+  },
+  // 05-Success.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/05-success',
+    handler: O2O5Handler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/02-send-your-data/05-success',
+    handler: O2O5Handler.postHandler
+  },
+  // 07-Failure (unrecoverable).
+  {
+    method: 'GET',
+    path: '/02-send-your-data/07-failure',
+    handler: O2O7Handler.getHandler
+  },
+  // 08-Done.
+  {
+    method: 'GET',
+    path: '/02-send-your-data/08-done',
+    handler: O2O8Handler.getHandler
+  },
+  // Help pages.
+  {
+    method: 'GET',
+    path: '/05-help/01-help',
+    handler: BasicTemplateHandler.getHandler
+  },
+  {
+    method: 'GET',
+    path: '/invalid_csv_file',
+    handler: InvalidCSVHandler.getHandler
+  }
+];
+
