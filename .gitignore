@@ -1,9 +1,0 @@
-.sass-cache
-.DS_Store
-.start.pid
-*.espressostorage
-node_modules
-uploads
-govuk_modules
-public
-.idea
