@@ -16,6 +16,7 @@ var sendPinTemplate = emailTemplates.sendPinTemplate;
 var compiledPinTemplate = Hogan.compile(sendPinTemplate);
 var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;
 var compiledConfirmationEmailTemplate = Hogan.compile(confirmationEmailTemplate);
+var Utils = require('./utils');
 
 /* used by Joi to validate the email address */
 var schema = {
@@ -78,7 +79,7 @@ var sendPinEmail = function (recipient, newPin) {
     var mailOptions = {
       from: sender,
       to: recipient,
-      subject: config.smtp.subject + ' ' + newPin,
+      subject: config.smtp.pinsubject + ' ' + newPin,
       text: emailBody,
       html: emailBody
     };
@@ -100,16 +101,25 @@ var sendPinEmail = function (recipient, newPin) {
   });
 };
 
-var sendConfirmationEmail = function (userMail) {
+var sendConfirmationEmail = function (userMail, filename) {
 
   return new Promise(function (resolve, reject) {
 
-    var emailBody = compiledConfirmationEmailTemplate.render();
+    var date = new Date();
+    var displayDate = Utils.getFormatedDate(date);
+    var time = Utils.getFormatedTime(date);
 
+    var data = {
+      FILENAME: filename,
+      DATE: displayDate,
+      TIME: time
+    };
+
+    var emailBody = compiledConfirmationEmailTemplate.render(data);
     var mailOptions = {
       from: sender,
       to: userMail,
-      subject: 'Confirmation',
+      subject: config.smtp.confirmsubject,
       text: emailBody,
       html: emailBody
     };

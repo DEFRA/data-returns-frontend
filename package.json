@@ -1,7 +1,7 @@
 {
   "name": "data-returns-frontend",
   "description": "Web front-end to a service for sending data to the Environment Agency",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "engines": {
     "node": "4.2.2"

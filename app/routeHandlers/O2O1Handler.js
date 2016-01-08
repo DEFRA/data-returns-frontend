@@ -21,6 +21,7 @@ module.exports.postHandler = function (request, reply) {
   var newLocalName = oldLocalName.concat(Path.extname(sourceName));
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_FilePath';
+  var oldkey = sessionID + '_SourceName';
 
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
@@ -31,7 +32,10 @@ module.exports.postHandler = function (request, reply) {
       }
     })
     .then(function () {
-      //cache the filename
+      //cache the filenames
+      CachHandler.setValue(oldkey, sourceName);
+    })
+    .then(function () {
       CachHandler.setValue(key, newLocalName);
     })
     .then(function () {

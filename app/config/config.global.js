@@ -39,7 +39,8 @@ config.useGoogleAnalytics = false;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 //SMTP Configuration
 config.smtp = {};
-config.smtp.subject = 'Data returns online (England) confirmation code - ';
+config.smtp.pinsubject = 'Data returns online (England) confirmation code - ';
+config.smtp.confirmsubject = 'Data returns online (England) data return receipt';
 config.smtp.success = '250 Message accepted';
 //Pin configuration
 config.pin = {

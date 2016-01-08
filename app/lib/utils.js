@@ -1,7 +1,6 @@
 'use strict';
 var FileSystem = require('fs');
 var CacheHandler = require('./cache-handler');
-
 module.exports = {
   /**
    * Renames a file asynchronously using a promise.
@@ -55,6 +54,33 @@ module.exports = {
     return (diff / 60000);
   },
   /*
+   * 
+   * @param {type} date
+   * @returns String representing a formatted date with leading zero's date i.e. 01-01-2000
+   */
+  getFormatedDate: function (date) {
+
+    var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+    var month = (date.getMonth()+1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+    var year = date.getFullYear();
+    var sep = '-';
+
+    return day + sep + month + sep + year;
+
+  },
+  /*
+   * 
+   * @param {type} date
+   * @returns String representing a date formatted with leading zero's
+   */
+  getFormatedTime: function (date) {
+    var hr = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+    var min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+    var sep = ':';
+
+    return hr + sep + min;
+  },
+  /*
    * deletes a file using a promise
    * @param sessionID the session id associated with this call
    * resolves true if the file is deleted
@@ -72,9 +98,7 @@ module.exports = {
               reject(err);
             }
           });
-
         });
-
     });
   }
 };
