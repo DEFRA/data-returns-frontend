@@ -138,7 +138,7 @@ server.register(require('vision'), function (err) {
 server.route(require('./app/routes'));
 
 // add security headers
-server.ext('onPreResponse', function (request, reply) {
+/*server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
@@ -149,7 +149,7 @@ server.ext('onPreResponse', function (request, reply) {
   resp.header('cache-control', 'max-age=300, public');
   return reply(resp);
 
-});
+});*/
 
 // Start the server.
 server.start(function (err) {
