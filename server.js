@@ -137,7 +137,8 @@ server.register(require('vision'), function (err) {
 // Configure server routes.
 server.route(require('./app/routes'));
 
-// add security headersserver.ext('onPreResponse', function (request, reply) {
+// add security headers
+server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
