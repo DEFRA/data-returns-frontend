@@ -12,6 +12,8 @@ var userHandler = require('../lib/user-handler');
 var postHandler = function (request, reply) {
 
   var sessionID = 'id_' + request.session.id;
+  
+ 
 
   console.log(JSON.stringify(request.session));
 

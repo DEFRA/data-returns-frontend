@@ -14,7 +14,6 @@ var CachHandler = require('../lib/cache-handler');
 module.exports.postHandler = function (request, reply) {
 
   request.log(['info', 'file-upload'], 'Processing uploaded file...');
-
   var contentType = request.payload.fileUpload.headers['content-type'] || null;
   var sourceName = request.payload.fileUpload.filename;
   var oldLocalName = request.payload.fileUpload.path;

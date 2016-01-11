@@ -9,7 +9,6 @@ var CacheHandler = require('../lib/cache-handler');
  * 
  */
 module.exports.getHandler = function (request, reply) {
-
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_SourceName';
 
