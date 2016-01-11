@@ -70,7 +70,7 @@ module.exports = [
     path: '/02-send-your-data/01-upload-your-data',
     config: {
       payload: {
-        maxBytes: 1 * Math.pow(2, 20), // 1 megabyte
+        maxBytes: 2 * Math.pow(2, 20), // 1 megabyte
         timeout: 20 * 1000, // 20 seconds
         output: 'file',
         parse: true
