@@ -3,6 +3,7 @@ var Request = require('request');
 var ErrorMessages = require('../lib/error-messages.js');
 var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
 var cacheHandler = require('../lib/cache-handler');
+var Utils = require('../lib/utils');
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.
@@ -67,7 +68,6 @@ function processResponse(err, response, body, reject, successCallback) {
         successCallback(parsedBody);
       } else {
         var errMessage, apiErrors;
-
         switch (parsedBody.appStatusCode) {
           case ErrorMessages.ERROR_CODES.SUCCESSFULL:
             successCallback(parsedBody);
@@ -96,17 +96,34 @@ function processResponse(err, response, body, reject, successCallback) {
           case ErrorMessages.ERROR_CODES.VALIDATION_ERRORS :
             errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
             apiErrors = parsedBody.validationResult.schemaErrors;
+
+            var lineErrorData = [];
+            var lineErrors = apiErrors.lineErrors;
+            var temp;
+
+            for (var lineErrorName in lineErrors) {
+              var lineError = {};
+              temp = lineErrors[lineErrorName];
+              lineError.inputLineNo = parseInt(temp.inputLineNo, 10);
+              lineError.columnName = temp.columnName;
+              lineError.errorValue = temp.errorValue;
+              lineError.outputMessage = temp.errorDetail.outputMessage;
+              lineErrorData.push(lineError);
+            }
+            // sort by line number
+            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('inputLineNo'));
             break;
+            
           default:
             errMessage = ErrorMessages.API.UNKNOWN;
             apiErrors = null;
         }
+
         reject({
           isUserError: true,
           message: errMessage,
-          apiErrors: apiErrors
+          lineErrors: sortedLineErrorData
         });
-
       }
 
     }

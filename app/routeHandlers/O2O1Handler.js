@@ -46,9 +46,11 @@ module.exports.postHandler = function (request, reply) {
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
+      console.log(errorData.apiErrors);
       reply.view('02-send-your-data/01-upload-your-data', {
         uploadError: true,
-        errorMessage: errorData.message
+        errorMessage: errorData.message,
+        lineErrors:errorData.lineErrors
       });
     } else {
       request.session.flash('errorMessage', errorData.message);

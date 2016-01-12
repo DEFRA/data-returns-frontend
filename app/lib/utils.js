@@ -61,12 +61,10 @@ module.exports = {
   getFormatedDate: function (date) {
 
     var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-    var month = (date.getMonth()+1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+    var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
     var year = date.getFullYear();
     var sep = '-';
-
     return day + sep + month + sep + year;
-
   },
   /*
    * 
@@ -77,7 +75,6 @@ module.exports = {
     var hr = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
     var min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
     var sep = ':';
-
     return hr + sep + min;
   },
   /*
@@ -100,6 +97,23 @@ module.exports = {
           });
         });
     });
+  },
+  /*
+   * Sorts an array of JSON objects based on a property in the objects
+   * @param propertyName the propert name to sort on
+   */
+  sortByProperty: function (propertyName) {
+    return function (a, b) {
+      var sortStatus = 0;
+      if (a[propertyName] < b[propertyName]) {
+        sortStatus = -1;
+      } else if (a[propertyName] > b[propertyName]) {
+        sortStatus = 1;
+      }
+      return sortStatus;
+    };
   }
+
+
 };
 
