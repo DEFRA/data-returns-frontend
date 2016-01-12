@@ -109,7 +109,9 @@ module.exports = {
         sortStatus = -1;
       } else if (a[propertyName] > b[propertyName]) {
         sortStatus = 1;
-      }
+      } /*else if (a[propertyName] === b[propertyName]) {
+        sortStatus = 1;
+      }*/
       return sortStatus;
     };
   }

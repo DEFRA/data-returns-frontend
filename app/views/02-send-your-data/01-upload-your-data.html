@@ -22,18 +22,23 @@ GOV.UK prototyping kit
   {{#uploadError}}
   <div class="validation-summary">
     <h1 class="heading-medium">The file you selected cannot be sent</h1>
-    <!--<p class="validation-message">{{errorMessage}}</p>-->
+    
+    {{^isLineErrors}}
+      <p class="validation-message">{{errorMessage}}</p>
+    {{/isLineErrors}}
+    {{#isLineErrors}}
     <p><details class="help-csv">
-      <summary><span title='Click for details' class="summary">{{errorMessage}}</span></summary>
+      <summary><span title='Click for details' class="summary">{{errorMessage}}&nbsp;(first 10 of {{lineErrorCount}}&nbsp;errors)</span></summary>
       <div class="panel-indent">
         <table>
           <th>Line</th><th>Column</th><th>Value</th><th>Error</th><tr>
         {{#lineErrors}}
-        <td>{{inputLineNo}}</td><td>{{columnName}}</td><td>{{errorValue}}</td><td>{{outputMessage}}</td><tr>
+        <td>{{outputLineNo}}</td><td>{{columnName}}</td><td>{{errorValue}}</td><td>{{outputMessage}}</td><tr>
         {{/lineErrors}}
         </table>
       </div>
     </details></p>
+    {{/isLineErrors}}
   </div>
   {{/uploadError}}
 

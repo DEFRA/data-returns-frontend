@@ -146,7 +146,7 @@ server.ext('onPreResponse', function (request, reply) {
   resp.header('X-XSS-Protection', '1; mode=block');
   resp.header('X-Content-Type-Options', 'nosniff');
   //resp.header('content-security-policy', 'script-src "any"');
-  resp.header('cache-control', 'max-age=300, public');
+  resp.header('cache-control', 'max-age=-1, public');
   return reply(resp);
 
 });

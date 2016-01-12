@@ -97,23 +97,30 @@ function processResponse(err, response, body, reject, successCallback) {
             errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
             apiErrors = parsedBody.validationResult.schemaErrors;
 
+            
             var lineErrorData = [];
             var lineErrors = apiErrors.lineErrors;
             var temp;
+            var x = 0;
 
             for (var lineErrorName in lineErrors) {
               var lineError = {};
+              x++;
+              if (x > 10) {
+                break;
+              }
               temp = lineErrors[lineErrorName];
-              lineError.inputLineNo = parseInt(temp.inputLineNo, 10);
+              lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
               lineError.columnName = temp.columnName;
               lineError.errorValue = temp.errorValue;
               lineError.outputMessage = temp.errorDetail.outputMessage;
               lineErrorData.push(lineError);
             }
             // sort by line number
-            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('inputLineNo'));
+            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('outputLineNo'));
+
             break;
-            
+
           default:
             errMessage = ErrorMessages.API.UNKNOWN;
             apiErrors = null;
@@ -122,7 +129,8 @@ function processResponse(err, response, body, reject, successCallback) {
         reject({
           isUserError: true,
           message: errMessage,
-          lineErrors: sortedLineErrorData
+          lineErrors: sortedLineErrorData,
+          lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
         });
       }
 
