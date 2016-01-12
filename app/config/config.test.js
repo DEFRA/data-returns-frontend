@@ -9,9 +9,11 @@ var config = require('./config.global');
 config.env = 'test';
 
 /* SMTP Test Configuration */
-config.smtp.host = '127.0.0.1';
-config.smtp.port = 1025;
-config.smtp.ignoreTLS = true;
+config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
+config.smtp.port = 587;
+config.smtp.ignoreTLS = false;
+config.smtp.username = '';
+config.smtp.password = '';
 config.smtp.fromEmailAddress = 'noreply-test@environment-agency.gov.uk';
 
 /* cache configuration */

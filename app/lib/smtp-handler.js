@@ -49,13 +49,20 @@ var validateEmailAddress = function (emailaddress) {
 };
 
 /* Default Transport (SMTP Connection) */
+
+var isUseCatcher = config.smtp.useMailCatcher === true ? true : false;
+
 var transporter = nodemailer.createTransport({
-  host: config.smtp.host,
-  port: config.smtp.port,
-  ignoreTLS: config.smtp.ignoreTLS
+  host: isUseCatcher ? config.smtp.mailcatcher.host : config.smtp.host,
+  port: isUseCatcher ? config.smtp.mailcatcher.port : config.smtp.port,
+  ignoreTLS: isUseCatcher ? config.smtp.mailcatcher.ignoreTLS : config.smtp.ignoreTLS,
+  auth: {
+    user: config.smtp.username,
+    pass: config.smtp.password
+  }
 }, {
   // default values for sendMail method
-  from: sender
+  from: isUseCatcher ? sender : 'datareturns@envage.co.uk'
 });
 
 /* emails a recipient

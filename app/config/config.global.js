@@ -39,9 +39,18 @@ config.useGoogleAnalytics = false;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 //SMTP Configuration
 config.smtp = {};
+config.smtp.mailcatcher = {};
 config.smtp.pinsubject = 'Data returns online (England) confirmation code - ';
 config.smtp.confirmsubject = 'Data returns online (England) data return receipt';
 config.smtp.success = '250 Message accepted';
+
+// mail catcher config
+// Set config.smtp.useMailCatcher = true; to use mail catcher
+config.smtp.useMailCatcher = true; // set to false on AWS servers
+config.smtp.mailcatcher.host = '127.0.0.1';
+config.smtp.mailcatcher.port = 1025;
+config.smtp.mailcatcher.ignoreTLS = true;
+
 //Pin configuration
 config.pin = {
   maxDigits: 4,

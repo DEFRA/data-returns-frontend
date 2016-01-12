@@ -7,10 +7,13 @@ var config = require('./config.global');
 config.env = 'development';
 config.sessionStorage.mode = 'redis';
 /* DEV SMTP Configuration */
-config.smtp.host = '127.0.0.1';
-config.smtp.port = 1025;
-config.smtp.ignoreTLS = true;
+config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
+config.smtp.port = 587;
+config.smtp.ignoreTLS = false;
+config.smtp.username = 'AKIAIXX25ZNDL33YHUIA';
+config.smtp.password = 'AmK/wWewBglYrvpyRmnLCPm7KlEcXJqPHMJIao585bzP';
 config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
+
 /* cache configuration */
 config.redis = {
   clientOptions: {
