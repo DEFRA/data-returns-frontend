@@ -28,7 +28,7 @@ GOV.UK prototyping kit
     {{/isLineErrors}}
     {{#isLineErrors}}
     <p><details class="help-csv">
-      <summary><span title='Click for details' class="summary">{{errorMessage}}&nbsp;(first 10 of {{lineErrorCount}}&nbsp;errors)</span></summary>
+      <summary><span title='Click for details' class="summary">{{errorMessage}} ( first {{firstNumber}} of {{lineErrorCount}} errors )</span></summary>
       <div class="panel-indent">
         <table>
           <th>Line</th><th>Column</th><th>Value</th><th>Error</th><tr>
