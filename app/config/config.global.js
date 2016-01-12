@@ -45,7 +45,7 @@ config.smtp.success = '250 Message accepted';
 //Pin configuration
 config.pin = {
   maxDigits: 4,
-  defaultPin: 1024,
+  defaultPin: 1960,
   MaxUploadsPerPin: 10,
   ValidTimePeriodMinutes: 60 * 24,
   TTL: 1000,

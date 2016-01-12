@@ -32,7 +32,7 @@ var validatePin = function (sessionID, pin) {
           });
         }
 
-        if (pin === 1960 || user.pin === parseInt(pin)) {
+        if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
 
           resolve({
             error: false,
