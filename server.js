@@ -37,8 +37,8 @@ server.register({
         config: {
           path: './logs',
           prefix: 'DataReturnsApp',
-          rotate: 'daily',
           format: 'DD-MMM-YYYY',
+          rotate: 'daily',
           extension: '.log'
         }
       }
