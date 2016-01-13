@@ -29,9 +29,18 @@ server.register({
       {
         reporter: require('good-file'),
         events: {
-          ops: '*'
+          log: '*',
+          //request: '*',
+          response: '*',
+          error: '*'
         },
-        config: './logs/ops.log'
+        config: {
+          path: './logs',
+          prefix: 'DataReturnsApp',
+          rotate: 'daily',
+          format: 'DD-MMM-YYYY',
+          extension: '.log'
+        }
       }
     ]
   }
