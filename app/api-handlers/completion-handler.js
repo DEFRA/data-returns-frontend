@@ -1,7 +1,7 @@
 'use strict';
 var Request = require('request');
 var ErrorMessages = require('../lib/error-messages.js');
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.

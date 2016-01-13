@@ -1,6 +1,6 @@
 'use strict';
 var random = require("random-js")();
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
 var userHandler = require('../lib/user-handler');

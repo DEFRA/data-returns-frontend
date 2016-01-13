@@ -1,0 +1,115 @@
+{{<layout}}
+
+{{$pageTitle}}
+GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+	<div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service &ndash; your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+		<h1 class="heading-xlarge">
+			<span id="title">Make corrections</span>
+		</h1>
+		<div class="text">
+			<p class="lede">Before you can send your file you need to make these corrections:</p>
+			<!-- <p>You can
+				<a href="#" onclick="alert('Not yet implemented!');return false;">create a PDF of the errors</a> (opens in a new window or tab).</p> -->
+		</div>
+		<div class="error-table">
+			<!-- <h2 class="heading-small">Errors found in 'failures.csv' - </h2> -->
+			<!-- For fixed header positioning only for Sticky JS -->
+			<table id="errorTableHeader">
+				<thead>
+				<tr>
+					<th width="5%">Row</th>
+					<th width="10%">Column</th>
+					<th width="15%">Error</th>
+					<th width="70%">How to fix it</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>2</td>
+					<td><abbr title="Return type">Rtn_Type</abbr></td>
+					<td>Missing</td>
+					<td>
+						<p>You must</p>
+						<ul class="list list-bullet">
+							<li>give a valid return type from <a href="#">annex B</a></li>
+							<li>enter the data exactly as it’s given in this list</li>
+						</ul>	
+						<p><a href="#">Find out about formatting all your data to meet EA standards</a>.</p>		
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td><abbr title="Monitoring Date/Time (Start)">Mon_Date</abbr></td>
+					<td>"30/02/2015"</td>
+					<td>
+						<p>You must give a monitoring date. This must be formatted as:</p>
+						<ul class="list list-bullet">
+							<li>DD-MM-YYYY or YYYY-MM-DD</li>
+							<li>only use hyphens as separators</li>
+						</ul>
+						<p>Monitoring time is optional according to return type, but should be formatted as hh:mm:ss</p>
+						<p><a href="#">Find out about formatting all your data to meet EA standards</a>.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Parameter</td>
+					<td>""</td>
+					<td>
+						<p>You must:</p>
+						<ul class="list list-bullet">
+							<li>give a parameter (substance) from <a href="#">annex C</a></li>
+							<li>enter the parameter type exactly as it’s given in this list</li>
+						</ul>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td><abbr title="Numerical value">Value</abbr></td>
+					<td>Missing</td>
+					<td>
+						<p>You must give a numerical value for your data. It can include zeros.</p>
+						<p><a href="#">Find out about formatting all your data to meet EA standards</a>.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Unit</td>
+					<td>Missing</td>
+					<td>
+						<p>You must</p>
+						<ul class="list list-bullet">
+							<li>give a unit for your measurements</li>
+							<li>enter the data type exactly as it’s given in this list</li>
+						</ul>
+						<p><a href="#">Find out about formatting all your data to meet EA standards</a>.</p>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>	
+		</div>
+		
+		
+		<div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
+	
+		<form action="/02-send-your-data/01-upload-your-data" class="form" method="post">
+			<div class="form-group">
+				<input type="submit" value="Start again" class="button">
+			</div>
+		</form>
+	</main> 
+
+{{/content}}
+
+{{/layout}}

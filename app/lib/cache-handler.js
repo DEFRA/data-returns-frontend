@@ -1,6 +1,6 @@
 
 'use strict';
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorMessages = require('./error-messages.js');
 
 var redis = require("redis"),

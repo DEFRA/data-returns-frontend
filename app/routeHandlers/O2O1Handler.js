@@ -2,7 +2,7 @@
 var Utils = require('../lib/utils');
 var CsvValidator = require('../lib/csv-validator');
 var Path = require('path');
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
 

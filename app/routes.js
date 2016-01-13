@@ -70,7 +70,7 @@ module.exports = [
     path: '/02-send-your-data/01-upload-your-data',
     config: {
       payload: {
-        maxBytes:  2 * Math.pow(2, 20), // 2 megabytes 
+        maxBytes: 2 * Math.pow(2, 20), // 2 megabytes 
         //TODO add large file check to validator as it is not handled.
         timeout: 20 * 1000, // 20 seconds
         output: 'file',
@@ -150,6 +150,11 @@ module.exports = [
     method: 'GET',
     path: '/invalid_csv_file',
     handler: InvalidCSVHandler.getHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/ValidationErrors',
+    handler: BasicTemplateHandler.getHandler
   }
 ];
 

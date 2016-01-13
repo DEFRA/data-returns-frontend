@@ -1,6 +1,6 @@
 
 var pinhandler = require('../app/lib/pin-handler');
-var config = require('../app/config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 const Code = require('code');
 const Lab = require('lab');
 const Path = require('path');

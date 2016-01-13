@@ -6,12 +6,12 @@
  */
 
 var nodemailer = require('nodemailer');
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var Joi = require('joi');
 var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
 var Hogan = require('hogan.js');
-var emailTemplates = require('../config/config.email.templates');
+var emailTemplates = require('../config/configuration_email_templates');
 var sendPinTemplate = emailTemplates.sendPinTemplate;
 var compiledPinTemplate = Hogan.compile(sendPinTemplate);
 var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;

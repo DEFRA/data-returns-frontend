@@ -1,9 +1,9 @@
-const Path = require('path');
-  const Hapi = require('hapi');
-  const Hogan = require('hogan.js');
+var Path = require('path');
+var Hapi = require('hapi');
+var Hogan = require('hogan.js');
 // Grab our environment-specific configuration; by default we assume a development environment.
 // TODO: HAPI version of configuration variable.
-  var config = require('./app/config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
 
 var server = new Hapi.Server();
@@ -70,8 +70,8 @@ server.register({
     storeBlank: true,
     name: 'data-returns-session',
     cookieOptions: {
-      isSecure: config.env === 'development'? false:true,
-        isHttpOnly: true, // not accessable from javascript
+      isSecure: config.env === 'local' ? false : true,
+      isHttpOnly: true, // not accessable from javascript
       password: config.sessionStorage.secret
     }
   },
@@ -101,7 +101,7 @@ var sharedViewContext = {
 };
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
-  const partialsCache = {};
+  var partialsCache = {};
   if (err) {
     console.error('Failed to initialise views component.');
     throw err;

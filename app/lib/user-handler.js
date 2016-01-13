@@ -1,4 +1,4 @@
-var config = require('../config/config.' + (process.env.NODE_ENV || 'development'));
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('./cache-handler');
 var Utils = require('./utils');
 

@@ -3,10 +3,10 @@
 /*
  * Settings for the 'production' environment.
  */
-var config = require('./config.global');
+var config = require('./configuration_global');
 
 // Set a meaningful name for this environment.
-config.env = 'production';
+config.env = 'prod';
 
 // In production we *do* want to use Google Analytics.
 config.useGoogleAnalytics = true;
@@ -39,7 +39,6 @@ var BASEURL = {
 config.API = {};
 config.API.endpoints = {
   'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
-  'FILEUPLOADVALIDATE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/validate',
   'FILEUPLOADSEND': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
   'ERRORCHECKING': 'error_checking',
   'ERRORSENDING': 'error_sending'
