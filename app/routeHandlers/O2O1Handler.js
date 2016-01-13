@@ -47,14 +47,33 @@ module.exports.postHandler = function (request, reply) {
     request.session.clear('returnMetaData');
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
-      reply.view('02-send-your-data/01-upload-your-data', {
-        uploadError: true,
-        errorMessage: errorData.message,
-        lineErrors: errorData.lineErrors,
-        isLineErrors: errorData.lineErrors ? true : false,
-        lineErrorCount: errorData.lineErrorCount,
-        firstNumber: errorData.lineErrorCount < 10 ? errorData.lineErrorCount : 10
-      });
+      if (errorData.lineErrorCount && errorData.lineErrorCount > 0) {
+        reply.view('02-send-your-data/09-errors', {
+          uploadError: true,
+          errorMessage: errorData.message,
+          lineErrors: errorData.lineErrors,
+          isLineErrors: errorData.lineErrors ? true : false,
+          lineErrorCount: errorData.lineErrorCount,
+          firstNumber: errorData.lineErrorCount < 10 ? errorData.lineErrorCount : 10
+        });
+      } else {
+        reply.view('02-send-your-data/01-upload-your-data', {
+          uploadError: true,
+          errorMessage: errorData.message,
+          lineErrors: '',
+          isLineErrors: false,
+          lineErrorCount: 0,
+          firstNumber: 0//errorData.lineErrorCount < 10 ? errorData.lineErrorCount : 10
+        });
+      }
+
+
+
+
+
+
+
+
     } else {
       request.session.flash('errorMessage', errorData.message);
       reply.redirect('/02-send-your-data/07-failure');
