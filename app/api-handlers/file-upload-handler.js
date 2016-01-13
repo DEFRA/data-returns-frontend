@@ -141,6 +141,7 @@ function processResponse(err, response, body, reject, successCallback) {
 /**
  * Uploads a file to the Data Exchange service.
  * @param filePath Full path to the file to upload.
+ * @param sessionID the users sessionID
  * @returns {Promise} A promise that is fulfilled when the upload completes
  *   successfully, or is rejected if an error occurs.  If successful, the
  *   promise is resolved with an object containing the fields 'fileKey',

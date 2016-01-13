@@ -1,8 +1,7 @@
 var Path = require('path');
 var Hapi = require('hapi');
 var Hogan = require('hogan.js');
-// Grab our environment-specific configuration; by default we assume a development environment.
-// TODO: HAPI version of configuration variable.
+// Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
 
@@ -23,7 +22,8 @@ server.register({
         reporter: require('good-console'),
         events: {
           log: '*',
-          response: '*'
+          error: '*',
+          response: config.log.responses === true ? '*' : 'none'
         }
       },
       {
