@@ -26,8 +26,8 @@ config.redis = {
 
 var BASEURL = {
   PROTOCOL: 'http://',
-  SERVER: '192.168.56.101:',
-  PORT: 8081//9020
+  SERVER: 'localhost:',
+  PORT: 9020
 };
 
 config.API = {};

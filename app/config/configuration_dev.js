@@ -26,8 +26,8 @@ config.redis = {
 
 var BASEURL = {
   PROTOCOL: 'http://',
-  SERVER: '192.168.56.101:',
-  PORT: 8081//9020
+  SERVER: 'internal-DVDRASLB01-308583578.eu-west-1.elb.amazonaws.com:',
+  PORT: 9020
 };
 
 config.API = {};
