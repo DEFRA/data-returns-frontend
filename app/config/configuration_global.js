@@ -33,7 +33,6 @@ config.sessionStorage = {
   mode: 'default',
   secret: process.env.DRF_SS_SECRET_KEY || '1234567890QWERTY'
 };
-
 // Google Analytics configuration.
 config.useGoogleAnalytics = false;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
@@ -43,14 +42,12 @@ config.smtp.mailcatcher = {};
 config.smtp.pinsubject = 'Data returns online (England) confirmation code - ';
 config.smtp.confirmsubject = 'Data returns online (England) data return receipt';
 config.smtp.success = '250 Message accepted';
-
 // mail catcher config
 // Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
 config.smtp.useMailCatcher = true; // set to false on AWS servers
 config.smtp.mailcatcher.host = '127.0.0.1';
 config.smtp.mailcatcher.port = 1025;
 config.smtp.mailcatcher.ignoreTLS = true;
-
 //Pin configuration
 config.pin = {
   maxDigits: 4,
@@ -68,7 +65,9 @@ config.CSV = {
   maxfilesize: 2 * Math.pow(2, 20) //2MB
 };
 
-
+//logging config
+config.log = {};
+config.log.responses = true;
 
 // Publish the configuration
 module.exports = config;

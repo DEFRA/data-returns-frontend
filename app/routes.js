@@ -153,7 +153,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/02-send-your-data/ValidationErrors',
+    path: '/02-send-your-data/09-errors',
     handler: BasicTemplateHandler.getHandler
   }
 ];

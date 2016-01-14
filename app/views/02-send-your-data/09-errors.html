@@ -1,0 +1,105 @@
+{{<layout}}
+
+{{$pageTitle}}
+GOV.UK prototyping kit
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+  <div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service &ndash; your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+  <h1 class="heading-xlarge">
+    <span id="title">Make corrections</span>
+  </h1>
+  <div class="text">
+    <p class="lede">Before you can send your file you need to make these corrections:</p>
+    <!-- <p>You can
+      <a href="#" onclick="alert('Not yet implemented!');return false;">create a PDF of the errors</a> (opens in a new window or tab).</p> -->
+  </div>
+  <div class="error-table">
+    <!-- <h2 class="heading-small">Errors found in 'failures.csv' - </h2> -->
+    <!-- For fixed header positioning only for Sticky JS -->
+    <table id="errorTableHeader">
+      <thead>
+        <tr>
+          <th width="5%">Row</th>
+          <th width="10%">Column</th>
+          <th width="15%">Error</th>
+          <th width="70%">How to fix it</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!--{{#uploadError}}
+<div class="validation-summary">
+  <h1 class="heading-medium">The file you selected cannot be sent</h1>
+  
+  {{^isLineErrors}}
+    <p class="validation-message">{{errorMessage}}</p>
+  {{/isLineErrors}}
+  {{#isLineErrors}}
+  <p><details class="help-csv">
+    <summary><span title='Click for details' class="summary">{{errorMessage}} ( first {{firstNumber}} of {{lineErrorCount}} errors )</span></summary>
+    <div class="panel-indent">
+      <table>
+        <th>Line</th><th>Column</th><th>Value</th><th>Error</th><tr>
+      {{#lineErrors}}
+      <td>{{outputLineNo}}</td><td>{{columnName}}</td><td>{{errorValue}}</td><td>{{outputMessage}}</td><tr>
+      {{/lineErrors}}
+      </table>
+    </div>
+  </details></p>
+  {{/isLineErrors}}
+</div>
+{{/uploadError}}-->
+        {{#uploadError}}
+        {{#lineErrors}}
+        <tr>
+          <td>{{outputLineNo}}</td>
+          <td><abbr title="{{columnName}}">{{columnName}}</abbr></td>
+          {{^errorValue}}
+            <td>Missing</td>
+          {{/errorValue}}
+          {{#errorValue}}
+            <td>{{errorValue}}</td>
+          {{/errorValue}}
+          <td>
+            <p>You must</p>
+            <ul class="list list-bullet">
+              <li>{{outputMessage}}</li>
+              <!--<li>give a valid return type from <a href="#">annex B</a></li>
+              <li>enter the data exactly as it’s given in this list</li>-->
+            </ul>
+            <p><a href="#">Find out about formatting all your data to meet EA standards</a>.</p>		
+          </td>
+        </tr>
+        {{/lineErrors}}
+        {{/uploadError}}
+
+
+
+
+      </tbody>
+    </table>
+  </div>	
+</div>
+
+
+<div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
+
+<form action="/02-send-your-data/01-upload-your-data" class="form" method="get">
+  <div class="form-group">
+    <input type="submit" value="Start again" class="button">
+  </div>
+</form>
+</main> 
+
+{{/content}}
+
+{{/layout}}
