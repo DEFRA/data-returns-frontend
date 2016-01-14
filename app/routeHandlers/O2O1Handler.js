@@ -5,7 +5,6 @@ var Path = require('path');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
-
 /*
  *  HTTP POST handler for /02-send-your-data/01-upload-your-data
  *  @Param request
@@ -21,7 +20,6 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
-
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
       if (config.CSV.validate === true) {
@@ -45,34 +43,17 @@ module.exports.postHandler = function (request, reply) {
     }).catch(function (errorData) {
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');
+    
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
-      if (errorData.lineErrorCount && errorData.lineErrorCount > 0) {
-        reply.view('02-send-your-data/09-errors', {
-          uploadError: true,
-          errorMessage: errorData.message,
-          lineErrors: errorData.lineErrors,
-          isLineErrors: errorData.lineErrors ? true : false,
-          lineErrorCount: errorData.lineErrorCount,
-          firstNumber: errorData.lineErrorCount < 10 ? errorData.lineErrorCount : 10
-        });
-      } else {
-        reply.view('02-send-your-data/01-upload-your-data', {
-          uploadError: true,
-          errorMessage: errorData.message,
-          lineErrors: '',
-          isLineErrors: false,
-          lineErrorCount: 0,
-          firstNumber: 0//errorData.lineErrorCount < 10 ? errorData.lineErrorCount : 10
-        });
-      }
+      var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
 
-
-
-
-
-
-
+      reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
+        uploadError: true,
+        errorMessage: errorData.message, 
+        lineErrors: errorData.lineErrors,
+        isLineErrors: errorData.lineErrors ? true : false
+      });
 
     } else {
       request.session.flash('errorMessage', errorData.message);
