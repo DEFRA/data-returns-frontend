@@ -17,7 +17,7 @@ config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
 /* cache configuration */
 config.redis = {
   clientOptions: {
-    host: 'localhost',
+    host: '10.208.4.75',
     port: 6379
   }
 };
