@@ -123,6 +123,7 @@ var sendConfirmationEmail = function (userMail, filename) {
     };
 
     var emailBody = compiledConfirmationEmailTemplate.render(data);
+    
     var mailOptions = {
       from: sender,
       to: userMail,

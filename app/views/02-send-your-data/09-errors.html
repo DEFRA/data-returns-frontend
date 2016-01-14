@@ -22,6 +22,8 @@ GOV.UK prototyping kit
     <!-- <p>You can
       <a href="#" onclick="alert('Not yet implemented!');return false;">create a PDF of the errors</a> (opens in a new window or tab).</p> -->
   </div>
+  {{#uploadError}}
+  {{{errorMessage}}}
   <div class="error-table">
     <!-- <h2 class="heading-small">Errors found in 'failures.csv' - </h2> -->
     <!-- For fixed header positioning only for Sticky JS -->
@@ -35,44 +37,20 @@ GOV.UK prototyping kit
         </tr>
       </thead>
       <tbody>
-
-        <!--{{#uploadError}}
-<div class="validation-summary">
-  <h1 class="heading-medium">The file you selected cannot be sent</h1>
-  
-  {{^isLineErrors}}
-    <p class="validation-message">{{errorMessage}}</p>
-  {{/isLineErrors}}
-  {{#isLineErrors}}
-  <p><details class="help-csv">
-    <summary><span title='Click for details' class="summary">{{errorMessage}} ( first {{firstNumber}} of {{lineErrorCount}} errors )</span></summary>
-    <div class="panel-indent">
-      <table>
-        <th>Line</th><th>Column</th><th>Value</th><th>Error</th><tr>
-      {{#lineErrors}}
-      <td>{{outputLineNo}}</td><td>{{columnName}}</td><td>{{errorValue}}</td><td>{{outputMessage}}</td><tr>
-      {{/lineErrors}}
-      </table>
-    </div>
-  </details></p>
-  {{/isLineErrors}}
-</div>
-{{/uploadError}}-->
-        {{#uploadError}}
         {{#lineErrors}}
         <tr>
-          <td>{{outputLineNo}}</td>
-          <td><abbr title="{{columnName}}">{{columnName}}</abbr></td>
+          <td>{{{outputLineNo}}}</td>
+          <td><abbr title="{{{columnName}}}">{{{columnName}}}</abbr></td>
           {{^errorValue}}
-            <td>Missing</td>
+          <td>Missing</td>
           {{/errorValue}}
           {{#errorValue}}
-            <td>{{errorValue}}</td>
+          <td>{{{errorValue}}}</td>
           {{/errorValue}}
           <td>
             <p>You must</p>
             <ul class="list list-bullet">
-              <li>{{outputMessage}}</li>
+              {{{outputMessage}}}
               <!--<li>give a valid return type from <a href="#">annex B</a></li>
               <li>enter the data exactly as it’s given in this list</li>-->
             </ul>
@@ -81,10 +59,6 @@ GOV.UK prototyping kit
         </tr>
         {{/lineErrors}}
         {{/uploadError}}
-
-
-
-
       </tbody>
     </table>
   </div>	
