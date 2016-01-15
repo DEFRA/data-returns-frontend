@@ -16,10 +16,6 @@ config.smtp.username = '';
 config.smtp.password = '';
 config.smtp.fromEmailAddress = 'noreply-test@environment-agency.gov.uk';
 
-config.upload = {
-  path: 'TODO'
-};
-
 /* cache configuration */
 config.redis = {
   clientOptions: {

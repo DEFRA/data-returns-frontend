@@ -151,20 +151,13 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
-  //resp.header('X-Frame-Options', 'sameorigin');
-  //resp.header('X-XSS-Protection', '1; mode=block');
-  //resp.header('X-Content-Type-Options', 'nosniff');
-  //resp.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  resp.header('X-Frame-Options', 'sameorigin');
+  resp.header('X-XSS-Protection', '1; mode=block');
+  resp.header('X-Content-Type-Options', 'nosniff');
+  resp.header('cache-control', 'max-age=-1, public');
 
   //resp.header('content-security-policy', 'script-src "any"');
-  //resp.header('cache-control', 'max-age=-1, public');
-  
-  /*if (request.headers['x-forwarded-proto'] === 'http') {
-  return reply(resp)
-    .redirect('https://' + request.headers.host + request.url.path)
-    .code(301);
-}*/
-  
+
   return reply(resp);
 
 });
