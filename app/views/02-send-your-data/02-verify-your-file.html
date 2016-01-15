@@ -33,7 +33,7 @@
 		  <div class="panel-indent permit-number">
 			  <div id="permit_found" class="permit">
 				  <p class="title"><span>Permit number</span></p>
-				  <p class="permit-number"><span class="result">{{returnMetaData.eaId}}</span> <span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span></p>
+				  <p class="permit-number"><span class="result">{{returnMetaData.eaId}}</span></p>
 			  </div>
 			  <div id="permit_not_found" class="permitnotfound permit" style="display: none;">
 				  <p class="title"><span>Permit number</span></p>
@@ -64,7 +64,7 @@
 				<input type="submit" class="button" value="Continue">
 			</div>
 			<div class="form-group checking">
-				<input type="submit" class="button" value="Please wait" disabled="disabled">
+				<input type="submit" class="button" value="Please wait">
 			</div>
 		</div><!-- /text -->
 	</form>
@@ -72,37 +72,6 @@
 			<input type="submit" class="button" value="Start again" onclick="location.href='/02-send-your-data/01-upload-your-data';">
 		</div>
 </main> 
-
-
-<script src="/public/javascripts/jquery-1.11.1.min.js"></script>
-<script>
-	$(document).ready(function() {
-		setTimeout(permitCheckComplete, 2000);
-	 });
-	function permitCheckComplete() {
-		var sessionValue = '{{returnMetaData.eaId}}';
-
-		// Failed permit lookup
-		if(sessionValue !== "AB3002SQ")
-		{
-//			alert('failed');
-			$("#permit_found").hide();
-			$("#permit_not_found").show();
-			$(".confirmed").hide(0);
-			$(".checking").hide(0);
-			$(".permit-not-found").show(0);
-			$("div.permit-number").addClass("error");
-		}
-		else
-		{
-//			alert('success');
-			$("#permit_found").show();
-			$("#permit_not_found").hide();
-			$(".confirmed").show(0);
-			$(".checking").hide(0);
-		}
-	}
-</script>
 
 {{/content}}
 
