@@ -61,8 +61,13 @@ config.pin = {
 // CSV Validation
 config.CSV = {
   validate: true,
-  VIRUS_SCAN: false,
+  VIRUS_SCAN: true,
   maxfilesize: 2 * Math.pow(2, 20) //2MB
+};
+
+// initial File upload directory where virus checker can find the files
+config.upload = {
+  path: '/tmp/data-returns/uploads'
 };
 
 //logging config
