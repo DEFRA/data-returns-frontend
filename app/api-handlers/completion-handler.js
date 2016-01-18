@@ -86,21 +86,24 @@ function processResponse(err, response, body, reject, successCallback) {
 module.exports.confirmFileSubmission = function (fileKey, userEmail) {
 
   return new Promise(function (resolve, reject) {
+    console.log('==> confirmFileSubmission ');
     // Define data to send to the Data Exchange service.
     var apiData = {
-      //url: config.API.endpoints.FILEUPLOADSEND,
-      url: config.API.endpoints.FILEUPLOADCOMPLETE + '/' + fileKey + '/' + userEmail
-        /* headers: {
-         'Content-Type': 'application/x-www-form-urlencoded'
-         },
-         formData: {
-         fileKey: fileKey,
-         userEmail: userEmail
-         }*/
+      url: config.API.endpoints.FILEUPLOADCOMPLETE,
+      //url: config.API.endpoints.FILEUPLOADCOMPLETE + '?filekey=' + fileKey + '&usermail=' + userEmail
+      //url: config.API.endpoints.FILEUPLOADCOMPLETE + '/' + fileKey + '/' + userEmail
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      formData: {
+        fileKey: fileKey,
+        userEmail: userEmail
+      }
     };
 
     // Define a function for handling a successful response.
     var successHandler = function () {
+      console.log('==> confirmFileSubmission successHandler() ');
       resolve(true);
     };
 
@@ -109,9 +112,4 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail) {
       processResponse(err, response, body, reject, successHandler);
     });
   });
-};
-
-//not used anymore retained incase 2 calls become 3 again due to performance issues
-module.exports.validateFileContents = function (data) {
-
 };

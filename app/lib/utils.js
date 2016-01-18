@@ -1,6 +1,10 @@
 'use strict';
 var FileSystem = require('fs');
 var CacheHandler = require('./cache-handler');
+var mkdirp = require('mkdirp');
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+
+
 module.exports = {
   /**
    * Renames a file asynchronously using a promise.
@@ -109,12 +113,25 @@ module.exports = {
         sortStatus = -1;
       } else if (a[propertyName] > b[propertyName]) {
         sortStatus = 1;
-      } /*else if (a[propertyName] === b[propertyName]) {
-        sortStatus = 1;
-      }*/
+      } 
       return sortStatus;
     };
+  },
+  /*
+   * Creates the upload directory
+   */
+  createUploadDirectory: function () {
+    
+    mkdirp(config.upload.path, function (err) {
+      if (err) {
+        console.error(err);
+      }else{
+        console.log('==> ' + config.upload.path + ' created.');
+      }
+    });
+
   }
+
 
 
 };

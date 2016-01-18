@@ -29,6 +29,7 @@ var Utils = require('../lib/utils');
  */
 function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
+  console.log('==> processResponse', body);
   if (err !== null) {
     reject({
       isUserError: false,
@@ -63,12 +64,15 @@ function processResponse(err, response, body, reject, successCallback) {
         apiErrors: parsedBody.errors
       });
     } else {
+      var appStatusCode = parseInt(parsedBody.appStatusCode);
+      console.log('\t processResponse- app status code:', appStatusCode);
 
-      if (parsedBody.appStatusCode === ErrorMessages.ERROR_CODES.SUCCESSFULL) {
+      if (appStatusCode === ErrorMessages.ERROR_CODES.SUCCESSFULL) {
+
         successCallback(parsedBody);
       } else {
         var errMessage, apiErrors;
-        switch (parsedBody.appStatusCode) {
+        switch (appStatusCode) {
           case ErrorMessages.ERROR_CODES.SUCCESSFULL:
             successCallback(parsedBody);
             apiErrors = '';
@@ -97,7 +101,7 @@ function processResponse(err, response, body, reject, successCallback) {
             errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
             apiErrors = parsedBody.validationResult.schemaErrors;
 
-            
+
             var lineErrorData = [];
             var lineErrors = apiErrors.lineErrors;
             var temp;
@@ -135,6 +139,7 @@ function processResponse(err, response, body, reject, successCallback) {
       }
 
     }
+    console.log('<== processResponse');
   }
 }
 
@@ -161,7 +166,7 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
     // Define a function for handling a successful response.
     var successHandler = function (jsonResponse) {
 
-      console.log('==> successHandler() jsonResponse = ' + JSON.stringify(jsonResponse));
+      console.log('==> successHandler()');
       if (jsonResponse) {
         var key = sessionID + '_UploadResult';
         cacheHandler.setValue(key, jsonResponse)

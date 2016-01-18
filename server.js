@@ -4,12 +4,14 @@ var Hogan = require('hogan.js');
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
+var utils = require('./app/lib/utils');
 
 var server = new Hapi.Server();
 
 server.connection({
   host: '0.0.0.0',
-  port: config.http.port
+  port: config.http.port,
+  routes: {cors: true}
 });
 
 // Setup logging.
@@ -151,12 +153,14 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
-  resp.header('X-Frame-Options', 'sameorigin');
-  resp.header('X-XSS-Protection', '1; mode=block');
-  resp.header('X-Content-Type-Options', 'nosniff');
-  resp.header('cache-control', 'max-age=-1, public');
+  if (resp && resp.header) {
+    resp.header('X-Frame-Options', 'sameorigin');
+    resp.header('X-XSS-Protection', '1; mode=block');
+    resp.header('X-Content-Type-Options', 'nosniff');
+    resp.header('cache-control', 'max-age=-1, public');
+    //resp.header('content-security-policy', 'script-src "any"');
+  }
 
-  //resp.header('content-security-policy', 'script-src "any"');
 
   return reply(resp);
 
@@ -164,6 +168,9 @@ server.ext('onPreResponse', function (request, reply) {
 
 // Start the server.
 server.start(function (err) {
+  
+  utils.createUploadDirectory();
+  
   if (err) {
     console.error('Failed to start server.');
     throw err;

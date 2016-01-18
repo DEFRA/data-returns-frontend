@@ -50,7 +50,7 @@ module.exports.PIN = {
 };
 
 module.exports.ANTIVIRUS = {
-  VIRUS_DETECTED: 'This file contains a virus'
+  VIRUS_DETECTED: '! Your file is unsafe. Your file hasn’t passed the security check so it might contain a virus or other suspicious content. Check your file and try again.'
 };
 
 
