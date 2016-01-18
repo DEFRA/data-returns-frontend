@@ -113,7 +113,7 @@ module.exports = {
         sortStatus = -1;
       } else if (a[propertyName] > b[propertyName]) {
         sortStatus = 1;
-      } 
+      }
       return sortStatus;
     };
   },
@@ -121,15 +121,26 @@ module.exports = {
    * Creates the upload directory
    */
   createUploadDirectory: function () {
-    
-    mkdirp(config.upload.path, function (err) {
-      if (err) {
-        console.error(err);
-      }else{
-        console.log('==> ' + config.upload.path + ' created.');
-      }
-    });
+    console.log('==> createUploadDirectory() ');
+    try {
+      // Query the entry
+      var stats = FileSystem.lstatSync(config.upload.path);
 
+      // Is it a directory already?
+      if (!stats.isDirectory()) {
+        mkdirp(config.upload.path, function (err) {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log('<== createUploadDirectory() ' + config.upload.path + ' created.');
+          }
+        });
+      } else {
+        console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
+      }
+    } catch (err) {
+      console.log('<== createUploadDirectory() error: ' + err);
+    }
   }
 
 

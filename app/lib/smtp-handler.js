@@ -34,15 +34,17 @@ var schema = {
 var validateEmailAddress = function (emailaddress) {
 
   return new Promise(function (resolve, reject) {
-
+    console.log('==> validateEmailAddress');
     var result = Joi.validate({'address': emailaddress}, schema);
 
     if (result.error) {
+      console.log('\t email address is invalid');
       reject({
         invalidEmailAddress: true,
         message: errorMsgs.SMTP.INVALIDEMAILADDRESS
       });
     } else {
+      console.log('\t email address is valid');
       resolve(true);
     }
   });
@@ -75,7 +77,7 @@ var transporter = nodemailer.createTransport({
 var sendPinEmail = function (recipient, newPin) {
 
   return new Promise(function (resolve, reject) {
-
+    console.log('==> sendPinEmail() ');
     var data = {
       pin: newPin
     };
@@ -94,6 +96,7 @@ var sendPinEmail = function (recipient, newPin) {
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log('\t error sending email ' + error);
         if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors
@@ -101,6 +104,7 @@ var sendPinEmail = function (recipient, newPin) {
           });
         }
       } else if (info.response === config.smtp.success) {
+        console.log('<== Pin email sent successfully to ' + recipient);
         resolve(true);
       }
 
@@ -111,7 +115,7 @@ var sendPinEmail = function (recipient, newPin) {
 var sendConfirmationEmail = function (userMail, filename) {
 
   return new Promise(function (resolve, reject) {
-
+    console.log('==> sendConfirmationEmail() ');
     var date = new Date();
     var displayDate = Utils.getFormatedDate(date);
     var time = Utils.getFormatedTime(date);
@@ -123,7 +127,7 @@ var sendConfirmationEmail = function (userMail, filename) {
     };
 
     var emailBody = compiledConfirmationEmailTemplate.render(data);
-    
+
     var mailOptions = {
       from: sender,
       to: userMail,
@@ -135,6 +139,7 @@ var sendConfirmationEmail = function (userMail, filename) {
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log('\t error sending confirmation email ' + error);
         if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors
@@ -142,6 +147,7 @@ var sendConfirmationEmail = function (userMail, filename) {
           });
         }
       } else if (info.response === config.smtp.success) {
+        console.log('<== Confirmation Email sent successfully to ' + userMail);
         resolve(userMail);
       }
 

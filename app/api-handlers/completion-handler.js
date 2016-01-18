@@ -27,7 +27,9 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
  */
 function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
+  console.log('==> processResponse ');
   if (err !== null) {
+    console.log('\t error' + err);
     reject({
       isUserError: false,
       err: err,
@@ -41,12 +43,14 @@ function processResponse(err, response, body, reject, successCallback) {
       var parsedBody = JSON.parse(body);
       if (response.statusCode !== config.API.STATUS_CODES.OK) {
         // The REST call resulted in an error.
+        console.log('\t rest call failed');
         reject({
           isUserError: false,
           message: parsedBody.message,
           apiErrors: parsedBody.errors
         });
       } else if (parsedBody.appStatusCode !== ErrorMessages.API.APPLICATION_ERROR_CODE) {
+        console.log('\t rest call sussessful with app error ' + parsedBody.appStatusCode);
         // REST call successful, but response indicates application-specific error.
         reject({
           isUserError: true,
@@ -54,6 +58,7 @@ function processResponse(err, response, body, reject, successCallback) {
           apiErrors: parsedBody.errors
         });
       } else {
+        console.log('<== processResponse call successful');
         // Successful.
         successCallback(parsedBody);
       }
@@ -86,7 +91,7 @@ function processResponse(err, response, body, reject, successCallback) {
 module.exports.confirmFileSubmission = function (fileKey, userEmail) {
 
   return new Promise(function (resolve, reject) {
-    console.log('==> confirmFileSubmission ');
+    console.log('==> confirmFileSubmission url: ' + config.API.endpoints.FILEUPLOADCOMPLETE);
     // Define data to send to the Data Exchange service.
     var apiData = {
       url: config.API.endpoints.FILEUPLOADCOMPLETE,
@@ -109,6 +114,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail) {
 
     // Make REST call into the Data Exchange service.
     Request.post(apiData, function (err, response, body) {
+      console.log('==> confirmFileSubmission response received');
       processResponse(err, response, body, reject, successHandler);
     });
   });

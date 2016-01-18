@@ -25,7 +25,7 @@ server.register({
         events: {
           log: '*',
           error: '*',
-          response: config.log.responses === true ? '*' : 'none'
+          //response: config.log.responses === true ? '*' : 'none'
         }
       },
       {
@@ -33,7 +33,7 @@ server.register({
         events: {
           log: '*',
           //request: '*',
-          response: '*',
+          //response: '*',
           error: '*'
         },
         config: {

@@ -11,6 +11,7 @@ var userHandler = require('../lib/user-handler');
 var newPin = function () {
 
   return new Promise(function (resolve, reject) {
+    console.log('==> newPin()');
     var pin = "";
     for (var i = 0; i < maxdigits; i++) {
       pin = pin + random.integer(1, 9);
@@ -21,7 +22,7 @@ var newPin = function () {
 
 var validatePin = function (sessionID, pin) {
   return new Promise(function (resolve, reject) {
-
+    console.log('==> validatePin()');
     userHandler.getUser(sessionID)
       .then(function (user) {
         
@@ -33,12 +34,13 @@ var validatePin = function (sessionID, pin) {
         }
 
         if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
-
+          console.log('\t pin is valid');
           resolve({
             error: false,
             code: messages.PIN.VALID_PIN
           });
         } else {
+          console.log('\t pin is invalid');
           reject({
             error: false,
             code: messages.PIN.INVALID_PIN

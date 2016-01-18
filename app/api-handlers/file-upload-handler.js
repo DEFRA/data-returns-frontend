@@ -154,7 +154,7 @@ function processResponse(err, response, body, reject, successCallback) {
  *   rejection details see processApiResponse().
  */
 module.exports.uploadFileToService = function (filePath, sessionID) {
-
+  console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
   return new Promise(function (resolve, reject) {
     // Define data to send to the Data Exchange service.
     var apiData = {
@@ -180,6 +180,7 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
     };
     // Make REST call into the Data Exchange service, and handle the result.
     Request.post(apiData, function (err, response, body) {
+      console.log('<== uploadFileToService() response received');
       processResponse(err, response, body, reject, successHandler);
     });
   });

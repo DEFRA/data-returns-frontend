@@ -26,9 +26,10 @@ var validateFile = function (filePath, contentType) {
    */
 
   return new Promise(function (resolve, reject) {
-
+    console.log('==> validateFile() ');
     // Test that a filePath has been specified.
     if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {
+      console.log('\t file path is empty!');
       reject({
         isUserError: false,
         err: new Error('"filePath" parameter must be a non-empty string')
@@ -48,6 +49,7 @@ var validateFile = function (filePath, contentType) {
 
             // Test file extension.
             else if (Path.extname(filePath).toLowerCase() !== '.csv') {
+              console.log('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
               reject({
                 isUserError: true,
                 message: ErrorMessages.FILE_HANDLER.NOT_CSV
@@ -65,12 +67,14 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
+                  console.log('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES );
                   reject({
                     isUserError: true,
                     message: ErrorMessages.FILE_HANDLER.ZERO_BYTES
                   });
                 } else {
                   // All tests have passed; looks like a valid file.
+                  console.log('<== validateFile() the file is valid');
                   resolve(true);
                 }
               });
@@ -79,6 +83,7 @@ var validateFile = function (filePath, contentType) {
           }
         })
         .catch(function (result) {
+          
           reject({
             isUserError: true,
             message: ErrorMessages.ANTIVIRUS.VIRUS_DETECTED
