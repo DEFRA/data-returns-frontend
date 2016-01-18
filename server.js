@@ -151,11 +151,13 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
-  resp.header('X-Frame-Options', 'sameorigin');
-  resp.header('X-XSS-Protection', '1; mode=block');
-  resp.header('X-Content-Type-Options', 'nosniff');
+  //resp.header('X-Frame-Options', 'sameorigin');
+  //resp.header('X-XSS-Protection', '1; mode=block');
+  //resp.header('X-Content-Type-Options', 'nosniff');
+  //resp.header('cache-control', 'max-age=-1, public');
+
   //resp.header('content-security-policy', 'script-src "any"');
-  resp.header('cache-control', 'max-age=-1, public');
+
   return reply(resp);
 
 });

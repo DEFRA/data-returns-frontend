@@ -1,6 +1,7 @@
 /* global config */
 
 'use strict';
+var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
 var IndexHandler = require('./routeHandlers/indexHandler');
 var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var O1O1Handler = require('./routeHandlers/O1O1Handler');
@@ -72,9 +73,10 @@ module.exports = [
       payload: {
         maxBytes: 2 * Math.pow(2, 20), // 2 megabytes 
         //TODO add large file check to validator as it is not handled.
-        timeout: 20 * 1000, // 20 seconds
+        timeout: 60 * 1000, // 20 seconds
         output: 'file',
-        parse: true
+        parse: true,
+        uploads: config.upload.path
       }
     },
     handler: O2O1Handler.postHandler

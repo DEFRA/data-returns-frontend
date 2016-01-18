@@ -46,6 +46,8 @@ module.exports = {
 
     return new Promise(function (resolve, reject) {
       client.set(key, JSON.stringify(value));
+      //auto delete any orphans after 24hrs
+      client.EXPIRE(key, (60 * 60) * 24);
       resolve(true);
     });
   },
