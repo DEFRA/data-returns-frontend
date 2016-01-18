@@ -153,6 +153,7 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
+
   if (resp && resp.header) {
     resp.header('X-Frame-Options', 'sameorigin');
     resp.header('X-XSS-Protection', '1; mode=block');
@@ -160,7 +161,6 @@ server.ext('onPreResponse', function (request, reply) {
     resp.header('cache-control', 'max-age=-1, public');
     //resp.header('content-security-policy', 'script-src "any"');
   }
-
 
   return reply(resp);
 
