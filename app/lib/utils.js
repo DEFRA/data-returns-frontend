@@ -3,8 +3,6 @@ var FileSystem = require('fs');
 var CacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-
-
 module.exports = {
   /**
    * Renames a file asynchronously using a promise.
@@ -122,12 +120,17 @@ module.exports = {
    */
   createUploadDirectory: function () {
     console.log('==> createUploadDirectory() ');
+    var stats;
     try {
       // Query the entry
-      var stats = FileSystem.lstatSync(config.upload.path);
+      stats = FileSystem.lstatSync(config.upload.path);
+    } catch (err) {
+      stats = null;
+    }
 
+    try {
       // Is it a directory already?
-      if (!stats.isDirectory()) {
+      if (stats === null || !stats.isDirectory()) {
         mkdirp(config.upload.path, function (err) {
           if (err) {
             console.error(err);

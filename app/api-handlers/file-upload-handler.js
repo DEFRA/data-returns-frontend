@@ -31,6 +31,7 @@ function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
   console.log('==> processResponse', body);
   if (err !== null) {
+    console.log('\t processResponse() Error: ' + err);
     reject({
       isUserError: false,
       err: err,
@@ -57,6 +58,7 @@ function processResponse(err, response, body, reject, successCallback) {
     }
 
     if (response.statusCode !== config.API.STATUS_CODES.OK) {
+      console.log('\t processResponse error: Response Code- ' + response.statusCode);
       // The REST call resulted in an error.
       reject({
         isUserError: false,
