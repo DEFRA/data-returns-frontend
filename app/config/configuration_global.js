@@ -44,7 +44,7 @@ config.smtp.confirmsubject = 'Data returns online (England) data return receipt'
 config.smtp.success = '250 Message accepted';
 // mail catcher config
 // Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
-config.smtp.useMailCatcher = true; // set to false on AWS servers
+config.smtp.useMailCatcher = false; // set to false on AWS servers
 config.smtp.mailcatcher.host = '127.0.0.1';
 config.smtp.mailcatcher.port = 1025;
 config.smtp.mailcatcher.ignoreTLS = true;
