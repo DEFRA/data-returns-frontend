@@ -173,9 +173,11 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
         var key = sessionID + '_UploadResult';
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
+            console.log('<== successHandler() resolve(true) ');
             resolve(true);
           })
           .catch(function (result) {
+            console.log('<== successHandler() error: ' + result);
             reject();
           });
       }

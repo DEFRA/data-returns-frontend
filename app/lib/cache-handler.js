@@ -15,25 +15,30 @@ module.exports = {
   getValue: function (key) {
 
     return new Promise(function (resolve, reject) {
+      console.log('==> cache-handler.getValue() key: ' + key);
 
       if (client && client.connected) {
+
         client.get(key, function (err, reply) {
 
           if (err) {
+            console.log('<== cache-handler.getValue() error :' + err);
             reject({
               error: true,
               message: err.message
             });
           } else {
+            console.log('<== cache-handler.getValue() data: :' + reply);
             resolve(reply);
           }
         });
       } else {
+        console.log('Error: cache-handler.getValue() ' + ErrorMessages.REDIS.NOT_CONNECTED);
         reject({
           error: true,
           message: ErrorMessages.REDIS.NOT_CONNECTED
         });
-        console.log('Error: cache-handler.getValue() ' + ErrorMessages.REDIS.NOT_CONNECTED);
+
       }
     });
   },
@@ -45,10 +50,19 @@ module.exports = {
   setValue: function (key, value) {
 
     return new Promise(function (resolve, reject) {
-      client.set(key, JSON.stringify(value));
-      //auto delete any orphans after 24hrs
-      client.EXPIRE(key, (60 * 60) * 24);
-      resolve(true);
+
+      client.set(key, JSON.stringify(value), function (err, res) {
+
+        if (err) {
+          reject(err);
+        } else {
+          //auto delete any orphans after 24hrs
+          client.EXPIRE(key, (60 * 60) * 24);
+          resolve(true);
+        }
+
+      });
+
     });
   },
   /*

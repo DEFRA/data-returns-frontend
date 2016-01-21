@@ -10,19 +10,31 @@ module.exports = {
    */
   getHandler: function (request, reply) {
     var key = 'id_' + request.session.id + '_UploadResult';
+    console.log('==> O2O2Handler getHandler() ');
     CacheHandler.getValue(key)
       .then(function (data) {
-        data = JSON.parse(data);
-        var uploadResult = data.uploadResult;
-        var generalResult = data.generalResult.transformationResults.results;
+        var parsedData = JSON.parse(data);
+        var uploadResult = parsedData.uploadResult;
+        var generalResult = parsedData.generalResult.transformationResults.results;
+
+        var metaData = {
+          fileKey: uploadResult.fileKey,
+          eaId: generalResult.Result_EA_ID.value,
+          siteName: generalResult.Result_Site_Name.value,
+          returnType: generalResult.Result_Rtn_Type.value
+        };
+
+        console.log('\t metadata: ', metaData);
 
         reply.view('02-send-your-data/02-verify-your-file', {
-          returnMetaData: {fileKey: uploadResult.fileKey,
-            eaId: generalResult.Result_EA_ID.value,
-            siteName: generalResult.Result_Site_Name.value,
-            returnType: generalResult.Result_Rtn_Type.value
-          }
+          returnMetaData: metaData
         });
+
+        console.log('<== O2O2Handler getHandler()');
+
+      })
+      .catch(function (err) {
+        console.log('<== O2O2Handler getHandler() Error' + err);
       });
   },
   /*
