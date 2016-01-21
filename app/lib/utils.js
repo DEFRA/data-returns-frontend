@@ -3,7 +3,14 @@ var FileSystem = require('fs');
 var CacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+var uuid = require('node-uuid');
+
 module.exports = {
+  getUUID: function () {
+
+    return uuid.v4();
+
+  },
   /**
    * Renames a file asynchronously using a promise.
    * @param oldPath The full path to the file to rename.

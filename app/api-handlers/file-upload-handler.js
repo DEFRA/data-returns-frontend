@@ -30,6 +30,7 @@ var Utils = require('../lib/utils');
 function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
   console.log('==> processResponse', body);
+
   if (err !== null) {
     console.log('\t processResponse() Error: ' + err);
     reject({
@@ -167,19 +168,10 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
     };
     // Define a function for handling a successful response.
     var successHandler = function (jsonResponse) {
-
       console.log('==> successHandler()');
       if (jsonResponse) {
-        var key = sessionID + '_UploadResult';
-        cacheHandler.setValue(key, jsonResponse)
-          .then(function (result) {
-            console.log('<== successHandler() resolve(true) ');
-            resolve(true);
-          })
-          .catch(function (result) {
-            console.log('<== successHandler() error: ' + result);
-            reject();
-          });
+        console.log('<== successHandler() resolve(true) ');
+        resolve(jsonResponse);
       }
     };
     // Make REST call into the Data Exchange service, and handle the result.

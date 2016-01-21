@@ -20,6 +20,7 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
+
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
       if (config.CSV.validate === true) {
@@ -38,19 +39,35 @@ module.exports.postHandler = function (request, reply) {
     .then(function () {
       return FileUploadHandler.uploadFileToService(newLocalName, sessionID);
     })
-    .then(function (apiResponse) {
-      reply.redirect('/02-send-your-data/02-verify-your-file');
+    .then(function (data) {
+    
+        var uploadResult = data.uploadResult;
+        var generalResult = data.generalResult.transformationResults.results;
+
+        var metaData = {
+          fileKey: uploadResult.fileKey,
+          eaId: generalResult.Result_EA_ID.value,
+          siteName: generalResult.Result_Site_Name.value,
+          returnType: generalResult.Result_Rtn_Type.value
+        };
+
+        console.log('\t metadata: ', metaData);
+
+        reply.view('02-send-your-data/02-verify-your-file', {
+          returnMetaData: metaData
+        });
+    
     }).catch(function (errorData) {
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');
-    
+
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
 
       reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
         uploadError: true,
-        errorMessage: errorData.message, 
+        errorMessage: errorData.message,
         lineErrors: errorData.lineErrors,
         isLineErrors: errorData.lineErrors ? true : false
       });
