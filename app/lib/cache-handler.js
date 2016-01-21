@@ -50,12 +50,14 @@ module.exports = {
   setValue: function (key, value) {
 
     return new Promise(function (resolve, reject) {
-
+      console.log('==> CacheHandler setValue() ', key, value);
       client.set(key, JSON.stringify(value), function (err, res) {
 
         if (err) {
+          console.log('<== CacheHandler setValue() error: ' + err);
           reject(err);
         } else {
+          console.log('<== CacheHandler setValue() redis response: ' + res);
           //auto delete any orphans after 24hrs
           client.EXPIRE(key, (60 * 60) * 24);
           resolve(true);
