@@ -40,23 +40,25 @@ module.exports.postHandler = function (request, reply) {
       return FileUploadHandler.uploadFileToService(newLocalName, sessionID);
     })
     .then(function (data) {
-    
-        var uploadResult = data.uploadResult;
-        var generalResult = data.generalResult.transformationResults.results;
 
-        var metaData = {
-          fileKey: uploadResult.fileKey,
-          eaId: generalResult.Result_EA_ID.value,
-          siteName: generalResult.Result_Site_Name.value,
-          returnType: generalResult.Result_Rtn_Type.value
-        };
+      var uploadResult = data.uploadResult;
+      var generalResult = data.generalResult.transformationResults.results;
 
-        console.log('\t metadata: ', metaData);
+      var metaData = {
+        fileKey: uploadResult.fileKey,
+        eaId: generalResult.Result_EA_ID.value,
+        siteName: generalResult.Result_Site_Name.value,
+        returnType: generalResult.Result_Rtn_Type.value
+      };
 
-        reply.view('02-send-your-data/02-verify-your-file', {
-          returnMetaData: metaData
-        });
-    
+      console.log('\t metadata: ', metaData);
+
+      
+      
+      reply.view('02-send-your-data/02-verify-your-file', {
+        returnMetaData: metaData
+      });
+
     }).catch(function (errorData) {
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');

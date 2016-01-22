@@ -1,7 +1,7 @@
 
 var UserHandler = require('../lib/user-handler');
 /*
- * HTTP GET handler for gets for /02-send-your-data/06-failure
+ * HTTP GET handler for gets for /02-send-your-data/06-check
  * @param {type} request
  * @param {type} reply
  */

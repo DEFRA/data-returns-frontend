@@ -94,7 +94,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/02-send-your-data/06-failure',
+    path: '/02-send-your-data/06-check',
     handler: O2O6Handler.getHandler
   },
   // 03-Email.
