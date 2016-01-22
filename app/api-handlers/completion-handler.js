@@ -49,8 +49,8 @@ function processResponse(err, response, body, reject, successCallback) {
           message: parsedBody.message,
           apiErrors: parsedBody.errors
         });
-      } else if (parsedBody.appStatusCode !== ErrorMessages.API.APPLICATION_ERROR_CODE) {
-        console.log('\t rest call sussessful with app error ' + parsedBody.appStatusCode);
+      } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.ERROR_CODES.SUCCESSFULL) {
+        console.log('\t rest call successful with app error ' + parsedBody.appStatusCode);
         // REST call successful, but response indicates application-specific error.
         reject({
           isUserError: true,
