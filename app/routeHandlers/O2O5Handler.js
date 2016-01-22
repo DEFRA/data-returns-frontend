@@ -37,11 +37,14 @@ module.exports = {
         UserHandler.getUserMail(sessionID)
           .then(function (userMail) {
             CompletionHandler.confirmFileSubmission(fileKey, userMail)
-              .then(function (result) {
+              .then(function () {
                 reply.redirect('/02-send-your-data/08-done');
               })
-              .catch(function (err) {
-                console.log('o2o5Handler.postHandler() error' + err);
+              .catch(function (errorData) {
+                console.log('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
+                request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
+                request.session.flash('errorMessage', errorData.message);
+                reply.redirect('/02-send-your-data/07-failure');
               });
           });
       })

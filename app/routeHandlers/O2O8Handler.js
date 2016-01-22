@@ -20,7 +20,7 @@ module.exports.getHandler = function (request, reply) {
       email = usermail;
       CacheHandler.getValue(key)
         .then(function (filename) {
-          file = filename;
+          file = filename.replace(/"/g, "");
         })
         .then(function () {
           reply.view('02-send-your-data/08-done', {
@@ -29,7 +29,7 @@ module.exports.getHandler = function (request, reply) {
         });
     })
     .then(function () {
-      SMTPHandler.sendConfirmationEmail(usermail, file.replace(/"/g, ""))
+      SMTPHandler.sendConfirmationEmail(email, file)
         .then(function (email) {
           console.log('\t The confirmation email has been sent');
         })
@@ -42,8 +42,8 @@ module.exports.getHandler = function (request, reply) {
           Utils.deleteFile(sessionID);
         });
     })
-    .catch(function () {
-      console.log('==< O2O8Handler.getHandler() Unknown error');
+    .catch(function (err) {
+      console.log('==< O2O8Handler.getHandler() Unknown error' + err);
     });
 
 };
