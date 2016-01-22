@@ -37,11 +37,11 @@ module.exports = {
         UserHandler.getUserMail(sessionID)
           .then(function (userMail) {
             CompletionHandler.confirmFileSubmission(fileKey, userMail)
-              .then(function () {
-                CacheHandler.deleteKeyValuePair(uploadResultsCacheKey);
-              })
               .then(function (result) {
                 reply.redirect('/02-send-your-data/08-done');
+              })
+              .catch(function (err) {
+                console.log('o2o5Handler.postHandler() error' + err);
               });
           });
       })

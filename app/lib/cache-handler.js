@@ -66,20 +66,6 @@ module.exports = {
       });
 
     });
-  },
-  /*
-   * Deletes a key/value pair based on the key via a promise
-   * @param key
-   */
-  deleteKeyValuePair: function (key) {
-    return new Promise(function (resolve, reject) {
-      if (client && client.connected) {
-        client.del(key);
-        resolve(true);
-      } else {
-        reject(false);
-      }
-    });
   }
 };
 

@@ -146,11 +146,10 @@ var sendConfirmationEmail = function (userMail, filename) {
             message: errorMsgs.SMTP.CONNECTION_REFUSED.message
           });
         }
-      } else if (info.response === config.smtp.success) {
-        console.log('<== Confirmation Email sent successfully to ' + userMail);
+      } else {
+        console.log('<== Confirmation Email sent successfully to ' + userMail, 'smtp response:', info);
         resolve(userMail);
       }
-
     });
   });
 

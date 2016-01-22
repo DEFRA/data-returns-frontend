@@ -12,39 +12,24 @@ var userHandler = require('../lib/user-handler');
 var postHandler = function (request, reply) {
 
   var sessionID = 'id_' + request.session.id;
+  // clear session data
+  request.session.reset();
+  // seed user data
+  var user = {
+    authenticated: false,
+    email: '',
+    pin: '',
+    filekey: '',
+    uploadCount: 0
+  };
 
-  // reset the cached data
-  cacheHandler.deleteKeyValuePair(sessionID)
-    .then(function (result) {
-      return cacheHandler.deleteKeyValuePair(sessionID + '_UploadResult');
-    })
-    .then(function (result) {
+  //session id will have changed after the reset
+  sessionID = 'id_' + request.session.id;
 
-      // clear session data
-      request.session.reset();
-      // seed user data
-      var user = {
-        authenticated: false,
-        email: '',
-        pin: '',
-        filekey: '',
-        uploadCount: 0
-      };
-
-      //session id will have changed after the reset
-      sessionID = 'id_' + request.session.id;
-
-      userHandler.setUser(sessionID, user)
-        .then(function () {
-          reply.redirect('/02-send-your-data/01-upload-your-data');
-        });
-
-    })
-    .catch(function (errResult) {
-      request.session.reset();
+  userHandler.setUser(sessionID, user)
+    .then(function () {
       reply.redirect('/02-send-your-data/01-upload-your-data');
     });
-
 
 };
 

@@ -27,7 +27,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
  */
 function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
-  console.log('==> processResponse ');
+  console.log('==> CompletionHandler processResponse() ');
   if (err !== null) {
     console.log('\t error' + err);
     reject({
