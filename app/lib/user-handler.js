@@ -95,6 +95,9 @@ module.exports.isAuthenticated = function (sessionID) {
 
         resolve(isValid);
 
+      })
+      .catch(function (err) {
+        reject(err);
       });
   });
 };
