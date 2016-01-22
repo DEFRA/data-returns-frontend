@@ -43,7 +43,7 @@ module.exports.getHandler = function (request, reply) {
         });
     })
     .catch(function (err) {
-      console.log('==< O2O8Handler.getHandler() Unknown error' + err);
+      console.log('<== O2O8Handler.getHandler() Unknown error' + err);
     });
 
 };

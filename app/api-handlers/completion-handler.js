@@ -91,7 +91,7 @@
   module.exports.confirmFileSubmission = function (fileKey, userEmail) {
 
   return new Promise(function (resolve, reject) {
-  console.log('==> confirmFileSubmission ();
+  console.log('==> confirmFileSubmission ());
     // Define data to send to the Data Exchange service.
     var apiData = {
     url: config.API.endpoints.FILEUPLOADCOMPLETE,
@@ -117,4 +117,4 @@
       processResponse(err, response, body, reject, successHandler);
     });
   });
-    };
+  };
