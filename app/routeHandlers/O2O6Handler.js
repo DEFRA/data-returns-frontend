@@ -6,6 +6,8 @@ var UserHandler = require('../lib/user-handler');
  * @param {type} reply
  */
 module.exports.getHandler = function (request, reply) {
+  
+ //console.log(request);
 
   var sessionID = 'id_' + request.session.id;
   console.log('==> O2O6Handler.getHandler() ');

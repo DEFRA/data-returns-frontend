@@ -171,7 +171,15 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
       console.log('==> successHandler()');
       if (jsonResponse) {
         console.log('<== successHandler() resolve(true) ');
-        resolve(jsonResponse);
+        cacheHandler.setValue(key, jsonResponse)
+          .then(function (result) {
+            console.log('<== successHandler() resolve(true) ');
+            resolve(jsonResponse);
+          })
+          .catch(function (result) {
+            console.log('<== successHandler() error: ' + result);
+            reject();
+          });
       }
     };
     // Make REST call into the Data Exchange service, and handle the result.

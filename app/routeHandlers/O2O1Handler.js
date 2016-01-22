@@ -52,8 +52,6 @@ module.exports.postHandler = function (request, reply) {
       };
 
       console.log('\t metadata: ', metaData);
-
-      
       
       reply.view('02-send-your-data/02-verify-your-file', {
         returnMetaData: metaData
