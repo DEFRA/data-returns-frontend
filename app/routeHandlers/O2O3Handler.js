@@ -43,7 +43,7 @@ module.exports = {
   postHandler: function (request, reply) {
     /* get the users email address */
     var usermail = request.payload['user_email'];
-
+    usermail = usermail.trim();
     /* Validate the email address */
     SMTPHandler.validateEmailAddress(usermail)
       .then(function (result) {
