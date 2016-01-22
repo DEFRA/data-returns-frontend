@@ -12,7 +12,7 @@ config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 25;
 config.smtp.ignoreTLS = true;
 config.smtp.username = 'data-returns';
-config.smtp.password = 'littleredscrewdriver';
+config.smtp.password = 'redscrewdriver1';
 config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
 
 /* cache configuration */
