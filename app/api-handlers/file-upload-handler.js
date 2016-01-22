@@ -169,6 +169,7 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
     // Define a function for handling a successful response.
     var successHandler = function (jsonResponse) {
       console.log('==> successHandler()');
+      var key = sessionID + '_UploadResult';
       if (jsonResponse) {
         console.log('<== successHandler() resolve(true) ');
         cacheHandler.setValue(key, jsonResponse)
