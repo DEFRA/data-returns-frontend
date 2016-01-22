@@ -81,12 +81,12 @@ server.register({
     storeBlank: true,
     name: 'data-returns-session',
     cookieOptions: {
-      isSecure: config.env === 'local' ? false : true,
-      isHttpOnly: true, // not accessable from javascript
+      isSecure: false,//config.env === 'local' ? false : true,
+      isHttpOnly: false, // not accessable from javascript
       password: config.sessionStorage.secret
     }
   },
-  maxCookieSize: 0 // force server side storage only
+  maxCookieSize: 350 
 }, function (err) {
   if (err) {
     console.error('Failed to initialise session storage component.');
@@ -153,8 +153,8 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
-
   if (resp && resp.header) {
+    //resp.header('uuid',);
     //resp.header('X-Frame-Options', 'sameorigin');
     //resp.header('X-XSS-Protection', '1; mode=block');
     //resp.header('X-Content-Type-Options', 'nosniff');
