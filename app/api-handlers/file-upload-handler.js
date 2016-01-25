@@ -32,7 +32,7 @@ function processResponse(err, response, body, reject, successCallback) {
   console.log('==> processResponse', body);
 
   if (err !== null) {
-    console.log('\t processResponse() Error: ' + err);
+    console.error('\t processResponse() Error: ' + err);
     reject({
       isUserError: false,
       err: err,
@@ -59,7 +59,7 @@ function processResponse(err, response, body, reject, successCallback) {
     }
 
     if (response.statusCode !== config.API.STATUS_CODES.OK) {
-      console.log('\t processResponse error: Response Code- ' + response.statusCode);
+      console.error('\t processResponse error: Response Code- ' + response.statusCode);
       // The REST call resulted in an error.
       reject({
         isUserError: false,
@@ -100,6 +100,10 @@ function processResponse(err, response, body, reject, successCallback) {
             errMessage = ErrorMessages.API.MULTIPLE_PERMITS;
             apiErrors = '';
             break;
+          case ErrorMessages.ERROR_CODES.PERMIT_NOT_FOUND:
+            errMessage = ErrorMessages.API.PERMIT_NOT_FOUND;
+            apiErrors = '';
+            break;
           case ErrorMessages.ERROR_CODES.VALIDATION_ERRORS :
             errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
             apiErrors = parsedBody.validationResult.schemaErrors;
@@ -108,14 +112,11 @@ function processResponse(err, response, body, reject, successCallback) {
             var lineErrorData = [];
             var lineErrors = apiErrors.lineErrors;
             var temp;
-            var x = 0;
+
 
             for (var lineErrorName in lineErrors) {
               var lineError = {};
-              x++;
-              if (x > 10) {
-                break;
-              }
+
               temp = lineErrors[lineErrorName];
               lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
               lineError.columnName = temp.columnName;
@@ -171,14 +172,13 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
       console.log('==> uploadFileToService successHandler()');
       var key = sessionID + '_UploadResult';
       if (jsonResponse) {
-        console.log('<== successHandler() resolve(true) ');
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
             console.log('<== successHandler() resolve(true) ');
             resolve(jsonResponse);
           })
           .catch(function (result) {
-            console.log('<== successHandler() error: ' + result);
+            console.error('<== successHandler() error: ' + result);
             reject();
           });
       }

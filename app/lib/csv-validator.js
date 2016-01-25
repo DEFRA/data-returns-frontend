@@ -49,7 +49,7 @@ var validateFile = function (filePath, contentType) {
 
             // Test file extension.
             else if (Path.extname(filePath).toLowerCase() !== '.csv') {
-              console.log('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
+              console.error('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
               reject({
                 isUserError: true,
                 message: ErrorMessages.FILE_HANDLER.NOT_CSV
@@ -67,7 +67,7 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
-                  console.log('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES );
+                  console.error('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES );
                   reject({
                     isUserError: true,
                     message: ErrorMessages.FILE_HANDLER.ZERO_BYTES

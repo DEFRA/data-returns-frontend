@@ -15,7 +15,12 @@ $(document).ready(function () {
   $('.button-choose-file').addClass("btn btn-default btn-file button");
   $('.browse-text').show();
   $('#check-for-errors-btn').attr('disabled', 'disabled');
-  existing = $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '');
+
+  var existing = $('.btn-file :file').val();
+
+  if (existing) {
+    $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '');
+  }
   if (existing !== '') {
     $('#statusbar-header').show();
     $('.file-label').html(existing);
@@ -47,11 +52,11 @@ $(document).ready(function () {
       $('.file-label').html(label);
       $('.del-label').html('<a id="remove-link" href="#">Remove file</a>');
 
-      if ($("input#checking_only").val() == "true")
+      if ($("input#checking_only").val() === "true") {
         $('#title').html('Confirm the file you want us to check');
-      else
+      } else {
         $('#title').html('Confirm the file you want to send');
-
+      }
       $('#check-for-errors-btn').removeAttr('disabled');
       $('#file-select-button').hide();
       $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)',
@@ -62,11 +67,11 @@ $(document).ready(function () {
       $('#remove-link').click(function () {
         $('#statusbar-header').hide();
 
-        if ($("input#checking_only").val() == "true")
+        if ($("input#checking_only").val() === "true") {
           $('#title').html('Choose the file you want us to check');
-        else
+        } else {
           $('#title').html('Choose the file you want to send');
-
+        }
         $('#title').html('Choose the file you want us to check');
         $('#check-for-errors-btn').attr('disabled', 'disabled');
         $('#file-select-button').show();
@@ -75,7 +80,7 @@ $(document).ready(function () {
           '-moz-opacity': '1.0',
           '-khtml-opacity': '1.0',
           'opacity': '1.0'});
-        var control = $('#file-select-button')
+        var control = $('#file-select-button');
         control.replaceWith(control = control.clone(true));
       });
     }

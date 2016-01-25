@@ -38,7 +38,7 @@ var validateEmailAddress = function (emailaddress) {
     var result = Joi.validate({'address': emailaddress}, schema);
 
     if (result.error) {
-      console.log('\t email address is invalid');
+      console.log('\t email address is invalid: ' + JSON.stringify(result));
       reject({
         invalidEmailAddress: true,
         message: errorMsgs.SMTP.INVALIDEMAILADDRESS
@@ -96,7 +96,7 @@ var sendPinEmail = function (recipient, newPin) {
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log('\t error sending email ' + error);
+        console.error('\t error sending email ' + error);
         if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors
@@ -139,7 +139,7 @@ var sendConfirmationEmail = function (userMail, filename) {
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log('\t error sending confirmation email ' + error);
+        console.error('\t error sending confirmation email ' + error);
         if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors

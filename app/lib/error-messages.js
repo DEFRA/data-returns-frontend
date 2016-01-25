@@ -18,7 +18,8 @@ module.exports.API = {
   'UNSUPPORTED_FILE_TYPE': 'All data files returned using this service must be in CSV format.',
   'MULTIPLE_RETURNS': 'There are multiple returns in this file',
   'MULTIPLE_PERMITS': 'There are multiple permits in this file',
-  'NO_RETURNS': 'There are no returns in this file'
+  'NO_RETURNS': 'There are no returns in this file',
+  'PERMIT_NOT_FOUND': 'Permit number not found'
 };
 
 module.exports.ERROR_CODES = {
@@ -30,7 +31,8 @@ module.exports.ERROR_CODES = {
   'INVALID_CONTENTS': 701,
   'NO_RETURNS': 702,
   'MULTIPLE_RETURNS': 703,
-  'MULTIPLE_PERMITS': 704
+  'MULTIPLE_PERMITS': 704,
+  'PERMIT_NOT_FOUND': 707
 };
 
 module.exports.SMTP = {

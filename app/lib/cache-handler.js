@@ -22,7 +22,7 @@ module.exports = {
         client.get(key, function (err, reply) {
 
           if (err) {
-            console.log('<== cache-handler.getValue() error :' + err);
+            console.error('<== cache-handler.getValue() error :' + err);
             reject({
               error: true,
               message: err.message
@@ -33,7 +33,7 @@ module.exports = {
           }
         });
       } else {
-        console.log('Error: cache-handler.getValue() ' + ErrorMessages.REDIS.NOT_CONNECTED);
+        console.error('Error: cache-handler.getValue() ' + ErrorMessages.REDIS.NOT_CONNECTED);
         reject({
           error: true,
           message: ErrorMessages.REDIS.NOT_CONNECTED
@@ -54,7 +54,7 @@ module.exports = {
       client.set(key, JSON.stringify(value), function (err, res) {
 
         if (err) {
-          console.log('<== CacheHandler setValue() error: ' + err);
+          console.error('<== CacheHandler setValue() error: ' + err);
           reject(err);
         } else {
           console.log('<== CacheHandler setValue() redis response: ' + res);
@@ -70,5 +70,5 @@ module.exports = {
 };
 
 client.on('error', function (err) {
-  console.log('Redis Error: ' + err);
+  console.error('Redis Error: ' + err);
 });

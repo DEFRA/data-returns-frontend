@@ -29,7 +29,7 @@
     /// Did the HTTP request itself fail?
     console.log('==> CompletionHandler processResponse() ');
       if (err !== null) {
-    console.log('\t error' + err);
+    console.error('\t error' + err);
       reject({
       isUserError: false,
         err: err,
@@ -50,7 +50,7 @@
         apiErrors: parsedBody.errors
       });
     } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.ERROR_CODES.SUCCESSFULL) {
-    console.log('\t rest call successful with app error ' + parsedBody.appStatusCode);
+    console.error('\t rest call successful with app error ' + parsedBody.appStatusCode);
       // REST call successful, but response indicates application-specific error.
       reject({
       isUserError: true,
@@ -105,7 +105,7 @@
         userEmail: userEmail
       }
     };
-    console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
+    console.log('\t calling api- apiData: ' + JSON.stringify(apiData) );
     // Define a function for handling a successful response.
     var successHandler = function () {
     console.log('==> confirmFileSubmission successHandler() ');

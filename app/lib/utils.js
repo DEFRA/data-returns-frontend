@@ -145,7 +145,7 @@ module.exports = {
         console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
       }
     } catch (err) {
-      console.log('<== createUploadDirectory() error: ' + err);
+      console.error('<== createUploadDirectory() error: ' + err);
     }
   }
 

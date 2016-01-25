@@ -20,7 +20,7 @@ module.exports.getHandler = function (request, reply) {
       }
     })
     .catch(function (err) {
-      console.log('<== O2O6Handler error: ' + err);
+      console.error('<== O2O6Handler error: ' + err);
       reply.redirect('/02-send-your-data/03-email');
     });
 };

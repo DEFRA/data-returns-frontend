@@ -41,7 +41,7 @@ module.exports = {
                 reply.redirect('/02-send-your-data/08-done');
               })
               .catch(function (errorData) {
-                console.log('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
+                console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
                 request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
                 request.session.flash('errorMessage', errorData.message);
                 reply.redirect('/02-send-your-data/07-failure');
