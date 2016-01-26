@@ -1,6 +1,7 @@
 var Path = require('path');
 var Hapi = require('hapi');
 var Hogan = require('hogan.js');
+var userHandler = require('./app/lib/user-handler');
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
@@ -24,7 +25,7 @@ server.register({
         reporter: require('good-console'),
         events: {
           log: '*',
-          error: '*',
+          error: '*'
           //response: config.log.responses === true ? '*' : 'none'
         }
       },
@@ -81,12 +82,12 @@ server.register({
     storeBlank: true,
     name: 'data-returns-session',
     cookieOptions: {
-      isSecure: false,//config.env === 'local' ? false : true,
-      isHttpOnly: false, // not accessable from javascript
+      isSecure: false, //config.env === 'local' ? false : true,
+      isHttpOnly: true, // not accessable from javascript
       password: config.sessionStorage.secret
     }
   },
-  maxCookieSize: 350 
+  maxCookieSize: 350
 }, function (err) {
   if (err) {
     console.error('Failed to initialise session storage component.');
@@ -153,25 +154,25 @@ server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
+  /*if (!request.info.referrer) {
+    resp.redirect('/index');
+  }*/
+
+
   if (resp && resp.header) {
-    //resp.header('uuid',);
-    //resp.header('X-Frame-Options', 'sameorigin');
-    //resp.header('X-XSS-Protection', '1; mode=block');
-    //resp.header('X-Content-Type-Options', 'nosniff');
-   // resp.header('cache-control', 'max-age=-1, public');
-   // 
-    //resp.header('content-security-policy', 'script-src "any"');
+    resp.header('X-Frame-Options', 'sameorigin');
+    resp.header('X-XSS-Protection', '1; mode=block');
+    resp.header('X-Content-Type-Options', 'nosniff');
   }
 
   return reply(resp);
-
 });
 
 // Start the server.
 server.start(function (err) {
-  
+
   utils.createUploadDirectory();
-  
+
   if (err) {
     console.error('Failed to start server.');
     throw err;
