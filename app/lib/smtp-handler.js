@@ -4,7 +4,7 @@
  *  An SMTP Helper module
  *  Note email configuration is per environment.
  */
-
+var Utils = require('./utils');
 var nodemailer = require('nodemailer');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var Joi = require('joi');
@@ -12,11 +12,20 @@ var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
 var Hogan = require('hogan.js');
 var emailTemplates = require('../config/configuration_email_templates');
-var sendPinTemplate = emailTemplates.sendPinTemplate;
-var compiledPinTemplate = Hogan.compile(sendPinTemplate);
+//var sendPinTemplate = emailTemplates.sendPinTemplate;
+//var pinTemplate = require('../config/email-pin-code-template.html');
+var compiledPinTemplate;// = Hogan.compile(pinTemplate);
+//var compiledPinTemplate = Hogan.compile(sendPinTemplate);
 var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;
 var compiledConfirmationEmailTemplate = Hogan.compile(confirmationEmailTemplate);
-var Utils = require('./utils');
+
+Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
+  if (err) {
+    console.error('Unable to read pin email template ' + err);
+  } else {
+    compiledPinTemplate = Hogan.compile("'" + result + "'");
+  }
+});
 
 /* used by Joi to validate the email address */
 var schema = {

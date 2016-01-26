@@ -6,7 +6,6 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 
 
 module.exports = {
-  
   /**
    * Renames a file asynchronously using a promise.
    * @param oldPath The full path to the file to rename.
@@ -147,9 +146,14 @@ module.exports = {
     } catch (err) {
       console.error('<== createUploadDirectory() error: ' + err);
     }
+  },
+  readFile: function (path, callback) {
+    try {
+      var filename = require.resolve(path);
+      FileSystem.readFile(filename, 'utf8', callback);
+    } catch (e) {
+      callback(e);
+    }
   }
-
-
-
 };
 
