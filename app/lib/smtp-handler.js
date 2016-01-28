@@ -100,7 +100,9 @@ var sendPinEmail = function (recipient, newPin) {
       EnquiryEmail: config.smtp.support.email,
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
-      MiniCommNumber: config.smtp.support.MiniCommNumber
+      MiniCommNumber: config.smtp.support.MiniCommNumber,
+      govuklogo:'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
+      ealogo:'http://dr-dev.envage.co.uk/public/images/EAlogo.png'
     };
 
     var emailBody = compiledPinTemplate.render(data);
@@ -111,8 +113,8 @@ var sendPinEmail = function (recipient, newPin) {
       to: recipient,
       subject: config.smtp.pinsubject + ' ' + newPin,
       //text: emailBody,
-      html: emailBody,
-      attachments: [{
+      html: emailBody
+      /*attachments: [{
           filename: 'govuk_logotype_email.png',
           path: __dirname,
           cid: 'GovukLogo'  //same cid value as in the html img src
@@ -120,7 +122,7 @@ var sendPinEmail = function (recipient, newPin) {
           filename: 'EAlogo.png',
           path: __dirname,
           cid: 'EAlogoCid'  //same cid value as in the html img src
-        }]
+        }]*/
     };
     console.log(__dirname);
     /* Send the email */
