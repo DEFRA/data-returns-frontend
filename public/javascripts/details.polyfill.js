@@ -30,10 +30,14 @@
     });
     addEvent(node, 'keyup', function (e, target) {
       keydown = false;
-      if (e.keyCode === 13) { callback(e, target); }
+      if (e.keyCode === 13) {
+        callback(e, target);
+      }
     });
     addEvent(node, 'click', function (e, target) {
-      if (!keydown) { callback(e, target); }
+      if (!keydown) {
+        callback(e, target);
+      }
     });
   }
 
@@ -55,6 +59,19 @@
   // Initialisation function
   function addDetailsPolyfill(list) {
 
+
+    //add cumcumber test id's
+    var items = document.all;
+    var counter = 0;
+    var title = location.pathname;
+    for (var i = 0; i < items.length; i++) {
+      var elem = items[i];
+      elem.setAttribute('CUId', 'T-' + title + '-' + i);
+
+      counter++;
+    }
+
+
     // If this has already happened, just return
     // else set the flag so it doesn't happen again
     if (started) {
@@ -74,7 +91,7 @@
       var details = list[i];
 
       // Detect native implementations
-      details.__native = typeof(details.open) == 'boolean';
+      details.__native = typeof (details.open) == 'boolean';
 
       // Save shortcuts to the inner summary and content elements
       details.__summary = details.getElementsByTagName('summary').item(0);
@@ -141,7 +158,7 @@
     }
 
     // Bind a click event to handle summary elements
-    addClickEvent(document, function(e, summary) {
+    addClickEvent(document, function (e, summary) {
       if (!(summary = getAncestor(summary, 'summary'))) {
         return true;
       }

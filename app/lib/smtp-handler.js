@@ -106,9 +106,6 @@ var sendPinEmail = function (recipient, newPin) {
     };
 
     var emailBody = compiledPinTemplate.render(data);
-
-    console.log(compiledPinTemplate, emailBody);
-
     /* Set per email options */
     var mailOptions = {
       from: sender,
