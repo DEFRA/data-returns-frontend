@@ -23,7 +23,7 @@ Utils.readFile('../config/email-pin-code-template.html', function (err, result) 
   if (err) {
     console.error('Unable to read pin email template ' + err);
   } else {
-    compiledPinTemplate = Hogan.compile("'" + result + "'");
+    compiledPinTemplate = Hogan.compile(result);
   }
 });
 
@@ -31,7 +31,7 @@ Utils.readFile('../config/email-confirmation-template.html', function (err, resu
   if (err) {
     console.error('Unable to read confirmation email template ' + err);
   } else {
-    compiledConfirmationEmailTemplate = Hogan.compile("'" + result + "'");
+    compiledConfirmationEmailTemplate = Hogan.compile(result);
   }
 });
 
@@ -101,11 +101,13 @@ var sendPinEmail = function (recipient, newPin) {
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
       MiniCommNumber: config.smtp.support.MiniCommNumber,
-      govuklogo:'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-      ealogo:'http://dr-dev.envage.co.uk/public/images/EAlogo.png'
+      govuklogo: 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
+      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png'
     };
 
     var emailBody = compiledPinTemplate.render(data);
+
+    console.log(compiledPinTemplate, emailBody);
 
     /* Set per email options */
     var mailOptions = {
@@ -114,15 +116,15 @@ var sendPinEmail = function (recipient, newPin) {
       subject: config.smtp.pinsubject + ' ' + newPin,
       //text: emailBody,
       html: emailBody
-      /*attachments: [{
-          filename: 'govuk_logotype_email.png',
-          path: __dirname,
-          cid: 'GovukLogo'  //same cid value as in the html img src
-        }, {
-          filename: 'EAlogo.png',
-          path: __dirname,
-          cid: 'EAlogoCid'  //same cid value as in the html img src
-        }]*/
+        /*attachments: [{
+         filename: 'govuk_logotype_email.png',
+         path: __dirname,
+         cid: 'GovukLogo'  //same cid value as in the html img src
+         }, {
+         filename: 'EAlogo.png',
+         path: __dirname,
+         cid: 'EAlogoCid'  //same cid value as in the html img src
+         }]*/
     };
     console.log(__dirname);
     /* Send the email */
