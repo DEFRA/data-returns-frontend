@@ -16,14 +16,22 @@ var emailTemplates = require('../config/configuration_email_templates');
 //var pinTemplate = require('../config/email-pin-code-template.html');
 var compiledPinTemplate;// = Hogan.compile(pinTemplate);
 //var compiledPinTemplate = Hogan.compile(sendPinTemplate);
-var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;
-var compiledConfirmationEmailTemplate = Hogan.compile(confirmationEmailTemplate);
+//var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;
+var compiledConfirmationEmailTemplate;// = Hogan.compile(confirmationEmailTemplate);
 
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
   if (err) {
     console.error('Unable to read pin email template ' + err);
   } else {
     compiledPinTemplate = Hogan.compile("'" + result + "'");
+  }
+});
+
+Utils.readFile('../config/email-confirmation-template.html', function (err, result) {
+  if (err) {
+    console.error('Unable to read confirmation email template ' + err);
+  } else {
+    compiledConfirmationEmailTemplate = Hogan.compile("'" + result + "'");
   }
 });
 
@@ -88,7 +96,11 @@ var sendPinEmail = function (recipient, newPin) {
   return new Promise(function (resolve, reject) {
     console.log('==> sendPinEmail() ');
     var data = {
-      pin: newPin
+      pin: newPin,
+      EnquiryEmail: config.smtp.support.email,
+      UKPhone: config.smtp.support.UKPhone,
+      PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
+      MiniCommNumber: config.smtp.support.MiniCommNumber
     };
 
     var emailBody = compiledPinTemplate.render(data);
@@ -98,10 +110,19 @@ var sendPinEmail = function (recipient, newPin) {
       from: sender,
       to: recipient,
       subject: config.smtp.pinsubject + ' ' + newPin,
-      text: emailBody,
-      html: emailBody
+      //text: emailBody,
+      html: emailBody,
+      attachments: [{
+          filename: 'govuk_logotype_email.png',
+          path: __dirname,
+          cid: 'GovukLogo'  //same cid value as in the html img src
+        }, {
+          filename: 'EAlogo.png',
+          path: __dirname,
+          cid: 'EAlogoCid'  //same cid value as in the html img src
+        }]
     };
-
+    console.log(__dirname);
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -132,7 +153,11 @@ var sendConfirmationEmail = function (userMail, filename) {
     var data = {
       FILENAME: filename,
       DATE: displayDate,
-      TIME: time
+      TIME: time,
+      EnquiryEmail: config.smtp.support.email,
+      UKPhone: config.smtp.support.UKPhone,
+      PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
+      MiniCommNumber: config.smtp.support.MiniCommNumber
     };
 
     var emailBody = compiledConfirmationEmailTemplate.render(data);
@@ -142,7 +167,16 @@ var sendConfirmationEmail = function (userMail, filename) {
       to: userMail,
       subject: config.smtp.confirmsubject,
       text: emailBody,
-      html: emailBody
+      html: emailBody,
+      attachments: [{
+          filename: 'govuk_logotype_email.png',
+          path: __dirname,
+          cid: 'GovukLogo'  //same cid value as in the html img src
+        }, {
+          filename: 'EAlogo.png',
+          path: __dirname,
+          cid: 'EAlogoCid'  //same cid value as in the html img src
+        }]
     };
 
     /* Send the email */

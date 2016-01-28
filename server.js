@@ -26,7 +26,7 @@ server.register({
         events: {
           log: '*',
           error: '*'
-          //response: config.log.responses === true ? '*' : 'none'
+            //response: config.log.responses === true ? '*' : 'none'
         }
       },
       {
@@ -155,14 +155,17 @@ server.ext('onPreResponse', function (request, reply) {
   var resp = request.response;
 
   /*if (!request.info.referrer) {
-    resp.redirect('/index');
-  }*/
+   resp.redirect('/index');
+   }*/
 
 
   if (resp && resp.header) {
     resp.header('X-Frame-Options', 'sameorigin');
     resp.header('X-XSS-Protection', '1; mode=block');
     resp.header('X-Content-Type-Options', 'nosniff');
+    resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
+    resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+
   }
 
   return reply(resp);

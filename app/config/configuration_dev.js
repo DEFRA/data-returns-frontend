@@ -15,6 +15,14 @@ config.smtp.username = 'data-returns';
 config.smtp.password = 'redscrewdriver1';
 config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
 
+//Support Contact details on emails
+config.smtp.support = {
+  email: 'enquiries@environment-agency.gov.uk',
+  UKPhone: '03708 506 506',
+  PhoneFromAbroad: '00 44 1709 389 201',
+  MiniCommNumber:'03702 422 549'
+};
+
 /* cache configuration */
 config.redis = {
   clientOptions: {
