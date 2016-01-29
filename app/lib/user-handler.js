@@ -34,14 +34,26 @@ var getUser = function (sessionID) {
     cacheHandler.getValue(sessionID)
       .then(function (result) {
 
-        result = JSON.parse(result);
+        result = JSON.parse(result) || null;
         resolve(result);
 
       })
       .catch(function (errResult) {
-        //TODO decide what to do
+        reject('errResult');
+        console.error('<== getUser() ' + errResult);
       });
   });
+};
+
+module.exports.doesExists = function (sessionID) {
+  console.log('==> userHandler doesExist()');
+  getUser(sessionID)
+    .then(function (result) {
+      return (result !== null) ? true : false;
+    })
+    .catch(function (err) {
+      return false;
+    });
 };
 
 module.exports.getUserMail = function (sessionID) {

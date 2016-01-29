@@ -1,6 +1,6 @@
 
 
-var cacheHandler = require('../lib/cache-handler');
+
 var userHandler = require('../lib/user-handler');
 //path: '/01-start/01-start',
 
@@ -32,5 +32,11 @@ var postHandler = function (request, reply) {
     });
 
 };
+
+var getHandler = function (request, reply) {
+  reply.view('/01-start/01-start');
+};
+
+module.exports.getHandler = getHandler;
 
 module.exports.postHandler = postHandler;
