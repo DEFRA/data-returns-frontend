@@ -66,8 +66,9 @@
     var title = location.pathname;
     for (var i = 0; i < items.length; i++) {
       var elem = items[i];
-      elem.setAttribute('CUId', 'T-' + title + '-' + i);
-
+      if (!elem.id) {
+        elem.setAttribute('id', 'T-' + title + '-' + i);
+      }
       counter++;
     }
 
