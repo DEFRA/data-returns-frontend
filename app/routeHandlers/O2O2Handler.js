@@ -1,6 +1,7 @@
 
-var CacheHandler = require('../lib/cache-handler');
+//var CacheHandler = require('../lib/cache-handler');
 //path: '/02-send-your-data/02-verify-your-file',
+var userHandler = require('../lib/user-handler');
 
 module.exports = {
   /*
@@ -11,6 +12,11 @@ module.exports = {
   getHandler: function (request, reply) {
     //var key = 'id_' + request.session.id + '_UploadResult';
     console.log('==> O2O2Handler getHandler() ');
+    /*var sessionID = request.session.id;
+    if (!userHandler.doesExists(sessionID)) {
+      reply.redirect('/01-start/01-start');
+    }*/
+
     /*CacheHandler.getValue(key)
      .then(function (data) {
      var parsedData = JSON.parse(data);

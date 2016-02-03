@@ -56,5 +56,9 @@ config.API.STATUS_CODES = {
   OK: 200
 };
 
+//DEP specific configuration
+config.dep = {
+  returnTypeRulesLink: 'http://data-returns-help.herokuapp.com/help/detailed-guides/return-type-rules'
+};
 // Publish the configuration.
 module.exports = config;

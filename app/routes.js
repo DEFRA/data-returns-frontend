@@ -13,6 +13,9 @@ var O2O5Handler = require('./routeHandlers/O2O5Handler');
 var O2O6Handler = require('./routeHandlers/O2O6Handler');
 var O2O7Handler = require('./routeHandlers/O2O7Handler');
 var O2O8Handler = require('./routeHandlers/O2O8Handler');
+var O2O9Handler = require('./routeHandlers/O2O9Handler');
+var O21OHandler = require('./routeHandlers/O210Handler');
+
 var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
 
 
@@ -156,7 +159,12 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/09-errors',
-    handler: BasicTemplateHandler.getHandler
+    handler: O2O9Handler.getHandler //BasicTemplateHandler.getHandler
+  },
+  {
+    method: 'GET',
+    path: '/02-send-your-data/10-error-detail',
+    handler: O21OHandler.getHandler
   }
 ];
 

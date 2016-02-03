@@ -1,0 +1,58 @@
+{{<layout}}
+
+{{$pageTitle}}
+Send Your Data Returns Online
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+  <div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your
+        <a href="/corrections/multiple-beta/multiple-errors-rtn-type-missing#">feedback</a>will help us to improve it.</span>
+    </p>
+  </div>
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">Make corrections to {{columnName}}</h1>
+    <p>Before you can send {{fileName}} you need to make these corrections:</p>
+  </div>
+  <div class="header">
+    <h2 class="heading-medium">How to fix it</h2>
+    <p>{{{errorMessage}}}</p>
+    <p>
+      <a href="{{deplink}}" target='_Blank'>Which return types apply to this permit?</a>
+    </p>
+  </div>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <div class="error-table">
+        <table id="errorTableHeader">
+          <thead>
+            <tr>
+              <th width="85%">Rows</th>
+              <th width="15%">Error</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{rows}}</td>
+              <td>{{errorType}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- error-table -->
+    </div>
+    <!-- column-two-thirds -->
+  </div>
+  <!-- grid-row -->
+  <p class="back">
+    <a class="button" href="/02-send-your-data/09-errors">Back to corrections table</a>
+  </p>
+</main>
+
+{{/content}}
+
+{{/layout}}

@@ -37,7 +37,7 @@ module.exports.postHandler = function (request, reply) {
       CachHandler.setValue(key, newLocalName);
     })
     .then(function () {
-      return FileUploadHandler.uploadFileToService(newLocalName, sessionID);
+      return FileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
     })
     .then(function (data) {
 
@@ -52,7 +52,7 @@ module.exports.postHandler = function (request, reply) {
       };
 
       console.log('\t metadata: ', metaData);
-      
+
       reply.view('02-send-your-data/02-verify-your-file', {
         returnMetaData: metaData
       });
@@ -64,14 +64,21 @@ module.exports.postHandler = function (request, reply) {
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
+      var sessionid = 'id_' + request.session.id;
+      var cacheKey = sessionid + '_latestErrors';
 
-      reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
-        uploadError: true,
-        errorMessage: errorData.message,
-        lineErrors: errorData.lineErrors,
-        isLineErrors: errorData.lineErrors ? true : false
-      });
-
+      CachHandler.setValue(cacheKey, errorData.lineErrors)
+        .then(function (result) {
+          reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
+            uploadError: true,
+            errorMessage: errorData.message,
+            lineErrors: errorData.lineErrors,
+            isLineErrors: errorData.lineErrors ? true : false
+          });
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
     } else {
       request.session.flash('errorMessage', errorData.message);
       reply.redirect('/02-send-your-data/07-failure');

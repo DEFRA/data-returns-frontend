@@ -4,6 +4,13 @@ var ErrorMessages = require('../lib/error-messages.js');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
+var validationErrorHelper = require('./multiple-error-helper');
+
+
+
+
+
+
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.
@@ -29,7 +36,7 @@ var Utils = require('../lib/utils');
  */
 function processResponse(err, response, body, reject, successCallback) {
   /// Did the HTTP request itself fail?
-  console.log('==> processResponse', body);
+  console.log('==> processResponse'/*, body*/);
 
   if (err !== null) {
     console.error('\t processResponse() Error: ' + err);
@@ -124,9 +131,15 @@ function processResponse(err, response, body, reject, successCallback) {
               lineError.outputMessage = temp.errorDetail.outputMessage;
               lineErrorData.push(lineError);
             }
-            // sort by line number
-            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('outputLineNo'));
 
+            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
+            sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
+            
+            
+            
+            
+            
+            
             break;
 
           default:
@@ -157,7 +170,7 @@ function processResponse(err, response, body, reject, successCallback) {
  *   'eaId', 'siteName' and 'returnType' as returned from the API.  For
  *   rejection details see processApiResponse().
  */
-module.exports.uploadFileToService = function (filePath, sessionID) {
+module.exports.uploadFileToService = function (filePath, sessionID,originalFileName) {
   console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
   return new Promise(function (resolve, reject) {
     // Define data to send to the Data Exchange service.
@@ -172,6 +185,7 @@ module.exports.uploadFileToService = function (filePath, sessionID) {
       console.log('==> uploadFileToService successHandler()');
       var key = sessionID + '_UploadResult';
       if (jsonResponse) {
+          jsonResponse.originalFileName = originalFileName;
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
             console.log('<== successHandler() resolve(true) ');

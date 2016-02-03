@@ -21,7 +21,7 @@ config.smtp.support = {
   email: 'enquiries@environment-agency.gov.uk',
   UKPhone: '03708 506 506',
   PhoneFromAbroad: '00 44 1709 389 201',
-  MiniCommNumber:'03702 422 549'
+  MiniCommNumber: '03702 422 549'
 };
 
 /* cache configuration */
@@ -49,6 +49,11 @@ config.API.endpoints = {
 
 config.API.STATUS_CODES = {
   OK: 200
+};
+
+//DEP specific configuration
+config.dep = {
+  returnTypeRulesLink: 'http://data-returns-help.herokuapp.com/help/detailed-guides/return-type-rules'
 };
 
 // Publish the configuration.

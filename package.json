@@ -32,6 +32,7 @@
     "minimist": "0.0.8",
     "mkdirp": "^0.5.1",
     "node-sass": "3.4.1",
+    "node-uuid": "^1.4.7",
     "nodemailer": "1.10.0",
     "nodemailer-smtp-transport": "1.0.4",
     "random-js": "^1.0.8",
