@@ -1,6 +1,8 @@
 
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
+var Utils = require('../lib/utils');
+
 module.exports = {
   getHandler: function (request, reply) {
 
@@ -17,15 +19,18 @@ module.exports = {
           .then(function (result) {
 
             result = JSON.parse(result);
+            //re-sort the data by row number
+            result = result.sort(Utils.sortByProperty('rowNumber'));
+
             //get the first error and extract basic error details
             var firstError = result[0];
             var rowText = '';
             var item;
             var errorType = firstError.errorColumnText;
-            
+
             for (var i = 0; i < result.length; i++) {
               item = result[i];
-              rowText += rowText !== '' ? ',' + item.rowNumber : item.rowNumber;
+              rowText += rowText !== '' ? ', ' + item.rowNumber : item.rowNumber;
             }
 
             reply.view('02-send-your-data/10-error-detail', {
