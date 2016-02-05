@@ -16,8 +16,8 @@ var O2O8Handler = require('./routeHandlers/O2O8Handler');
 var O2O9Handler = require('./routeHandlers/O2O9Handler');
 var O21OHandler = require('./routeHandlers/O210Handler');
 
-var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
-
+//var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
+//var EmptyFileHandler = require('./routeHandlers/EmptyFileHandler');
 
 // TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
 // TODO: Think about more / better logging.
@@ -150,11 +150,6 @@ module.exports = [
     method: 'GET',
     path: '/05-help/01-help',
     handler: BasicTemplateHandler.getHandler
-  },
-  {
-    method: 'GET',
-    path: '/invalid_csv_file',
-    handler: InvalidCSVHandler.getHandler
   },
   {
     method: 'GET',

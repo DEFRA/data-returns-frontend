@@ -8,9 +8,6 @@ var config = require('./configuration_global');
 // Set a meaningful name for this environment.
 config.env = 'prod';
 
-// In production we *do* want to use Google Analytics.
-config.useGoogleAnalytics = true;
-
 /* SMTP Prod Configuration */
 config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
 config.smtp.port = 587;
@@ -60,6 +57,10 @@ config.API.STATUS_CODES = {
 config.dep = {
   returnTypeRulesLink: 'http://data-returns-help.herokuapp.com/help/detailed-guides/return-type-rules'
 };
+
+// Google Analytics configuration.
+config.useGoogleAnalytics = true;
+config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
 // Publish the configuration.
 module.exports = config;

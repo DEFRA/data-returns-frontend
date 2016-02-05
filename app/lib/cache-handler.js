@@ -51,20 +51,23 @@ module.exports = {
 
     return new Promise(function (resolve, reject) {
       console.log('==> CacheHandler setValue() ', key, value);
-      client.set(key, JSON.stringify(value), function (err, res) {
+      if (value) {
+        client.set(key, JSON.stringify(value), function (err, res) {
 
-        if (err) {
-          console.error('<== CacheHandler setValue() error: ' + err);
-          reject(err);
-        } else {
-          console.log('<== CacheHandler setValue() redis response: ' + res);
-          //auto delete any orphans after 24hrs
-          client.EXPIRE(key, (60 * 60) * 24);
-          resolve(true);
-        }
+          if (err) {
+            console.error('<== CacheHandler setValue() error: ' + err);
+            reject(err);
+          } else {
+            console.log('<== CacheHandler setValue() redis response: ' + res);
+            //auto delete any orphans after 24hrs
+            client.EXPIRE(key, (60 * 60) * 24);
+            resolve(true);
+          }
 
-      });
-
+        });
+      } else {
+        resolve(true);
+      }
     });
   }
 };

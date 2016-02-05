@@ -60,5 +60,10 @@ config.API.STATUS_CODES = {
 config.dep = {
   returnTypeRulesLink: 'http://data-returns-help.herokuapp.com/help/detailed-guides/return-type-rules'
 };
+
+// Google Analytics configuration.
+config.useGoogleAnalytics = true;
+config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
+
 // Publish the configuration.
 module.exports = config;

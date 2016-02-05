@@ -2,7 +2,19 @@ $(document).on('change', '.btn-file :file', function () {
   var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1,
     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-  input.trigger('fileselect', [numFiles, label]);
+  var f = input.get(0).files[0];
+  $('#Validation-Summary').hide();
+  $('#Validation-Summary-empty-file').hide();
+  $('#Validation-Summary-not-csv-file').hide();
+ 
+  if ((f.size || f.fileSize)) {
+    input.trigger('fileselect', [numFiles, label]);
+  } else {
+    //empty_file
+    $('#remove-link').click();
+   $('#Validation-Summary-empty-file').show();
+  }
+
 });
 
 $("#uploadForm").submit(function () {
@@ -83,6 +95,10 @@ $(document).ready(function () {
         var control = $('#file-select-button');
         control.replaceWith(control = control.clone(true));
       });
+      if (!label.includes(".csv")) {
+        $('#remove-link').click();
+        $('#Validation-Summary-not-csv-file').show();
+      }
     }
   });
 });
