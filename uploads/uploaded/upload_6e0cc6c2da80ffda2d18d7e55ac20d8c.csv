@@ -1,2 +1,0 @@
-eaID,siteName,retType,dateSt,dateEn,periodName,periodYear,sampleRef,sampledBy,monPoint,parameter,value,tValue,Unit,MeasurePeriod,testMethod,Comments,CiC,addParameter1,addParameter2,addParameter3,addParameter4,addParameter5
-AB1234Z1,ABC Limited,Landfill Gas Monitoring,2015-08-05,2015-08-05,Period 1,1970,Sample Ref,Sampled by 1,Monitor point 1,Temperature,100,Test Text,Metres,Annual,Test method 1,Test CSV file with no errors,True,Par 1,Par 2,Par 3,Par 4,Par 5
