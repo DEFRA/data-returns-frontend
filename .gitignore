@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 .sass-cache
 .DS_Store
 .start.pid
@@ -19,4 +19,4 @@ stdout
 /node_modules/
 /logs/
 /uploads/
->>>>>>> HAPI-Changes
+

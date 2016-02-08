@@ -1,8 +1,4 @@
 'use strict';
-<<<<<<< HEAD:app/config/config.global.js
-
-=======
->>>>>>> HAPI-Changes:app/config/configuration_global.js
 /*
  * Default configuration for Data Returns front-end.
  * Settings below should be overridden where necessary for each environment.

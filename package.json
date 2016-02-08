@@ -1,21 +1,14 @@
 {
   "name": "data-returns-frontend",
   "description": "Web front-end to a service for sending data to the Environment Agency",
-<<<<<<< HEAD
-  "version": "0.1.0",
-=======
   "version": "0.1.1",
->>>>>>> HAPI-Changes
   "private": true,
   "engines": {
     "node": "4.2.2"
   },
   "dependencies": {
-<<<<<<< HEAD
-=======
     "catbox-redis": "^1.0.6",
     "clamscan": "^0.8.4",
->>>>>>> HAPI-Changes
     "fs": "0.0.2",
     "good": "^6.4.0",
     "good-console": "^5.2.0",
@@ -37,17 +30,12 @@
     "inert": "^3.2.0",
     "joi": "^7.0.1",
     "minimist": "0.0.8",
-<<<<<<< HEAD
-    "node-sass": "3.4.1",
-    "nodemailer": "0.7.1",
-=======
     "mkdirp": "^0.5.1",
     "node-sass": "3.4.1",
     "node-uuid": "^1.4.7",
     "nodemailer": "1.10.0",
     "nodemailer-smtp-transport": "1.0.4",
     "random-js": "^1.0.8",
->>>>>>> HAPI-Changes
     "readdir": "0.0.6",
     "redis": "^2.4.2",
     "request": "^2.60.0",
@@ -59,11 +47,7 @@
     "eslint": "^1.10.3",
     "lab": "7.3.0"
   },
-<<<<<<< HEAD
-  "scripts":{
-=======
   "scripts": {
->>>>>>> HAPI-Changes
     "lint": "node_modules/eslint/bin/eslint.js app/** test/** -f html -o reports/eslint.html; exit 0",
     "test": "lab -v -r console -o stdout -r junit -o reports/lab.xml -r html -o reports/lab.html"
   }
