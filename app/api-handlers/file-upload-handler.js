@@ -135,11 +135,6 @@ function processResponse(err, response, body, reject, successCallback) {
             var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
             sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
             
-            
-            
-            
-            
-            
             break;
 
           default:

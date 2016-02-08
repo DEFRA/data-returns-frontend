@@ -33,9 +33,7 @@ config.sessionStorage = {
   mode: 'default',
   secret: process.env.DRF_SS_SECRET_KEY || '1234567890QWERTY'
 };
-// Google Analytics configuration.
-config.useGoogleAnalytics = false;
-config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
+
 //SMTP Configuration
 config.smtp = {};
 config.smtp.mailcatcher = {};
