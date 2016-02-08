@@ -10,3 +10,6 @@ public
 /nbproject/**
 reports
 logs
+startup_local.sh
+stdout
+.gitignore.rej
