@@ -1,17 +1,37 @@
 <link href="/public/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
 <link href="/public/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
-
 {{#analytics.useGoogleAnalytics}}
 <!-- Google Tag Manager -->
 <noscript>
-    <iframe src="//www.googletagmanager.com/ns.html?id={{analytics.googleTagManagerId}}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+<iframe src="//www.googletagmanager.com/ns.html?id={{analytics.googleTagManagerId}}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
 </noscript>
 <script>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','{{analytics.googleTagManagerId}}');
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({'gtm.start':
+        new Date().getTime(), event: 'gtm.js'});
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src =
+      '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', '{{analytics.googleTagManagerId}}');
+
+  var testDocumentAll = function () {
+    var items = document.all;
+    var counter = 0;
+    for (var i = 0; i < items.length; i++) {
+      var $this = items[i];
+      $this.CUId = 'T' + i;
+      counter++;
+    }
+  };
+
+
+
+
+
 </script>
 <!-- End Google Tag Manager -->
 {{/analytics.useGoogleAnalytics}}
