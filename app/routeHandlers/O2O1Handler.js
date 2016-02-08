@@ -67,14 +67,22 @@ module.exports.postHandler = function (request, reply) {
       var sessionid = 'id_' + request.session.id;
       var cacheKey = sessionid + '_latestErrors';
 
+
       CachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function (result) {
-          reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
-            uploadError: true,
-            errorMessage: errorData.message,
-            lineErrors: errorData.lineErrors,
-            isLineErrors: errorData.lineErrors ? true : false
-          });
+          var filekey = sessionID + '_SourceName';
+          filekey = sessionid + '_SourceName';
+          CachHandler.getValue(filekey)
+            .then(function (fileName) {
+              fileName = fileName.replace(/"/g, "");
+              reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
+                uploadError: true,
+                errorMessage: errorData.message,
+                fileName: fileName,
+                lineErrors: errorData.lineErrors,
+                isLineErrors: errorData.lineErrors ? true : false
+              });
+            });
         })
         .catch(function (err) {
           console.error(err);
