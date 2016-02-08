@@ -6,11 +6,6 @@ var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 
-
-
-
-
-
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.

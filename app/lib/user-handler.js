@@ -71,14 +71,6 @@ module.exports.getUserMail = function (sessionID) {
       });
   });
 };
-/*var user = {
- authenticated: false,
- email: usermail,
- pin: newpin,
- filekey:''
- };*/
-
-
 
 module.exports.isAuthenticated = function (sessionID) {
 
@@ -130,8 +122,6 @@ module.exports.incrementUploadCount = function (sessionID) {
       setUser(sessionID, user);
     });
 };
-
-
 
 module.exports.getUser = getUser;
 module.exports.setUser = setUser;

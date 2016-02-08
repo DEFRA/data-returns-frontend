@@ -13,6 +13,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 module.exports.isInfected = function (filePath) {
   return new Promise(function (resolve, reject) {
 
+    //set up clamav config
     if (config.CSV.VIRUS_SCAN === true) {
       console.log('==> av is scanning ' + filePath);
       var clam = require('clamscan')(
@@ -36,10 +37,9 @@ module.exports.isInfected = function (filePath) {
         }
       );
 
-
+      // Do the av scan
       clam.is_infected(filePath, function (err, file, is_infected) {
 
-        //is_infected ? is_infected : false;
         if (err) {
           console.log(err);
           resolve(false);

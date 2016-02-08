@@ -75,8 +75,6 @@ function processResponse(err, response, body, reject, successCallback) {
   }
 }
 
-
-
 /**
  * Asks the Data Exchange service to submit a file that has previously been
  * uploaded and validated.
@@ -95,8 +93,6 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
     // Define data to send to the Data Exchange service.
     var apiData = {
       url: config.API.endpoints.FILEUPLOADCOMPLETE,
-      //url: config.API.endpoints.FILEUPLOADCOMPLETE + '?filekey=' + fileKey + '&usermail=' + userEmail
-      //url: config.API.endpoints.FILEUPLOADCOMPLETE + '/' + fileKey + '/' + userEmail
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },

@@ -147,6 +147,9 @@ module.exports = {
       console.error('<== createUploadDirectory() error: ' + err);
     }
   },
+  /*
+   * reads a file
+   */
   readFile: function (path, callback) {
     try {
       var filename = require.resolve(path);

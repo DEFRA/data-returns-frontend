@@ -154,7 +154,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/09-errors',
-    handler: O2O9Handler.getHandler //BasicTemplateHandler.getHandler
+    handler: O2O9Handler.getHandler 
   },
   {
     method: 'GET',

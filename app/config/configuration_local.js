@@ -1,6 +1,6 @@
 'use strict';
 /*
- * Settings for the 'development' environment.
+ * Settings for your local machine environment.
  */
 var config = require('./configuration_global');
 // Set a meaningful name for this environment.

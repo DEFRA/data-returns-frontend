@@ -12,13 +12,10 @@ var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
 var Hogan = require('hogan.js');
 var emailTemplates = require('../config/configuration_email_templates');
-//var sendPinTemplate = emailTemplates.sendPinTemplate;
-//var pinTemplate = require('../config/email-pin-code-template.html');
-var compiledPinTemplate;// = Hogan.compile(pinTemplate);
-//var compiledPinTemplate = Hogan.compile(sendPinTemplate);
-//var confirmationEmailTemplate = emailTemplates.confirmationEmailTemplate;
+var compiledPinTemplate;
 var compiledConfirmationEmailTemplate;// = Hogan.compile(confirmationEmailTemplate);
 
+//Read the pin code template file
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
   if (err) {
     console.error('Unable to read pin email template ' + err);
@@ -27,6 +24,7 @@ Utils.readFile('../config/email-pin-code-template.html', function (err, result) 
   }
 });
 
+//Read the confirmation email template
 Utils.readFile('../config/email-confirmation-template.html', function (err, result) {
   if (err) {
     console.error('Unable to read confirmation email template ' + err);

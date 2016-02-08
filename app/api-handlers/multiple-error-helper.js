@@ -1,15 +1,24 @@
-
+/*
+ * Helper module to help handle multiple errors returned from the backend API
+ * 
+ * 
+ */
 var uuid = require('node-uuid');
 var cacheHandler = require('../lib/cache-handler');
 
 module.exports = {
+  /*
+   * Groups error data by column name and error type, 
+   * where error type is ether missing or incorrect
+   * caches the grouped data in Redis for use in error detail pages
+   */
   groupErrorData: function (data) {
 
     var groupedData = {};
     var groupLinkID = new Map();
     var errorPageData = [];
 
-    //create linkid's for each group
+    //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
       var columnName = item.columnName;
       var errorColumnText = item.errorValue === null ? 'Missing' : 'Incorrect';
@@ -48,7 +57,6 @@ module.exports = {
     for (var groupName in groupedData) {
       var groupID = groupLinkID.get(groupName);
       var group = groupedData[groupName];
-      //var count = group.length;
       var firstErrorInGroup = group[0];
 
       errorPageData.push(firstErrorInGroup);
@@ -63,8 +71,6 @@ module.exports = {
           });
       })(groupID, group);
     }
-
-    //console.log(errorPageData);
     
     return errorPageData;
   }

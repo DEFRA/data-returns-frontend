@@ -37,7 +37,6 @@ config.redis = {
 };
 
 // API Endpoints
-
 var BASEURL = {
   PROTOCOL: 'http://',
   SERVER: 'localhost:',
