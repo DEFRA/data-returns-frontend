@@ -1,13 +1,18 @@
 {{<layout}}
 
 {{$pageTitle}}
+<<<<<<< HEAD
 GOV.UK prototyping kit
+=======
+Send Your Data Returns Online
+>>>>>>> HAPI-Changes
 {{/pageTitle}}
 
 {{$content}}
 
 <main id="content" role="main">
 
+<<<<<<< HEAD
     <div class="phase-banner beta-banner">
         <p>
             <strong class="phase-tag">BETA</strong>
@@ -61,6 +66,70 @@ GOV.UK prototyping kit
         <!-- /.well -->
     </div>
     <!-- /.text -->
+=======
+  <div class="phase-banner beta-banner">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+
+  <h1 class="heading-xlarge">
+    <span id="title">Choose the file you want to send</span>
+  </h1>
+
+  {{#uploadError}}
+  <div id="Validation-Summary" class="validation-summary">
+    <h1  class="heading-medium"><label>The file you selected cannot be sent</label></h1>
+    <p class="validation-message"><label>{{errorMessage}}</label></p>
+  </div>
+  {{/uploadError}}
+  <div id="Validation-Summary-empty-file" class="validation-summary" style="display:none" >
+    <h1  class="heading-medium"><label>The file you selected cannot be sent</label></h1>
+    <p class="validation-message"><label>The file is empty</label></p>
+  </div>
+  
+  <div id="Validation-Summary-not-csv-file" class="validation-summary" style="display:none">
+    <h1  class="heading-medium"><label>The file you selected cannot be sent</label></h1>
+    <p class="validation-message"><label>The file is not a csv file</label></p>
+  </div>
+
+  <div class="text">
+    <p class="lede">Your file must be in CSV format.</p>
+
+    <div class="well">
+      <div id="statusbar-header" style="display:none; width:100%; box-sizing:border-box;">
+        <div class="statusbar2 statusbar2-title" style="width: 100%; display: block;">
+          <div class="filename2" style="width:70%; display:inline-block;">Name of data file to be checked
+          </div>
+          <div class="delname2" style="width:30%; display:inline;">Action</div>
+        </div>
+        <div class='statusbar2 odd' style='width: 100%;'>
+          <div class='filename2 file-label' style='width: 70%; display:inline-block;'></div>
+          <div class='delname2 del-label' style='width: 30%; display:inline;'></div>
+        </div>
+      </div>
+
+      <div class="upload-file">
+        <p class="file-display"></p>
+
+        <form id="uploadForm" Content-Type="text/csv" enctype="multipart/form-data" method="post">
+          <div class="fancy-file-button button-choose-file button-secondary">
+            <span class="browse-text" style="display:none;">Choose file</span>
+            <input id="file-select-button" type="file" name="fileUpload" style="width: 100%;">
+          </div>
+          <p>
+            <input id="check-for-errors-btn" class="button" type="submit" value="Check for errors" name="submit">
+            <span style="display:none" class="checking">Checking your file...<span class="loading"><img src="/public/images/icons/loader.gif"></span></span>
+          </p>
+        </form>
+      </div>
+      <!-- /.upload-file -->
+    </div>
+    <!-- /.well -->
+  </div>
+  <!-- /.text -->
+>>>>>>> HAPI-Changes
 </main>
 
 {{/content}}

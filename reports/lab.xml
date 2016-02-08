@@ -1,0 +1,54 @@
+<testsuite tests="16" skipped="0" errors="0" failures="1" time="2.084">
+<testcase classname=" Ping REDIS2" name=" Ping REDIS2" time="0.009">
+
+    </testcase>
+<testcase classname="csv-validator.js library allows a valid CSV file if the content-type is correct" name="csv-validator.js library allows a valid CSV file if the content-type is correct" time="0.004">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a valid CSV file if the content-type is wrong" name="csv-validator.js library rejects a valid CSV file if the content-type is wrong" time="2.003">
+<failure message="Timed out (2000ms) - csv-validator.js library rejects a valid CSV file if the content-type is wrong" type="Error">
+        <![CDATA[Error: Timed out (2000ms) - csv-validator.js library rejects a valid CSV file if the content-type is wrong
+    at null.&lt;anonymous&gt; (/media/sf_SourceCode/data-returns-frontend/node_modules/lab/lib/runner.js:437:27)
+    at Timer.listOnTimeout (timers.js:92:15)]]>
+      </failure>
+    </testcase>
+<testcase classname="csv-validator.js library rejects a valid CSV file if the content-type is null" name="csv-validator.js library rejects a valid CSV file if the content-type is null" time="0.002">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a valid CSV file if the content-type is not a string" name="csv-validator.js library rejects a valid CSV file if the content-type is not a string" time="0.001">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a valid CSV file if the content-type is an empty string" name="csv-validator.js library rejects a valid CSV file if the content-type is an empty string" time="0">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects an empty file (with correct content type)" name="csv-validator.js library rejects an empty file (with correct content type)" time="0.003">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a file with the wrong extension (with correct content type)" name="csv-validator.js library rejects a file with the wrong extension (with correct content type)" time="0.001">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a file if it cannot be found on disk" name="csv-validator.js library rejects a file if it cannot be found on disk" time="0.002">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a file if the filename is null" name="csv-validator.js library rejects a file if the filename is null" time="0.001">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a file if the filename not a string" name="csv-validator.js library rejects a file if the filename not a string" time="0.002">
+
+    </testcase>
+<testcase classname="csv-validator.js library rejects a file if the filename is empty" name="csv-validator.js library rejects a file if the filename is empty" time="0.001">
+
+    </testcase>
+<testcase classname=" Pin Generation Test" name=" Pin Generation Test" time="0.006">
+
+    </testcase>
+<testcase classname=" Good email address " name=" Good email address " time="0.007">
+
+    </testcase>
+<testcase classname=" Bad email address" name=" Bad email address" time="0.001">
+
+    </testcase>
+<testcase classname=" Send Test email (may not actualy send email)" name=" Send Test email (may not actualy send email)" time="0.009">
+
+    </testcase>
+</testsuite>

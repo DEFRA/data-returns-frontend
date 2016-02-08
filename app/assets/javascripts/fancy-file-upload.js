@@ -71,10 +71,7 @@ $(document).ready( function() {
                 var control = $('#file-select-button')
                 control.replaceWith( control = control.clone( true ) );
             });
-            if (!label.includes(".csv")) {
-                $('#remove-link').click();
-                window.location.assign("/invalid_csv_file");
-            }
+            
         }
     });
 });
