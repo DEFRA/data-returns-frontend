@@ -37,8 +37,8 @@ config.sessionStorage = {
 //SMTP Configuration
 config.smtp = {};
 config.smtp.mailcatcher = {};
-config.smtp.pinsubject = 'Data returns online (England) confirmation code - ';
-config.smtp.confirmsubject = 'Data returns online (England) data return receipt';
+config.smtp.pinsubject = ' is your data returns online confirmation code';
+config.smtp.confirmsubject = 'Data returns online data return receipt';
 config.smtp.success = '250 Message accepted';
 // mail catcher config
 // Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
@@ -59,7 +59,7 @@ config.pin = {
 // CSV Validation
 config.CSV = {
   validate: true,
-  VIRUS_SCAN: true,
+  VIRUS_SCAN: false,
   maxfilesize: 2 * Math.pow(2, 20) //2MB
 };
 
