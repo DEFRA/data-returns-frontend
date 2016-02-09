@@ -73,7 +73,7 @@ function processResponse(err, response, body, reject, successCallback) {
       console.log('\t processResponse- app status code:', appStatusCode);
 
       if (appStatusCode === ErrorMessages.ERROR_CODES.SUCCESSFULL) {
-
+        
         successCallback(parsedBody);
       } else {
         var errMessage, apiErrors;
@@ -179,6 +179,7 @@ module.exports.uploadFileToService = function (filePath, sessionID,originalFileN
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
             console.log('<== successHandler() resolve(true) ');
+          
             resolve(jsonResponse);
           })
           .catch(function (result) {

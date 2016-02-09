@@ -2,6 +2,7 @@
 var SMTPHandler = require('../lib/smtp-handler');
 var PinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
+var CacheHandler = require('../lib/cache-handler');
 
 module.exports = {
   /*
@@ -13,19 +14,29 @@ module.exports = {
   getHandler: function (request, reply) {
 
     var sessionID = 'id_' + request.session.id;
+    var filekey = sessionID + '_SourceName';
 
     userHandler.isAuthenticated(sessionID)
       .then(function (result) {
-        if (result === true) {
-          reply.view('02-send-your-data/05-success', {
-            returnMetaData: request.session.get('returnMetaData')
+        CacheHandler.getValue(filekey)
+          .then(function (fileName) {
+            fileName = fileName.replace(/"/g, "");
+            var returnMetaData = {
+              fileName: fileName
+            };
+            if (result === true) {
+              reply.view('02-send-your-data/05-success', {
+                returnMetaData: returnMetaData//request.session.get('returnMetaData')
+              });
+            } else {
+              reply.view('02-send-your-data/03-email', {
+                returnMetaData: returnMetaData
+              });
+            }
+          })
+          .catch(function (err) {
+            console.error(err);
           });
-        } else {
-          reply.view('02-send-your-data/03-email', {
-            returnMetaData: request.session.get('returnMetaData')
-          });
-        }
-
       })
       .catch(function (result) {
         reply.view('02-send-your-data/03-email', {
