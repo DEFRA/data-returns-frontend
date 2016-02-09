@@ -108,7 +108,7 @@ var sendPinEmail = function (recipient, newPin) {
     var mailOptions = {
       from: sender,
       to: recipient,
-      subject: config.smtp.pinsubject + ' ' + newPin,
+      subject: newPin + ' ' + config.smtp.pinsubject,
       //text: emailBody,
       html: emailBody
         /*attachments: [{
