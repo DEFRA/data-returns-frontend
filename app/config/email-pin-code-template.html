@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Data returns online (England) confirmation code - {{pin}}</title>
+	<title>{{pin}} is your Data returns online (England) confirmation code</title>
 	<style type="text/css">
 		/* Based on The MailChimp Reset INLINE: Yes. */
 		/* Client-specific Styles */
@@ -16,77 +16,12 @@
 		/* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
 		/* End reset */
 
-    #header {
-      width: 100%;
-      height: 55px;
-      display: block;
-      background-color: #0B0C0C;
-    }
-
-    #header #govuk-masthead {
-      padding: 12px 0 15px 0;
-    }
-
-    .wrapper {
-      max-width: 570px;
-      padding: 0 15px;
-      margin: 0 auto;
-    }
-
-    h1, h2, h3, h4, h5, h6, p, ul, ol, small {
-      color: #0B0C0C;
-      font-family: sans-serif;
-      margin: 15px 0;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 700;
-    }
-
-    p, ul, ol, h3, h4, h5, h6 {
-      font-size: 19px;
-      line-height: 1.315789474;
-    }
-
-    h1 {
-      font-size: 36px;
-      line-height: 1.111111111;
-      padding: 15px 0;
-    }
-
     h2, .lead {
       font-size: 24px;
       line-height: 1.25;
       padding-top: 30px;
     }
-    
-    
-    
-		.ea-logo {
-			margin: 15px 0;
-		}
-	
-    .footer * {
-      color: #6F777B !important;
-      font-size: 16px;
-      line-height: 1.25;
-    }
-    
-    .footer ul {
-    	padding-left: 0;
-    	list-style-type: none;
-    }
-    
-    .details ol, .details ul {
-      padding-left: 0;
-    }
 
-    .details li {
-      list-style-type: none;
-    }
-
-    
-    
 		/* Some sensible defaults for images
 		Bring inline: Yes. */
 		img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}
@@ -202,38 +137,37 @@
 	<![endif]-->
   </head>
   <body>
-    <div id="header">
-      <div class="wrapper">
-        <img id="govuk-masthead" alt="GOV.UK" src="{{govuklogo}}" />
-      </div>
-    </div>
-    <div class="wrapper">
-      <p>You requested a pin from the Environment Agency to make a data return.</p>
+		<div id="header" style="width: 100%; height: 55px; display: block; background-color: #0B0C0C;">
+		  <div class="wrapper" style="max-width: 570px; padding: 0 15px; margin: 0 auto;">
+		    <img id="govuk-masthead" style="padding: 12px 0 12px 0;" src="{{govuklogo}}" alt="GOV.UK" />
+		  </div>
+		</div>
+		<div class="wrapper" style="max-width: 570px; padding: 0 15px; margin: 0 auto;">
+		  <h1 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 24px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">You requested a pin from the Environment Agency to make a data return.</h1>
+		  
+		  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Go to your browser and use this code to confirm your email address in the Data returns online (England) service:</p>
+		  
+		  <h2 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 36px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">{{pin}}</h2>
+		  
 
-      <p>Go to your browser and use this code to confirm your email address in the Data returns online (England) service:</p>
-
-      <h1>{{pin}}</h1>
-
-      <p>Once we’ve confirmed your email address, you can send your data return file saved as CSV. We’ll send a receipt to this email address.</p>
+			<p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Once we’ve confirmed your email address, you can send your data return file saved as CSV. We’ll send a receipt to this email address.</p>
 
 
-      <img  alt="" src="{{ealogo}}" />
+      <img id="ea-masthead" class="ea-logo" style="margin: 15px 0; max-width: 200px;" alt="Environment Agency logo" src="{{ealogo}}" />
 
-      <div class="footer">
-        <ul>
-          <li><strong>Telephone:</strong> {{UKPhone}}</li>
-          <li><strong>Telephone from outside the UK:</strong> {{PhoneFromAbroad}}</li>
-        </ul>
+			<div class="footer">
+				<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">
+					<strong>Telephone:</strong> 03708 506 506<br>
+					<strong>Telephone from outside the UK:</strong> 00 44 1709 389 201<br>
+					(Mon to Fri, 8am to 6pm)</p>
+				
+				<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">Minicom service, for the hard of hearing: 03702 422 549 National Customer Contact Centre.<br>
+					Details of call charges can be found on the GOV.UK website<br>
+					Email address: <a href="mailto:enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a>
+				</p>
+				
+			</div>
 
-        <p>(Mon to Fri, 8am to 6pm)</p>
-
-        <p>Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.</p>
-
-        <p>Details of call charges can be found on the GOV.UK website</p>
-
-        <p>Email address: <a href="mailto:{{EnquiryEmail}}">{{EnquiryEmail}}</a></p>
-
-      </div>
     </div>
 
   </body>
