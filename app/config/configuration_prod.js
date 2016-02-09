@@ -55,7 +55,7 @@ config.API.STATUS_CODES = {
 
 //DEP specific configuration
 config.dep = {
-  returnTypeRulesLink: 'http://data-returns-help.herokuapp.com/help/detailed-guides/return-type-rules'
+  returnTypeRulesLink: 'http://data-returns-help.herokuapp.com'
 };
 
 // Google Analytics configuration.
