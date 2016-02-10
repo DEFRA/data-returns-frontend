@@ -6,13 +6,14 @@ var config = require('./configuration_global');
 // Set a meaningful name for this environment.
 config.env = 'local';
 config.sessionStorage.mode = 'redis';
-/* DEV SMTP Configuration */
+
+/* Local SMTP Configuration */
 config.smtp = config.smtp || {};
 config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 25;
 config.smtp.ignoreTLS = true;
-config.smtp.username = '';
-config.smtp.password = '';
+config.smtp.username = process.env.smtpuser;
+config.smtp.password = process.env.smtppw; 
 config.smtp.fromEmailAddress = 'noreply-local@environment-agency.gov.uk';
 config.smtp.useFooter = false;
 

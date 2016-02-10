@@ -16,8 +16,8 @@ config.smtp = config.smtp || {};
 config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
 config.smtp.port = 587;
 config.smtp.ignoreTLS = false;
-config.smtp.username = '';
-config.smtp.password = '';
+config.smtp.username = process.env.smtpuser;
+config.smtp.password = process.env.smtppw; 
 config.smtp.fromEmailAddress = 'noreply@environment-agency.gov.uk';
 config.smtp.useFooter = false;
 

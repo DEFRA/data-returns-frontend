@@ -12,8 +12,8 @@ config.smtp = config.smtp || {};
 config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 587;
 config.smtp.ignoreTLS = true;
-config.smtp.username = 'data-returns';
-config.smtp.password = 'redscrewdriver1';
+config.smtp.username = process.env.smtpuser;
+config.smtp.password = process.env.smtppw; 
 config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
 config.smtp.useFooter = false;
 // mail catcher config
