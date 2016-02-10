@@ -1,18 +1,20 @@
 $(document).on('change', '.btn-file :file', function () {
   var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1,
-    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    label = input.val().replace("C:\\fakepath\\", "");
+  label = label.replace(/\\/g, '/').replace(/.*\//, '');
+
   var f = input.get(0).files[0];
   $('#Validation-Summary').hide();
   $('#Validation-Summary-empty-file').hide();
   $('#Validation-Summary-not-csv-file').hide();
- 
+
   if ((f.size || f.fileSize)) {
     input.trigger('fileselect', [numFiles, label]);
   } else {
     //empty_file
     $('#remove-link').click();
-   $('#Validation-Summary-empty-file').show();
+    $('#Validation-Summary-empty-file').show();
   }
 
 });
@@ -28,7 +30,7 @@ $(document).ready(function () {
   $('.browse-text').show();
   $('#check-for-errors-btn').attr('disabled', 'disabled');
 
-  var existing = $('.btn-file :file').val();
+  var existing = $('.btn-file :file').val().replace("C:\\fakepath\\", "");
 
   if (existing) {
     $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '');
