@@ -11,11 +11,12 @@ var Joi = require('joi');
 var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
 var Hogan = require('hogan.js');
-var emailTemplates = require('../config/configuration_email_templates');
 var compiledPinTemplate;
-var compiledConfirmationEmailTemplate;// = Hogan.compile(confirmationEmailTemplate);
+var compiledConfirmationEmailTemplate;
+var compiledPinTextTemplate;
+var compiledConfirmationEmailTextTemplate;
 
-//Read the pin code template file
+//Read the pin code template files
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
   if (err) {
     console.error('Unable to read pin email template ' + err);
@@ -24,12 +25,28 @@ Utils.readFile('../config/email-pin-code-template.html', function (err, result) 
   }
 });
 
-//Read the confirmation email template
+Utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
+  if (err) {
+    console.error('Unable to read pin email text template ' + err);
+  } else {
+    compiledPinTextTemplate = Hogan.compile(result);
+  }
+});
+
+//Read the confirmation email templates
 Utils.readFile('../config/email-confirmation-template.html', function (err, result) {
   if (err) {
     console.error('Unable to read confirmation email template ' + err);
   } else {
     compiledConfirmationEmailTemplate = Hogan.compile(result);
+  }
+});
+
+Utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
+  if (err) {
+    console.error('Unable to read confirmation email template ' + err);
+  } else {
+    compiledConfirmationEmailTextTemplate = Hogan.compile(result);
   }
 });
 
@@ -105,12 +122,13 @@ var sendPinEmail = function (recipient, newPin) {
     };
 
     var emailBody = compiledPinTemplate.render(data);
+    var emailTextBody = compiledPinTextTemplate.render(data);
     /* Set per email options */
     var mailOptions = {
       from: sender,
       to: recipient,
       subject: newPin + ' ' + config.smtp.pinsubject,
-      //text: emailBody,
+      text: emailTextBody,
       html: emailBody
     };
     console.log(__dirname);
@@ -155,12 +173,13 @@ var sendConfirmationEmail = function (userMail, filename) {
     };
 
     var emailBody = compiledConfirmationEmailTemplate.render(data);
+    var emailTextBody = compiledConfirmationEmailTextTemplate.render(data);
 
     var mailOptions = {
       from: sender,
       to: userMail,
       subject: config.smtp.confirmsubject,
-      //text: emailBody,
+      text: emailTextBody,
       html: emailBody
     };
 
