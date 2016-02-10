@@ -1,0 +1,16 @@
+You requested a pin from the Environment Agency to make a data return.
+
+Go to your browser and use this code to confirm your email address in the Data returns online (England) service:
+
+{{pin}}
+		  
+Once we’ve confirmed your email address, you can send your data return file saved as CSV. We’ll send a receipt to this email address.
+
+{{#useFooter}}
+Telephone: {{UKPhone}}
+Telephone from outside the UK: {{PhoneFromAbroad}}
+(Mon to Fri, 8am to 6pm)
+Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.
+Details of call charges can be found on the GOV.UK website
+Email address: {{EnquiryEmail}}
+{{/useFooter}}

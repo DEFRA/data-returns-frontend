@@ -1,0 +1,17 @@
+You successfully sent a data returns file to the Environment Agency.
+
+Your details:
+File: {{FILENAME}}
+Date: {{DATE}}
+Time: {{TIME}}
+
+We’ll now check your data for quality and regulatory compliance. We may need to contact you with any queries.
+
+{{#useFooter}}
+Telephone: {{UKPhone}}
+Telephone from outside the UK: {{PhoneFromAbroad}}
+(Mon to Fri, 8am to 6pm)
+Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.
+Details of call charges can be found on the GOV.UK website
+Email address: {{EnquiryEmail}}
+{{/useFooter}}
