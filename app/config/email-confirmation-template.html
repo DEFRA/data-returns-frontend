@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Data returns online (England) confirmation code - 1234</title>
+	<title>{{pin}} is your Data returns online (England) confirmation code</title>
 	<style type="text/css">
 		/* Based on The MailChimp Reset INLINE: Yes. */
 		/* Client-specific Styles */
@@ -14,14 +14,14 @@
 		.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
 		/* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
 		/* End reset */
-
-    #header {
-      width: 100%;
-      height: 55px;
-      display: block;
-      background-color: #0B0C0C;
-    }
-
+		
+		#header {
+		  width: 100%;
+		  height: 55px;
+		  display: block;
+		  background-color: #0B0C0C;
+		}
+		
     #header #govuk-masthead {
       padding: 12px 0 15px 0;
     }
@@ -58,36 +58,23 @@
       line-height: 1.25;
       padding-top: 30px;
     }
-
-
-
-
-
-		.ea-logo {
-			margin: 15px 0;
-		}
-	
-    .footer * {
-      color: #6F777B !important;
+    
+    small, .details, .footer {
       font-size: 16px;
       line-height: 1.25;
     }
 
-		.footer ul {
-			padding-left: 0;
-			list-style-type: none;
-		}
+    .details, .footer, .details a, .footer a {
+      color: #6F777B !important;
+    }
 
-    .details ol, .details ul {
+    ol.details, ul.details {
       padding-left: 0;
     }
 
     .details li {
       list-style-type: none;
     }
-
-
-
 
 		/* Some sensible defaults for images
 		Bring inline: Yes. */
@@ -130,6 +117,16 @@
 		a {color: #005EA5;}
 
 
+
+    /* Data returns PIN notification email styles*/
+    h1 {
+    	font-size: 24px;
+    }
+	  h2 {
+	  	font-size: 36px;
+	  	padding: 15px 0;
+	  }  
+    
 		/***************************************************
 		****************************************************
 		MOBILE TARGETING
@@ -197,60 +194,64 @@
 	</style>
 	<![endif]-->
 
-	<!--[if gte mso 9]>
-		<style>
-		/* Target Outlook 2007 and 2010 */
+	<!--[if mso]>
+		<style type="text/css">
+				
 		</style>
 	<![endif]-->
-</head>
-<body>
-
-<div id="header">
-
-  <div class="wrapper">
-    <img id="govuk-masthead" src="cid:GovukLogo" alt="GOV.UK" />
-  </div>
-
-</div>
-
-<div class="wrapper">
-  <p>You successfully sent a data return online to the Environment Agency.</p>
-	<p>Your details:</p>
-	<ul class="details">
-		<li><strong>File</strong>: {{FILENAME}}</li>
-		<li><strong>Date</strong>: {{TIME}}</li>
-		<li><strong>Time</strong>: {{TIME}}</li>
-	</ul>
-
-  <p>We’ll now check it for quality and regulatory compliance. We may need to contact you with any queries about the data in your returns.</p>
-  
-  <p>You can use the service to send another data return online.</p>
-  
-  <p>Send us feedback to help us improve this new service.</p>
-
-
-	<img id="ea-masthead" class="ea-logo" src="EAlogoCid" alt=""/>
 	
-	<div class="footer">
-		<ul>
-			<li><strong>Telephone:</strong> {{UKPhone}}</li>
-			<li><strong>Telephone from outside the UK:</strong> {{PhoneFromAbroad}}</li>
-		</ul>
+  </head>
+  <body>
+		<div id="header" style="width: 100%; height: 55px; display: block; background-color: #0B0C0C;">
+		  <div class="wrapper" style="max-width: 570px; padding: 0 15px; margin: 0 auto;">
+		    <img id="govuk-masthead" style="padding: 12px 0 12px 0;" src="{{govuklogo}}" alt="GOV.UK" />
+		  </div>
+		</div>
 		
-		<p>(Mon to Fri, 8am to 6pm)</p>
+		<!--[if mso]>
+		 <center>
+		 <table><tr><td width="570">
+		<![endif]-->
 		
-		<p>Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.</p>
-		
-		<p>Details of call charges can be found on the GOV.UK website</p>
-		
-		<p>Email address: <a href="mailto{{EnquiryEmail}}">{{EnquiryEmail}}</a></p>
-		
-	</div>
-</div>
-</body>
-</html>
+			<div class="wrapper" style="max-width: 570px; padding: 0 15px; margin: 0 auto;">
+			
+			  <h1 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 24px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">You successfully sent a data returns file to the Environment Agency.</h1>
+				<p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Your details:</p>
+				<ul style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;" class="details">
+					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>File</strong>: {{FILENAME}}</li>
+					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>Date</strong>: {{TIME}}</li>
+					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>Time</strong>: {{TIME}}</li>
+				</ul>
+			
+			  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">We’ll now check your data for quality and regulatory compliance. We may need to contact you with any queries.</p>
+			  
+			  <!-- Not needed for Beta Pilot
+			  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">You can use the service to send another data return online.</p>
+			  
+			  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Send us feedback to help us improve this new service.</p>
+			  -->
+	
+	      <img id="ea-masthead" class="ea-logo" style="margin: 15px 0; max-width: 200px;" alt="Environment Agency logo" src="{{ealogo}}" />
+	      {{#useFooter}}
+				<div class="footer">
+					<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">
+						<strong>Telephone:</strong> {{UKPhone}}<br>
+						<strong>Telephone from outside the UK:</strong> {{PhoneFromAbroad}}<br>
+						(Mon to Fri, 8am to 6pm)</p>
+					
+					<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.<br>
+						Details of call charges can be found on the GOV.UK website<br>
+						Email address: <a href="{{EnquiryEmail}}">{{EnquiryEmail}}</a>
+					</p>
+					
+				</div>
+	      {{/useFooter}}
+	    </div>
 
-<!--EnquiryEmail: config.smtp.support.email,
-      UKPhone: config.smtp.support.UKPhone,
-      PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
-      MiniCommNumber: config.smtp.support.MiniCommNumber-->
+	    
+	    <!--[if mso]>
+	     </td></tr></table>
+	     </center>
+	    <![endif]--> 
+  </body>
+</html>
