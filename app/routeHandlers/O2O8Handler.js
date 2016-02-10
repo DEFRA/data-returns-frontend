@@ -12,34 +12,33 @@ module.exports.getHandler = function (request, reply) {
   console.log('==> O2O8Handler.getHandler()');
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_SourceName';
-  var email, file;
+  var email;
   //Get the users email address from the cache
   UserHandler.getUserMail(sessionID)
     .then(function (usermail) {
       //get the original file name the user uploaded from the cache
       email = usermail;
-      CacheHandler.getValue(key)
-        .then(function (filename) {
-          file = filename.replace(/"/g, "");
-        })
-        .then(function () {
-          reply.view('02-send-your-data/08-done', {
-            userEmail: email
-          });
-        });
+      reply.view('02-send-your-data/08-done', {
+        userEmail: email
+      });
     })
     .then(function () {
-      SMTPHandler.sendConfirmationEmail(email, file)
-        .then(function (email) {
-          console.log('\t The confirmation email has been sent');
-        })
-        // Increment the count of uploads using the current pin number
-        .then(function () {
-          UserHandler.incrementUploadCount(sessionID);
-        })
-        // delete the file uploaded
-        .then(function () {
-          Utils.deleteFile(sessionID);
+
+      CacheHandler.getValue(key)
+        .then(function (filename) {
+          filename = filename.replace(/"/g, "");
+          SMTPHandler.sendConfirmationEmail(email, filename)
+            .then(function (email) {
+              console.log('\t The confirmation email has been sent');
+            })
+            // Increment the count of uploads using the current pin number
+            .then(function () {
+              UserHandler.incrementUploadCount(sessionID);
+            })
+            // delete the file uploaded
+            .then(function () {
+              Utils.deleteFile(sessionID);
+            });
         });
     })
     .catch(function (err) {

@@ -112,15 +112,6 @@ var sendPinEmail = function (recipient, newPin) {
       subject: newPin + ' ' + config.smtp.pinsubject,
       //text: emailBody,
       html: emailBody
-        /*attachments: [{
-         filename: 'govuk_logotype_email.png',
-         path: __dirname,
-         cid: 'GovukLogo'  //same cid value as in the html img src
-         }, {
-         filename: 'EAlogo.png',
-         path: __dirname,
-         cid: 'EAlogoCid'  //same cid value as in the html img src
-         }]*/
     };
     console.log(__dirname);
     /* Send the email */
@@ -157,7 +148,10 @@ var sendConfirmationEmail = function (userMail, filename) {
       EnquiryEmail: config.smtp.support.email,
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
-      MiniCommNumber: config.smtp.support.MiniCommNumber
+      MiniCommNumber: config.smtp.support.MiniCommNumber,
+      govuklogo: 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
+      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      useFooter: config.smtp.useFooter
     };
 
     var emailBody = compiledConfirmationEmailTemplate.render(data);
@@ -166,17 +160,8 @@ var sendConfirmationEmail = function (userMail, filename) {
       from: sender,
       to: userMail,
       subject: config.smtp.confirmsubject,
-      text: emailBody,
-      html: emailBody,
-      attachments: [{
-          filename: 'govuk_logotype_email.png',
-          path: __dirname,
-          cid: 'GovukLogo'  //same cid value as in the html img src
-        }, {
-          filename: 'EAlogo.png',
-          path: __dirname,
-          cid: 'EAlogoCid'  //same cid value as in the html img src
-        }]
+      //text: emailBody,
+      html: emailBody
     };
 
     /* Send the email */
