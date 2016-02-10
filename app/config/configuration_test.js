@@ -9,12 +9,21 @@ var config = require('./configuration_global');
 config.env = 'test';
 
 /* SMTP Test Configuration */
+config.smtp = config.smtp || {};
 config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
 config.smtp.port = 587;
 config.smtp.ignoreTLS = false;
 config.smtp.username = '';
 config.smtp.password = '';
 config.smtp.fromEmailAddress = 'noreply-test@environment-agency.gov.uk';
+config.smtp.useFooter = false;
+
+// mail catcher config
+// Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
+config.smtp.useMailCatcher = true; // set to false on AWS servers
+config.smtp.mailcatcher.host = '127.0.0.1';
+config.smtp.mailcatcher.port = 1025;
+config.smtp.mailcatcher.ignoreTLS = true;
 
 //Support Contact details on emails
 config.smtp.support = {
@@ -30,6 +39,13 @@ config.redis = {
     host: 'localhost',
     port: 6379
   }
+};
+
+// CSV Validation
+config.CSV = {
+  validate: true,
+  VIRUS_SCAN: true,
+  maxfilesize: 2 * Math.pow(2, 20) //2MB
 };
 
 // API Endpoints

@@ -144,10 +144,31 @@
 		</div>
 		<div class="wrapper" style="max-width: 570px; padding: 0 15px; margin: 0 auto;">
 		  <h1 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 24px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">You requested a pin from the Environment Agency to make a data return.</h1>
+		  
 		  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Go to your browser and use this code to confirm your email address in the Data returns online (England) service:</p>
+		  
 		  <h2 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 36px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">{{pin}}</h2>
+		  
+
 			<p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Once we’ve confirmed your email address, you can send your data return file saved as CSV. We’ll send a receipt to this email address.</p>
-      <img id="ea-masthead" class="ea-logo" style="margin: 15px 0; max-width: 150px;" alt="Environment Agency logo" src="{{ealogo}}" />
+
+
+      <img id="ea-masthead" class="ea-logo" style="margin: 15px 0; max-width: 200px;" alt="Environment Agency logo" src="{{ealogo}}" />
+      {{#useFooter}}
+			<div class="footer">
+				<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">
+					<strong>Telephone:</strong> {{UKPhone}}<br>
+					<strong>Telephone from outside the UK:</strong> {{PhoneFromAbroad}}<br>
+					(Mon to Fri, 8am to 6pm)</p>
+				
+				<p style="font-family: sans-serif; margin: 15px 0; color: #6F777B !important; font-size: 14px; line-height: 1.25;">Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.<br>
+					Details of call charges can be found on the GOV.UK website<br>
+					Email address: <a href="{{EnquiryEmail}}">{{EnquiryEmail}}</a>
+				</p>
+				
+			</div>
+      {{/useFooter}}
     </div>
+
   </body>
 </html>
