@@ -7,12 +7,21 @@ var config = require('./configuration_global');
 config.env = 'local';
 config.sessionStorage.mode = 'redis';
 /* DEV SMTP Configuration */
+config.smtp = config.smtp || {};
 config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 25;
 config.smtp.ignoreTLS = true;
-config.smtp.username = 'data-returns';
-config.smtp.password = 'redscrewdriver1';
+config.smtp.username = '';
+config.smtp.password = '';
 config.smtp.fromEmailAddress = 'noreply-local@environment-agency.gov.uk';
+config.smtp.useFooter = false;
+
+// mail catcher config
+// Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
+config.smtp.useMailCatcher = true; // set to false on AWS servers
+config.smtp.mailcatcher.host = '127.0.0.1';
+config.smtp.mailcatcher.port = 1025;
+config.smtp.mailcatcher.ignoreTLS = true;
 
 //Support Contact details on emails
 config.smtp.support = {
@@ -29,13 +38,19 @@ config.redis = {
     port: 6379
   }
 };
+// CSV Validation
+config.CSV = {
+  validate: true,
+  VIRUS_SCAN: false,
+  maxfilesize: 2 * Math.pow(2, 20) //2MB
+};
 
 // API Endpoints
 
 var BASEURL = {
   PROTOCOL: 'http://',
   SERVER: 'localhost:',
-  PORT: 8081
+  PORT: 9020
 };
 
 config.API = {};

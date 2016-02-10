@@ -100,7 +100,8 @@ var sendPinEmail = function (recipient, newPin) {
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
       MiniCommNumber: config.smtp.support.MiniCommNumber,
       govuklogo: 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png'
+      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      useFooter: config.smtp.useFooter
     };
 
     var emailBody = compiledPinTemplate.render(data);
