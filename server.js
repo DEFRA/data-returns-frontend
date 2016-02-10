@@ -184,7 +184,7 @@ server.ext('onPreResponse', function (request, reply) {
     resp.header('X-XSS-Protection', '1; mode=block');
     resp.header('X-Content-Type-Options', 'nosniff');
     resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
-    resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+    resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
   }
 
   return reply(resp);
