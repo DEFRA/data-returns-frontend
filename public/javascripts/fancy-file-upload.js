@@ -2,10 +2,10 @@ $(document).on('change', '.btn-file :file', function () {
   var input = $(this),
     numFiles = input.get(0).files ? input.get(0).files.length : 1, label;
 
-  if (input && input.val()) {
-    label = input.val().replace("C:\\fakepath\\", "");
-    label = label.replace(/\\/g, '/').replace(/.*\//, '');
-  }
+
+  label = input.val().replace("C:\\fakepath\\", "");
+  label = label.replace(/\\/g, '/').replace(/.*\//, '');
+
 
   var f = input.get(0).files[0];
   $('#Validation-Summary').hide();
@@ -36,6 +36,7 @@ $(document).ready(function () {
   var existing = $('.btn-file :file').val();
 
   if (existing) {
+    existing = existing.replace("C:\\fakepath\\", "");
     $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '').replace("C:\\fakepath\\", "");
   }
   if (existing !== '') {
