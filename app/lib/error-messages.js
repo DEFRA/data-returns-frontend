@@ -21,7 +21,7 @@ module.exports.API = {
   'MULTIPLE_RETURNS': 'There are multiple returns in this file',
   'MULTIPLE_PERMITS': '! Your file contains more than 1 EA unique identifier (EA_ID)'
     + '<p>You can use this online service to submit compliance monitoring data<br>under a single EA_ID (unique identifier or permit number).</p>'
-    + '<p>You need to submit more than one file if you have data returns for<b>several EA_IDs. You must start again for each EA_ID.</p>',
+    + '<p>You need to submit more than one file if you have data returns for<br>several EA_IDs. You must start again for each EA_ID.</p>',
   'NO_RETURNS': '! Your file is empty <br>Make sure you’ve submitted the right file and try again.',
   'PERMIT_NOT_FOUND': '! Your EA unique identifier (EA_ID) isn’t recognised'
     + '<p>Check that the reference you’ve given is:<br>'
