@@ -1,8 +1,11 @@
 $(document).on('change', '.btn-file :file', function () {
   var input = $(this),
-    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+    numFiles = input.get(0).files ? input.get(0).files.length : 1, label;
+
+  if (input && input.val()) {
     label = input.val().replace("C:\\fakepath\\", "");
-  label = label.replace(/\\/g, '/').replace(/.*\//, '');
+    label = label.replace(/\\/g, '/').replace(/.*\//, '');
+  }
 
   var f = input.get(0).files[0];
   $('#Validation-Summary').hide();
@@ -30,10 +33,10 @@ $(document).ready(function () {
   $('.browse-text').show();
   $('#check-for-errors-btn').attr('disabled', 'disabled');
 
-  var existing = $('.btn-file :file').val().replace("C:\\fakepath\\", "");
+  var existing = $('.btn-file :file').val();
 
   if (existing) {
-    $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '');
+    $('.btn-file :file').val().replace(/\\/g, '/').replace(/.*\//, '').replace("C:\\fakepath\\", "");
   }
   if (existing !== '') {
     $('#statusbar-header').show();
