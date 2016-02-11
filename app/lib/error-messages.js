@@ -5,11 +5,12 @@ module.exports.FILE_HANDLER = {
   NOT_CSV: 'The file is not a CSV file',
   ZERO_BYTES: 'The file is empty'
 };
-
 // API error messages
 module.exports.API = {
-  'ECONNREFUSED': 'The Data Exchange Service is not available',
-  'UNKNOWN': 'Unknown Error',
+  'ECONNREFUSED': '! Your file hasn’t been sent'
+    + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
+  'UNKNOWN': '! Your file hasn’t been sent'
+    + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
   'ERRORPAGETEXT': 'There is a problem',
   'ERRBUTTONTEXT': 'Start again',
   'NOT_CSV': 'All data files returned using this service must be in CSV format.',
@@ -18,11 +19,16 @@ module.exports.API = {
   'INVALID_CONTENTS': 'The file contains invalid contents',
   'UNSUPPORTED_FILE_TYPE': 'All data files returned using this service must be in CSV format.',
   'MULTIPLE_RETURNS': 'There are multiple returns in this file',
-  'MULTIPLE_PERMITS': 'There are multiple permits in this file',
-  'NO_RETURNS': 'There are no returns in this file',
-  'PERMIT_NOT_FOUND': 'Permit number not found'
+  'MULTIPLE_PERMITS': '! Your file contains more than 1 EA unique identifier (EA_ID)'
+    + '<p>You can use this online service to submit compliance monitoring data<br>under a single EA_ID (unique identifier or permit number).</p>'
+    + '<p>You need to submit more than one file if you have data returns for<b>several EA_IDs. You must start again for each EA_ID.</p>',
+  'NO_RETURNS': '! Your file is empty <br>Make sure you’ve submitted the right file and try again.',
+  'PERMIT_NOT_FOUND': '! Your EA unique identifier (EA_ID) isn’t recognised'
+    + '<p>Check that the reference you’ve given is:<br>'
+    + '<ul><li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
+    + '<li>without separators, eg, slashes, or any exotic characters</li>'
+    + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li></ul></p>'
 };
-
 //API error codes
 module.exports.ERROR_CODES = {
   'SUCCESSFULL': 800,
@@ -36,26 +42,22 @@ module.exports.ERROR_CODES = {
   'MULTIPLE_PERMITS': 704,
   'PERMIT_NOT_FOUND': 707
 };
-
 //SMTP Server error messages
 module.exports.SMTP = {
   CONNECTION_REFUSED: {code: 'ECONNREFUSED', message: 'The SMTP Server refused the connection'},
   INVALIDEMAILADDRESS: 'Invalid email address'
 };
-
 //Redis error messages
 module.exports.REDIS = {
   NOT_CONNECTED: 'Not connected to REDIS',
   KEY_NOT_FOUND: 'Key Not Found'
 };
-
 // Pin validation error messages
 module.exports.PIN = {
   INVALID_PIN: 'Invalid Pin',
   PIN_NOT_FOUND: 'Pin Not Found',
   VALID_PIN: 'Pin is valid'
 };
-
 // Anti virus scanning error messages
 module.exports.ANTIVIRUS = {
   VIRUS_DETECTED: '! Your file is unsafe. Your file hasn’t passed the security check so it might contain a virus or other suspicious content. Check your file and try again.'
