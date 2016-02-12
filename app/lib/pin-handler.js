@@ -38,7 +38,7 @@ module.exports = {
           if (user === null) {
             reject({
               error: false,
-              code: messages.PIN.PIN_NOT_FOUND
+              code: messages.PIN.INVALID_PIN_CODE
             });
           }
 
@@ -52,7 +52,7 @@ module.exports = {
             console.log('\t pin is invalid');
             reject({
               error: false,
-              code: messages.PIN.INVALID_PIN
+              code: messages.PIN.INVALID_PIN_CODE
             });
           }
         })

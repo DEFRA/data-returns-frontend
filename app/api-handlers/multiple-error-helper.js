@@ -64,7 +64,7 @@ module.exports = {
       (function (groupID, group) {
         cacheHandler.setValue('ErrorData_' + groupID, group)
           .then(function (result) {
-            //console.log('ErrorData_' + groupID, group);
+            return;
           })
           .catch(function (err) {
             console.error(err);

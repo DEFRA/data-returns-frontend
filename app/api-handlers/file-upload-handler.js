@@ -76,45 +76,36 @@ function processResponse(err, response, body, reject, successCallback) {
         
         successCallback(parsedBody);
       } else {
-        var errMessage, apiErrors;
+        var errMessage, apiErrors='';
         switch (appStatusCode) {
           case ErrorMessages.ERROR_CODES.SUCCESSFULL:
             successCallback(parsedBody);
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.UNSUPPORTED_FILE_TYPE:
             errMessage = ErrorMessages.API.NOT_CSV;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.INVALID_CONTENTS:
             errMessage = ErrorMessages.API.INVALID_CONTENTS;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.NO_RETURNS:
             errMessage = ErrorMessages.API.NO_RETURNS;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.MULTIPLE_RETURNS:
             errMessage = ErrorMessages.API.MULTIPLE_RETURNS;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.MULTIPLE_PERMITS:
             errMessage = ErrorMessages.API.MULTIPLE_PERMITS;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.PERMIT_NOT_FOUND:
             errMessage = ErrorMessages.API.PERMIT_NOT_FOUND;
-            apiErrors = '';
             break;
           case ErrorMessages.ERROR_CODES.VALIDATION_ERRORS :
             errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
             apiErrors = parsedBody.validationResult.schemaErrors;
 
-
             var lineErrorData = [];
             var lineErrors = apiErrors.lineErrors;
             var temp;
-
 
             for (var lineErrorName in lineErrors) {
               var lineError = {};

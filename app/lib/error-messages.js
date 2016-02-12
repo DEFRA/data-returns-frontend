@@ -54,7 +54,14 @@ module.exports.REDIS = {
 };
 // Pin validation error messages
 module.exports.PIN = {
-  INVALID_PIN: 'Invalid Pin',
+  INVALID_PIN_CODE: 'INVALID_PIN_CODE',
+  INVALID_PIN: '! Your code doesn’t work<br>'
+    + 'We sent a confirmation code to {{emailAddress}}'
+    + '<p>Check you’ve entered the right code in your browser. Try again.<br>'
+    + 'Check that you’ve entered the code within x minutes/hours of getting the email. If you’re code<br>'
+    + 'has expired you can request a new code.</p>'
+    + '<p>What’s a confirmation code?<br>'
+    + 'This is a 4-digit code for you to enter in your browser. We use it to confirm your email address is correct so you can and send your data returns file and get a receipt.</p>',
   PIN_NOT_FOUND: 'Pin Not Found',
   VALID_PIN: 'Pin is valid'
 };
