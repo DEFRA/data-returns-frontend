@@ -58,8 +58,7 @@ module.exports.PIN = {
   INVALID_PIN: '! Your code doesn’t work<br>'
     + 'We sent a confirmation code to {{emailAddress}}'
     + '<p>Check you’ve entered the right code in your browser. Try again.<br>'
-    + 'Check that you’ve entered the code within x minutes/hours of getting the email. If you’re code<br>'
-    + 'has expired you can request a new code.</p>'
+    + 'You must use your confirmation code within 24 hours. If your code has expired you need to start again<p>'
     + '<p>What’s a confirmation code?<br>'
     + 'This is a 4-digit code for you to enter in your browser. We use it to confirm your email address is correct so you can and send your data returns file and get a receipt.</p>',
   PIN_NOT_FOUND: 'Pin Not Found',
