@@ -30,10 +30,9 @@ Send your data returns online
   <div class="error-table">
     <!-- <h2 class="heading-small">Errors found in 'failures.csv' - </h2> -->
     <!-- For fixed header positioning only for Sticky JS -->
-    <table id="errorTableHeader">
+    <table id="errorTableHeader" class="error-table">
       <thead>
         <tr>
-
           <th width="10%">Column</th>
           <th width="15%">Error</th>
           <th width="70%">How to fix it</th>
@@ -42,14 +41,10 @@ Send your data returns online
       <tbody>
         {{#lineErrors}}
         <tr>
-
           <td><abbr title="{{{columnName}}}">{{{columnName}}}</abbr></td>
-
           <td>{{{errorColumnText}}}</td>
-
           <td>
             <p>{{{errorMessage}}}</p>
-
             <p><a href="/02-send-your-data/10-error-detail?groupid={{groupID}}" >See details of all errors</a>.</p>		
           </td>
         </tr>

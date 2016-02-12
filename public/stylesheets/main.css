@@ -1353,6 +1353,22 @@ table td.numeric {
   }
 }
 
+.error-table {
+  margin-bottom: 30px;
+}
+
+.error-table td {
+  vertical-align: top;
+}
+
+.error-table td p:first-child {
+  margin-top: 0;
+}
+
+.error-table td p:last-child {
+  margin-bottom: 0;
+}
+
 details {
   display: block;
 }
