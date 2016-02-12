@@ -19,9 +19,9 @@ Send your data returns online
         <h1 class="heading-xlarge">Authenticate your email address</h1>
 
         {{#invalidPin}}
-            <div class="validation-summary">
-                <h1 class="heading-medium">Wrong authentication code</h1>
-                <p class="validation-message">{{{errorMessage}}}</p>
+            <div class="error-summary">
+                <h1 class="heading-medium error-summary-heading">Wrong authentication code</h1>
+                <p>{{{errorMessage}}}</p>
             </div>
         {{/invalidPin}}
 

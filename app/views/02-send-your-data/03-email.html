@@ -19,16 +19,16 @@ Send your data returns online
         <h1 class="heading-xlarge">File ready to be sent</h1>
 
         {{#invalidEmailAddress}}
-            <div class="validation-summary">
-                <h1 class="heading-medium">Invalid email address</h1>
-                <p class="validation-message">You need to give us a valid email address</p>
+            <div class="error-summary">
+                <h1 class="heading-medium error-summary-heading">Invalid email address</h1>
+                <p>You need to give us a valid email address</p>
             </div>
         {{/invalidEmailAddress}}
 
         <div class="text">
             <p class="lede">Your file has been checked and is ready to be sent.</p>
 
-            <div class="text panel-indent">
+            <div class="text panel panel-border-wide">
                 <p>{{returnMetaData.fileName}}</p>
             </div>
 
