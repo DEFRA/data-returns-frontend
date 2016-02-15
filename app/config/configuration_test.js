@@ -10,14 +10,13 @@ config.env = 'test';
 
 /* SMTP Test Configuration */
 config.smtp = config.smtp || {};
-config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
+config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 587;
-config.smtp.ignoreTLS = false;
+config.smtp.ignoreTLS = true;
 config.smtp.username = process.env.smtpuser;
 config.smtp.password = process.env.smtppw; 
 config.smtp.fromEmailAddress = 'noreply-test@environment-agency.gov.uk';
 config.smtp.useFooter = false;
-
 // mail catcher config
 // Set config.smtp.useMailCatcher = true; to use http://mailcatcher.me/
 config.smtp.useMailCatcher = true; // set to false on AWS servers
@@ -36,7 +35,7 @@ config.smtp.support = {
 /* cache configuration */
 config.redis = {
   clientOptions: {
-    host: 'localhost',
+    host: '10.208.5.97',
     port: 6379
   }
 };
@@ -51,8 +50,8 @@ config.CSV = {
 // API Endpoints
 var BASEURL = {
   PROTOCOL: 'http://',
-  SERVER: '192.168.56.101:',
-  PORT: 8081
+  SERVER: 'internal-TSDRASLB01-409918784.eu-west-1.elb.amazonaws.com:',
+  PORT: 9020
 };
 
 config.API = {};
