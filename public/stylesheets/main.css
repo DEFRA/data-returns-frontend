@@ -1427,6 +1427,14 @@ details .arrow {
   padding-bottom: 0;
 }
 
+.multi-panel .panel {
+  margin-bottom: 0;
+}
+
+.multi-panel .panel:last-child {
+  margin-bottom: 0.789474em;
+}
+
 fieldset {
   width: 100%;
 }
@@ -2024,6 +2032,7 @@ input[type=number] {
 .btn-file {
   position: relative;
   overflow: hidden;
+  margin-bottom: 15px;
 }
 
 .btn-file input[type=file] {

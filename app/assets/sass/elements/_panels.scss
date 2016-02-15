@@ -34,3 +34,13 @@
 .form-group .panel-border-narrow {
   padding-bottom: 0;
 }
+
+// Data returns
+.multi-panel {
+	.panel {
+		margin-bottom:0;
+	}
+	.panel:last-child {
+		margin-bottom:0.789474em;
+	}
+}

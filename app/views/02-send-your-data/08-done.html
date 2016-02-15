@@ -16,20 +16,23 @@ Send your data returns online
 	
     <form method="post" class="form" action="/01-start/01-start">
         <h1 class="heading-xlarge">
-            <span id="title">File received</span>
+            <span id="title">File sent</span>
         </h1>
 
         <div class="text">
-            <p class="lede">You’ve successfully submitted your data file to the Environment Agency.</p>
+          <p class="lede">You’ve successfully sent your data returns file to the Environment Agency.</p>
+          			
+          <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
+          			
+          <p>We’ve emailed a receipt to this address:</p>
+          
+          <div class="panel panel-border-wide">
+          	<p>{{{userEmail}}}</p>
+          </div>
 
-            <p>We've sent a receipt to {{{userEmail}}}</p>
+          <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
 
-            <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
-
-            <p>If you’ve finished, you can <a href="#" onclick="alert('Not yet implemented!');return false;">sign
-                out</a>.</p>
-
-            <p>You can also <a href="/02-send-your-data/01-upload-your-data">check and send another data file</a> 
+         	<p>You can <a href="/02-send-your-data/01-upload-your-data">send another data returns file</a> or return to the <a href="https://www.gov.uk/government/organisations/environment-agency">Environment Agency homepage.</a></p>
         </div>
     </form>
 </main>
