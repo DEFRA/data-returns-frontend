@@ -1353,6 +1353,22 @@ table td.numeric {
   }
 }
 
+.error-table {
+  margin-bottom: 30px;
+}
+
+.error-table td {
+  vertical-align: top;
+}
+
+.error-table td p:first-child {
+  margin-top: 0;
+}
+
+.error-table td p:last-child {
+  margin-bottom: 0;
+}
+
 details {
   display: block;
 }
@@ -1409,6 +1425,14 @@ details .arrow {
 
 .form-group .panel-border-narrow {
   padding-bottom: 0;
+}
+
+.multi-panel .panel {
+  margin-bottom: 0;
+}
+
+.multi-panel .panel:last-child {
+  margin-bottom: 0.789474em;
 }
 
 fieldset {
@@ -2008,6 +2032,7 @@ input[type=number] {
 .btn-file {
   position: relative;
   overflow: hidden;
+  margin-bottom: 15px;
 }
 
 .btn-file input[type=file] {
