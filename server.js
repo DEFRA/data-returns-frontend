@@ -151,40 +151,45 @@ server.route(require('./app/routes'));
 
 
 
-/*server.ext('onRequest', function (request, reply) {
+server.ext('onRequest', function (request, reply) {
 
 //if the user tries to start somewhere other than the start page redirect them there
   //var isIndexPage = (request.path.search('/index/') === -1) ? false : true;
+
   var isAnInclude = (request.path.search('/public/') === -1) ? false : true;
   var isStartPage = (request.path.search('/01-start/01-start') === -1) ? false : true;
   var isGetMethod = (request.method === 'get') ? true : false;
   var hasReferrer = (request.info && request.info.referrer) ? true : false;
-
-  //console.log(request.path, 'include:', isAnInclude, 'start page:', isStartPage, 'get method:', isGetMethod, 'referred', hasReferrer);
-
-  if (isGetMethod && !hasReferrer && !isAnInclude && !isStartPage ) {
-
+  
+  if (isGetMethod && !hasReferrer && !isAnInclude && !isStartPage) {
+    console.log(request.info);
     var url = '/01-start/01-start';
     //bug in HAPI that prevents redirects from server extensions
-    reply('x').redirect(url);
+    return reply('x').redirect(url);
 
   } else {
-    reply.continue();
+    return reply.continue();
   }
 
-});*/
+});
 
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
 
   var resp = request.response;
 
-  if (resp && resp.header) {
-    resp.header('X-Frame-Options', 'sameorigin');
-    resp.header('X-XSS-Protection', '1; mode=block');
-    resp.header('X-Content-Type-Options', 'nosniff');
-    resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
-    resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+  try {
+
+    if (resp && resp.header) {
+      resp.header('X-Frame-Options', 'sameorigin');
+      resp.header('X-XSS-Protection', '1; mode=block');
+      resp.header('X-Content-Type-Options', 'nosniff');
+      resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
+      resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+    }
+  } catch (e) {
+    console.log(e);
+
   }
 
   return reply(resp);
@@ -201,7 +206,7 @@ server.start(function (err) {
   }
   server.log(
     ['info', 'status'],
-    'Data Returns Frontend: listening on port ' + config.http.port.toString()
+    'Data Returns Frontend: listening on port ' + config.http.port.toString() + ', NODE_ENV: ' + process.env.NODE_ENV
     );
 
 });
