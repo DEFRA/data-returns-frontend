@@ -150,7 +150,7 @@ server.register(require('vision'), function (err) {
 server.route(require('./app/routes'));
 
 
-/*
+
 server.ext('onRequest', function (request, reply) {
 
 //if the user tries to start somewhere other than the start page redirect them there
@@ -158,11 +158,11 @@ server.ext('onRequest', function (request, reply) {
   var isAnInclude = (request.path.search('/public/') === -1) ? false : true;
   var isStartPage = (request.path.search('/01-start/01-start') === -1) ? false : true;
   var isGetMethod = (request.method === 'get') ? true : false;
-  var hasReferrer = request.info.referrer ? true : false;
+  var hasReferrer = (request.info && request.info.referrer) ? true : false;
 
   //console.log(request.path, 'include:', isAnInclude, 'start page:', isStartPage, 'get method:', isGetMethod, 'referred', hasReferrer);
 
-  if (isGetMethod && !isStartPage && !hasReferrer && !isAnInclude) {
+  if (isGetMethod && !hasReferrer && !isAnInclude && !isStartPage ) {
 
     var url = '/01-start/01-start';
     //bug in HAPI that prevents redirects from server extensions
@@ -172,7 +172,7 @@ server.ext('onRequest', function (request, reply) {
     reply.continue();
   }
 
-});*/
+});
 
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
