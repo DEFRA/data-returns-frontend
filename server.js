@@ -151,7 +151,7 @@ server.route(require('./app/routes'));
 
 
 
-server.ext('onRequest', function (request, reply) {
+/*server.ext('onRequest', function (request, reply) {
 
 //if the user tries to start somewhere other than the start page redirect them there
   //var isIndexPage = (request.path.search('/index/') === -1) ? false : true;
@@ -172,7 +172,7 @@ server.ext('onRequest', function (request, reply) {
     reply.continue();
   }
 
-});
+});*/
 
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
