@@ -52,7 +52,7 @@ Send your data returns online
       <details class="help-text-reg">
         <summary><span class="summary">These details are wrong</span></summary>
         <div class="panel panel-border-wide">
-          <p>If any of the details above are wrong, please <a href="/02-send-your-data/01-upload-your-data">start again.</a>
+          <p>If any of the details above are wrong, please <a id='details-wrong-link'  href="/02-send-your-data/01-upload-your-data">start again.</a>
             <!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
           </p>
         </div>
@@ -60,7 +60,7 @@ Send your data returns online
 
       <!-- Primary button -->
       <div class="form-group confirmed" >
-        <input type="button" class="button" value="Continue" onclick="location.href = '/02-send-your-data/06-check';">
+        <input id='continue.btn' type="button" class="button" value="Continue" onclick="location.href = '/02-send-your-data/06-check';">
       </div>
      <!-- <div class="form-group checking" style="display:none">
         <input type="submit" class="button" value="Please wait" disabled="disabled">
@@ -68,7 +68,7 @@ Send your data returns online
     </div><!-- /text -->
   </form>
   <div class="form-group permit-not-found" style="display:none">
-    <input type="submit" class="button" value="Start again" onclick="location.href = '/02-send-your-data/01-upload-your-data';">
+    <input id="start-again-btn" type="submit" class="button" value="Start again" onclick="location.href = '/02-send-your-data/01-upload-your-data';">
   </div>
 </main> 
 
