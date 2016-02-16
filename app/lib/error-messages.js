@@ -56,18 +56,22 @@ module.exports.REDIS = {
 // Pin validation error messages
 module.exports.PIN = {
   INVALID_PIN_CODE: 'INVALID_PIN_CODE',
-  INVALID_PIN: '! Your code doesn’t work<br>'
-    + 'We sent a confirmation code to {{emailAddress}}'
-    + '<p>Check you’ve entered the right code in your browser. Try again.<br>'
-    + 'You must use your confirmation code within 24 hours. If your code has expired you need to start again<p>'
-    + '<p>What’s a confirmation code?<br>'
-    + 'This is a 4-digit code for you to enter in your browser. We use it to confirm your email address is correct so you can and send your data returns file and get a receipt.</p>',
+  INVALID_PIN: '<p>We sent a confirmation code to {{emailAddress}}</p>'
+    + '<details class="help-confirmation-code">'
+    + '  <summary><span class="summary">What’s a confirmation code?</span></summary>'
+    + '  <div class="panel panel-border-wide">'
+    + '    <p>This is a 4-digit code for you to enter in your browser. We use it to confirm your email address is correct so you can send your data returns file and get a receipt.</p>'
+    + '  </div>'
+    + '</details>'
+    + '<p>Check you’ve entered the right code in your browser. Try again.</p>'
+    + '<p>Check that you’ve entered the code within 24 hours of getting the email. If your code has expired you need to start again.</p>',
   PIN_NOT_FOUND: 'Pin Not Found',
   VALID_PIN: 'Pin is valid'
 };
 // Anti virus scanning error messages
 module.exports.ANTIVIRUS = {
-  VIRUS_DETECTED: '! Your file is unsafe. Your file hasn’t passed the security check so it might contain a virus or other suspicious content. Check your file and try again.'
+  VIRUS_DETECTED: '<h1 class="heading-medium error-summary-heading">Your file is unsafe.</h1>'
+    + '<p>Your file hasn’t passed the security check so it might contain a virus or other suspicious content. Check your file and try again.</p>'
 };
 
 

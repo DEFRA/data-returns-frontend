@@ -11,7 +11,7 @@ Send your data returns online
 		<p>
 			<strong class="phase-tag">BETA</strong>
 			<span>This is a new service – your
-				<a href="#">feedback</a>will help us to improve it.</span>
+				<a href="#">feedback</a> will help us to improve it.</span>
 		</p>
 	</div>
 	<form method="post" class="form">
@@ -20,16 +20,7 @@ Send your data returns online
 		{{#invalidPin}}
 		<div class="error-summary">
 			<h1 class="heading-medium error-summary-heading">Your code doesn’t work</h1>
-			<p>{{{errorMessage}}}</p>
-			<p>We sent a confirmation code to your email address</p>
-			<details class="help-confirmation-code">
-			  <summary><span class="summary">What’s a confirmation code?</span></summary>
-			  <div class="panel panel-border-wide">
-			    <p>This is a 4-digit code for you to enter in your browser. We use it to confirm your email address is correct so you can and send your data returns file and get a receipt.</p>
-			  </div>
-			</details>
-			<p>Check you’ve entered the right code in your browser. Try again.</p>
-			<p>Check that you’ve entered the code within 24 hours of getting the email. If your code has expired you need to start again.</p>
+			{{{errorMessage}}}
 		</div>
 		{{/invalidPin}}
 		
