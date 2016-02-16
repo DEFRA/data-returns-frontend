@@ -7,9 +7,9 @@ module.exports.FILE_HANDLER = {
 };
 // API error messages
 module.exports.API = {
-  'ECONNREFUSED': '! Your file hasn’t been sent'
+  'ECONNREFUSED': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
     + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
-  'UNKNOWN': '! Your file hasn’t been sent'
+  'UNKNOWN': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
     + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
   'ERRORPAGETEXT': 'There is a problem',
   'ERRBUTTONTEXT': 'Start again',
@@ -19,16 +19,22 @@ module.exports.API = {
   'INVALID_CONTENTS': 'The file contains invalid contents',
   'UNSUPPORTED_FILE_TYPE': 'All data files returned using this service must be in CSV format.',
   'MULTIPLE_RETURNS': 'There are multiple returns in this file',
-  'MULTIPLE_PERMITS': '! Your file contains more than 1 EA unique identifier (EA_ID)'
-    + '<p>You can use this online service to submit compliance monitoring data<br>under a single EA_ID (unique identifier or permit number).</p>'
-    + '<p>You need to submit more than one file if you have data returns for<br>several EA_IDs. You must start again for each EA_ID.</p>',
-  'NO_RETURNS': '! Your file is empty <br>Make sure you’ve submitted the right file and try again.',
-  'PERMIT_NOT_FOUND': '! Your EA unique identifier (EA_ID) isn’t recognised'
-    + '<p>Check that the reference you’ve given is:<br>'
-    + '<ul><li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
+  'MULTIPLE_PERMITS': '<h2 class="heading-small"><span class="error-message">Your file contains more than 1 EA unique identifier (EA_ID)</span></h2>'
+    + '<p>You can use this online service to submit compliance monitoring data under a single EA_ID (unique identifier or permit number).</p>'
+    + '<p>You need to submit more than one file if you have data returns for several EA_IDs. You must start again for each EA_ID.</p>'
+    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>',
+  'NO_RETURNS': '<h2 class="heading-small"><span class="error-message">Your file is empty</span></h2><p>Make sure you’ve submitted the right file and try again.</p>',
+  'PERMIT_NOT_FOUND': '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
+    + '<p>Check that the reference you’ve given is:</p>'
+    + '<ul class="list list-bullet">'
+    + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
     + '<li>without separators, eg, slashes, or any exotic characters</li>'
-    + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li></ul></p>'
+    + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
+    + '</ul>'
+    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>' 
+    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out about formatting all your data to meet EA standards</a></p>'
 };
+
 //API error codes
 module.exports.ERROR_CODES = {
   'SUCCESSFULL': 800,
