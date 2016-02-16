@@ -1353,22 +1353,6 @@ table td.numeric {
   }
 }
 
-.error-table {
-  margin-bottom: 30px;
-}
-
-.error-table td {
-  vertical-align: top;
-}
-
-.error-table td p:first-child {
-  margin-top: 0;
-}
-
-.error-table td p:last-child {
-  margin-bottom: 0;
-}
-
 details {
   display: block;
 }
@@ -1425,14 +1409,6 @@ details .arrow {
 
 .form-group .panel-border-narrow {
   padding-bottom: 0;
-}
-
-.multi-panel .panel {
-  margin-bottom: 0;
-}
-
-.multi-panel .panel:last-child {
-  margin-bottom: 0.789474em;
 }
 
 fieldset {
@@ -2288,4 +2264,53 @@ input[type=number] {
 
 input.validation-code {
   width: 100px;
+}
+
+.help-notice {
+  background: none;
+  background: url("/public/images/icons/icon-important.png") no-repeat scroll 0 0.2em;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .help-notice {
+    background-image: url("/public/images/icons/icon-important-2x.png");
+    background-size: 34px 34px;
+  }
+}
+
+.help-notice p {
+  font-weight: 600;
+  padding: 0 1em 0 2.5em;
+}
+
+.help-notice p a {
+  font-weight: 600;
+}
+
+p + .help-notice {
+  margin-top: 2em;
+}
+
+.error-table {
+  margin-bottom: 30px;
+}
+
+.error-table td {
+  vertical-align: top;
+}
+
+.error-table td p:first-child {
+  margin-top: 0;
+}
+
+.error-table td p:last-child {
+  margin-bottom: 0;
+}
+
+.multi-panel .panel {
+  margin-bottom: 0;
+}
+
+.multi-panel .panel:last-child {
+  margin-bottom: 0.789474em;
 }
