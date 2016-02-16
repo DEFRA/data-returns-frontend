@@ -3,6 +3,7 @@ var UserHandler = require('../lib/user-handler');
 var SMTPHandler = require('../lib/smtp-handler');
 var Utils = require('../lib/utils');
 var CacheHandler = require('../lib/cache-handler');
+var HelpLinks = require('../config/dep-help-links');
 
 /*
  * HTTP GET Handler for /02-send-your-data/08-done
@@ -19,7 +20,8 @@ module.exports.getHandler = function (request, reply) {
       //get the original file name the user uploaded from the cache
       email = usermail;
       reply.view('02-send-your-data/08-done', {
-        userEmail: email
+        userEmail: email,
+        EnvironmentAgencyHome: HelpLinks.links.EnvironmentAgencyHome
       });
     })
     .then(function () {

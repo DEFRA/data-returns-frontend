@@ -1,7 +1,7 @@
 
 //var CacheHandler = require('../lib/cache-handler');
 //path: '/02-send-your-data/02-verify-your-file',
-var userHandler = require('../lib/user-handler');
+//var userHandler = require('../lib/user-handler');
 
 module.exports = {
   /*

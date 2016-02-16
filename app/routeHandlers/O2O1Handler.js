@@ -5,6 +5,21 @@ var Path = require('path');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
+var HelpLinks = require('../config/dep-help-links');
+
+module.exports.getHandler = function (request, reply) {
+
+  reply.view('02-send-your-data/01-upload-your-data', {
+    uploadError: false,
+    errorMessage: '',
+    fileName: '',
+    lineErrors: '',
+    isLineErrors: false,
+    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+  });
+
+};
+
 /*
  *  HTTP POST handler for /02-send-your-data/01-upload-your-data
  *  @Param request
@@ -20,7 +35,6 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = 'id_' + request.session.id;
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
-
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
       if (config.CSV.validate === true) {
@@ -43,31 +57,26 @@ module.exports.postHandler = function (request, reply) {
 
       var uploadResult = data.uploadResult;
       var generalResult = data.generalResult.transformationResults.results;
-
       var metaData = {
         fileKey: uploadResult.fileKey,
         eaId: generalResult.Result_EA_ID.value,
         siteName: generalResult.Result_Site_Name.value,
-        returnType: generalResult.Result_Rtn_Type.value
+        returnType: generalResult.Result_Rtn_Type.value,
+        RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
+        HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
       };
-
       console.log('\t metadata: ', metaData);
-
       reply.view('02-send-your-data/02-verify-your-file', {
         returnMetaData: metaData
       });
-
     }).catch(function (errorData) {
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');
-
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
       var sessionid = 'id_' + request.session.id;
       var cacheKey = sessionid + '_latestErrors';
-
-
       CachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function (result) {
           var filekey = sessionID + '_SourceName';
@@ -80,7 +89,8 @@ module.exports.postHandler = function (request, reply) {
                 errorMessage: errorData.message,
                 fileName: fileName,
                 lineErrors: errorData.lineErrors,
-                isLineErrors: errorData.lineErrors ? true : false
+                isLineErrors: errorData.lineErrors ? true : false,
+                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
               });
             });
         })

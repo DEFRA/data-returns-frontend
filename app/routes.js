@@ -56,7 +56,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/01-start/01-start',
-    handler: BasicTemplateHandler.getHandler
+    handler: O1O1Handler.getHandler//BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',
@@ -67,7 +67,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/01-upload-your-data',
-    handler: BasicTemplateHandler.getHandler
+    handler: O2O1Handler.getHandler //BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',
@@ -154,7 +154,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/09-errors',
-    handler: O2O9Handler.getHandler 
+    handler: O2O9Handler.getHandler
   },
   {
     method: 'GET',
