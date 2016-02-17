@@ -71,6 +71,10 @@ module.exports.postHandler = function (request, reply) {
           CachHandler.getValue(filekey)
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, "") : '';
+
+              console.log(JSON.stringify(errorData.message));
+
+
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
                 uploadError: true,
                 errorMessage: errorData.message,

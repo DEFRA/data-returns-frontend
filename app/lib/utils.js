@@ -91,7 +91,7 @@ module.exports = {
       var key = sessionID + '_FilePath';
       CacheHandler.getValue(key)
         .then(function (filePath) {
-          filePath = filePath.replace(/"/g, "");
+          filePath = filePath ? filePath.replace(/"/g, "") : '';
           FileSystem.unlink(filePath, function (err) {
             if (err === null) {
               resolve(true);
@@ -158,9 +158,9 @@ module.exports = {
       callback(e);
     }
   }
-  
-  
-  
-  
+
+
+
+
 };
 
