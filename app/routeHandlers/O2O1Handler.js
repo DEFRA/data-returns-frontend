@@ -70,7 +70,7 @@ module.exports.postHandler = function (request, reply) {
           filekey = sessionid + '_SourceName';
           CachHandler.getValue(filekey)
             .then(function (fileName) {
-              fileName = fileName ? Name.replace(/"/g, "") : '';
+              fileName = fileName ? fileName.replace(/"/g, "") : '';
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
                 uploadError: true,
                 errorMessage: errorData.message,
