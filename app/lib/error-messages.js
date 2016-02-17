@@ -22,7 +22,7 @@ module.exports.API = {
   'MULTIPLE_PERMITS': '<h2 class="heading-small"><span class="error-message">Your file contains more than 1 EA unique identifier (EA_ID)</span></h2>'
     + '<p>You can use this online service to submit compliance monitoring data under a single EA_ID (unique identifier or permit number).</p>'
     + '<p>You need to submit more than one file if you have data returns for several EA_IDs. You must start again for each EA_ID.</p>'
-    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>',
+    + '<p><a href="{{RegimeSpecificRules}}" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>',
   'NO_RETURNS': '<h2 class="heading-small"><span class="error-message">Your file is empty</span></h2><p>Make sure you’ve submitted the right file and try again.</p>',
   'PERMIT_NOT_FOUND': '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
     + '<p>Check that the reference you’ve given is:</p>'
@@ -31,8 +31,8 @@ module.exports.API = {
     + '<li>without separators, eg, slashes, or any exotic characters</li>'
     + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
     + '</ul>'
-    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>' 
-    + '<p><a href="http://data-returns-help.herokuapp.com/help/detailed-guides/regime-specific-rules" rel="external" targer="_blank">Find out about formatting all your data to meet EA standards</a></p>'
+    + '<p><a href="{{RegimeSpecificRules}}" rel="external" targer="_blank">Find out more about how to submit the correct EA_ID</a></p>' 
+    + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" targer="_blank">Find out about formatting all your data to meet EA standards</a></p>'
 };
 
 //API error codes
