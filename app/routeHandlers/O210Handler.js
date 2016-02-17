@@ -14,7 +14,7 @@ module.exports = {
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)
       .then(function (filename) {
-        filename = filename.replace(/"/g, "");
+        fileName = fileName ? fileName.replace(/"/g, "") : '';
         cacheHandler.getValue(key)
           .then(function (result) {
 

@@ -20,7 +20,7 @@ module.exports = {
       .then(function (result) {
         CacheHandler.getValue(filekey)
           .then(function (fileName) {
-            fileName = fileName.replace(/"/g, "");
+            fileName = fileName ? fileName.replace(/"/g, "") : '';
             var returnMetaData = {
               fileName: fileName
             };
