@@ -1,8 +1,29 @@
+.file-upload {
+	.well {
+		margin-bottom:30px;
+		.button-choose-file {
+			margin:15px 0;
+		}
+	}
+	#banner-notification {
+		margin-top:15px;
+	}
+}
+ 
+.help-text-reg {
+	margin-bottom:30px;
+}
+
+.button-get-started {
+  background-image: url("/public/images/icons/icon-pointer.png");
+}
+
 .btn-file {
     position: relative;
     overflow: hidden;
     margin-bottom:15px;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -33,7 +54,7 @@
 
 .statusbar2-title {
 	font-weight:600;
-	}
+}
 
 .filename2 {
 	display: inline-block;
@@ -44,4 +65,4 @@
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	}
+}
