@@ -67,7 +67,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/01-upload-your-data',
-    handler: O2O1Handler.getHandler //BasicTemplateHandler.getHandler
+    handler: BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',
