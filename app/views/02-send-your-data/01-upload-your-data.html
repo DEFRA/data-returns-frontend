@@ -18,14 +18,7 @@ Send your data returns online
   <h1 class="heading-xlarge">
     <span id="title">Choose your file</span>
   </h1>
-	<p class="lede">You must <a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">format your data</a> to meet Environment Agency standards then save as <abbr title="Comma-separated values">CSV</abbr></p>
-	<details class="help-csv">
-	  <summary><span class="summary">What's a CSV?</span></summary>
-	  <div class="panel panel-border-wide">
-	    <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. Use &lsquo;Save as&rsquo; - usually under the File tab - in spreadsheet software to create a CSV version of your file.</p>
-	  </div>
-	</details>
-	
+  	
   {{#uploadError}}
   <div id="Validation-Summary" class="error-summary">
     <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
@@ -35,18 +28,26 @@ Send your data returns online
 
   <div id="Validation-Summary-empty-file" class="error-summary" style="display:none" >
     <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
-    <h2 class="heading-small">! Your file is empty<h2>
+    <h2 class="heading-small"><span class="error-message">Your file is empty</span><h2>
     <p>Make sure you’ve submitted the right file and try again.</p>
   </div>
 
   <div id="Validation-Summary-not-csv-file" class="error-summary" style="display:none">
     <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
-    <h2 class="heading-small">! Your file isn’t saved as CSV</h2>
+    <h2 class="heading-small"><span class="error-message">Your file isn’t saved as CSV</span></h2>
     <p>Save your file as CSV and try again.</p>
-    <div class="panel panel-border-wide">
-      <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. Use &lsquo;Save as&rsquo; - usually under the File tab - in spreadsheet software to create a CSV version of your file.</p>
+    <div class="call-to-action">
+      <p>CSV (comma separated values) is used to move data between otherwise incompatible applications. In spreadsheet software you can use Save as&mdash;usually under the File tab&mdash;to create a CSV version of your file.</p>
     </div>
   </div>
+    
+	<p class="lede">You must <a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">format your data</a> to meet Environment Agency standards then save as <abbr title="Comma-separated values">CSV</abbr></p>
+	<details class="help-csv">
+	  <summary><span class="summary">What's a CSV?</span></summary>
+	  <div class="panel panel-border-wide">
+	    <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. Use &lsquo;Save as&rsquo; - usually under the File tab - in spreadsheet software to create a CSV version of your file.</p>
+	  </div>
+	</details>
 
 	<div class="text">
     <div class="well">
