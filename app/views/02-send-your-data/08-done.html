@@ -15,21 +15,25 @@ Send your data returns online
 	</div>
 	
     <form method="post" class="form" action="/01-start/01-start">
-        <h1 class="heading-xlarge">
-            <span id="title">File sent</span>
-        </h1>
-
-        <div class="text">
-          <p class="lede">You’ve successfully sent your data returns file to the Environment Agency.</p>
-          			
-          <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
-          			
+        
+       <div class="text">
+				
+				<div class="govuk-box-highlight">
+					<h1 class="heading-xlarge">
+					    <span id="title">File sent</span>
+					</h1>
+					<p class="heading-medium">You’ve successfully sent your data returns file<br>to the Environment Agency.</p>
+				</div>
+				
+        
           <p>We’ve emailed a receipt to this address:</p>
           
           <div class="panel panel-border-wide">
           	<p>{{{userEmail}}}</p>
           </div>
-
+          
+          <h2 class="heading-medium">What happens next?</h2>
+          
           <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
 
          	<p>You can <a href="/02-send-your-data/01-upload-your-data">send another data returns file</a> or return to the <a href="{{EnvironmentAgencyHome}}">Environment Agency homepage.</a></p>
