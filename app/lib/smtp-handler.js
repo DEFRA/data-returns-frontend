@@ -116,8 +116,8 @@ var sendPinEmail = function (recipient, newPin) {
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
       MiniCommNumber: config.smtp.support.MiniCommNumber,
-      govuklogo: 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      govuklogo: config.smtp.govuklogo, //'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
+      ealogo: config.smtp.ealogo, //'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
       useFooter: config.smtp.useFooter
     };
 
@@ -167,8 +167,8 @@ var sendConfirmationEmail = function (userMail, filename) {
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
       MiniCommNumber: config.smtp.support.MiniCommNumber,
-      govuklogo: 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-      ealogo: 'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      govuklogo: config.smtp.govuklogo, //'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
+      ealogo: config.smtp.ealogo, //'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
       useFooter: config.smtp.useFooter
     };
 

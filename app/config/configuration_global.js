@@ -40,6 +40,8 @@ config.smtp.mailcatcher = {};
 config.smtp.pinsubject = ' is your data returns online confirmation code';
 config.smtp.confirmsubject = 'Data returns online data return receipt';
 config.smtp.success = '250 Message accepted';
+config.smtp.ealogo = 'http://assets.digital.cabinet-office.gov.uk/government/uploads/system/uploads/organisation/logo/199/EAlogo.png';
+config.smtp.govuklogo = 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png';
 
 //Pin configuration
 config.pin = {
