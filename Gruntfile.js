@@ -17,7 +17,7 @@ module.exports = function(grunt){
         },
         files: [{
           expand: true,
-          cwd: "app/assets/sass",
+          cwd: "assets/sass",
           src: ["*.scss"],
           dest: "public/stylesheets/",
           ext: ".css"
@@ -30,7 +30,7 @@ module.exports = function(grunt){
       assets: {
         files: [{
           expand: true,
-          cwd: 'app/assets/',
+          cwd: 'assets/',
           src: ['**/*', '!sass/**'],
           dest: 'public/'
         }]
@@ -66,17 +66,17 @@ module.exports = function(grunt){
     // Watches assets and sass for changes
     watch: {
       css: {
-        files: ['app/assets/sass/**/*.scss'],
+        files: ['assets/sass/**/*.scss'],
         tasks: ['sass'],
         options: {
-          spawn: false,
+          spawn: false
         }
       },
       assets:{
-        files: ['app/assets/**/*', '!app/assets/sass/**'],
+        files: ['assets/**/*', '!assets/sass/**'],
         tasks: ['copy:assets'],
         options: {
-          spawn: false,
+          spawn: false
         }
       }
     },
@@ -144,7 +144,7 @@ module.exports = function(grunt){
     // just copy the asset that was changed, not all of them
 
     if (target == "assets"){
-      grunt.config('copy.assets.files.0.src', filepath.replace("app/assets/",""));
+      grunt.config('copy.assets.files.0.src', filepath.replace("assets/",""));
     }
 
   });
