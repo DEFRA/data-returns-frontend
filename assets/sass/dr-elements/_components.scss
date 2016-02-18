@@ -1,5 +1,4 @@
 // Help notice
-
 .help-notice {
   background:none;
   background:url("/public/images/icons/icon-important.png") no-repeat scroll 0 0.2em;
@@ -32,6 +31,10 @@ p + .help-notice {
   }
 }
 
+// help-csv
+.help-csv {
+	margin:10px 0;
+}
 
 // Attachement image
 .attachment {
@@ -70,7 +73,6 @@ p + .help-notice {
 }
 
 // Helpful documents
-
 .helpful-documents {
 	br {
 		clear: both;
@@ -83,7 +85,6 @@ p + .help-notice {
 }
 
 // Permit number
-
 .permit-number {
 	margin-bottom:0;
 	.permitnotfound {
