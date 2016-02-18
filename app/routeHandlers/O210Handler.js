@@ -9,11 +9,11 @@ module.exports = {
     var groupid = request.query.groupid;
     var key = 'ErrorData_' + groupid;
     var sessionID = 'id_' + request.session.id;
-    var filename;
+    var fileName;
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)
-      .then(function (filename) {
+      .then(function (fileName) {
         fileName = fileName ? fileName.replace(/"/g, "") : '';
         cacheHandler.getValue(key)
           .then(function (result) {
@@ -34,7 +34,7 @@ module.exports = {
             }
 
             reply.view('02-send-your-data/10-error-detail', {
-              fileName: filename,
+              fileName: fileName,
               deplink: config.dep.returnTypeRulesLink,
               columnName: firstError.columnName,
               errorMessage: firstError.errorMessage,
