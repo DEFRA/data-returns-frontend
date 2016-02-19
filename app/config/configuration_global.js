@@ -31,7 +31,8 @@ config.basicAuthPassword = process.env.DRF_BA_PASSWORD;
 // A good secret key should be used in public-facing environments.
 config.sessionStorage = {
   mode: 'default',
-  secret: process.env.DRF_SS_SECRET_KEY || '1234567890QWERTY'
+  /* From HAPI v13.0.0 the secret must be at least 32 chars  */
+  secret: process.env.DRF_SS_SECRET_KEY || 'zaq12wsXcDe34rfvbgt56yHnmJu78ik9o'
 };
 
 //SMTP Configuration
