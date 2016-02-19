@@ -151,27 +151,6 @@ server.register(require('vision'), function (err) {
 // Configure server routes.
 server.route(require('./app/routes'));
 
-server.ext('onRequest', function (request, reply) {
-
-  //if the user tries to start somewhere other than the start page redirect them there
-  //var isIndexPage = (request.path.search('/index/') === -1) ? false : true;
-  var isAnInclude = (request.path.search('/public/') === -1) ? false : true;
-  var startPage = '/01-start/01-start';
-  var isStartPage = (request.path.search(startPage) === -1) ? false : true;
-  var isGetMethod = (request.method === 'get') ? true : false;
-  var hasReferrer = (request.info && request.info.referrer) ? true : false;
-
-  //console.log(request.path, 'include:', isAnInclude, 'start page:', isStartPage, 'get method:', isGetMethod, 'referred', hasReferrer);
-
-  // Redirect to the start page if users try and start at any other url
-  if (isGetMethod && !hasReferrer && !isAnInclude && !isStartPage) {
-    return reply.redirect(startPage);
-  } else {
-    reply.continue();
-  }
-
-});
-
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
 
