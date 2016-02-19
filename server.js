@@ -199,7 +199,7 @@ server.start(function (err) {
   }
   server.log(
     ['info', 'status'],
-    'Data Returns Frontend: listening on port ' + config.http.port.toString()
+    'Data Returns Frontend: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV
     );
 
 });
