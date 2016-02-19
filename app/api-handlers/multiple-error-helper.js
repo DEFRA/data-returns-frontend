@@ -5,6 +5,7 @@
  */
 var uuid = require('node-uuid');
 var cacheHandler = require('../lib/cache-handler');
+var Hogan = require('hogan.js');
 
 module.exports = {
   /*
@@ -71,8 +72,20 @@ module.exports = {
           });
       })(groupID, group);
     }
-    
+
     return errorPageData;
+  },
+  renderErrorMessage: function (template, metadata) {
+
+    var ret = '';
+    if (template && metadata) {
+      var CompiledTemplate = Hogan.compile(template);
+      ret = CompiledTemplate.render(metadata);
+      //console.log(ret);
+    }
+
+    return ret;
+
   }
 
 };

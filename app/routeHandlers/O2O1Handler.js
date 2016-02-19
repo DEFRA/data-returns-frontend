@@ -6,17 +6,23 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
-
+var ErrorHelper = require('../api-handlers/multiple-error-helper');
 
 module.exports.getHandler = function (request, reply) {
 
+  var metaData = {};
+  var links = HelpLinks.links;
+
+  for (var link in links) {
+    metaData[link] = links[link];
+  }
+
+
   reply.view('02-send-your-data/01-upload-your-data', {
-    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+    metaData: metaData
   });
 
 };
-
-
 
 /*
  *  HTTP POST handler for /02-send-your-data/01-upload-your-data
@@ -83,15 +89,15 @@ module.exports.postHandler = function (request, reply) {
           CachHandler.getValue(filekey)
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, "") : '';
-
-              console.log(JSON.stringify(errorData.message));
-
+              var links = HelpLinks.links;
+              var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
+              var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
 
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
                 uploadError: true,
-                errorMessage: errorData.message,
+                errorMessage: renderedErrorMessage,
                 fileName: fileName,
-                lineErrors: errorData.lineErrors,
+                lineErrors: renderedLineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
               });
