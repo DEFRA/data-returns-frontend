@@ -6,6 +6,18 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
+
+
+module.exports.getHandler = function (request, reply) {
+
+  reply.view('02-send-your-data/01-upload-your-data', {
+    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+  });
+
+};
+
+
+
 /*
  *  HTTP POST handler for /02-send-your-data/01-upload-your-data
  *  @Param request
