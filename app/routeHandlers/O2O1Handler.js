@@ -10,17 +10,10 @@ var ErrorHelper = require('../api-handlers/multiple-error-helper');
 
 module.exports.getHandler = function (request, reply) {
 
-  var metaData = {};
-  var links = HelpLinks.links;
-
-  for (var link in links) {
-    metaData[link] = links[link];
-  }
-
-
   reply.view('02-send-your-data/01-upload-your-data', {
-    metaData: metaData
+    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
   });
+
 
 };
 
