@@ -8,6 +8,10 @@
 
 (function () {
 
+  if (!document.referrer) {
+    document.location = '/01-start/01-start';
+  }
+
   // Add event construct for modern browsers or IE
   // which fires the callback with a pre-converted target reference
   function addEvent(node, type, callback) {
