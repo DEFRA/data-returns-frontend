@@ -8,17 +8,17 @@ Send your data returns online
 
 <main id="content" role="main">
 
-	<div class="phase-banner-beta">
-	  <p>
-	    <strong class="phase-tag">BETA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
+  <div class="phase-banner-beta">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
 
   <h1 class="heading-xlarge">
     <span id="title">Choose your file</span>
   </h1>
-  	
+
   {{#uploadError}}
   <div id="Validation-Summary" class="error-summary">
     <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
@@ -29,61 +29,61 @@ Send your data returns online
   <div id="Validation-Summary-empty-file" class="error-summary" style="display:none" >
     <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
     <h2 class="heading-small"><span class="error-message">Your file is empty</span><h2>
-    <p>Make sure you’ve submitted the right file and try again.</p>
-  </div>
-
-  <div id="Validation-Summary-not-csv-file" class="error-summary" style="display:none">
-    <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
-    <h2 class="heading-small"><span class="error-message">Your file isn’t saved as CSV</span></h2>
-    <p>Save your file as CSV and try again.</p>
-    <div class="call-to-action">
-      <p>CSV (comma separated values) is used to move data between otherwise incompatible applications. In spreadsheet software you can use Save as&mdash;usually under the File tab&mdash;to create a CSV version of your file.</p>
-    </div>
-  </div>
-    
-	<p class="lede">You must <a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">format your data</a> to meet Environment Agency standards then save as <abbr title="Comma-separated values">CSV</abbr></p>
-	<details class="help-csv">
-	  <summary><span class="summary">What's a CSV?</span></summary>
-	  <div class="panel panel-border-wide">
-	    <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. Use &lsquo;Save as&rsquo; - usually under the File tab - in spreadsheet software to create a CSV version of your file.</p>
-	  </div>
-	</details>
-
-	<div class="text">
-    <div class="form-group">
-      <div id="statusbar-header" style="display:none; width:100%; box-sizing:border-box;">
-        <div class="statusbar statusbar-title" style="width: 100%; display: block;">
-          <div class="filename" style="width:70%; display:inline-block;">Name of data file to be checked
-          </div>
-          <div class="delname" style="width:30%; display:inline;">Action</div>
+        <p>Make sure you’ve submitted the right file and try again.</p>
         </div>
-        <div class='statusbar odd' style='width: 100%;'>
-          <div class='filename file-label' style='width: 70%; display:inline-block;'></div>
-          <div class='delname del-label' style='width: 30%; display:inline;'></div>
-        </div>
-      </div>
 
-      <div class="upload-file">
-        <p class="file-display"></p>
-
-        <form id="uploadForm" Content-Type="text/csv" enctype="multipart/form-data" method="post">
-          <div class="fancy-file-button button-choose-file button-secondary">
-            <span class="browse-text" style="display:none;">Choose file</span>
-            <input id="file-select-button" type="file" name="fileUpload" style="width: 100%;">
+        <div id="Validation-Summary-not-csv-file" class="error-summary" style="display:none">
+          <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
+          <h2 class="heading-small"><span class="error-message">Your file isn’t saved as CSV</span></h2>
+          <p>Save your file as CSV and try again.</p>
+          <div class="call-to-action">
+            <p>CSV (comma separated values) is used to move data between otherwise incompatible applications. In spreadsheet software you can use Save as&mdash;usually under the File tab&mdash;to create a CSV version of your file.</p>
           </div>
-          <p>
-            <input id="check-for-errors-btn" class="button" type="submit" value="Continue" name="submit">
-            <span style="display:none" class="checking">Checking your file...<span class="loading"><img src="/public/images/icons/loader.gif"></span></span>
-          </p>
-        </form>
-      </div>
-      <!-- /.upload-file -->
-    </div>
-    <!-- /.form-group -->
-  </div>
-  <!-- /.text -->
-</main>
+        </div>
 
-{{/content}}
+        <p class="lede">You must <a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">format your data</a> to meet Environment Agency standards then save as <abbr title="Comma-separated values">CSV</abbr></p>
+        <details class="help-csv">
+          <summary><span class="summary">What's a CSV?</span></summary>
+          <div class="panel panel-border-wide">
+            <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. Use &lsquo;Save as&rsquo; - usually under the File tab - in spreadsheet software to create a CSV version of your file.</p>
+          </div>
+        </details>
 
-{{/layout}}
+        <div class="text">
+          <div class="form-group">
+            <div id="statusbar-header" style="display:none; width:100%; box-sizing:border-box;">
+              <div class="statusbar statusbar-title" style="width: 100%; display: block;">
+                <div class="filename" style="width:70%; display:inline-block;">Name of data file to be checked
+                </div>
+                <div class="delname" style="width:30%; display:inline;">Action</div>
+              </div>
+              <div class='statusbar odd' style='width: 100%;'>
+                <div class='filename file-label' style='width: 70%; display:inline-block;'></div>
+                <div class='delname del-label' style='width: 30%; display:inline;'></div>
+              </div>
+            </div>
+
+            <div class="upload-file">
+              <p class="file-display"></p>
+
+              <form id="uploadForm" Content-Type="text/csv" enctype="multipart/form-data" method="post">
+                <div class="fancy-file-button button-choose-file button-secondary">
+                  <span class="browse-text" style="display:none;">Choose file</span>
+                  <input id="file-select-button" type="file" name="fileUpload" style="width: 100%;">
+                </div>
+                <p>
+                  <input id="check-for-errors-btn" class="button" type="submit" value="Continue" name="submit">
+                  <span  id='loading-image' style="display:none" class="checking">Checking your file...<span class="loading"><img src="/public/images/icons/loader.gif"></span></span>
+                </p>
+              </form>
+            </div>
+            <!-- /.upload-file -->
+          </div>
+          <!-- /.form-group -->
+        </div>
+        <!-- /.text -->
+        </main>
+
+        {{/content}}
+
+        {{/layout}}
