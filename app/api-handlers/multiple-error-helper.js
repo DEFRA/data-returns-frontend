@@ -15,6 +15,8 @@ module.exports = {
    */
   groupErrorData: function (data) {
 
+    console.log('==> groupErrorData() ');
+
     var groupedData = {};
     var groupLinkID = new Map();
     var errorPageData = [];
@@ -73,16 +75,33 @@ module.exports = {
       })(groupID, group);
     }
 
+    console.log('<== groupErrorData() ');
     return errorPageData;
   },
+  /*
+   * Injects metadata into a template if the metadata place holder and data exists.
+   * @return rendered string 
+   */
   renderErrorMessage: function (template, metadata) {
+    console.log('==> renderErrorMessage()');
+    var ret = template;
+    var mustRender = false;
 
-    var ret = '';
     if (template && metadata) {
       var CompiledTemplate = Hogan.compile(template);
-      ret = CompiledTemplate.render(metadata);
-      //console.log(ret);
+      for (var linkName in metadata) {
+        if (template.indexOf(linkName) !== -1) {
+          mustRender = true;
+        }
+      }
+
+      if (mustRender) {
+        console.log('\t Rendering');
+        ret = CompiledTemplate.render(metadata);
+      }
     }
+
+    console.log('<== renderErrorMessage()');
 
     return ret;
 
