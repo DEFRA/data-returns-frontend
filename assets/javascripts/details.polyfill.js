@@ -7,10 +7,9 @@
 // http://www.sitepoint.com/fixing-the-details-element/
 
 (function () {
-  
-  
-  
-  if (!document.referrer) {
+
+//redirect to the start page if no referer
+  if (!document.referrer && (location.pathname !== '/index' && location.pathname !== '/01-start/01-start')) {
     document.location = '/01-start/01-start';
   }
 
@@ -36,10 +35,14 @@
     });
     addEvent(node, 'keyup', function (e, target) {
       keydown = false;
-      if (e.keyCode === 13) { callback(e, target); }
+      if (e.keyCode === 13) {
+        callback(e, target);
+      }
     });
     addEvent(node, 'click', function (e, target) {
-      if (!keydown) { callback(e, target); }
+      if (!keydown) {
+        callback(e, target);
+      }
     });
   }
 
@@ -80,7 +83,7 @@
       var details = list[i];
 
       // Detect native implementations
-      details.__native = typeof(details.open) == 'boolean';
+      details.__native = typeof (details.open) == 'boolean';
 
       // Save shortcuts to the inner summary and content elements
       details.__summary = details.getElementsByTagName('summary').item(0);
@@ -147,7 +150,7 @@
     }
 
     // Bind a click event to handle summary elements
-    addClickEvent(document, function(e, summary) {
+    addClickEvent(document, function (e, summary) {
       if (!(summary = getAncestor(summary, 'summary'))) {
         return true;
       }
