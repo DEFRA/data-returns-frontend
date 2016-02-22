@@ -8,7 +8,7 @@
 
 (function () {
 
-  if (!document.referrer) {
+  if (!document.referrer && (location.pathname !== '/index' && location.pathname !== '/01-start/01-start')) {
     document.location = '/01-start/01-start';
   }
 

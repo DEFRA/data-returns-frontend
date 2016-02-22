@@ -8,6 +8,8 @@
 
 (function () {
   
+  
+  
   if (!document.referrer) {
     document.location = '/01-start/01-start';
   }

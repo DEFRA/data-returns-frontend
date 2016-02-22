@@ -88,16 +88,22 @@ module.exports = {
     var mustRender = false;
 
     if (template && metadata) {
+      template = (typeof (template) === 'object') ? JSON.stringify(template) : template;
       var CompiledTemplate = Hogan.compile(template);
+
+      //At least one piece of metadata required?
       for (var linkName in metadata) {
         if (template.indexOf(linkName) !== -1) {
           mustRender = true;
+          break;
         }
       }
 
       if (mustRender) {
-        console.log('\t Rendering');
+        console.log('\t Rendering ');
         ret = CompiledTemplate.render(metadata);
+      } else {
+        console.log('\t no metadata found');
       }
     }
 
