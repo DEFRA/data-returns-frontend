@@ -51,6 +51,7 @@ $(document).ready(function () {
       '-khtml-opacity': '0.5',
       'opacity': '0.5'});
     $('#remove-link').click(function () {
+      
       $('#statusbar-header').hide();
       $('#check-for-errors-btn').attr('disabled', 'disabled');
       $(".checking").hide(0);
@@ -79,12 +80,13 @@ $(document).ready(function () {
       $('#file-select-button').hide();
       $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50)',
         'filter': 'alpha(opacity=50)',
-        '-moz-opacity': '0.5',
+        '-moz-opacity': '0.5',  
         '-khtml-opacity': '0.5',
         'opacity': '0.5'});
+      
       $('#remove-link').click(function () {
         $('#statusbar-header').hide();
-
+        $('#loading-image').hide();
         if ($("input#checking_only").val() === "true") {
           $('#title').html('Choose the file you want us to check');
         } else {
