@@ -50,13 +50,13 @@ module.exports = [
   {
     method: 'GET',
     path: '/index',
-    handler: IndexHandler.redirectToIndex//BasicTemplateHandler.getHandler
+    handler: IndexHandler.redirectToIndex
   },
   // Start page.
   {
     method: 'GET',
     path: '/01-start/01-start',
-    handler: O1O1Handler.getHandler//BasicTemplateHandler.getHandler
+    handler: O1O1Handler.getHandler
   },
   {
     method: 'POST',
