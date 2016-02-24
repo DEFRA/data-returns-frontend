@@ -2,7 +2,6 @@
 
 'use strict';
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
-var IndexHandler = require('./routeHandlers/indexHandler');
 var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var O1O1Handler = require('./routeHandlers/O1O1Handler');
 var O2O1Handler = require('./routeHandlers/O2O1Handler');
@@ -15,12 +14,6 @@ var O2O7Handler = require('./routeHandlers/O2O7Handler');
 var O2O8Handler = require('./routeHandlers/O2O8Handler');
 var O2O9Handler = require('./routeHandlers/O2O9Handler');
 var O21OHandler = require('./routeHandlers/O210Handler');
-
-//var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
-//var EmptyFileHandler = require('./routeHandlers/EmptyFileHandler');
-
-// TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
-// TODO: Think about more / better logging.
 
 module.exports = [
   // Static assets.
@@ -38,25 +31,25 @@ module.exports = [
       }
     }
   },
-  // TODO: Make redirection environment-specific, and rename the index to "development" or similar.
-  // Redirect for site root.
   {
     method: 'GET',
     path: '/',
-    handler: IndexHandler.redirectToIndex
+    handler: function (request, reply) {
+      reply.redirect('/01-start/01-start');
+    }
   },
-  // Index page (visible in development only).
-  // TODO: Rename
   {
     method: 'GET',
     path: '/index',
-    handler: BasicTemplateHandler.getHandler
+    handler: function (request, reply) {
+      reply.redirect('/01-start/01-start');
+    }
   },
   // Start page.
   {
     method: 'GET',
     path: '/01-start/01-start',
-    handler: O1O1Handler.getHandler//BasicTemplateHandler.getHandler
+    handler: O1O1Handler.getHandler
   },
   {
     method: 'POST',
@@ -67,7 +60,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/01-upload-your-data',
-    handler: O2O1Handler.getHandler//BasicTemplateHandler.getHandler
+    handler: O2O1Handler.getHandler
   },
   {
     method: 'POST',
