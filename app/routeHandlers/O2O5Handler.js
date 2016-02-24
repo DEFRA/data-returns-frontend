@@ -28,17 +28,19 @@ module.exports = {
     var uploadResultsCacheKey = sessionID + '_UploadResult';
     var uploadResult, fileKey
     var originalFileName;
+    var permitNo;
 
     CacheHandler.getValue(uploadResultsCacheKey)
       .then(function (result) {
         uploadResult = JSON.parse(result);
         fileKey = uploadResult.uploadResult.fileKey;
-        originalFileName = uploadResult.uploadResult.originalFileName;
+        originalFileName = uploadResult.originalFileName;
+        permitNo = uploadResult.generalResult.transformationResults.results.Result_EA_ID.value;
       })
       .then(function () {
         UserHandler.getUserMail(sessionID)
           .then(function (userMail) {
-            CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName)
+            CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName, permitNo)
               .then(function () {
                 reply.redirect('/02-send-your-data/08-done');
               })

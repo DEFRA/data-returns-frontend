@@ -86,11 +86,14 @@ function processResponse(err, response, body, reject, successCallback) {
  *   successful, the promise is resolve with Boolean true.  For rejection
  *   details see processApiResponse().
  */
-module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
+module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName, permitNo) {
 
   return new Promise(function (resolve, reject) {
     console.log('==> confirmFileSubmission ()');
     // Define data to send to the Data Exchange service.
+
+    //public Response completeUpload(@NotEmpty @FormDataParam("fileKey") String orgFileKey, @NotEmpty @FormDataParam("userEmail") String userEmail,
+    //@NotEmpty @FormDataParam("orgFileName") String orgFileName, @NotEmpty @FormDataParam("permitNo") String permitNo)
     var apiData = {
       url: config.API.endpoints.FILEUPLOADCOMPLETE,
       headers: {
@@ -98,8 +101,9 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
       },
       formData: {
         fileKey: fileKey,
-        //fileName: originalFileName, TODO when Ade is ready
-        userEmail: userEmail
+        userEmail: userEmail ,
+        orgFileName: originalFileName,
+        permitNo: permitNo
       }
     };
     console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
