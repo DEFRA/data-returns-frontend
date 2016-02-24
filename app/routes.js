@@ -46,7 +46,7 @@ module.exports = [
     handler: IndexHandler.redirectToIndex
   },
   // Index page (visible in development only).
-  // TODO: Rename
+  // TODO: Remove
   {
     method: 'GET',
     path: '/index',
