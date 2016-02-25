@@ -67,7 +67,7 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
-                  console.error('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES );
+                  console.error('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES);
                   reject({
                     isUserError: true,
                     message: ErrorMessages.FILE_HANDLER.ZERO_BYTES
@@ -83,11 +83,18 @@ var validateFile = function (filePath, contentType) {
           }
         })
         .catch(function (result) {
-          
-          reject({
-            isUserError: true,
-            message: ErrorMessages.ANTIVIRUS.VIRUS_DETECTED
-          });
+          if (result === true) {
+            reject({
+              isUserError: true,
+              message: ErrorMessages.ANTIVIRUS.VIRUS_DETECTED
+            });
+          } else {
+            console.error('\t ANTIVIRUS SCANNER ISSUE ');
+            reject({
+              isUserError: true,
+              err: ErrorMessages.API.UNKNOWN
+            });
+          }
 
         });
     }
