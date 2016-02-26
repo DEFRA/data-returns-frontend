@@ -43,6 +43,7 @@ config.smtp.confirmsubject = 'Data returns online data return receipt';
 config.smtp.success = '250 Message accepted';
 config.smtp.ealogo = 'http://assets.digital.cabinet-office.gov.uk/government/uploads/system/uploads/organisation/logo/199/EAlogo.png';
 config.smtp.govuklogo = 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png';
+config.smtp.crownLogo = 'https://assets.digital.cabinet-office.gov.uk/static/gov.uk_logotype_crown_invert_trans-78910ec0b2d46b9f4933556ba3d6863ca9bbcbefa8a4c811dce36f7026d04de8.png';
 
 //Pin configuration
 config.pin = {

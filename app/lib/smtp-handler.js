@@ -118,6 +118,7 @@ var sendPinEmail = function (recipient, newPin) {
       MiniCommNumber: config.smtp.support.MiniCommNumber,
       govuklogo: config.smtp.govuklogo, //'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
       ealogo: config.smtp.ealogo, //'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      crownLogo: config.smtp.crownLogo,
       useFooter: config.smtp.useFooter
     };
 
