@@ -42,7 +42,7 @@ module.exports.isInfected = function (filePath) {
 
         if (err) {
           console.log(err);
-          resolve(false);
+          reject(false);
         }
 
         console.log('<== av scanning complete, infected: ' + is_infected);
@@ -51,9 +51,7 @@ module.exports.isInfected = function (filePath) {
           reject(true);
         } else if (is_infected === false) {
           resolve(false);
-        } else {//something went wrong with the virus scanner
-          reject(false);
-        }
+        } 
 
       });
     } else {
