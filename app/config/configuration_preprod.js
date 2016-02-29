@@ -46,7 +46,7 @@ config.CSV = {
 /* cache configuration */
 config.redis = {
   clientOptions: {
-    host: 'localhost',
+    host: '10.208.6.101',
     port: 6370,
     auth_pas: ''
   }
@@ -55,7 +55,7 @@ config.redis = {
 // API Endpoints
 var BASEURL = {
   PROTOCOL: 'http://',
-  SERVER: 'localhost:',
+  SERVER: 'internal-PPDRASLB01-272566979.eu-west-1.elb.amazonaws.com:',
   PORT: 9020
 };
 
