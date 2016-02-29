@@ -39,11 +39,11 @@ config.sessionStorage = {
 config.smtp = config.smtp || {};
 config.smtp.mailcatcher = {};
 config.smtp.pinsubject = ' is your data returns online confirmation code';
-config.smtp.confirmsubject = 'Data returns online data return receipt';
+config.smtp.confirmsubject = 'Send data returns online - your receipt';
 config.smtp.success = '250 Message accepted';
 config.smtp.ealogo = 'http://assets.digital.cabinet-office.gov.uk/government/uploads/system/uploads/organisation/logo/199/EAlogo.png';
 config.smtp.govuklogo = 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png';
-config.smtp.crownLogo = 'https://assets.digital.cabinet-office.gov.uk/static/gov.uk_logotype_crown_invert_trans-78910ec0b2d46b9f4933556ba3d6863ca9bbcbefa8a4c811dce36f7026d04de8.png';
+config.smtp.crownLogo = 'http://www.tax.service.gov.uk/assets/2.30.0/images/gov.uk_logotype_crown.png';
 
 //Pin configuration
 config.pin = {
