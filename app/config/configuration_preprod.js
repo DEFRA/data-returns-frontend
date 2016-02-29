@@ -47,8 +47,7 @@ config.CSV = {
 config.redis = {
   clientOptions: {
     host: '10.208.6.101',
-    port: 6370,
-    auth_pas: ''
+    port: 6379
   }
 };
 
