@@ -33,7 +33,7 @@ module.exports.isInfected = function (filePath) {
             reload_db: false,
             active: true
           },
-          preference: 'clamscan'
+          preference: 'clamdscan'//'clamscan'
         }
       );
 
