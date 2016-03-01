@@ -15,67 +15,6 @@
 		/* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
 		/* End reset */
 		
-		#header {
-		  width: 100%;
-		  height: 55px;
-		  display: block;
-		  background-color: #0B0C0C;
-		}
-		
-    #header #govuk-masthead {
-      padding: 12px 0 15px 0;
-    }
-
-    .wrapper {
-      max-width: 570px;
-      padding: 0 15px;
-      margin: 0 auto;
-    }
-
-    h1, h2, h3, h4, h5, h6, p, ul, ol, small {
-      color: #0B0C0C;
-      font-family: sans-serif;
-      margin: 15px 0;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 700;
-    }
-
-    p, ul, ol, h3, h4, h5, h6 {
-      font-size: 19px;
-      line-height: 1.315789474;
-    }
-
-    h1 {
-      font-size: 36px;
-      line-height: 1.111111111;
-      padding: 15px 0;
-    }
-
-    h2, .lead {
-      font-size: 24px;
-      line-height: 1.25;
-      padding-top: 30px;
-    }
-    
-    small, .details, .footer {
-      font-size: 16px;
-      line-height: 1.25;
-    }
-
-    .details, .footer, .details a, .footer a {
-      color: #6F777B !important;
-    }
-
-    ol.details, ul.details {
-      padding-left: 0;
-    }
-
-    .details li {
-      list-style-type: none;
-    }
-
 		/* Some sensible defaults for images
 		Bring inline: Yes. */
 		img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}
@@ -92,9 +31,9 @@
 
 		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {color: #005EA5 !important;}
 
-    h1 a:hover, h2 a:hover,  h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
-    color: #2E8ACA !important; /* Preferably not the same color as the normal header link color.  There is limited support for psuedo classes in email clients, this was added just for good measure. */
-    }
+    	h1 a:hover, h2 a:hover,  h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+        color: #2E8ACA !important; /* Preferably not the same color as the normal header link color.  There is limited support for psuedo classes in email clients, this was added just for good measure. */
+        }
 
 		h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {
 		color: #2E8ACA !important; /* Preferably not the same color as the normal header link color.  There is limited support for psuedo classes in email clients, this was added just for good measure. */
@@ -116,16 +55,6 @@
 		Bring inline: Yes. */
 		a {color: #005EA5;}
 
-
-
-    /* Data returns PIN notification email styles*/
-    h1 {
-    	font-size: 24px;
-    }
-	  h2 {
-	  	font-size: 36px;
-	  	padding: 15px 0;
-	  }  
     
 		/***************************************************
 		****************************************************
@@ -169,45 +98,30 @@
 						cursor: default;
 					}
 		}
-
-		@media only screen and (-webkit-min-device-pixel-ratio: 2) {
-		/* Put your iPhone 4g styles in here */
-		}
-
-		/* Android targeting */
-		@media only screen and (-webkit-device-pixel-ratio:.75){
-		/* Put CSS for low density (ldpi) Android layouts in here */
-		}
-		@media only screen and (-webkit-device-pixel-ratio:1){
-		/* Put CSS for medium density (mdpi) Android layouts in here */
-		}
-		@media only screen and (-webkit-device-pixel-ratio:1.5){
-		/* Put CSS for high density (hdpi) Android layouts in here */
-		}
-		/* end Android targeting */
-
 	</style>
-
-	<!--[if IEMobile 7]>
-	<style type="text/css">
-
-	</style>
-	<![endif]-->
-
-	<!--[if mso]>
-		<style type="text/css">
-				
-		</style>
-	<![endif]-->
-	
-  </head>
+  </head> 
   <body>
-	  <div id="header" style="width: 100%; height: 55px; display: block; background-color: #0B0C0C;">
-	    <div class="wrapper" style="max-width: 570px; margin: 0 auto; height: 55px;">
-	      <img width="35" height="31" id="govuk-masthead" style="padding: 12px 0 12px 0;" src="{{crownLogo}}" alt="GOV.UK" /><span style="color: #ffffff; font-family: sans-serif; font-size: 28px; font-weight: 600; letter-spacing: 0.5px; line-height: 57px; padding: 12px 3px 12px 0; vertical-align: top;"> GOV.UK</span>
-	    </div>
-	  </div>
-		  
+      
+      
+    <!--[if mso]>
+        <table width="100%"><tr><td width="100%" style="width: 100%; height: 55px; display: block; background-color: #0B0C0C;">
+            <center>
+            <table><tr><td width="35">
+            <img width="35" height="31" id="govuk-masthead" style="vertical-align: middle; margin-right:10px;" src="{{crownLogo}}" alt="GOV.UK" /></td><td width="535"><span style="font-family: sans-serif; font-size: 28px; font-weight: 600; letter-spacing: 0.5px; line-height: 57px; padding-left: 3px; vertical-align: middle;">&nbsp;<a href="http://www.gov.uk" style="text-decoration:none; color:#ffffff;">GOV.UK</a></td></tr>
+          	</table></center>
+            </td></tr>
+        </table>
+    <![endif]-->
+      
+      
+		<div id="header" style="mso-hide:all; width:100%; height: 55px; display: block; background-color: #0B0C0C;">
+		  <div class="wrapper" style="color:white !important; text-decoration:none !important; max-width: 570px; margin: 0 auto; height: 55px; padding: 0 15px;">
+              <img width="35" height="31" id="govuk-masthead" style="vertical-align: middle;" src="{{crownLogo}}" alt="GOV.UK" />
+      		<span style="font-family: sans-serif; font-size: 28px; font-weight: 600; letter-spacing: 0.5px; line-height: 57px; padding-left: 3px; vertical-align: middle;">
+              <a href="http://www.gov.uk" style="text-decoration:none; color:#ffffff;">GOV.UK</a>
+          </span>
+		  </div>    
+		</div>
 		
 		<!--[if mso]>
 		 <center>
@@ -218,10 +132,10 @@
 			
 			  <h1 style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 24px; line-height: 1.111111111; padding: 15px 0; font-weight: 700;">You successfully sent a data returns file to the Environment Agency.</h1>
 				<p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">Your details:</p>
-				<ul style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;" class="details">
-					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>File</strong>: {{FILENAME}}</li>
-					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>Date</strong>: {{DATE}}</li>
-					<li style="color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;"><strong>Time</strong>: {{TIME}}</li>
+				<ul style="list-style-type:none; color: #0B0C0C; font-family: sans-serif; margin: 15px 0; padding-left:0; font-size: 18px; line-height:1.4;" class="details">
+					<li style="margin-left:0; color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;">File: <strong>{{FILENAME}}</strong></li>
+					<li style="margin-left:0; color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;">Date: <strong>{{DATE}}</strong></li>
+					<li style="margin-left:0; color: #0B0C0C; font-family: sans-serif; font-size: 18px; line-height:1.4;">Time: <strong>{{TIME}}</strong></li>
 				</ul>
 			
 			  <p style="color: #0B0C0C; font-family: sans-serif; margin: 15px 0; font-size: 18px; line-height:1.4;">We’ll now check your data for quality and regulatory compliance. We may need to contact you with any queries.</p>
@@ -249,7 +163,6 @@
 	      {{/useFooter}}
 	    </div>
 
-	    
 	    <!--[if mso]>
 	     </td></tr></table>
 	     </center>
