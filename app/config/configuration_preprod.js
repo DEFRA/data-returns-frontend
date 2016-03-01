@@ -13,9 +13,9 @@ config.useGoogleAnalytics = true;
 
 /* SMTP Prod Configuration */
 config.smtp = config.smtp || {};
-config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
+config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 587;
-config.smtp.ignoreTLS = false;
+config.smtp.ignoreTLS = true;
 config.smtp.username = process.env.smtpuser;
 config.smtp.password = process.env.smtppw; 
 config.smtp.fromEmailAddress = 'noreply@environment-agency.gov.uk';
