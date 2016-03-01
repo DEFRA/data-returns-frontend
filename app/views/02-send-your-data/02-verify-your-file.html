@@ -33,24 +33,32 @@ Send your data returns online
 
 		<div class="text multi-panel">
       <p class="lede">The data returns file you’re going to send is about:</p>
-
-			<div class="panel panel-border-wide">
-        <h2 class="heading-small">Site name</h2>
-        <p><span class="address-1">{{returnMetaData.siteName}}</span></p>
-	    </div> 
-        
-      <div id="permit_found" class="panel panel-border-wide permit">
-        <h2 class="heading-small"><span>Permit number</span></h2>
-        <p><span class="result">{{returnMetaData.eaId}}</span> 
-          <!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>--></p>
-      </div>
-        
-      <div id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
-      	<div class="error">
-        	<h2 class="heading-small"><span class="not-recognised error-message">Permit number not recognised</span></h2>
-        	<p><span class="result">{{returnMetaData.eaId}}</span> </p>
-      	</div>
-      </div>
+			
+			<ul class="list">
+				<li class="panel panel-border-wide">
+	        <p>
+	        	<span>Site name</span><br>
+	        	<span class="heading-small">{{returnMetaData.siteName}}</span>
+	        </p>
+		    </li> 
+	        
+	      <li id="permit_found" class="panel panel-border-wide permit">
+	        <p>
+	        	<span>Permit number</span><br>
+	        	<span class="heading-small">{{returnMetaData.eaId}}</span>
+	        	<!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>-->
+	        </p>
+	      </li>
+	        
+	      <li id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
+	      	<div class="error">
+	        	<p>
+	        		<span><span class="not-recognised error-message">Permit number not recognised</span><br>
+	        		<span class="heading-small">{{returnMetaData.eaId}}</span>
+	        	</p>
+	      	</div>
+	      </li>
+	    </ul>
 		</div>
 		
 		<!-- Return type not in content docs
