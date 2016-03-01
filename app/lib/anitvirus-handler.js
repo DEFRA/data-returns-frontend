@@ -28,7 +28,7 @@ module.exports.isInfected = function (filePath) {
           },
           clamdscan: {
             path: '/usr/bin/clamdscan',
-            config_file: '/etc/clamd.conf',
+            config_file: '/etc/clamav/clamd.conf',
             multiscan: true,
             reload_db: false,
             active: true
