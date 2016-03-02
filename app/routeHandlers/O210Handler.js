@@ -8,7 +8,7 @@ module.exports = {
 
     var groupid = request.query.groupid;
     var key = 'ErrorData_' + groupid;
-    var sessionID = 'id_' + request.session.id;
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     var fileName;
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';

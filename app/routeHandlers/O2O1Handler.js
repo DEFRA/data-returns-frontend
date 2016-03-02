@@ -7,16 +7,14 @@ var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
 var ErrorHelper = require('../api-handlers/multiple-error-helper');
+var UserHandler = require('../lib/user-handler');
 
 module.exports.getHandler = function (request, reply) {
 
   reply.view('02-send-your-data/01-upload-your-data', {
     HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
   });
-
-
 };
-
 /*
  *  HTTP POST handler for /02-send-your-data/01-upload-your-data
  *  @Param request
@@ -29,9 +27,28 @@ module.exports.postHandler = function (request, reply) {
   var sourceName = request.payload.fileUpload.filename;
   var oldLocalName = request.payload.fileUpload.path;
   var newLocalName = oldLocalName.concat(Path.extname(sourceName));
-  var sessionID = 'id_' + request.session.id;
+  var Utils = require('../lib/utils');
+  var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
+
+  var user = {
+    authenticated: false,
+    email: '',
+    pin: '',
+    filekey: '',
+    uploadCount: 0
+  };
+
+  var cookieOptions = {
+    ttl: null,
+    isSecure: false,
+    isHttpOnly: true,
+    encoding: 'none', //base64json',
+    clearInvalid: false,
+    strictHeader: true
+  };
+
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
       if (config.CSV.validate === true) {
@@ -39,6 +56,14 @@ module.exports.postHandler = function (request, reply) {
       } else {
         return true;
       }
+    })
+    .then(function () {
+      UserHandler.getUser(sessionID)
+        .then(function (user) {
+          if (user===null) {
+            UserHandler.setUser(sessionID, user);
+          }
+        })
     })
     .then(function () {
       //cache the filenames
@@ -63,9 +88,11 @@ module.exports.postHandler = function (request, reply) {
         HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
       };
       console.log('\t metadata: ', metaData);
+
       reply.view('02-send-your-data/02-verify-your-file', {
         returnMetaData: metaData
-      });
+      }).state('data-returns-id', sessionID, cookieOptions);
+
     }).catch(function (errorData) {
     //console.log('==> promise catch block ' + JSON.stringify(errorData));
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
@@ -73,19 +100,18 @@ module.exports.postHandler = function (request, reply) {
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
-      var sessionid = 'id_' + request.session.id;
-      var cacheKey = sessionid + '_latestErrors';
+      //var sessionid = 'id_' + request.session.id;
+      var cacheKey = sessionID + '_latestErrors';
       CachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function (result) {
           var filekey = sessionID + '_SourceName';
-          filekey = sessionid + '_SourceName';
+
           CachHandler.getValue(filekey)
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, "") : '';
               var links = HelpLinks.links;
               var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
               var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
-
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
                 uploadError: true,
                 errorMessage: renderedErrorMessage,
@@ -93,7 +119,7 @@ module.exports.postHandler = function (request, reply) {
                 lineErrors: renderedLineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-              });
+              }).state('data-returns-id', sessionID, cookieOptions);
             });
         })
         .catch(function (err) {
@@ -101,7 +127,7 @@ module.exports.postHandler = function (request, reply) {
         });
     } else {
       request.session.flash('errorMessage', errorData.message);
-      reply.redirect('/02-send-your-data/07-failure');
+      reply.redirect('/02-send-your-data/07-failure').state('data-returns-id', sessionID, cookieOptions);
     }
   });
 };

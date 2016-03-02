@@ -24,9 +24,9 @@ module.exports = {
    */
   postHandler: function (request, reply) {
 
-    var sessionID = 'id_' + request.session.id;
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     var uploadResultsCacheKey = sessionID + '_UploadResult';
-    var uploadResult, fileKey
+    var uploadResult, fileKey;
     var originalFileName;
     var permitNo;
 
@@ -43,6 +43,9 @@ module.exports = {
             CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName, permitNo)
               .then(function () {
                 reply.redirect('/02-send-your-data/08-done');
+              })
+              .then(function (result) {
+                CacheHandler.delete(uploadResultsCacheKey);
               })
               .catch(function (errorData) {
                 console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));

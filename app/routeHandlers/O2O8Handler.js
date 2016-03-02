@@ -11,7 +11,7 @@ var HelpLinks = require('../config/dep-help-links');
  */
 module.exports.getHandler = function (request, reply) {
   console.log('==> O2O8Handler.getHandler()');
-  var sessionID = 'id_' + request.session.id;
+  var sessionID = Utils.base64Decode(request.state['data-returns-id']);
   var key = sessionID + '_SourceName';
   var email;
   //Get the users email address from the cache

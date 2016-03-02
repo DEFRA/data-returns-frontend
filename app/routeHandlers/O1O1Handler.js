@@ -1,7 +1,8 @@
 
 
 var HelpLinks = require('../config/dep-help-links');
-var userHandler = require('../lib/user-handler');
+var UserHandler = require('../lib/user-handler');
+var Utils = require('../lib/utils');
 //path: '/01-start/01-start',
 
 
@@ -13,25 +14,11 @@ module.exports = {
    */
   postHandler: function (request, reply) {
 
-    var sessionID = 'id_' + request.session.id;
     // clear session data
+    //TODO remove session references once sticky sessions are removed
     request.session.reset();
-    // seed user data
-    var user = {
-      authenticated: false,
-      email: '',
-      pin: '',
-      filekey: '',
-      uploadCount: 0
-    };
 
-    //session id will have changed after the reset
-    sessionID = 'id_' + request.session.id;
-
-    userHandler.setUser(sessionID, user)
-      .then(function () {
-        reply.redirect('/02-send-your-data/01-upload-your-data');
-      });
+    reply.redirect('/02-send-your-data/01-upload-your-data');
 
   },
   /*

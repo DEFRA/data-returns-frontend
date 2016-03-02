@@ -1,5 +1,6 @@
 
 var UserHandler = require('../lib/user-handler');
+var Utils = require('../lib/utils');
 /*
  * HTTP GET handler for gets for /02-send-your-data/06-check
  * @param {type} request
@@ -9,7 +10,7 @@ module.exports.getHandler = function (request, reply) {
   
  //console.log(request);
 
-  var sessionID = 'id_' + request.session.id;
+  var sessionID = Utils.base64Decode(request.state['data-returns-id']);
   console.log('==> O2O6Handler.getHandler() ');
   UserHandler.isAuthenticated(sessionID)
     .then(function (result) {
