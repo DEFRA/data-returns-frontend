@@ -1,6 +1,7 @@
 
 
 var CachHandler = require('../lib/cache-handler');
+var Utils = require('../lib/utils');
 
 module.exports = {
   getHandler: function (request, reply) {
@@ -14,8 +15,8 @@ module.exports = {
       return reply.view(request.path.substring(1));
     } else {
       //get cached data
-      var sessionid = 'id_' + request.session.id;
-      var cacheKey = sessionid + '_latestErrors';
+      var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+      var cacheKey = sessionID + '_latestErrors';
 
       CachHandler.getValue(cacheKey)
         .then(function (data) {

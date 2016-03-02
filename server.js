@@ -167,6 +167,9 @@ server.ext('onPreResponse', function (request, reply) {
   return reply(resp);
 });
 
+
+
+
 // Start the server.
 server.start(function (err) {
 

@@ -3,7 +3,7 @@ var FileSystem = require('fs');
 var CacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-
+var uuid = require('node-uuid');
 
 module.exports = {
   /**
@@ -157,10 +157,17 @@ module.exports = {
     } catch (e) {
       callback(e);
     }
+  },
+  base64Decode: function (encodedInput) {
+    var ret = new Buffer(encodedInput, 'base64').toString("ascii");
+    return encodedInput;// ret.replace(/"/g, "");
+  },
+  /*
+   * generate a uuid
+   */
+  getNewUUID: function () {
+    return uuid.v4();
   }
-
-
-
 
 };
 

@@ -3,6 +3,7 @@ var SMTPHandler = require('../lib/smtp-handler');
 var PinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
 var CacheHandler = require('../lib/cache-handler');
+var Utils = require('../lib/utils');
 
 module.exports = {
   /*
@@ -13,8 +14,10 @@ module.exports = {
    */
   getHandler: function (request, reply) {
 
-    var sessionID = 'id_' + request.session.id;
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     var filekey = sessionID + '_SourceName';
+
+
 
     userHandler.isAuthenticated(sessionID)
       .then(function (result) {
@@ -54,6 +57,7 @@ module.exports = {
   postHandler: function (request, reply) {
     /* get the users email address */
     var usermail = request.payload['user_email'];
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     usermail = usermail.trim();
     /* Validate the email address */
     SMTPHandler.validateEmailAddress(usermail)
@@ -73,7 +77,7 @@ module.exports = {
                 uploadCount: 0
               };
 
-              userHandler.setUser('id_' + request.session.id, user)
+              userHandler.setUser(sessionID, user)
                 .then(function (result) {
                   SMTPHandler.sendPinEmail(usermail, newpin);
                 })

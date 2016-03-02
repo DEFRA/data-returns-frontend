@@ -2,6 +2,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var cacheHandler = require('./cache-handler');
 var Utils = require('./utils');
 
+
 /*
  * Saves a user object JSON to Redis
  * @param sessionID the session id used as the key
@@ -83,7 +84,7 @@ module.exports.isAuthenticated = function (sessionID) {
           isValid = false;
         }
         // Max no of uses per pin
-        if (user.uploadCount > config.pin.MaxUploadsPerPin) {
+        if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
           isValid = false;
         }
         // Is the pin in date 
@@ -107,7 +108,7 @@ module.exports.isAuthenticated = function (sessionID) {
 };
 
 module.exports.setIsAuthenticated = function (sessionID, value) {
-
+  console.log('==> setIsAuthenticated() ', value, sessionID);
   getUser(sessionID)
     .then(function (user) {
       user.authenticated = value;
@@ -121,6 +122,11 @@ module.exports.incrementUploadCount = function (sessionID) {
       user.uploadCount = user.uploadCount + 1;
       setUser(sessionID, user);
     });
+};
+
+module.exports.getNewUserID = function () {
+  var ret = Utils.getNewUUID();
+  return ret;//'id' + ret.replace(/"/g, "");
 };
 
 module.exports.getUser = getUser;

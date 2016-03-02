@@ -3,6 +3,7 @@ var userHandler = require('../lib/user-handler');
 var pinHandler = require('../lib/pin-handler');
 var messages = require('../lib/error-messages');
 var Hogan = require('hogan.js');
+var Utils = require('../lib/utils');
 /*
  * HTTP POST handler for /02-send-your-data/04-authenticate
  * @param {type} request
@@ -11,7 +12,7 @@ var Hogan = require('hogan.js');
  */
 var postHandler = function (request, reply) {
 
-  var sessionID = 'id_' + request.session.id;
+  var sessionID = Utils.base64Decode(request.state['data-returns-id']);
   var userPin = request.payload['validation_code'].toString().trim();
   userPin = userPin ? parseInt(userPin) : 0;
   pinHandler.validatePin(sessionID, userPin)
