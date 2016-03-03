@@ -176,25 +176,29 @@ server.start(function (err) {
 
   utils.createUploadDirectory();
 
-    console.log('==> Minifying and combining Javascript files');
-  // Using YUI Compressor for javascript files
-    new compressor.minify({
-      type: 'yui-js',
-      fileIn: ['public/javascripts/details.polyfill.js', 'public/javascripts/fancy-file-upload.js'],
-      fileOut: 'public/javascripts/data-returns-min.js',
-      callback: function (err, min) {
-        console.log(err);
-      }
-    });
+  console.log('==> Minifying and combining Javascript files');
 
-  // Using YUI Compressor for CSS 
-  console.log('==> Minifying and combining CSS files')
+
+  // Using UglifyJS for JS
   new compressor.minify({
-    type: 'yui-css',
+    type: 'uglifyjs',
+    fileIn: ['public/javascripts/details.polyfill.js', 'public/javascripts/fancy-file-upload.js'],
+    fileOut: 'public/javascripts/data-returns-min.js',
+    callback: function (err, min) {
+      console.log(err);
+      //console.log(min);
+    }
+  });
+
+// Using Sqwish for CSS
+  new compressor.minify({
+    type: 'sqwish',
     fileIn: 'public/stylesheets/main.css',
     fileOut: 'public/stylesheets/main-min.css',
     callback: function (err, min) {
+      console.log('Sqwish');
       console.log(err);
+      //console.log(min);
     }
   });
 
