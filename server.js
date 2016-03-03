@@ -177,8 +177,6 @@ server.start(function (err) {
   utils.createUploadDirectory();
 
   console.log('==> Minifying and combining Javascript files');
-
-
   // Using UglifyJS for JS
   new compressor.minify({
     type: 'uglifyjs',
@@ -190,18 +188,17 @@ server.start(function (err) {
     }
   });
 
-// Using Sqwish for CSS
-  /*new compressor.minify({
-    type: 'sqwish',
+// Using Clean-css for CSS
+  new compressor.minify({
+    type: 'clean-css',
     fileIn: 'public/stylesheets/main.css',
     fileOut: 'public/stylesheets/main-min.css',
     callback: function (err, min) {
-      console.log('Sqwish');
       console.log(err);
       //console.log(min);
     }
-  });*/
-
+  });
+  
   if (err) {
     console.error('Failed to start server.');
     throw err;
