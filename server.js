@@ -7,7 +7,11 @@ var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'l
 // Create and initialise the server.
 var utils = require('./app/lib/utils');
 
+var compressor = require('node-minify');
+
 var server = new Hapi.Server();
+
+
 
 server.connection({
   host: '0.0.0.0',
@@ -167,13 +171,32 @@ server.ext('onPreResponse', function (request, reply) {
   return reply(resp);
 });
 
-
-
-
 // Start the server.
 server.start(function (err) {
 
   utils.createUploadDirectory();
+
+    console.log('==> Minifying and combining Javascript files');
+  // Using YUI Compressor for javascript files
+    new compressor.minify({
+      type: 'yui-js',
+      fileIn: ['public/javascripts/details.polyfill.js', 'public/javascripts/fancy-file-upload.js'],
+      fileOut: 'public/javascripts/data-returns-min.js',
+      callback: function (err, min) {
+        console.log(err);
+      }
+    });
+
+  // Using YUI Compressor for CSS 
+  console.log('==> Minifying and combining CSS files')
+  new compressor.minify({
+    type: 'yui-css',
+    fileIn: 'public/stylesheets/main.css',
+    fileOut: 'public/stylesheets/main-min.css',
+    callback: function (err, min) {
+      console.log(err);
+    }
+  });
 
   if (err) {
     console.error('Failed to start server.');
