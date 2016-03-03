@@ -191,7 +191,7 @@ server.start(function (err) {
   });
 
 // Using Sqwish for CSS
-  new compressor.minify({
+  /*new compressor.minify({
     type: 'sqwish',
     fileIn: 'public/stylesheets/main.css',
     fileOut: 'public/stylesheets/main-min.css',
@@ -200,7 +200,7 @@ server.start(function (err) {
       console.log(err);
       //console.log(min);
     }
-  });
+  });*/
 
   if (err) {
     console.error('Failed to start server.');
