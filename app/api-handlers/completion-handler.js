@@ -50,13 +50,30 @@ function processResponse(err, response, body, reject, successCallback) {
           apiErrors: parsedBody.errors
         });
       } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.ERROR_CODES.SUCCESSFULL) {
+
+
+        var message;
+
+
         console.error('\t rest call successful with app error ' + parsedBody.appStatusCode);
         // REST call successful, but response indicates application-specific error.
+        switch (parsedBody.appStatusCode) {
+          //Unable to send email to MonitorPro
+          case ErrorMessages.ERROR_CODES.NOTIFICATION_FAILURE:
+            message = '(' + ErrorMessages.ERROR_CODES.NOTIFICATION_FAILURE + ') ' + ErrorMessages.API.NOTIFICATION_FAILURE;
+            break;
+          default:
+            message = parsedBody.message;
+            break;
+        }
+
         reject({
-          isUserError: true,
-          message: parsedBody.message,
+          isUserError: true, // its not really its a system error !
+          message: message,
           apiErrors: parsedBody.errors
         });
+
+
       } else {
         console.log('<== processResponse call successful');
         // Successful.
@@ -65,6 +82,7 @@ function processResponse(err, response, body, reject, successCallback) {
     } catch (err) {
       console.log(err);
       // An error occurred whilst parsing the response.
+      console.log('here');
       reject({
         isUserError: false,
         err: err,
@@ -101,7 +119,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
       },
       formData: {
         fileKey: fileKey,
-        userEmail: userEmail ,
+        userEmail: userEmail,
         orgFileName: originalFileName,
         permitNo: permitNo
       }

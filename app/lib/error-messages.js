@@ -7,6 +7,8 @@ module.exports.FILE_HANDLER = {
 };
 // API error messages
 module.exports.API = {
+  //TODO update NOTIFICATION_FAILURE with Helens error message text
+  'NOTIFICATION_FAILURE':'The smtp service (SES) is not available.',
   'ECONNREFUSED': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
     + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
   'UNKNOWN': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
@@ -37,6 +39,7 @@ module.exports.API = {
 
 //API error codes
 module.exports.ERROR_CODES = {
+  'NOTIFICATION_FAILURE':604,
   'SUCCESSFULL': 800,
   'APPLICATION_ERROR_CODE': 801,
   'VALIDATION_ERRORS': 801,

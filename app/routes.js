@@ -137,7 +137,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/07-failure',
-    handler: O2O7Handler.getHandler
+    handler: BasicTemplateHandler.getHandler//O2O7Handler.getHandler
   },
   // 08-Done.
   {
