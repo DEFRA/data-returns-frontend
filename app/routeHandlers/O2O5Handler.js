@@ -49,7 +49,8 @@ module.exports = {
               })
               .catch(function (errorData) {
                 console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
-                reply.view('02-send-your-data/07-failure', {'errorMessage': errorData.message});
+                //reply.view('02-send-your-data/07-failure', {'errorMessage': errorData.message});
+                reply.view('02-send-your-data/07-failure');
               });
           });
       })
