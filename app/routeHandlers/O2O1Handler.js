@@ -51,6 +51,10 @@ module.exports.postHandler = function (request, reply) {
 
   Utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
+      //cache the filenames
+      CachHandler.setValue(oldkey, sourceName);
+    })
+    .then(function () {
       if (config.CSV.validate === true) {
         return CsvValidator.validateFile(newLocalName, contentType);
       } else {
@@ -60,14 +64,10 @@ module.exports.postHandler = function (request, reply) {
     .then(function () {
       UserHandler.getUser(sessionID)
         .then(function (user) {
-          if (user===null) {
+          if (user === null) {
             UserHandler.setUser(sessionID, user);
           }
         })
-    })
-    .then(function () {
-      //cache the filenames
-      CachHandler.setValue(oldkey, sourceName);
     })
     .then(function () {
       CachHandler.setValue(key, newLocalName);
