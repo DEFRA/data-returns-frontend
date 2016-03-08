@@ -38,7 +38,12 @@ Send your data returns online
 				<li class="panel panel-border-wide">
 	        <p>
 	        	<span>Site name</span><br>
-	        	<span class="heading-small">{{returnMetaData.siteName}}</span>
+            {{#returnMetaData.siteName}}
+              <span class="heading-small">{{returnMetaData.siteName}}</span>
+            {{/returnMetaData.siteName}}
+            {{^returnMetaData.siteName}}
+              <span class="heading-small">Not given</span>
+            {{/returnMetaData.siteName}}
 	        </p>
 		    </li> 
 	        
