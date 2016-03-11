@@ -25,16 +25,25 @@ module.exports.status = {
       + '<p>You can use this online service to submit compliance monitoring data under a single EA_ID (unique identifier or permit number).</p>'
       + '<p>You need to submit more than one file if you have data returns for several EA_IDs. You must start again for each EA_ID.</p>'
       + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>', helplink: ''},
-  'PERMIT_NOT_FOUND': {code: 704, errormessage: '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
-      + '<p>Check that the reference you’ve given is:</p>'
-      + '<ul class="list list-bullet">'
-      + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
-      + '<li>without separators, eg, slashes, or any exotic characters</li>'
-      + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
-      + '</ul>'
-      + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>'
-      + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Find out about formatting all your data to meet EA standards</a></p>', helplink: ''},
-  'COLUMN_NAME_NOT_FOUND': {code: 706, errormessage: '', helplink: ''}
+    'PERMIT_NOT_FOUND': {code: 704, errormessage: '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
+        + '<p>Check that the reference you’ve given is:</p>'
+        + '<ul class="list list-bullet">'
+        + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
+        + '<li>without separators, eg, slashes, or any exotic characters</li>'
+        + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
+        + '</ul>'
+        + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>'
+        + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Find out about formatting all your data to meet EA standards</a></p>', helplink: ''},
+  'COLUMN_NAME_NOT_FOUND': {code: 706, errormessage: '', helplink: ''},
+  'INVALID_PERMIT': {code: 707, errormessage: '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
+        + '<p>Check that the reference you’ve given is:</p>'
+        + '<ul class="list list-bullet">'
+        + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
+        + '<li>without separators, eg, slashes, or any exotic characters</li>'
+        + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
+        + '</ul>'
+        + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>'
+        + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Find out about formatting all your data to meet EA standards</a></p>', helplink: ''}
 };
 
 //SMTP Server error messages

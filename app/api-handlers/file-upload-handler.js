@@ -96,6 +96,9 @@ function processResponse(err, response, body, reject, successCallback) {
           case ErrorMessages.status.PERMIT_NOT_FOUND.code:
             errMessage = ErrorMessages.status.PERMIT_NOT_FOUND.errormessage;
             break;
+          case ErrorMessages.status.INVALID_PERMIT.code:
+            errMessage = ErrorMessages.status.INVALID_PERMIT.errormessage;
+            break;
           case ErrorMessages.status.VALIDATION_ERRORS.code :
             errMessage = ErrorMessages.status.VALIDATION_ERRORS.errormessage;
             apiErrors = parsedBody.validationResult.schemaErrors;
