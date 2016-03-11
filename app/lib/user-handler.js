@@ -80,15 +80,15 @@ module.exports.isAuthenticated = function (sessionID) {
       .then(function (user) {
         var isValid = true;
         // Pin validation
-        if (user.authenticated !== true) {
+        if (user === null || user !== null && user.authenticated !== true) {
           isValid = false;
         }
         // Max no of uses per pin
-        if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
+        if (user === null || (user !== null && user.uploadCount >= config.pin.MaxUploadsPerPin)) {
           isValid = false;
         }
         // Is the pin in date 
-        if (user.pinCreationTime) {
+        if (user !==null && user.pinCreationTime) {
           var pinCreationTime = new Date(user.pinCreationTime);
           var dateNow = new Date();
           var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
@@ -119,8 +119,10 @@ module.exports.setIsAuthenticated = function (sessionID, value) {
 module.exports.incrementUploadCount = function (sessionID) {
   getUser(sessionID)
     .then(function (user) {
-      user.uploadCount = user.uploadCount + 1;
-      setUser(sessionID, user);
+      if (user !== null) {
+        user.uploadCount = user.uploadCount ? user.uploadCount + 1 : 0;
+        setUser(sessionID, user);
+      }
     });
 };
 

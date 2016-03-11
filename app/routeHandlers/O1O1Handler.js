@@ -25,10 +25,23 @@ module.exports = {
    * get handler for '/01-start/01-start' route
    */
   getHandler: function (request, reply) {
+    
+    var cookieOptions = {
+    path:'/',
+    ttl: null,
+    isSecure: false,
+    isHttpOnly: true,
+    encoding: 'none', //base64json',
+    clearInvalid: false,
+    strictHeader: true
+  };
+  
     reply.view('01-start/01-start', {
       HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
       EnvironmentalPermittingLandfillSectorTechnicalGuidance: HelpLinks.links.EnvironmentalPermittingLandfillSectorTechnicalGuidance
-    });
+    }).unstate('data-returns-id').state('data-returns-id', null, cookieOptions);
+
+
   }
 };
 

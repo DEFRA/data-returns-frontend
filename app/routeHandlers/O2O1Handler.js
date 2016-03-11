@@ -13,7 +13,7 @@ module.exports.getHandler = function (request, reply) {
 
   reply.view('02-send-your-data/01-choose-your-file', {
     HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-  });
+  });//.unstate('data-returns-id');
 };
 /*
  *  HTTP POST handler for /02-send-your-data/01-choose-your-file
@@ -41,6 +41,7 @@ module.exports.postHandler = function (request, reply) {
   };
 
   var cookieOptions = {
+    path:'/',
     ttl: null,
     isSecure: false,
     isHttpOnly: true,
