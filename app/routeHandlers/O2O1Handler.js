@@ -11,12 +11,12 @@ var UserHandler = require('../lib/user-handler');
 
 module.exports.getHandler = function (request, reply) {
 
-  reply.view('02-send-your-data/01-upload-your-data', {
+  reply.view('02-send-your-data/01-choose-your-file', {
     HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
   });
 };
 /*
- *  HTTP POST handler for /02-send-your-data/01-upload-your-data
+ *  HTTP POST handler for /02-send-your-data/01-choose-your-file
  *  @Param request
  *  @Param reply
  */
@@ -76,22 +76,8 @@ module.exports.postHandler = function (request, reply) {
       return FileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
     })
     .then(function (data) {
-
-      var uploadResult = data.uploadResult;
-      var generalResult = data.generalResult.transformationResults.results;
-      var metaData = {
-        fileKey: uploadResult.fileKey,
-        eaId: generalResult.Result_EA_ID.value,
-        siteName: generalResult.Result_Site_Name.value,
-        returnType: generalResult.Result_Rtn_Type.value,
-        RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
-        HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-      };
-      console.log('\t metadata: ', metaData);
-
-      reply.view('02-send-your-data/02-verify-your-file', {
-        returnMetaData: metaData
-      }).state('data-returns-id', sessionID, cookieOptions);
+      
+      reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
 
     }).catch(function (errorData) {
     //console.log('==> promise catch block ' + JSON.stringify(errorData));
@@ -112,7 +98,7 @@ module.exports.postHandler = function (request, reply) {
               var links = HelpLinks.links;
               var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
               var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
-              reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-upload-your-data', {
+              reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {
                 uploadError: true,
                 errorMessage: renderedErrorMessage,
                 fileName: fileName,

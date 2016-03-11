@@ -18,7 +18,7 @@ module.exports = {
     //TODO remove session references once sticky sessions are removed
     request.session.reset();
 
-    reply.redirect('/02-send-your-data/01-upload-your-data');
+    reply.redirect('/02-send-your-data/01-choose-your-file');
 
   },
   /*

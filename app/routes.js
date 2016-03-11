@@ -66,12 +66,12 @@ module.exports = [
   // 01-Upload-Your-Data.
   {
     method: 'GET',
-    path: '/02-send-your-data/01-upload-your-data',
+    path: '/02-send-your-data/01-choose-your-file',
     handler: O2O1Handler.getHandler//BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/01-upload-your-data',
+    path: '/02-send-your-data/01-choose-your-file',
     config: {
       payload: {
         maxBytes: 2 * Math.pow(2, 20), // 2 megabytes 
@@ -87,12 +87,12 @@ module.exports = [
   // 02-Verify-Your-File.
   {
     method: 'GET',
-    path: '/02-send-your-data/02-verify-your-file',
+    path: '/02-send-your-data/02-confirm-your-file',
     handler: O2O2Handler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/02-verify-your-file',
+    path: '/02-send-your-data/02-confirm-your-file',
     handler: O2O2Handler.postHandler
   },
   {
