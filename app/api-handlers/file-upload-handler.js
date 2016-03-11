@@ -38,9 +38,9 @@ function processResponse(err, response, body, reject, successCallback) {
     reject({
       isUserError: false,
       err: err,
-      message: (err.code === ErrorMessages.ERROR_CODES.ECONNREFUSED)
-        ? ErrorMessages.API.ECONNREFUSED
-        : ErrorMessages.API.UNKNOWN
+      message: (err.code === ErrorMessages.status.ECONNREFUSED.code)
+        ? ErrorMessages.status.ECONNREFUSED.errormessage
+        : ErrorMessages.status.UNKNOWN.errormessage
     });
   }
   // The HTTP request was successful; try to interpret the result.
@@ -55,7 +55,7 @@ function processResponse(err, response, body, reject, successCallback) {
       reject({
         isUserError: false,
         err: err,
-        message: ErrorMessages.API.UNKNOWN,
+        message: ErrorMessages.status.UNKNOWN.errormessage,
         rawResponse: response
       });
     }
@@ -72,35 +72,32 @@ function processResponse(err, response, body, reject, successCallback) {
       var appStatusCode = parseInt(parsedBody.appStatusCode);
       console.log('\t processResponse- app status code:', appStatusCode);
 
-      if (appStatusCode === ErrorMessages.ERROR_CODES.SUCCESSFULL) {
-        
+      if (appStatusCode === ErrorMessages.status.SUCCESSFULL.code) {
+
         successCallback(parsedBody);
       } else {
-        var errMessage, apiErrors='';
+        var errMessage, apiErrors = '';
         switch (appStatusCode) {
-          case ErrorMessages.ERROR_CODES.SUCCESSFULL:
+          case ErrorMessages.status.SUCCESSFULL.code:
             successCallback(parsedBody);
             break;
-          case ErrorMessages.ERROR_CODES.UNSUPPORTED_FILE_TYPE:
-            errMessage = ErrorMessages.API.NOT_CSV;
+          case ErrorMessages.status.UNSUPPORTED_FILE_TYPE.code:
+            errMessage = ErrorMessages.status.UNSUPPORTED_FILE_TYPE.errormessage;
             break;
-          case ErrorMessages.ERROR_CODES.INVALID_CONTENTS:
-            errMessage = ErrorMessages.API.INVALID_CONTENTS;
+          case ErrorMessages.status.INVALID_CONTENTS.code:
+            errMessage = ErrorMessages.status.INVALID_CONTENTS.errormessage;
             break;
-          case ErrorMessages.ERROR_CODES.NO_RETURNS:
-            errMessage = ErrorMessages.API.NO_RETURNS;
+          case ErrorMessages.status.NO_RETURNS.code:
+            errMessage = ErrorMessages.status.NO_RETURNS.errormessage;
             break;
-          case ErrorMessages.ERROR_CODES.MULTIPLE_RETURNS:
-            errMessage = ErrorMessages.API.MULTIPLE_RETURNS;
+          case ErrorMessages.status.MULTIPLE_PERMITS.code:
+            errMessage = ErrorMessages.status.MULTIPLE_PERMITS.errormessage;
             break;
-          case ErrorMessages.ERROR_CODES.MULTIPLE_PERMITS:
-            errMessage = ErrorMessages.API.MULTIPLE_PERMITS;
+          case ErrorMessages.status.PERMIT_NOT_FOUND.code:
+            errMessage = ErrorMessages.status.PERMIT_NOT_FOUND.errormessage;
             break;
-          case ErrorMessages.ERROR_CODES.PERMIT_NOT_FOUND:
-            errMessage = ErrorMessages.API.PERMIT_NOT_FOUND;
-            break;
-          case ErrorMessages.ERROR_CODES.VALIDATION_ERRORS :
-            errMessage = ErrorMessages.API.SCHEMA_ERROR_MESSAGE;
+          case ErrorMessages.status.VALIDATION_ERRORS.code :
+            errMessage = ErrorMessages.status.VALIDATION_ERRORS.errormessage;
             apiErrors = parsedBody.validationResult.schemaErrors;
 
             var lineErrorData = [];
@@ -120,11 +117,11 @@ function processResponse(err, response, body, reject, successCallback) {
 
             var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
             sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
-            
+
             break;
 
           default:
-            errMessage = ErrorMessages.API.UNKNOWN;
+            errMessage = ErrorMessages.status.UNKNOWN;
             apiErrors = null;
         }
 
@@ -151,7 +148,7 @@ function processResponse(err, response, body, reject, successCallback) {
  *   'eaId', 'siteName' and 'returnType' as returned from the API.  For
  *   rejection details see processApiResponse().
  */
-module.exports.uploadFileToService = function (filePath, sessionID,originalFileName) {
+module.exports.uploadFileToService = function (filePath, sessionID, originalFileName) {
   console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
   return new Promise(function (resolve, reject) {
     // Define data to send to the Data Exchange service.
@@ -166,11 +163,11 @@ module.exports.uploadFileToService = function (filePath, sessionID,originalFileN
       console.log('==> uploadFileToService successHandler()');
       var key = sessionID + '_UploadResult';
       if (jsonResponse) {
-          jsonResponse.originalFileName = originalFileName;
+        jsonResponse.originalFileName = originalFileName;
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
             console.log('<== successHandler() resolve(true) ');
-          
+
             resolve(jsonResponse);
           })
           .catch(function (result) {

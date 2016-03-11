@@ -5,53 +5,38 @@ module.exports.FILE_HANDLER = {
   NOT_CSV: 'The file is not a CSV file',
   ZERO_BYTES: 'The file is empty'
 };
-// API error messages
-module.exports.API = {
-  //TODO update NOTIFICATION_FAILURE with Helens error message text
-  'NOTIFICATION_FAILURE':'The smtp service (SES) is not available.',
-  'ECONNREFUSED': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
-    + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
-  'UNKNOWN': '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
-    + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>',
-  'ERRORPAGETEXT': 'There is a problem',
-  'ERRBUTTONTEXT': 'Start again',
-  'NOT_CSV': 'All data files returned using this service must be in CSV format.',
-  'SELECTANOTHERFILE': 'Select another file',
-  'SCHEMA_ERROR_MESSAGE': 'Validation Errors',
-  'INVALID_CONTENTS': 'The file contains invalid contents',
-  'UNSUPPORTED_FILE_TYPE': 'All data files returned using this service must be in CSV format.',
-  'MULTIPLE_RETURNS': 'There are multiple returns in this file',
-  'MULTIPLE_PERMITS': '<h2 class="heading-small"><span class="error-message">Your file contains more than 1 EA unique identifier (EA_ID)</span></h2>'
-    + '<p>You can use this online service to submit compliance monitoring data under a single EA_ID (unique identifier or permit number).</p>'
-    + '<p>You need to submit more than one file if you have data returns for several EA_IDs. You must start again for each EA_ID.</p>'
-    + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>',
-  'NO_RETURNS': '<h2 class="heading-small"><span class="error-message">Your file is empty</span></h2><p>Make sure you’ve submitted the right file and try again.</p>',
-  'PERMIT_NOT_FOUND': '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
-    + '<p>Check that the reference you’ve given is:</p>'
-    + '<ul class="list list-bullet">'
-    + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
-    + '<li>without separators, eg, slashes, or any exotic characters</li>'
-    + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
-    + '</ul>'
-    + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>' 
-    + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Find out about formatting all your data to meet EA standards</a></p>'
+
+//Validation codes
+module.exports.status = {
+  'SUCCESSFULL': {code: 800},
+  'APPLICATION_ERROR_CODE': {code: 801},
+  'VALIDATION_ERRORS': {code: 801, errormessage: 'Validation Errors', helplink: ''},
+  'ECONNREFUSED': {code: 'ECONNREFUSED', errormessage: '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
+      + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>', helplink: ''},
+  'NOTIFICATION_FAILURE': {code: 604, errormessage: 'The smtp service (SES) is not available.', helplink: ''},
+  'UNKNOWN': {code: 0, errormessage: '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
+      + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>', helplink: ''},
+  'UNSUPPORTED_FILE_TYPE': {code: 700, errormessage: 'All data files returned using this service must be in CSV format.', helplink: ''},
+  'INVALID_CONTENTS': {code: 701, errormessage: 'The file contains invalid contents', helplink: ''},
+  'NO_RETURNS': {code: 702,
+    errormessage: '<h2 class="heading-small"><span class="error-message">Your file is empty</span></h2><p>Make sure you’ve submitted the right file and try again.</p>',
+    helplink: ''},
+  'MULTIPLE_PERMITS': {code: 703, errormessage: '<h2 class="heading-small"><span class="error-message">Your file contains more than 1 EA unique identifier (EA_ID)</span></h2>'
+      + '<p>You can use this online service to submit compliance monitoring data under a single EA_ID (unique identifier or permit number).</p>'
+      + '<p>You need to submit more than one file if you have data returns for several EA_IDs. You must start again for each EA_ID.</p>'
+      + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>', helplink: ''},
+  'PERMIT_NOT_FOUND': {code: 704, errormessage: '<h2 class="heading-small"><span class="error-message">Your EA unique identifier (EA_ID) isn’t recognised</span></h2>'
+      + '<p>Check that the reference you’ve given is:</p>'
+      + '<ul class="list list-bullet">'
+      + '<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>'
+      + '<li>without separators, eg, slashes, or any exotic characters</li>'
+      + '<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>'
+      + '</ul>'
+      + '<p><a href="{{RegimeSpecificRules}}" rel="external" target="DRHELPPAGE">Find out more about how to submit the correct EA_ID</a></p>'
+      + '<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Find out about formatting all your data to meet EA standards</a></p>', helplink: ''},
+  'COLUMN_NAME_NOT_FOUND': {code: 706, errormessage: '', helplink: ''}
 };
 
-//API error codes
-module.exports.ERROR_CODES = {
-  'NOTIFICATION_FAILURE':604,
-  'SUCCESSFULL': 800,
-  'APPLICATION_ERROR_CODE': 801,
-  'VALIDATION_ERRORS': 801,
-  'ECONNREFUSED': 'ECONNREFUSED',
-  'UNSUPPORTED_FILE_TYPE': 700,
-  'INVALID_CONTENTS': 701,
-  'NO_RETURNS': 702,
-  'MULTIPLE_PERMITS': 703,
-  //'MULTIPLE_RETURNS': 703,
-  'PERMIT_NOT_FOUND': 704,
-  'COLUMN_NAME_NOT_FOUND':706
-};
 //SMTP Server error messages
 module.exports.SMTP = {
   CONNECTION_REFUSED: {code: 'ECONNREFUSED', message: 'The SMTP Server refused the connection'},

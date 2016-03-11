@@ -7,7 +7,7 @@ var Utils = require('../lib/utils');
 
 module.exports = {
   /*
-   * HTTP GET handler for /02-send-your-data/03-email
+   * HTTP GET handler for /02-send-your-data/03-confirm-your-email-address
    * @param {type} request
    * @param {type} reply
    * @returns {undefined}
@@ -24,16 +24,14 @@ module.exports = {
         CacheHandler.getValue(filekey)
           .then(function (fileName) {
             fileName = fileName ? fileName.replace(/"/g, "") : '';
-            var returnMetaData = {
-              fileName: fileName
-            };
+
             if (result === true) {
-              reply.view('02-send-your-data/05-success', {
-                returnMetaData: returnMetaData//request.session.get('returnMetaData')
+              reply.view('02-send-your-data/05-send-your-file', {
+                fileName: fileName
               });
             } else {
-              reply.view('02-send-your-data/03-email', {
-                returnMetaData: returnMetaData
+              reply.view('02-send-your-data/03-confirm-your-email-address', {
+                fileName: fileName
               });
             }
           })
@@ -42,14 +40,14 @@ module.exports = {
           });
       })
       .catch(function (result) {
-        reply.view('02-send-your-data/03-email', {
+        reply.view('02-send-your-data/03-confirm-your-email-address', {
           returnMetaData: request.session.get('returnMetaData')
         });
       });
 
   },
   /*
-   * HTTP Post Handler for /02-send-your-data/03-email
+   * HTTP Post Handler for /02-send-your-data/03-confirm-your-email-address
    * @param {type} request
    * @param {type} reply
    * @returns {undefined}
@@ -82,7 +80,7 @@ module.exports = {
                   SMTPHandler.sendPinEmail(usermail, newpin);
                 })
                 .then(function (result) {
-                  reply.redirect('/02-send-your-data/04-authenticate');
+                  reply.redirect('/02-send-your-data/04-enter-your-code');
                 });
             });
         }
@@ -90,7 +88,7 @@ module.exports = {
       })
       .catch(function (errResult) {
         if (errResult.invalidEmailAddress === true) {
-          reply.view('02-send-your-data/03-email', {
+          reply.view('02-send-your-data/03-confirm-your-email-address', {
             returnMetaData: request.session.get('returnMetaData'),
             invalidEmailAddress: true
           });

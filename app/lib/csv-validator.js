@@ -67,10 +67,10 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
-                  console.error('\t' + ErrorMessages.FILE_HANDLER.ZERO_BYTES);
+                  console.error('\t' + ErrorMessages.status.NO_RETURNS.errormessage);
                   reject({
                     isUserError: true,
-                    message: ErrorMessages.FILE_HANDLER.ZERO_BYTES
+                    message: ErrorMessages.status.NO_RETURNS.errormessage
                   });
                 } else {
                   // All tests have passed; looks like a valid file.
@@ -92,7 +92,7 @@ var validateFile = function (filePath, contentType) {
             console.error('\t ANTIVIRUS SCANNER ISSUE ');
             reject({
               isUserError: true,
-              err: ErrorMessages.API.UNKNOWN
+              err: ErrorMessages.status.UNKNOWN.errormessage
             });
           }
 

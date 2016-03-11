@@ -6,7 +6,7 @@ var CacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
 
 /*
- * HTTP GET Handler for /02-send-your-data/08-done
+ * HTTP GET Handler for /02-send-your-data/08-file-sent
  * 
  */
 module.exports.getHandler = function (request, reply) {
@@ -19,7 +19,7 @@ module.exports.getHandler = function (request, reply) {
     .then(function (usermail) {
       //get the original file name the user uploaded from the cache
       email = usermail;
-      reply.view('02-send-your-data/08-done', {
+      reply.view('02-send-your-data/08-file-sent', {
         userEmail: email,
         EnvironmentAgencyHome: HelpLinks.links.EnvironmentAgencyHome
       });

@@ -6,18 +6,29 @@ var CacheHandler = require('../lib/cache-handler');
 
 module.exports = {
   /*
-   * HTTP GET handler for gets for /02-send-your-data/05-success
+   * HTTP GET handler for gets for /02-send-your-data/05-send-your-file
    * @param {type} request
    * @param {type} reply
    * 
    */
   getHandler: function (request, reply) {
-    reply.view('02-send-your-data/05-success', {
-      returnMetaData: request.session.get('returnMetaData')
-    });
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var key = sessionID + '_SourceName';
+
+    CacheHandler.getValue(key)
+      .then(function (filename) {
+        reply.view('02-send-your-data/05-send-your-file', {
+          filename: filename.replace(/"/g, "")
+        });
+
+      })
+      .catch(function (err) {
+        console.error('O2O5GetHandler', err);
+      });
+
   },
   /*
-   * HTTP POST handler for gets for /02-send-your-data/05-success
+   * HTTP POST handler for gets for /02-send-your-data/05-send-your-file
    * @param {type} request
    * @param {type} reply
    * 
@@ -42,7 +53,7 @@ module.exports = {
           .then(function (userMail) {
             CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName, permitNo)
               .then(function () {
-                reply.redirect('/02-send-your-data/08-done');
+                reply.redirect('/02-send-your-data/08-file-sent');
               })
               .then(function (result) {
                 CacheHandler.delete(uploadResultsCacheKey);

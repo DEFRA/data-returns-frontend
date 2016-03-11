@@ -67,7 +67,7 @@ module.exports.postHandler = function (request, reply) {
           if (user === null) {
             UserHandler.setUser(sessionID, user);
           }
-        })
+        });
     })
     .then(function () {
       CachHandler.setValue(key, newLocalName);

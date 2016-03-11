@@ -33,9 +33,9 @@ function processResponse(err, response, body, reject, successCallback) {
     reject({
       isUserError: false,
       err: err,
-      message: (err.code === ErrorMessages.ERROR_CODES.ECONNREFUSED)
-        ? ErrorMessages.API.ECONNREFUSED
-        : ErrorMessages.API.UNKNOWN
+      message: (err.code === ErrorMessages.status.ECONNREFUSED.code)
+        ? ErrorMessages.status.ECONNREFUSED.errormessage
+        : ErrorMessages.status.UNKNOWN.errormessage
     });
   } else {
     // Try to parse the response body as JSON.
@@ -49,7 +49,7 @@ function processResponse(err, response, body, reject, successCallback) {
           message: parsedBody.message,
           apiErrors: parsedBody.errors
         });
-      } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.ERROR_CODES.SUCCESSFULL) {
+      } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.status.SUCCESSFULL.code) {
 
 
         var message;
@@ -59,8 +59,8 @@ function processResponse(err, response, body, reject, successCallback) {
         // REST call successful, but response indicates application-specific error.
         switch (parsedBody.appStatusCode) {
           //Unable to send email to MonitorPro
-          case ErrorMessages.ERROR_CODES.NOTIFICATION_FAILURE:
-            message = '(' + ErrorMessages.ERROR_CODES.NOTIFICATION_FAILURE + ') ' + ErrorMessages.API.NOTIFICATION_FAILURE;
+          case ErrorMessages.status.NOTIFICATION_FAILURE.code:
+            message = '(' + ErrorMessages.status.NOTIFICATION_FAILURE.code + ') ' + ErrorMessages.status.NOTIFICATION_FAILURE.errormessage;
             break;
           default:
             message = parsedBody.message;
@@ -86,7 +86,7 @@ function processResponse(err, response, body, reject, successCallback) {
       reject({
         isUserError: false,
         err: err,
-        message: ErrorMessages.API.UNKNOWN,
+        message: ErrorMessages.status.UNKNOWN.errormessage,
         rawResponse: response
       });
     }

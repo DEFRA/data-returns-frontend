@@ -78,7 +78,7 @@ var testConfig = [
         testContentType: correctContentType,
         expectReject: true,
         expectedIsUserError: true,
-        expectedMessage: ErrorMessages.FILE_HANDLER.ZERO_BYTES
+        expectedMessage: ErrorMessages.status.NO_RETURNS.errormessage
     },
     {
         title: 'rejects a file with the wrong extension (with correct content type)',
@@ -86,7 +86,7 @@ var testConfig = [
         testContentType: correctContentType,
         expectReject: true,
         expectedIsUserError: true,
-        expectedMessage: ErrorMessages.FILE_HANDLER.NOT_CSV
+        expectedMessage: ErrorMessages.status.UNSUPPORTED_FILE_TYPE.errormessage
     },
     {
         title: 'rejects a file if it cannot be found on disk',

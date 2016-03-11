@@ -15,13 +15,13 @@ module.exports.getHandler = function (request, reply) {
   UserHandler.isAuthenticated(sessionID)
     .then(function (result) {
       if (result === true) {
-        reply.redirect('/02-send-your-data/05-success');
+        reply.redirect('/02-send-your-data/05-send-your-file');
       } else {
-        reply.redirect('/02-send-your-data/03-email');
+        reply.redirect('/02-send-your-data/03-confirm-your-email-address');
       }
     })
     .catch(function (err) {
       console.error('<== O2O6Handler error: ' + err);
-      reply.redirect('/02-send-your-data/03-email');
+      reply.redirect('/02-send-your-data/03-confirm-your-email-address');
     });
 };

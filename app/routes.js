@@ -100,37 +100,37 @@ module.exports = [
     path: '/02-send-your-data/06-check',
     handler: O2O6Handler.getHandler
   },
-  // 03-Email.
+  // 03-confirm-your-email-address.
   {
     method: 'GET',
-    path: '/02-send-your-data/03-email',
+    path: '/02-send-your-data/03-confirm-your-email-address',
     handler: O2O3Handler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/03-email',
+    path: '/02-send-your-data/03-confirm-your-email-address',
     handler: O2O3Handler.postHandler
   },
-  // 04-Authenticate.
+  // 04-enter-your-code.
   {
     method: 'GET',
-    path: '/02-send-your-data/04-authenticate',
+    path: '/02-send-your-data/04-enter-your-code',
     handler: BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/04-authenticate',
+    path: '/02-send-your-data/04-enter-your-code',
     handler: O204Handler.postHandler
   },
   // 05-Success.
   {
     method: 'GET',
-    path: '/02-send-your-data/05-success',
+    path: '/02-send-your-data/05-send-your-file',
     handler: O2O5Handler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/05-success',
+    path: '/02-send-your-data/05-send-your-file',
     handler: O2O5Handler.postHandler
   },
   // 07-Failure (unrecoverable).
@@ -142,7 +142,7 @@ module.exports = [
   // 08-Done.
   {
     method: 'GET',
-    path: '/02-send-your-data/08-done',
+    path: '/02-send-your-data/08-file-sent',
     handler: O2O8Handler.getHandler
   },
   // Help pages.

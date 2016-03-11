@@ -5,7 +5,7 @@ var messages = require('../lib/error-messages');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
 /*
- * HTTP POST handler for /02-send-your-data/04-authenticate
+ * HTTP POST handler for /02-send-your-data/04-enter-your-code
  * @param {type} request
  * @param {type} reply
  * @returns {undefined}
@@ -19,7 +19,7 @@ var postHandler = function (request, reply) {
     .then(function (result) {
       if (result.code === messages.PIN.VALID_PIN) {
         userHandler.setIsAuthenticated(sessionID, true);
-        reply.redirect('/02-send-your-data/05-success');
+        reply.redirect('/02-send-your-data/05-send-your-file');
       }
     })
     .catch(function (errResult) {
@@ -38,7 +38,7 @@ var postHandler = function (request, reply) {
             var errorMessage = compiledTemplate.render(data);
 
             userHandler.setIsAuthenticated(sessionID, false);
-            reply.view('02-send-your-data/04-authenticate', {
+            reply.view('02-send-your-data/04-enter-your-code', {
               errorMessage: errorMessage,
               invalidPin: true
             });
