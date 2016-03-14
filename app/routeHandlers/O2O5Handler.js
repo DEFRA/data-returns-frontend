@@ -46,7 +46,7 @@ module.exports = {
         uploadResult = JSON.parse(result);
         fileKey = uploadResult.uploadResult.fileKey;
         originalFileName = uploadResult.originalFileName;
-        permitNo = uploadResult.generalResult.transformationResults.results.Result_EA_ID.value;
+        permitNo = uploadResult.parseResult.permitNumber;
       })
       .then(function () {
         UserHandler.getUserMail(sessionID)

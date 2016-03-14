@@ -25,12 +25,13 @@ module.exports = {
         data = JSON.parse(data);
       
         var uploadResult = data.uploadResult;
-        var generalResult = data.generalResult.transformationResults.results;
+		var parseResult = data.parseResult;
+		        
         var metaData = {
           fileKey: uploadResult.fileKey,
-          eaId: generalResult.Result_EA_ID.value,
-          siteName: generalResult.Result_Site_Name.value,
-          returnType: generalResult.Result_Rtn_Type.value,
+          eaId: parseResult.permitNumber,
+          siteName: parseResult.siteName,
+          returnType: parseResult.returnType,
           RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
           HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
         };
