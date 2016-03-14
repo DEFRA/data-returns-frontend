@@ -43,6 +43,7 @@ module.exports = {
 
     CacheHandler.getValue(uploadResultsCacheKey)
       .then(function (result) {
+        console.log('data:', result);
         uploadResult = JSON.parse(result);
         fileKey = uploadResult.uploadResult.fileKey;
         originalFileName = uploadResult.originalFileName;

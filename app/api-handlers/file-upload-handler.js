@@ -124,7 +124,8 @@ function processResponse(err, response, body, reject, successCallback) {
             break;
 
           default:
-            errMessage = ErrorMessages.status.UNKNOWN;
+            console.log('\t ' + appStatusCode + ' is not being explicitly handled, using default error message:-', ErrorMessages.status.UNKNOWN.errormessage);
+            errMessage = ErrorMessages.status.UNKNOWN.errormessage;
             apiErrors = null;
         }
 

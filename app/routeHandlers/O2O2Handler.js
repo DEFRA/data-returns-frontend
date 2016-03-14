@@ -22,11 +22,15 @@ module.exports = {
 
     CacheHandler.getValue(key)
       .then(function (data) {
+
+        console.log(data);
         data = JSON.parse(data);
-      
+
         var uploadResult = data.uploadResult;
-		var parseResult = data.parseResult;
-		        
+        var parseResult = data.parseResult;
+
+
+
         var metaData = {
           fileKey: uploadResult.fileKey,
           eaId: parseResult.permitNumber,
