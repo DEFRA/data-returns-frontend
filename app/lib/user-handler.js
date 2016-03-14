@@ -78,27 +78,33 @@ module.exports.isAuthenticated = function (sessionID) {
   return new Promise(function (resolve, reject) {
     getUser(sessionID)
       .then(function (user) {
-        var isValid = true;
-        // Pin validation
-        if (user === null || user !== null && user.authenticated !== true) {
-          isValid = false;
-        }
-        // Max no of uses per pin
-        if (user === null || (user !== null && user.uploadCount >= config.pin.MaxUploadsPerPin)) {
-          isValid = false;
-        }
-        // Is the pin in date 
-        if (user !==null && user.pinCreationTime) {
-          var pinCreationTime = new Date(user.pinCreationTime);
-          var dateNow = new Date();
-          var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+        var autenticated = true;
 
-          if (mins > config.pin.ValidTimePeriodMinutes) {
-            isValid = false;
+        if (user === null) {
+          autenticated = false;
+        } else {
+
+          // Pin validation
+          if (user.authenticated !== true) {
+            autenticated = false;
+          }
+          // Max no of uses per pin
+          if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
+            autenticated = false;
+          }
+          // Is the pin in date 
+          if (user.pinCreationTime) {
+            var pinCreationTime = new Date(user.pinCreationTime);
+            var dateNow = new Date();
+            var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+
+            if (mins > config.pin.ValidTimePeriodMinutes) {
+              autenticated = false;
+            }
           }
         }
 
-        resolve(isValid);
+        resolve(autenticated);
 
       })
       .catch(function (err) {
@@ -120,7 +126,8 @@ module.exports.incrementUploadCount = function (sessionID) {
   getUser(sessionID)
     .then(function (user) {
       if (user !== null) {
-        user.uploadCount = user.uploadCount ? user.uploadCount + 1 : 0;
+
+        user.uploadCount++;//= parseInt(user.uploadCount, 10) +1;
         setUser(sessionID, user);
       }
     });
