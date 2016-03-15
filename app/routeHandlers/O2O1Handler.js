@@ -81,7 +81,7 @@ module.exports.postHandler = function (request, reply) {
       reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
 
     }).catch(function (errorData) {
-    //console.log('==> promise catch block ' + JSON.stringify(errorData));
+    console.log('==> promise catch block ' + JSON.stringify(errorData));
     request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
     request.session.clear('returnMetaData');
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {

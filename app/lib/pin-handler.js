@@ -10,7 +10,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
 var userHandler = require('../lib/user-handler');
-
+var Utils = require('../lib/utils');
 
 module.exports = {
   /*
@@ -38,7 +38,7 @@ module.exports = {
           if (user === null) {
             reject({
               error: false,
-              code: messages.PIN.INVALID_PIN_CODE
+              code: 2225
             });
           }
 
@@ -49,11 +49,24 @@ module.exports = {
               code: messages.PIN.VALID_PIN
             });
           } else {
+            var code = 2225;
+            // Is the pin in date 
+            if (user.pinCreationTime) {
+              var pinCreationTime = new Date(user.pinCreationTime);
+              var dateNow = new Date();
+              var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+
+              if (mins > config.pin.ValidTimePeriodMinutes) {
+                code = 2275;
+              }
+            }
+
             console.log('\t pin is invalid');
             reject({
               error: false,
-              code: messages.PIN.INVALID_PIN_CODE
+              code: code
             });
+
           }
         })
         .catch(function (errResult) {

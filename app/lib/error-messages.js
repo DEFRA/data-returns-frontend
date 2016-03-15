@@ -8,7 +8,7 @@ module.exports.FILE_HANDLER = {
 
 //Validation codes
 module.exports.status = {
-  'SUCCESSFULL': {code: 800},
+  'SUCCESSFULL': {code: 0},
   'APPLICATION_ERROR_CODE': {code: 801},
   'VALIDATION_ERRORS': {code: 801, errormessage: 'Validation Errors', helplink: ''},
   'ECONNREFUSED': {code: 'ECONNREFUSED', errormessage: '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'

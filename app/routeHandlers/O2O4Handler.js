@@ -4,6 +4,7 @@ var pinHandler = require('../lib/pin-handler');
 var messages = require('../lib/error-messages');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
+var ErrorHandler = require('../lib/error-handler');
 /*
  * HTTP POST handler for /02-send-your-data/04-enter-your-code
  * @param {type} request
@@ -23,27 +24,23 @@ var postHandler = function (request, reply) {
       }
     })
     .catch(function (errResult) {
-      if (errResult.code === messages.PIN.INVALID_PIN_CODE) {
 
-        var template = messages.PIN.INVALID_PIN;
-        var compiledTemplate = Hogan.compile(template);
+      userHandler.getUserMail(sessionID)
+        .then(function (emailAddress) {
 
-        userHandler.getUserMail(sessionID)
-          .then(function (emailAddress) {
+          var metadata = {
+            emailAddress: emailAddress
+          };
 
-            var data = {
-              emailAddress: emailAddress
-            };
+          var errorMessage = ErrorHandler.render(errResult.code, metadata);
 
-            var errorMessage = compiledTemplate.render(data);
-
-            userHandler.setIsAuthenticated(sessionID, false);
-            reply.view('02-send-your-data/04-enter-your-code', {
-              errorMessage: errorMessage,
-              invalidPin: true
-            });
+          userHandler.setIsAuthenticated(sessionID, false);
+          reply.view('02-send-your-data/04-enter-your-code', {
+            errorMessage: errorMessage,
+            invalidPin: true
           });
-      }
+        });
+
     });
 };
 module.exports.postHandler = postHandler;

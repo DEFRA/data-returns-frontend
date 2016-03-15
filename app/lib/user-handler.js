@@ -126,8 +126,7 @@ module.exports.incrementUploadCount = function (sessionID) {
   getUser(sessionID)
     .then(function (user) {
       if (user !== null) {
-
-        user.uploadCount++;//= parseInt(user.uploadCount, 10) +1;
+        user.uploadCount++;
         setUser(sessionID, user);
       }
     });

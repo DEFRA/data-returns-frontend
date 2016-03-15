@@ -5,7 +5,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
-
+var ErrorHandler = require('../lib/error-handler');
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.
@@ -73,11 +73,41 @@ function processResponse(err, response, body, reject, successCallback) {
       console.log('\t processResponse- app status code:', appStatusCode);
 
       if (appStatusCode === ErrorMessages.status.SUCCESSFULL.code) {
-
         successCallback(parsedBody);
       } else {
+
         var errMessage, apiErrors = '';
-        switch (appStatusCode) {
+
+        //errMessage = ErrorHandler.render(appStatusCode);
+        /*if (appStatusCode === ErrorMessages.status.SUCCESSFULL.code) {
+          successCallback(parsedBody);
+        } else */if (appStatusCode === ErrorMessages.status.VALIDATION_ERRORS.code) {
+          errMessage = ErrorMessages.status.VALIDATION_ERRORS.errormessage;
+          apiErrors = parsedBody.validationResult.schemaErrors;
+
+          var lineErrorData = [];
+          var lineErrors = apiErrors.lineErrors;
+          var temp;
+
+          for (var lineErrorName in lineErrors) {
+            var lineError = {};
+
+            temp = lineErrors[lineErrorName];
+            lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
+            lineError.columnName = temp.columnName;
+            lineError.errorValue = temp.errorValue;
+            lineError.outputMessage = temp.errorDetail.outputMessage;
+            lineErrorData.push(lineError);
+          }
+
+          var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
+          sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
+          
+        } else {
+          errMessage = ErrorHandler.render(appStatusCode);
+        }
+
+        /*switch (appStatusCode) {
           case ErrorMessages.status.SUCCESSFULL.code:
             successCallback(parsedBody);
             break;
@@ -127,7 +157,7 @@ function processResponse(err, response, body, reject, successCallback) {
             console.log('\t ' + appStatusCode + ' is not being explicitly handled, using default error message:-', ErrorMessages.status.UNKNOWN.errormessage);
             errMessage = ErrorMessages.status.UNKNOWN.errormessage;
             apiErrors = null;
-        }
+        }*/
 
         reject({
           isUserError: true,
