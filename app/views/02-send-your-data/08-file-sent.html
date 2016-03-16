@@ -7,38 +7,38 @@ Send your data returns online
 {{$content}}
 <main id="content" role="main">
 
-	<div class="phase-banner-beta">
-	  <p>
-	    <strong class="phase-tag">BETA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
-	
-    <form method="post" class="form" action="/01-start/01-start">
-        
-       <div class="text">
-				
-				<div class="govuk-box-highlight">
-					<h1 class="heading-xlarge">
-					    <span id="title">File sent</span>
-					</h1>
-					<p class="heading-medium">You’ve successfully sent your data returns file<br>to the Environment Agency.</p>
-				</div>
-				
-        
-          <p>We’ve emailed a receipt to this address:</p>
-          
-          <div class="panel panel-border-wide">
-          	<p>{{{userEmail}}}</p>
-          </div>
-          
-          <h2 class="heading-medium">What happens next?</h2>
-          
-          <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
+  <div class="phase-banner-beta">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
 
-         	<p>You can <a href="/02-send-your-data/01-choose-your-file">send another data returns file</a> or return to the <a href="{{EnvironmentAgencyHome}}">Environment Agency homepage.</a></p>
-        </div>
-    </form>
+  <form method="post" class="form" action="/01-start/01-start">
+
+    <div class="text">
+
+      <div class="govuk-box-highlight">
+        <h1 class="heading-xlarge">
+          <span id="title">File sent</span>
+        </h1>
+        <p class="heading-medium">You’ve successfully sent your data returns file<br>to the Environment Agency.</p>
+      </div>
+
+
+      <p>We’ve emailed a receipt to this address:</p>
+
+      <div class="panel panel-border-wide">
+        <p>{{{userEmail}}}</p>
+      </div>
+
+      <h2 class="heading-medium">What happens next?</h2>
+
+      <p>We’ll check it for quality and regulatory compliance and contact you if we need to.</p>
+
+      <p>You can <a href="/02-send-your-data/01-choose-your-file">send another data returns file</a> or return to the <a href="{{EnvironmentAgencyHome}}">Environment Agency homepage.</a></p>
+    </div>
+  </form>
 </main>
 
 {{/content}}

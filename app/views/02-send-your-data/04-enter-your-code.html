@@ -7,39 +7,39 @@ Send your data returns online
 {{$content}}
 
 <main id="content" role="main">
-	<div class="phase-banner-beta">
-		<p>
-			<strong class="phase-tag">BETA</strong>
-			<span>This is a new service – your
-				<a href="#">feedback</a> will help us to improve it.</span>
-		</p>
-	</div>
-	<form method="post" class="form">
-		<h1 class="heading-xlarge">Enter your code</h1>
-		
-		{{#invalidPin}}
-		<div class="error-summary">
-			<h1 class="heading-medium error-summary-heading">Your code doesn’t work</h1>
-			{{{errorMessage}}}
-		</div>
-		{{/invalidPin}}
-		
-		<div class="text">
-			<p class="lede">Enter the confirmation code we sent to your email address.</p>
-			<div class="form-group">
-				<label class="form-label" for="validation-code">
-					<span class="form-hint">eg: 1234</span>
-				</label>
-				<input class="form-control validation-code" id="validation-code" name="validation_code" type="text">
-			</div>
-			<div class="form-group">
-				<a id="nextHref">
-					<input type="submit" id="nextBtn" class="button" value="Send code">
-				</a>
-			</div>
-		</div>
-		<!-- /text -->
-	</form>
+  <div class="phase-banner-beta">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your
+        <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+  <form method="post" class="form">
+    <h1 class="heading-xlarge">Enter your code</h1>
+
+    {{#invalidPin}}
+    <div class="error-summary">
+      <h1 class="heading-medium error-summary-heading">Your code doesn’t work</h1>
+      {{{errorMessage}}}
+    </div>
+    {{/invalidPin}}
+
+    <div class="text">
+      <p class="lede">Enter the confirmation code we sent to your email address.</p>
+      <div class="form-group">
+        <label class="form-label" for="validation-code">
+          <span class="form-hint">eg: 1234</span>
+        </label>
+        <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" >
+      </div>
+      <div class="form-group">
+        <a id="nextHref">
+          <input type="submit" id="nextBtn" class="button" value="Send code">
+        </a>
+      </div>
+    </div>
+    <!-- /text -->
+  </form>
 </main>
 
 {{/content}}

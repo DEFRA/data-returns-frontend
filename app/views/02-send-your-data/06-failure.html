@@ -1,70 +1,62 @@
 {{<layout}}
 
 {{$pageTitle}}
-	Send your data returns online
+Send your data returns online
 {{/pageTitle}}
 
 {{$content}}
 <main id="content" role="main">
 
-	<div class="phase-banner-beta">
-	  <p>
-	    <strong class="phase-tag">BETA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
-	
-		
-		<h1 class="heading-xlarge">
-			<span id="title">Your file can’t be sent</span>
-		</h1>
-		<div class="text">
-			
-			<p class="lede">Your data file '{{result.fileName}}' contains errors and can’t be sent.</p>
-			
-			<p>Correct these errors then resend the file.</p>
-			
-			<!-- <p>You can
-				<a href="#" onclick="alert('Not yet implemented!');return false;">create a PDF of the errors</a> (opens in a new window or tab).</p> -->
-		</div>
+  <div class="phase-banner-beta">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
+  <h1 class="heading-xlarge">
+    <span id="title">Your file can’t be sent</span>
+  </h1>
+  <div class="text">
 
-		<div class="error-table">
-			<!-- <h2 class="heading-small">Errors found in '{{result.fileName}}' - {{result.outcome}}</h2> -->
-			<!-- For fixed header positioning only for Sticky JS -->
+    <p class="lede">Your data file '{{result.fileName}}' contains errors and can’t be sent.</p>
 
-			<table id="errorTableHeader">
-				<thead>
-				<tr>
-					<th width="10%">Row</th>
-					<th width="10%">Column</th>
-					<th width="10%">Error</th>
-					<th>How to make corrections</th>
-				</tr>
-				</thead>
-				<tbody>
-				{{#result}}
-				{{#errors}}
-				<tr>
-					<td>{{lineNo}}</td>
-					<td>{{columnName}}</td>
-					<td>{{errValue}}</td>
-					<td>{{helpfulExample}}</td>
-				</tr>
-				{{/errors}}
-				{{/result}}
-				</tbody>
-			</table>
-		</div>
-		<div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
-		
-		<div class="form-group">
-			<input type="submit" class="button" value="Start again">
-		</div>
-	
-	</form>
-	</main>
-	
-	{{/content}}
-	
-	{{/layout}}
-	
+    <p>Correct these errors then resend the file.</p>
+  </div>
+
+  <div class="error-table">
+
+    <table id="errorTableHeader">
+      <thead>
+        <tr>
+          <th width="10%">Row</th>
+          <th width="10%">Column</th>
+          <th width="10%">Error</th>
+          <th>How to make corrections</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#result}}
+        {{#errors}}
+        <tr>
+          <td>{{lineNo}}</td>
+          <td>{{columnName}}</td>
+          <td>{{errValue}}</td>
+          <td>{{helpfulExample}}</td>
+        </tr>
+        {{/errors}}
+        {{/result}}
+      </tbody>
+    </table>
+  </div>
+  <div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
+
+  <div class="form-group">
+    <input type="submit" class="button" value="Start again">
+  </div>
+
+</form>
+</main>
+
+{{/content}}
+
+{{/layout}}

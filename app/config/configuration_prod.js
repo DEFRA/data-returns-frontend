@@ -60,9 +60,7 @@ var BASEURL = {
 config.API = {};
 config.API.endpoints = {
   'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
-  'FILEUPLOADSEND': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
-  'ERRORCHECKING': 'error_checking',
-  'ERRORSENDING': 'error_sending'
+  'FILEUPLOADSEND': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete'
 };
 
 config.API.STATUS_CODES = {

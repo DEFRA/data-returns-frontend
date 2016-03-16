@@ -145,12 +145,6 @@ module.exports = [
     path: '/02-send-your-data/08-file-sent',
     handler: O2O8Handler.getHandler
   },
-  // Help pages.
-  {
-    method: 'GET',
-    path: '/05-help/01-help',
-    handler: BasicTemplateHandler.getHandler
-  },
   {
     method: 'GET',
     path: '/02-send-your-data/09-errors',

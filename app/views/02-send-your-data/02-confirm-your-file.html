@@ -8,12 +8,12 @@ Send your data returns online
 
 <main id="content" role="main">
 
-	<div class="phase-banner-beta">
-	  <p>
-	    <strong class="phase-tag">BETA</strong>
-	    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-	  </p>
-	</div>
+  <div class="phase-banner-beta">
+    <p>
+      <strong class="phase-tag">BETA</strong>
+      <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+    </p>
+  </div>
 
   <form method="post" class="form">
     <h1 class="heading-xlarge">Confirm your file</h1>
@@ -23,73 +23,62 @@ Send your data returns online
       </h1>
       <p>Check that the reference you’ve given is:</p>
       <ul class="list list-bullet">
-      	<li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>
-      	<li>without separators, eg, slashes, or any exotic characters</li>
-      	<li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>
+        <li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>
+        <li>without separators, eg, slashes, or any exotic characters</li>
+        <li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>
       </ul>
       <p><a href="{{RegimeSpecificRules}}" rel="external" target="_blank">Find out more about how to submit the correct EA_ID</a></p>
-				<p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">Find out about formatting all your data to meet EA standards</a></p>
+      <p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">Find out about formatting all your data to meet EA standards</a></p>
     </div>
 
-		<div class="text multi-panel">
+    <div class="text multi-panel">
       <p class="lede">The data returns file you’re going to send is about:</p>
-			
-			<ul class="list">
-				<li class="panel panel-border-wide">
-	        <p>
-	        	<span>Site name</span><br>
+
+      <ul class="list">
+        <li class="panel panel-border-wide">
+          <p>
+            <span>Site name</span><br>
             {{#returnMetaData.siteName}}
-              <span class="heading-small">{{returnMetaData.siteName}}</span>
+            <span class="heading-small">{{returnMetaData.siteName}}</span>
             {{/returnMetaData.siteName}}
             {{^returnMetaData.siteName}}
-              <span class="heading-small">Not given</span>
+            <span class="heading-small">Not given</span>
             {{/returnMetaData.siteName}}
-	        </p>
-		    </li> 
-	        
-	      <li id="permit_found" class="panel panel-border-wide permit">
-	        <p>
-	        	<span>Permit number</span><br>
-	        	<span class="heading-small">{{returnMetaData.eaId}}</span>
-	        	<!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>-->
-	        </p>
-	      </li>
-	        
-	      <li id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
-	      	<div class="error">
-	        	<p>
-	        		<span><span class="not-recognised error-message">Permit number not recognised</span><br>
-	        		<span class="heading-small">{{returnMetaData.eaId}}</span>
-	        	</p>
-	      	</div>
-	      </li>
-	    </ul>
-		</div>
-		
-		<!-- Return type not in content docs
-		<div id="permit_found" class="panel panel-border-wide permit">
-		  <h2 class="heading-small">Return type</h2>
-		  <p>{{returnMetaData.returnType}}</p>
-		</div>
-		-->
-		
-      <details class="help-text-reg">
-        <summary><span class="summary">These details aren’t right</span></summary>
-        <div class="panel panel-border-wide">
-          <p>Do you need to choose a different file? <a href="/02-send-your-data/01-choose-your-file" id="details-wrong-link">Start again</a> so you can submit the right file and details.</p>
-            
-            <!--<li><a href="#" onclick="alert('Not yet implemented!');return false;">follow your normal route</a></li>-->
-          
-        </div>
-      </details>
+          </p>
+        </li> 
 
-      <!-- Primary button -->
-      <div class="form-group confirmed" >
-        <input id="continue.btn" type="button" class="button" value="Confirm and check file" onclick="location.href = '/02-send-your-data/06-check';">
+        <li id="permit_found" class="panel panel-border-wide permit">
+          <p>
+            <span>Permit number</span><br>
+            <span class="heading-small">{{returnMetaData.eaId}}</span>
+            <!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>-->
+          </p>
+        </li>
+
+        <li id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
+          <div class="error">
+            <p>
+              <span><span class="not-recognised error-message">Permit number not recognised</span><br>
+                <span class="heading-small">{{returnMetaData.eaId}}</span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <details class="help-text-reg">
+      <summary><span class="summary">These details aren’t right</span></summary>
+      <div class="panel panel-border-wide">
+        <p>Do you need to choose a different file? <a href="/02-send-your-data/01-choose-your-file" id="details-wrong-link">Start again</a> so you can submit the right file and details.</p>
+
+
       </div>
-     <!-- <div class="form-group checking" style="display:none">
-        <input type="submit" class="button" value="Please wait" disabled="disabled">
-      </div>-->
+    </details>
+
+    <!-- Primary button -->
+    <div class="form-group confirmed" >
+      <input id="continue.btn" type="button" class="button" value="Confirm and check file" onclick="location.href = '/02-send-your-data/06-check';">
+    </div>
+
     </div><!-- /text -->
   </form>
   <div class="form-group permit-not-found" style="display:none">
