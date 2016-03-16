@@ -49,7 +49,7 @@ module.exports = {
               code: messages.PIN.VALID_PIN
             });
           } else {
-            var code = 2225;
+            var code = messages.PIN.INVALID_PIN;
             // Is the pin in date 
             if (user.pinCreationTime) {
               var pinCreationTime = new Date(user.pinCreationTime);
@@ -57,7 +57,7 @@ module.exports = {
               var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
               if (mins > config.pin.ValidTimePeriodMinutes) {
-                code = 2275;
+                code = messages.PIN.PIN_EXPIRED;
               }
             }
 

@@ -30,59 +30,26 @@ var ErrorHandler = require('../lib/error-handler');
  *   with an object containing the parsed body of the API reply.
  */
 function processResponse(err, response, body, reject, successCallback) {
-  /// Did the HTTP request itself fail?
-  console.log('==> processResponse'/*, body*/);
 
-  if (err !== null) {
-    console.error('\t processResponse() Error: ' + err);
-    reject({
-      isUserError: false,
-      err: err,
-      message: (err.code === ErrorMessages.status.ECONNREFUSED.code)
-        ? ErrorMessages.status.ECONNREFUSED.errormessage
-        : ErrorMessages.status.UNKNOWN.errormessage
-    });
-  }
-  // The HTTP request was successful; try to interpret the result.
-  else {
-    // Try to parse the response body as JSON.
-    var parsedBody;
-    try {
-      parsedBody = JSON.parse(body);
-    } catch (err) {
-      console.log(err);
-      // An error occurred whilst parsing the response.
-      reject({
-        isUserError: false,
-        err: err,
-        message: ErrorMessages.status.UNKNOWN.errormessage,
-        rawResponse: response
-      });
-    }
+  var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
+  var errMessage, apiErrors = '';
 
-    if (response.statusCode !== config.API.STATUS_CODES.OK) {
-      console.error('\t processResponse error: Response Code- ' + response.statusCode);
-      // The REST call resulted in an error.
-      reject({
-        isUserError: false,
-        message: parsedBody.message,
-        apiErrors: parsedBody.errors
-      });
-    } else {
-      var appStatusCode = parseInt(parsedBody.appStatusCode);
-      console.log('\t processResponse- app status code:', appStatusCode);
+  switch (statusCode) {
 
-      if (appStatusCode === ErrorMessages.status.SUCCESSFULL.code) {
-        successCallback(parsedBody);
-      } else {
+    case 200: //File sent, received and processed successfully
+      var parsedBody = JSON.parse(body);
+      successCallback(parsedBody);
+      return;
+      break;
+    case 400: //There is a problem
+      var parsedBody = JSON.parse(body);
+      var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
 
-        var errMessage, apiErrors = '';
+      switch (appStatusCode) {
 
-        //errMessage = ErrorHandler.render(appStatusCode);
-        /*if (appStatusCode === ErrorMessages.status.SUCCESSFULL.code) {
-          successCallback(parsedBody);
-        } else */if (appStatusCode === ErrorMessages.status.VALIDATION_ERRORS.code) {
-          errMessage = ErrorMessages.status.VALIDATION_ERRORS.errormessage;
+        case 900://Line errors
+
+          errMessage = ErrorHandler.render(900);
           apiErrors = parsedBody.validationResult.schemaErrors;
 
           var lineErrorData = [];
@@ -102,74 +69,23 @@ function processResponse(err, response, body, reject, successCallback) {
 
           var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
           sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
-          
-        } else {
+          break;
+        default:
+          //other errors
           errMessage = ErrorHandler.render(appStatusCode);
-        }
-
-        /*switch (appStatusCode) {
-          case ErrorMessages.status.SUCCESSFULL.code:
-            successCallback(parsedBody);
-            break;
-          case ErrorMessages.status.UNSUPPORTED_FILE_TYPE.code:
-            errMessage = ErrorMessages.status.UNSUPPORTED_FILE_TYPE.errormessage;
-            break;
-          case ErrorMessages.status.INVALID_CONTENTS.code:
-            errMessage = ErrorMessages.status.INVALID_CONTENTS.errormessage;
-            break;
-          case ErrorMessages.status.NO_RETURNS.code:
-            errMessage = ErrorMessages.status.NO_RETURNS.errormessage;
-            break;
-          case ErrorMessages.status.MULTIPLE_PERMITS.code:
-            errMessage = ErrorMessages.status.MULTIPLE_PERMITS.errormessage;
-            break;
-          case ErrorMessages.status.PERMIT_NOT_FOUND.code:
-            errMessage = ErrorMessages.status.PERMIT_NOT_FOUND.errormessage;
-            break;
-          case ErrorMessages.status.INVALID_PERMIT.code:
-            errMessage = ErrorMessages.status.INVALID_PERMIT.errormessage;
-            break;
-          case ErrorMessages.status.VALIDATION_ERRORS.code :
-            errMessage = ErrorMessages.status.VALIDATION_ERRORS.errormessage;
-            apiErrors = parsedBody.validationResult.schemaErrors;
-
-            var lineErrorData = [];
-            var lineErrors = apiErrors.lineErrors;
-            var temp;
-
-            for (var lineErrorName in lineErrors) {
-              var lineError = {};
-
-              temp = lineErrors[lineErrorName];
-              lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
-              lineError.columnName = temp.columnName;
-              lineError.errorValue = temp.errorValue;
-              lineError.outputMessage = temp.errorDetail.outputMessage;
-              lineErrorData.push(lineError);
-            }
-
-            var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
-            sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
-
-            break;
-
-          default:
-            console.log('\t ' + appStatusCode + ' is not being explicitly handled, using default error message:-', ErrorMessages.status.UNKNOWN.errormessage);
-            errMessage = ErrorMessages.status.UNKNOWN.errormessage;
-            apiErrors = null;
-        }*/
-
-        reject({
-          isUserError: true,
-          message: errMessage,
-          lineErrors: sortedLineErrorData,
-          lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
-        });
+          break;
       }
 
-    }
-    console.log('<== processResponse');
+      break;
   }
+
+  reject({
+    isUserError: true,
+    message: errMessage,
+    lineErrors: sortedLineErrorData,
+    lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
+  });
+
 }
 
 /**

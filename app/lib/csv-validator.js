@@ -67,11 +67,12 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
-                  console.error('\t' + ErrorMessages.status.NO_RETURNS.errormessage);
+                  var errorMessage = ErrorHandler.render(500);
                   reject({
                     isUserError: true,
-                    message: ErrorMessages.status.NO_RETURNS.errormessage
+                    message: errorMessage
                   });
+                  
                 } else {
                   // All tests have passed; looks like a valid file.
                   console.log('<== validateFile() the file is valid');

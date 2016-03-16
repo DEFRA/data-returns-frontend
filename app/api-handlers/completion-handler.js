@@ -1,7 +1,7 @@
 'use strict';
 var Request = require('request');
-var ErrorMessages = require('../lib/error-messages.js');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+var ErrorHandler = require('../lib/error-handler');
 /**
  * Helper that handles response from the Data Exchange service API.  It is
  * intended to be called from the callback of a 'Request' library call.
@@ -26,70 +26,23 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
  *   with an object containing the parsed body of the API reply.
  */
 function processResponse(err, response, body, reject, successCallback) {
-  /// Did the HTTP request itself fail?
-  console.log('==> CompletionHandler processResponse() ');
-  if (err !== null) {
-    console.error('\t error' + err);
-    reject({
-      isUserError: false,
-      err: err,
-      message: (err.code === ErrorMessages.status.ECONNREFUSED.code)
-        ? ErrorMessages.status.ECONNREFUSED.errormessage
-        : ErrorMessages.status.UNKNOWN.errormessage
-    });
-  } else {
-    // Try to parse the response body as JSON.
-    try {
+
+  var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
+
+  switch (statusCode) {
+    case 200:
       var parsedBody = JSON.parse(body);
-      if (response.statusCode !== config.API.STATUS_CODES.OK) {
-        // The REST call resulted in an error.
-        console.log('\t rest call failed');
-        reject({
-          isUserError: false,
-          message: parsedBody.message,
-          apiErrors: parsedBody.errors
-        });
-      } else if (parseInt(parsedBody.appStatusCode) !== ErrorMessages.status.SUCCESSFULL.code) {
-
-
-        var message;
-
-
-        console.error('\t rest call successful with app error ' + parsedBody.appStatusCode);
-        // REST call successful, but response indicates application-specific error.
-        switch (parsedBody.appStatusCode) {
-          //Unable to send email to MonitorPro
-          case ErrorMessages.status.NOTIFICATION_FAILURE.code:
-            message = '(' + ErrorMessages.status.NOTIFICATION_FAILURE.code + ') ' + ErrorMessages.status.NOTIFICATION_FAILURE.errormessage;
-            break;
-          default:
-            message = parsedBody.message;
-            break;
-        }
-
-        reject({
-          isUserError: true, // its not really its a system error !
-          message: message,
-          apiErrors: parsedBody.errors
-        });
-
-
-      } else {
-        console.log('<== processResponse call successful');
-        // Successful.
-        successCallback(parsedBody);
-      }
-    } catch (err) {
-      console.log(err);
-      // An error occurred whilst parsing the response.
-      console.log('here');
+      successCallback(parsedBody);
+      break;
+    default:
+      console.log('completion-handler processResponse statuscode:', statusCode);
       reject({
         isUserError: false,
         err: err,
-        message: ErrorMessages.status.UNKNOWN.errormessage,
+        message: ErrorHandler.render(3000),
         rawResponse: response
       });
-    }
+      break;
   }
 }
 
