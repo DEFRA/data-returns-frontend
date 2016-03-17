@@ -16,7 +16,8 @@ templateNames.forEach(function (templateName) {
     if (err) {
       console.error('Unable to read ' + templateName, err);
     } else {
-      var compiledTemplate = Hogan.compile(result);
+      var hiddenField = '<hidden id="error-number" value="' + templateName + '" ></hidden>';
+      var compiledTemplate = Hogan.compile(hiddenField + result);
       compiledTemplates.set(templateName, compiledTemplate);
     }
   });

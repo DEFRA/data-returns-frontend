@@ -56,9 +56,11 @@ function processResponse(err, response, body, reject, successCallback) {
           var lineErrorData = [];
           var lineErrors = apiErrors.lineErrors;
           var temp;
-
+          var lineError;
+          
           for (var lineErrorName in lineErrors) {
-            var lineError = {};
+            
+            lineError = {};
 
             temp = lineErrors[lineErrorName];
             lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
