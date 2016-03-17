@@ -31,6 +31,7 @@ module.exports = {
     });
 
     //create grouped data for the details page
+    var lineNos = new Map();
     data.forEach(function (item) {
 
       var columnName = item.columnName;
@@ -40,17 +41,21 @@ module.exports = {
       var errorMessage = item.outputMessage;
       var groupkey = columnName + '_' + errorColumnText;
       var group = groupedData[groupkey] || [];
+      var linekey = groupkey + rowNumber;
+      var temp;
 
-      var temp = {
-        rowNumber: rowNumber,
-        columnName: columnName,
-        errorValue: errorValue,
-        errorColumnText: errorColumnText,
-        errorMessage: errorMessage,
-        groupID: groupLinkID.get(groupkey)
-      };
-
-      group.push(temp);
+      if (!lineNos.has(linekey)) {
+        lineNos.set(linekey, linekey);
+        temp = {
+          rowNumber: rowNumber,
+          columnName: columnName,
+          errorValue: errorValue,
+          errorColumnText: errorColumnText,
+          errorMessage: errorMessage,
+          groupID: groupLinkID.get(groupkey)
+        };
+        group.push(temp);
+      }
 
       // add this group to a container
       groupedData[groupkey] = group;

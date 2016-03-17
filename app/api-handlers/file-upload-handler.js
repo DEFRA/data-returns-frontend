@@ -42,6 +42,7 @@ function processResponse(err, response, body, reject, successCallback) {
       return;
       break;
     case 400: //There is a problem
+      console.error('file-upload-handler.processResponse()', body);
       var parsedBody = JSON.parse(body);
       var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
 
@@ -112,16 +113,18 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     var successHandler = function (jsonResponse) {
       console.log('==> uploadFileToService successHandler()');
       var key = sessionID + '_UploadResult';
+
       if (jsonResponse) {
         jsonResponse.originalFileName = originalFileName;
         cacheHandler.setValue(key, jsonResponse)
           .then(function (result) {
+            console.log('\n');
             console.log('<== successHandler() resolve(true) ');
-
+            console.log('\n');
             resolve(jsonResponse);
           })
           .catch(function (result) {
-            console.error('<== successHandler() error: ' + result);
+            console.error('<== successHandler() error: ' + result, jsonResponse);
             reject();
           });
       }
