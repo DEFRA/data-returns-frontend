@@ -5,91 +5,6 @@ var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var ErrorHandler = require('../lib/error-handler');
-/**
- * Helper that handles response from the Data Exchange service API.  It is
- * intended to be called from the callback of a 'Request' library call.
- * @param err The 'err' parameter from the Request callback.  This captures
- *   JavaScript / usage errors.
- * @param response The 'response' parameter from the Request callback.  This
- *   contains header-like information from the HTTP response.
- * @param body The 'body' parameter from the Request callback.  This captures
- *   the body of the HTTP response.
- * @param reject A promise rejection function that will be called directly
- *   if this method detects that the request was unsuccessful.  The rejection
- *   will contain some / all of the following fields:
- *     isUserError  - A Boolean;
- *     message      - A string message suitable for displaying to the user;
- *     err          - A JavaScript error, not intended for display to the user;
- *     apiErrors    - Object capturing detail of errors returned by the Data
- *                    Exchange service API call;
- *     rawResponse  - A copy of the 'response' parameter, only included when
- *                    this handler could not parse response or body itself.
- * @param successCallback A function that will be called if the response from
- *   the Data Exchange service indicates success.  The method will be called
- *   with an object containing the parsed body of the API reply.
- */
-function processResponse(err, response, body, reject, successCallback) {
-
-  var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
-  var errMessage, apiErrors = '';
-  var parsedBody;
-
-  switch (statusCode) {
-
-    case 200: //File sent, received and processed successfully
-      parsedBody = JSON.parse(body);
-      successCallback(parsedBody);
-      return;
-      break;
-    case 400: //There is a problem
-      console.error('file-upload-handler.processResponse()', body);
-      parsedBody = JSON.parse(body);
-      var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
-
-      switch (appStatusCode) {
-
-        case 900://Line errors
-
-          errMessage = ErrorHandler.render(900);
-          apiErrors = parsedBody.validationResult.schemaErrors;
-
-          var lineErrorData = [];
-          var lineErrors = apiErrors.lineErrors;
-          var temp;
-          var lineError;
-
-          for (var lineErrorName in lineErrors) {
-
-            lineError = {};
-
-            temp = lineErrors[lineErrorName];
-            lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
-            lineError.columnName = temp.columnName;
-            lineError.errorValue = temp.errorValue;
-            lineError.outputMessage = temp.errorDetail.outputMessage;
-            lineErrorData.push(lineError);
-          }
-
-          var sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
-          sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
-          break;
-        default:
-          //other errors
-          errMessage = ErrorHandler.render(appStatusCode);
-          break;
-      }
-
-      break;
-  }
-
-  reject({
-    isUserError: true,
-    message: errMessage,
-    lineErrors: sortedLineErrorData,
-    lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
-  });
-
-}
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -98,8 +13,7 @@ function processResponse(err, response, body, reject, successCallback) {
  * @returns {Promise} A promise that is fulfilled when the upload completes
  *   successfully, or is rejected if an error occurs.  If successful, the
  *   promise is resolved with an object containing the fields 'fileKey',
- *   'eaId', 'siteName' and 'returnType' as returned from the API.  For
- *   rejection details see processApiResponse().
+ *   'eaId', 'siteName' and 'returnType' as returned from the API.  
  */
 module.exports.uploadFileToService = function (filePath, sessionID, originalFileName) {
   console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
@@ -111,30 +25,90 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         fileUpload: FileSystem.createReadStream(filePath)
       }
     };
-    // Define a function for handling a successful response.
-    var successHandler = function (jsonResponse) {
-      console.log('==> uploadFileToService successHandler()');
-      var key = sessionID + '_UploadResult';
 
-      if (jsonResponse) {
-        jsonResponse.originalFileName = originalFileName;
-        cacheHandler.setValue(key, jsonResponse)
-          .then(function (result) {
-            console.log('\n');
-            console.log('<== successHandler() resolve(true) ');
-            console.log('\n');
-            resolve(jsonResponse);
-          })
-          .catch(function (result) {
-            console.error('<== successHandler() error: ' + result, jsonResponse);
-            reject();
-          });
-      }
-    };
     // Make REST call into the Data Exchange service, and handle the result.
-    Request.post(apiData, function (err, response, body) {
+    Request.post(apiData, function (err, parsedBody, body) {
       console.log('<== uploadFileToService() response received');
-      processResponse(err, response, body, reject, successHandler);
+
+      var statusCode = (!err && parsedBody && parsedBody.statusCode) ? parsedBody.statusCode : 3000;
+      var errMessage, apiErrors = '';
+      var parsedBody;
+
+      if (statusCode === 200) {
+        //File sent, received and processed successfully
+        parsedBody = JSON.parse(body);
+        var key = sessionID + '_UploadResult';
+
+        if (parsedBody) {
+          parsedBody.originalFileName = originalFileName;
+          cacheHandler.setValue(key, parsedBody)
+            .then(function (result) {
+              resolve(parsedBody);
+            })
+            .catch(function (result) {
+              console.error('<== successHandler() error: ' + result, parsedBody);
+              reject();
+            });
+        }
+
+      } else {
+        //There are validation errors
+        console.error('file-upload-handler.processResponse()', body);
+        parsedBody = JSON.parse(body);
+
+        var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
+        var lineErrorData;
+        var lineErrors;
+        var temp;
+        var lineError;
+        var sortedLineErrorData;
+        var lineErrorName;
+
+        switch (appStatusCode) {
+          case 900://Line errors
+
+            errMessage = ErrorHandler.render(900);
+            apiErrors = parsedBody.validationResult.schemaErrors;
+
+            lineErrorData = [];
+            lineErrors = apiErrors.lineErrors;
+            temp;
+            lineError;
+
+            for (lineErrorName in lineErrors) {
+
+              lineError = {};
+
+              temp = lineErrors[lineErrorName];
+              lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
+              lineError.columnName = temp.columnName;
+              lineError.errorValue = temp.errorValue;
+              lineError.outputMessage = temp.errorDetail.outputMessage;
+              lineErrorData.push(lineError);
+            }
+
+            sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
+            sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
+            
+            reject({
+              isUserError: true,
+              message: errMessage,
+              lineErrors: sortedLineErrorData,
+              lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
+            });
+            
+            break;
+          default:
+            //other errors
+            reject({
+              isUserError: true,
+              message: ErrorHandler.render(appStatusCode),
+              lineErrors: sortedLineErrorData,
+              lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
+            });
+            break;
+        }
+      }
     });
   });
 };
