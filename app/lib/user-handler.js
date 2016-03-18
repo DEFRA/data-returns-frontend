@@ -53,6 +53,7 @@ module.exports.doesExists = function (sessionID) {
       return (result !== null) ? true : false;
     })
     .catch(function (err) {
+      console.error('doesExists', err);
       return false;
     });
 };

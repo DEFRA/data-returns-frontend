@@ -1,6 +1,5 @@
 var FileSystem = require('fs');
 var Request = require('request');
-var ErrorMessages = require('../lib/error-messages.js');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
@@ -33,17 +32,18 @@ function processResponse(err, response, body, reject, successCallback) {
 
   var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
   var errMessage, apiErrors = '';
+  var parsedBody;
 
   switch (statusCode) {
 
     case 200: //File sent, received and processed successfully
-      var parsedBody = JSON.parse(body);
+      parsedBody = JSON.parse(body);
       successCallback(parsedBody);
       return;
       break;
     case 400: //There is a problem
       console.error('file-upload-handler.processResponse()', body);
-      var parsedBody = JSON.parse(body);
+      parsedBody = JSON.parse(body);
       var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
 
       switch (appStatusCode) {
@@ -57,9 +57,9 @@ function processResponse(err, response, body, reject, successCallback) {
           var lineErrors = apiErrors.lineErrors;
           var temp;
           var lineError;
-          
+
           for (var lineErrorName in lineErrors) {
-            
+
             lineError = {};
 
             temp = lineErrors[lineErrorName];

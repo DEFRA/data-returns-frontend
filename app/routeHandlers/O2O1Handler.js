@@ -1,5 +1,4 @@
 
-var Utils = require('../lib/utils');
 var CsvValidator = require('../lib/csv-validator');
 var Path = require('path');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -10,10 +9,9 @@ var ErrorHelper = require('../api-handlers/multiple-error-helper');
 var UserHandler = require('../lib/user-handler');
 
 module.exports.getHandler = function (request, reply) {
-
   reply.view('02-send-your-data/01-choose-your-file', {
     HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-  });//.unstate('data-returns-id');
+  });
 };
 /*
  *  HTTP POST handler for /02-send-your-data/01-choose-your-file
@@ -31,14 +29,6 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
-
-  var user = {
-    authenticated: false,
-    email: '',
-    pin: '',
-    filekey: '',
-    uploadCount: 0
-  };
 
   var cookieOptions = {
     path:'/',

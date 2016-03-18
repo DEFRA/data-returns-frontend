@@ -2,7 +2,6 @@
 var userHandler = require('../lib/user-handler');
 var pinHandler = require('../lib/pin-handler');
 var messages = require('../lib/error-messages');
-var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
 var ErrorHandler = require('../lib/error-handler');
 /*

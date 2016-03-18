@@ -159,7 +159,7 @@ module.exports = {
     }
   },
   base64Decode: function (encodedInput) {
-    var ret = new Buffer(encodedInput, 'base64').toString("ascii");
+    var ret = new Buffer(encodedInput, 'base64').toString('ascii');
     return encodedInput;// ret.replace(/"/g, "");
   },
   /*

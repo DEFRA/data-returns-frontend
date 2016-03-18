@@ -31,7 +31,7 @@ module.exports.getHandler = function (request, reply) {
           filename = filename ? filename.replace(/"/g, "") : '';
           SMTPHandler.sendConfirmationEmail(email, filename)
             .then(function (email) {
-              console.log('\t The confirmation email has been sent');
+              console.log('\t The confirmation email has been sent to ' + email);
             })
             // Increment the count of uploads using the current pin number
             .then(function () {

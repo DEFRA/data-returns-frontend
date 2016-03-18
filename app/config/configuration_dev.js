@@ -2,7 +2,7 @@
 /*
  * Settings for the 'development' environment.
  */
-console.log('configuration_dev.js loaded')
+console.log('configuration_dev.js loaded');
 var config = require('./configuration_global');
 // Set a meaningful name for this environment.
 config.env = 'dev';

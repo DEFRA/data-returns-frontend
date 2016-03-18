@@ -52,10 +52,5 @@ module.exports = {
       .catch(function (err) {
         console.error('Error getting ' + key, err);
       });
-  },
-  postHandler: function (request, reply) {
-
-
-
   }
 };
