@@ -56,7 +56,6 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
           });
           break;
       }
-
     });
   });
 };

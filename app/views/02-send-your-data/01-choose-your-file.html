@@ -66,16 +66,16 @@ Send your data returns online
               </div>
             </div>
 
-            <div class="upload-file">
+            <div id='file-upload-div' class="upload-file" >
               <p class="file-display" style="display:none;"></p>
 
               <form id="uploadForm" Content-Type="text/csv" enctype="multipart/form-data" method="post">
-                <div class="fancy-file-button button-choose-file button-secondary">
-                  <span class="browse-text" style="display:none;">Choose file</span>
-                  <input id="file-select-button" type="file" name="fileUpload" style="width: 100%;">
+                <div class="fancy-file-button button-choose-file button-secondary" style='margin-bottom: 15px'>
+                  <input id="file-select-button" type="hidden" name="fileUpload">
+                  <span class="browse-text">Choose file</span>
                 </div>
                 <p>
-                  <input id="check-for-errors-btn" class="button" type="submit" value="Continue" name="submit">
+                  <input id="check-for-errors-btn" class="button" type="submit" value="Continue" name="submit" disabled>
                   <span  id='loading-image' style="display:none" class="checking">Checking your file...<span class="loading"><img src="/public/images/icons/loader.gif"></span></span>
                 </p>
               </form>

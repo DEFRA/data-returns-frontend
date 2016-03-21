@@ -32,6 +32,8 @@ $(document).ready(function () {
   $('.button-choose-file').addClass("btn btn-default btn-file button");
   $('.browse-text').show();
   $('#check-for-errors-btn').attr('disabled', 'disabled');
+  $('#file-select-button').attr('type','file');
+ 
 
   var existing = $('.btn-file :file').val();
 
