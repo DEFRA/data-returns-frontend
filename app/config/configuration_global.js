@@ -65,5 +65,10 @@ config.upload = {
 config.log = {};
 config.log.responses = true;
 
+config.feedback = {};
+config.feedback.emailaddress = 'eanhathaway@gmail.com';
+config.feedback.template = {feedbackbanner: '<div class="phase-banner-beta"><p><strong class="phase-tag">BETA</strong><span>This is a new service – your <a href="mailto:' + config.feedback.emailaddress + '">feedback</a> will help us to improve it.</span></p></div>'};
+
+
 // Publish the configuration
 module.exports = config;

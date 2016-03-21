@@ -6,12 +6,9 @@ var userHandler = require('./app/lib/user-handler');
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
 var utils = require('./app/lib/utils');
-
 var compressor = require('node-minify');
-
 var server = new Hapi.Server();
-
-
+var banner = config.feedback.template;
 
 server.connection({
   host: '0.0.0.0',
@@ -110,6 +107,7 @@ var sharedViewContext = {
   'assetPath': '/public/',
   // Copy any required fields from the config variable, so that we don't expose this directly
   // to the views (it contains data we don't want to accidentally expose).
+  feedbackbanner: banner.feedbackbanner,
   analytics: {
     useGoogleAnalytics: config.useGoogleAnalytics,
     googleTagManagerId: config.googleTagManagerId
@@ -198,7 +196,7 @@ server.start(function (err) {
       //console.log(min);
     }
   });
-  
+
   if (err) {
     console.error('Failed to start server.');
     throw err;
