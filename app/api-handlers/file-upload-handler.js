@@ -28,25 +28,25 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     };
 
     // Make REST call into the Data Exchange service, and handle the result.
-    Request.post(apiData, function (err, parsedBody, body) {
+    Request.post(apiData, function (err, httpResponse, body) {
       console.log('<== uploadFileToService() response received');
 
-      var statusCode = (!err && parsedBody && parsedBody.statusCode) ? parsedBody.statusCode : 3000;
+      var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
       var errMessage, apiErrors = '';
 
       if (statusCode === 200) {
         //File sent, received and processed successfully
-        parsedBody = JSON.parse(body);
+        httpResponse = JSON.parse(body);
         var key = sessionID + '_UploadResult';
 
-        if (parsedBody) {
-          parsedBody.originalFileName = originalFileName;
-          cacheHandler.setValue(key, parsedBody)
+        if (httpResponse) {
+          httpResponse.originalFileName = originalFileName;
+          cacheHandler.setValue(key, httpResponse)
             .then(function () {
-              resolve(parsedBody);
+              resolve(httpResponse);
             })
             .catch(function (result) {
-              console.error('<== successHandler() error: ' + result, parsedBody);
+              console.error('<== successHandler() error: ' + result, httpResponse);
               reject();
             });
         }
@@ -54,9 +54,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       } else {
         //There are validation errors
         console.error('file-upload-handler.processResponse()', body);
-        parsedBody = JSON.parse(body);
+        httpResponse = JSON.parse(body);
 
-        var appStatusCode = (parsedBody && parsedBody.appStatusCode) ? parsedBody.appStatusCode : 3000;
+        var appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
         var lineErrorData;
         var lineErrors;
         var temp;
@@ -68,7 +68,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
           case 900://Line errors
 
             errMessage = ErrorHandler.render(900);
-            apiErrors = parsedBody.validationResult.schemaErrors;
+            apiErrors = httpResponse.validationResult.schemaErrors;
 
             lineErrorData = [];
             lineErrors = apiErrors.lineErrors;
