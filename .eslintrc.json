@@ -1,13 +1,15 @@
 {
   "rules": {
     "strict": [2, "global"],
-    "no-console": 1,
+    "no-console": 0,
     "eqeqeq": 1,
     "no-extra-semi": 2,
     "indent": [2, 4],
     "quotes": [2, "single"],
-    "linebreak-style": [2, "unix"],
-    "semi": [2, "always"]
+    "linebreak-style": [0, "unix"],
+    "semi": [2, "always"],
+    "indent":0,
+    "strict":0
   },
   "env": {
     "node": true,

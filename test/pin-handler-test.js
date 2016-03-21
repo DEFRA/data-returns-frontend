@@ -1,21 +1,19 @@
 
 var pinhandler = require('../app/lib/pin-handler');
 var config = require('../app/config/configuration_' + (process.env.NODE_ENV || 'local'));
-const Code = require('code');
-const Lab = require('lab');
-const Path = require('path');
-const lab = exports.lab = Lab.script();
-const expect = Code.expect;
-const maxdigits = config.pin.maxDigits;
+var Code = require('code');
+var Lab = require('lab');
+var lab = exports.lab = Lab.script();
+var expect = Code.expect;
+var maxdigits = config.pin.maxDigits;
 
 /* Work out the maximum value expected for the number of digits required */
-var maxvalue = "";
-var i = 0;
+var maxvalue = '';
 var x = maxdigits - 1;
 
 do {
     maxvalue += 9;
-} while (x--)
+} while (x--);
 
 maxvalue = parseInt(maxvalue);
 

@@ -66,7 +66,7 @@ module.exports.postHandler = function (request, reply) {
     .then(function () {
       return FileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
     })
-    .then(function (data) {
+    .then(function () {
       
       reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
 
@@ -80,12 +80,12 @@ module.exports.postHandler = function (request, reply) {
       //var sessionid = 'id_' + request.session.id;
       var cacheKey = sessionID + '_latestErrors';
       CachHandler.setValue(cacheKey, errorData.lineErrors)
-        .then(function (result) {
+        .then(function () {
           var filekey = sessionID + '_SourceName';
 
           CachHandler.getValue(filekey)
             .then(function (fileName) {
-              fileName = fileName ? fileName.replace(/"/g, "") : '';
+              fileName = fileName ? fileName.replace(/"/g, '') : '';
               var links = HelpLinks.links;
               var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
               var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);

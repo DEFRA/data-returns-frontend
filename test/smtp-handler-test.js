@@ -1,15 +1,9 @@
 var smtpMailer = require('../app/lib/smtp-handler.js');
 var goodaddress = 'someone@somewhere.com';
-var badaddress = 'someone.somewhere.com';
-
-var message = 'Test email message';
-
-
-const Code = require('code');
-const Lab = require('lab');
-const Path = require('path');
-const lab = exports.lab = Lab.script();
-const expect = Code.expect;
+var Code = require('code');
+var Lab = require('lab');
+var lab = exports.lab = Lab.script();
+var expect = Code.expect;
 
 
 lab.test('Good email address ', function (done) {

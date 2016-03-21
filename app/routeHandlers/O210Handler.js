@@ -9,12 +9,12 @@ module.exports = {
     var groupid = request.query.groupid;
     var key = 'ErrorData_' + groupid;
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);
-    var fileName;
+    
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)
       .then(function (fileName) {
-        fileName = fileName ? fileName.replace(/"/g, "") : '';
+        fileName = fileName ? fileName.replace(/"/g, '') : '';
         cacheHandler.getValue(key)
           .then(function (result) {
 

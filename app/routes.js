@@ -1,4 +1,3 @@
-/* global config */
 
 'use strict';
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -14,12 +13,6 @@ var O2O6Handler = require('./routeHandlers/O2O6Handler');
 var O2O8Handler = require('./routeHandlers/O2O8Handler');
 var O2O9Handler = require('./routeHandlers/O2O9Handler');
 var O21OHandler = require('./routeHandlers/O210Handler');
-
-//var InvalidCSVHandler = require('./routeHandlers/invalidCSVHandler');
-//var EmptyFileHandler = require('./routeHandlers/EmptyFileHandler');
-
-// TODO: Add validation handlers so that user cannot "jump" to page without going through intended journey.
-// TODO: Think about more / better logging.
 
 module.exports = [
   // Static assets.

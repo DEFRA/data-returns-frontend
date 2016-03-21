@@ -12,6 +12,7 @@ module.exports = {
    * Groups error data by column name and error type, 
    * where error type is ether missing or incorrect
    * caches the grouped data in Redis for use in error detail pages
+   * @param the error data returned from the API
    */
   groupErrorData: function (data) {
 
@@ -71,7 +72,7 @@ module.exports = {
 
       (function (groupID, group) {
         cacheHandler.setValue('ErrorData_' + groupID, group)
-          .then(function (result) {
+          .then(function () {
             return;
           })
           .catch(function (err) {
@@ -85,18 +86,21 @@ module.exports = {
   },
   /*
    * Injects metadata into a template if the metadata place holder and data exists.
+   * @param template the Handlebars template to render.
+   * @param metadata the Metadata to inject into the template.
    * @return rendered string 
    */
   renderErrorMessage: function (template, metadata) {
     console.log('==> renderErrorMessage()');
     var ret = template;
     var mustRender = false;
+    var compiledTemplate;
 
     if (template && metadata) {
       template = (typeof (template) === 'object') ? JSON.stringify(template) : template;
-      var CompiledTemplate = Hogan.compile(template);
+      compiledTemplate = Hogan.compile(template);
 
-      //At least one piece of metadata required?
+      //Check if the template requires metadata
       for (var linkName in metadata) {
         if (template.indexOf(linkName) !== -1) {
           mustRender = true;
@@ -105,10 +109,7 @@ module.exports = {
       }
 
       if (mustRender) {
-        console.log('\t Rendering ');
-        ret = CompiledTemplate.render(metadata);
-      } else {
-        console.log('\t no metadata found');
+        ret = compiledTemplate.render(metadata);
       }
     }
 

@@ -10,6 +10,7 @@ var ErrorHandler = require('../lib/error-handler');
  * Uploads a file to the Data Exchange service.
  * @param filePath Full path to the file to upload.
  * @param sessionID the users sessionID
+ * @param originalFileName the original client side file name uploaded by the user.
  * @returns {Promise} A promise that is fulfilled when the upload completes
  *   successfully, or is rejected if an error occurs.  If successful, the
  *   promise is resolved with an object containing the fields 'fileKey',
@@ -32,7 +33,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
       var statusCode = (!err && parsedBody && parsedBody.statusCode) ? parsedBody.statusCode : 3000;
       var errMessage, apiErrors = '';
-      var parsedBody;
 
       if (statusCode === 200) {
         //File sent, received and processed successfully
@@ -42,7 +42,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         if (parsedBody) {
           parsedBody.originalFileName = originalFileName;
           cacheHandler.setValue(key, parsedBody)
-            .then(function (result) {
+            .then(function () {
               resolve(parsedBody);
             })
             .catch(function (result) {

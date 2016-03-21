@@ -28,7 +28,7 @@ module.exports.getHandler = function (request, reply) {
 
       CacheHandler.getValue(key)
         .then(function (filename) {
-          filename = filename ? filename.replace(/"/g, "") : '';
+          filename = filename ? filename.replace(/"/g, '') : '';
           SMTPHandler.sendConfirmationEmail(email, filename)
             .then(function (email) {
               console.log('\t The confirmation email has been sent to ' + email);

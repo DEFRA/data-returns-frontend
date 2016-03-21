@@ -23,7 +23,7 @@ module.exports = {
       .then(function (result) {
         CacheHandler.getValue(filekey)
           .then(function (fileName) {
-            fileName = fileName ? fileName.replace(/"/g, "") : '';
+            fileName = fileName ? fileName.replace(/"/g, '') : '';
 
             if (result === true) {
               reply.view('02-send-your-data/05-send-your-file', {
@@ -39,7 +39,7 @@ module.exports = {
             console.error(err);
           });
       })
-      .catch(function (result) {
+      .catch(function () {
         reply.view('02-send-your-data/03-confirm-your-email-address', {
           returnMetaData: request.session.get('returnMetaData')
         });
@@ -76,10 +76,10 @@ module.exports = {
               };
 
               userHandler.setUser(sessionID, user)
-                .then(function (result) {
+                .then(function () {
                   SMTPHandler.sendPinEmail(usermail, newpin);
                 })
-                .then(function (result) {
+                .then(function () {
                   reply.redirect('/02-send-your-data/04-enter-your-code');
                 });
             });

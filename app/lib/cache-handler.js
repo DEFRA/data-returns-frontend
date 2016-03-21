@@ -7,7 +7,7 @@
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorMessages = require('./error-messages.js');
 
-var redis = require("redis"),
+var redis = require('redis'),
   client = redis.createClient(config.redis.clientOptions);
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
   getValue: function (key) {
 
     return new Promise(function (resolve, reject) {
-      key = key.replace(/"/g, "");
+      key = key.replace(/"/g, '');
       console.log('==> cache-handler.getValue() key: ' + key);
 
       if (client && client.connected) {
@@ -55,13 +55,13 @@ module.exports = {
   setValue: function (key, value) {
 
     return new Promise(function (resolve, reject) {
-     // key = key.replace(/"/g, "");
+      // key = key.replace(/"/g, "");
       console.log('==> CacheHandler setValue() ', key, value);
       if (value) {
         client.set(key, JSON.stringify(value), function (err, res) {
 
           if (err) {
-            
+
             console.error('<== CacheHandler setValue() error: ' + err);
             reject(err);
           } else {
@@ -85,7 +85,8 @@ module.exports = {
 
       client.DEL(key, function (err, res) {
         if (err) {
-          console.error('\t CacheHandler.delete' + err);
+          console.error('\t CacheHandler.delete' + err, res);
+          reject();
         } else {
           console.log('\t' + key + ' deleted');
         }

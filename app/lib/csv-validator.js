@@ -27,6 +27,7 @@ var validateFile = function (filePath, contentType) {
 
   return new Promise(function (resolve, reject) {
     console.log('==> validateFile() ');
+    var errorMessage;
     // Test that a filePath has been specified.
     if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {
       console.log('\t file path is empty!');
@@ -72,7 +73,7 @@ var validateFile = function (filePath, contentType) {
                     isUserError: true,
                     message: errorMessage
                   });
-                  
+
                 } else {
                   // All tests have passed; looks like a valid file.
                   console.log('<== validateFile() the file is valid');
@@ -85,7 +86,7 @@ var validateFile = function (filePath, contentType) {
         })
         .catch(function (result) {
           if (result === true) {
-            var errorMessage = ErrorHandler.render(600);
+            errorMessage = ErrorHandler.render(600);
 
             reject({
               isUserError: true,
@@ -94,7 +95,7 @@ var validateFile = function (filePath, contentType) {
 
           } else {
             console.error('\t ANTIVIRUS SCANNER ISSUE ');
-            var errorMessage = ErrorHandler.render(3000);
+            errorMessage = ErrorHandler.render(3000);
             reject({
               isUserError: true,
               err: errorMessage

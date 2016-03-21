@@ -21,11 +21,17 @@ module.exports = {
   newPin: function () {
     return new Promise(function (resolve, reject) {
       console.log('==> newPin()');
-      var pin = "";
-      for (var i = 0; i < maxdigits; i++) {
-        pin = pin + random.integer(1, 9);
+      var pin = '';
+
+      try {
+        for (var i = 0; i < maxdigits; i++) {
+          pin = pin + random.integer(1, 9);
+        }
+        resolve(parseInt(pin));
+      } catch (e) {
+        console.error('newPin()', e);
+        reject();
       }
-      resolve(parseInt(pin));
     });
   },
   /*

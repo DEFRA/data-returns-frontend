@@ -18,7 +18,7 @@ module.exports = {
     CacheHandler.getValue(key)
       .then(function (filename) {
         reply.view('02-send-your-data/05-send-your-file', {
-          filename: filename.replace(/"/g, "")
+          filename: filename.replace(/"/g, '')
         });
 
       })
@@ -56,7 +56,7 @@ module.exports = {
               .then(function () {
                 reply.redirect('/02-send-your-data/08-file-sent');
               })
-              .then(function (result) {
+              .then(function () {
                 CacheHandler.delete(uploadResultsCacheKey);
               })
               .catch(function (errorData) {

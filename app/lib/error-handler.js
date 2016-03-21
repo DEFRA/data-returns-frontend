@@ -27,7 +27,7 @@ templateNames.forEach(function (templateName) {
  * 
  */
 function pad(num, len) {
-  return (Array(len).join("0") + num).slice(-len);
+  return (Array(len).join('0') + num).slice(-len);
 }
 
 module.exports.render = function (errorcode, metadata) {

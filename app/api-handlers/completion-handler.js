@@ -9,6 +9,9 @@ var ErrorHandler = require('../lib/error-handler');
  * @param fileKey The file key returned when the file was uploaded to the
  *   service.
  * @param userEmail A string containing the user's email address.
+ * @param userEmail The email address entered by the user.
+ * @param originalFileName Th original clientside file name uploaded.
+ * @param permitNo The EA_ID (permit number) 
  * @returns {Promise} A promise that is fulfilled when submission is
  *   successfully competed, or rejected if an error occurs.  If
  *   successful, the promise is resolve with Boolean true.  For rejection
@@ -34,7 +37,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
     console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
 
     // Make REST call into the Data Exchange service.
-    Request.post(apiData, function (err, response, body) {
+    Request.post(apiData, function (err, response) {
       console.log('==> confirmFileSubmission response received');
 
       var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
