@@ -1,28 +1,30 @@
 
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
-var templateDir = '../error-templates/';
-
-
-var templateNames = ['DR0400', 'DR0500', 'DR0600', 'DR0700', 'DR0800', 'DR0810', 'DR0820', 'DR0830', 'DR0840', 'DR0910', 'DR0920', 'DR0930', 'DR0940', 'DR0950', 'DR0960', 'DR0970', 'DR0980', 'DR0990', 'DR1000', 'DR1010', 'DR1020', 'DR2050', 'DR2225', 'DR2275', 'DR3000'];
+var path = require('path');
+var templateDir = path.resolve(__dirname, '../error-templates/');
 var defaultTemplateName = 'DR3000';
-
 var compiledTemplates = new Map();
-
-//preload templates
-templateNames.forEach(function (templateName) {
-
-  Utils.readFile(templateDir + templateName + '.html', function (err, result) {
+var filenames = Utils.getFileList(templateDir);
+var filecount = 1;
+//preload and compile error-templates
+console.log('==> Loading Templates...');
+filenames.forEach(function (filename) {
+  console.log('\tLoading ' + filename,filecount++);
+  
+  Utils.readFile(path.join(templateDir, filename), function (err, result) {
     if (err) {
-      console.error('Unable to read ' + templateName, err);
+      console.error('Unable to read ' + filename, err);
     } else {
-      var hiddenField = '<hidden id="error-number" value="' + templateName + '" ></hidden>';
+      var x = filename.indexOf('.html');
+      var key = filename.substring(0, x);
+      var hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
       var compiledTemplate = Hogan.compile(hiddenField + result);
-      compiledTemplates.set(templateName, compiledTemplate);
+      compiledTemplates.set(key, compiledTemplate);
     }
   });
 });
-
+console.log('<== ' + filecount + 'Templates loaded');
 /*
  * 
  */
@@ -32,12 +34,12 @@ function pad(num, len) {
 
 module.exports.render = function (errorcode, metadata) {
 
-  var templateName = 'DR' + pad(errorcode, 4);
+  var key = 'DR' + pad(errorcode, 4);
   var template, ret;
-  console.log('==> error-handler.render() ', templateName);
+  console.log('==> error-handler.render() ', key);
 
-  if (compiledTemplates.has(templateName)) {
-    template = compiledTemplates.get(templateName);
+  if (compiledTemplates.has(key)) {
+    template = compiledTemplates.get(key);
   } else {
     template = compiledTemplates.get(defaultTemplateName);
   }

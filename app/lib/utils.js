@@ -1,9 +1,10 @@
 'use strict';
-var FileSystem = require('fs');
+var fs = require('fs');
 var CacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
+var path = require('path');
 
 module.exports = {
   /**
@@ -15,7 +16,7 @@ module.exports = {
    */
   renameFile: function (oldPath, newPath) {
     return new Promise(function (resolve, reject) {
-      FileSystem.rename(oldPath, newPath, function (err) {
+      fs.rename(oldPath, newPath, function (err) {
         if (err === null) {
           resolve(true);
         } else {
@@ -92,7 +93,7 @@ module.exports = {
       CacheHandler.getValue(key)
         .then(function (filePath) {
           filePath = filePath ? filePath.replace(/"/g, '') : '';
-          FileSystem.unlink(filePath, function (err) {
+          fs.unlink(filePath, function (err) {
             if (err === null) {
               resolve(true);
             } else {
@@ -125,7 +126,7 @@ module.exports = {
     var stats;
     try {
       // Query the entry
-      stats = FileSystem.lstatSync(config.upload.path);
+      stats = fs.lstatSync(config.upload.path);
     } catch (err) {
       stats = null;
     }
@@ -153,7 +154,7 @@ module.exports = {
   readFile: function (path, callback) {
     try {
       var filename = require.resolve(path);
-      FileSystem.readFile(filename, 'utf8', callback);
+      fs.readFile(filename, 'utf8', callback);
     } catch (e) {
       callback(e);
     }
@@ -167,7 +168,18 @@ module.exports = {
    */
   getNewUUID: function () {
     return uuid.v4();
+  },
+  /*
+   * returns a list of files for a given directory name
+   * @param dir the directory to scan for files.
+   */
+  getFileList: function (dir) {
+    return fs.readdirSync(dir).reduce(function (list, file) {
+      var name = path.join(file);
+      return list.concat([name]);
+    }, []);
   }
+
 
 };
 
