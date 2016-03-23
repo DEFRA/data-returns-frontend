@@ -7,24 +7,25 @@ var defaultTemplateName = 'DR3000';
 var compiledTemplates = new Map();
 var filenames = Utils.getFileList(templateDir);
 var filecount = 1;
+var x, key, hiddenField, compiledTemplate;
+
 //preload and compile error-templates
 console.log('==> Loading Templates...');
 filenames.forEach(function (filename) {
-  console.log('\tLoading ' + filename,filecount++);
-  
+  console.log('\tLoading ' + filename, filecount++);
   Utils.readFile(path.join(templateDir, filename), function (err, result) {
     if (err) {
       console.error('Unable to read ' + filename, err);
     } else {
-      var x = filename.indexOf('.html');
-      var key = filename.substring(0, x);
-      var hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
-      var compiledTemplate = Hogan.compile(hiddenField + result);
+      x = filename.indexOf('.html');
+      key = filename.substring(0, x);
+      hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
+      compiledTemplate = Hogan.compile(hiddenField + result);
       compiledTemplates.set(key, compiledTemplate);
     }
   });
 });
-console.log('<== ' + filecount + 'Templates loaded');
+console.log('<== ' + filecount + ' Templates loaded');
 /*
  * 
  */
