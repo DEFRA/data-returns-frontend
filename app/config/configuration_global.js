@@ -66,7 +66,7 @@ config.log = {};
 config.log.responses = true;
 
 config.feedback = {};
-config.feedback.emailaddress = 'eanhathaway@gmail.com';
+config.feedback.emailaddress = 'Data_Returns@environment-agency.gov.uk';
 config.feedback.template = {feedbackbanner: '<div class="phase-banner-beta"><p><strong class="phase-tag">BETA</strong><span>This is a new service – your <a href="mailto:' + config.feedback.emailaddress + '">feedback</a> will help us to improve it.</span></p></div>'};
 
 
