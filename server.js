@@ -9,13 +9,13 @@ var utils = require('./app/lib/utils');
 var compressor = require('node-minify');
 var server = new Hapi.Server();
 var banner = config.feedback.template;
+var HelpLinks = require('./app/config/dep-help-links');
 
 server.connection({
   host: '0.0.0.0',
   port: config.http.port,
   routes: {cors: true}
 });
-
 // Setup logging.
 server.register({
   register: require('good'),
@@ -62,8 +62,8 @@ if (config.requireBasicAuth) {
     process.exit(1);
   }
 
-  // TODO: Implement a basic user database, so we can grant temporary access
-  // to individual testers.
+// TODO: Implement a basic user database, so we can grant temporary access
+// to individual testers.
   server.register(require('hapi-auth-basic'), function (err) {
     if (err) {
       console.error('Failed to initialise authorisation component.');
@@ -152,10 +152,8 @@ server.register(require('vision'), function (err) {
 });
 // Configure server routes.
 server.route(require('./app/routes'));
-
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
-
   var resp = request.response;
 
   if (resp && resp.header) {
@@ -165,15 +163,40 @@ server.ext('onPreResponse', function (request, reply) {
     resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
     resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
   }
+// Payload content length greater than maximum allowed
 
-  return reply(resp);
+
+  if (request.response.isBoom) {
+
+    var err = request.response;
+    var statusCode = err.output.payload.statusCode;
+    var errorMessage = err.output.payload.message;
+
+    console.error(resp);
+
+    if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
+      return reply.view('02-send-your-data/01-choose-your-file', {
+        //TODO get content from template for this error when it becomes available
+        uploadError: true,
+        errorMessage: 'Your file is too big!',//quick and dirty message until content is available
+        fileName: '<TODO>',
+        lineErrors: null,
+        isLineErrors: false,
+        HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+      });
+    } else {
+      return reply(resp);
+    }
+
+  } else {
+    return reply(resp);
+  }
+  reply.continue();
 });
-
 // Start the server.
 server.start(function (err) {
 
   utils.createUploadDirectory();
-
   console.log('==> Minifying and combining Javascript files');
   // Using UglifyJS for JS
   new compressor.minify({
@@ -185,7 +208,6 @@ server.start(function (err) {
       //console.log(min);
     }
   });
-
 // Using Clean-css for CSS
   new compressor.minify({
     type: 'clean-css',
@@ -196,7 +218,6 @@ server.start(function (err) {
       //console.log(min);
     }
   });
-
   if (err) {
     console.error('Failed to start server.');
     throw err;
@@ -205,5 +226,4 @@ server.start(function (err) {
     ['info', 'status'],
     'Data Returns Frontend: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV
     );
-
 });

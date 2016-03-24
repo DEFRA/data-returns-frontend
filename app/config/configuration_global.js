@@ -65,6 +65,7 @@ config.upload = {
 config.log = {};
 config.log.responses = true;
 
+// feedback configuration
 config.feedback = {};
 config.feedback.emailaddress = 'Data_Returns@environment-agency.gov.uk';
 config.feedback.subject = 'Feedback from Data Returns (' + config.env + ')';
