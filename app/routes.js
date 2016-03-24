@@ -66,8 +66,7 @@ module.exports = [
     path: '/02-send-your-data/01-choose-your-file',
     config: {
       payload: {
-        maxBytes: Math.pow(2, 20), // 2 megabytes 
-        //TODO add large file check to validator as it is not handled.
+        maxBytes: config.CSV.maxfilesize,
         timeout: 60 * 1000, // 20 seconds
         output: 'file',
         parse: true,
