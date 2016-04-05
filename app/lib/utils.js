@@ -170,7 +170,7 @@ module.exports = {
     return uuid.v4();
   },
   /*
-   * returns a list of files for a given directory name
+   * returns a list of files for a single directory name
    * @param dir the directory to scan for files.
    */
   getFileList: function (dir) {
@@ -178,6 +178,25 @@ module.exports = {
       var name = path.join(file);
       return list.concat([name]);
     }, []);
+  },
+  /* loadFilesInDir: Recursivly loads file names in to an array
+   * @param dir the parent base directory to scan
+   * @param filelist an array to store filenames in
+   * @return array
+   */
+  getFileListInDir: function (dir, filelist) {
+    var files = fs.readdirSync(dir);
+    var fileName;
+    filelist = filelist || [];
+    files.forEach(function (file) {
+      if (fs.statSync(dir + '/' + file).isDirectory()) {
+        filelist = getFileListInDir(dir + '/' + file, filelist);
+      } else {
+        fileName = path.join(file);
+        filelist.push(fileName);
+      }
+    });
+    return filelist;
   }
 
 
