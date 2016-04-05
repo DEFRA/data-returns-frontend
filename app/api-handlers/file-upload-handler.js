@@ -31,10 +31,17 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     Request.post(apiData, function (err, httpResponse, body) {
       console.log('<== uploadFileToService() response received');
 
+      console.log('\t' + body);
+
       var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
       var errMessage, apiErrors = '';
 
-      if (statusCode === 200) {
+      if (err) {
+        reject({
+          isUserError: true,
+          message: ErrorHandler.render(3000)
+        });
+      } else if (statusCode === 200) {
         //File sent, received and processed successfully
         httpResponse = JSON.parse(body);
         var key = sessionID + '_UploadResult';
@@ -68,10 +75,10 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
           case 900://Line errors
 
             errMessage = ErrorHandler.render(900);
-            apiErrors = httpResponse.validationResult.schemaErrors;
+            apiErrors = httpResponse.validationErrors;
 
             lineErrorData = [];
-            lineErrors = apiErrors.lineErrors;
+            lineErrors = apiErrors;//apiErrors.lineErrors;
             temp;
             lineError;
 
@@ -80,23 +87,23 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               lineError = {};
 
               temp = lineErrors[lineErrorName];
-              lineError.outputLineNo = parseInt(temp.outputLineNo, 10);
-              lineError.columnName = temp.columnName;
+              lineError.lineNumber = parseInt(temp.lineNumber, 10);
+              lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
-              lineError.outputMessage = temp.errorDetail.outputMessage;
+              lineError.errorMessage = ErrorHandler.render(temp.errorCode) || temp.errorMessage;
               lineErrorData.push(lineError);
             }
 
-            sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('columnName'));
+            sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('fieldName'));
             sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
-            
+
             reject({
               isUserError: true,
               message: errMessage,
               lineErrors: sortedLineErrorData,
-              lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
+              lineErrorCount:sortedLineErrorData.length
             });
-            
+
             break;
           default:
             //other errors

@@ -10,6 +10,7 @@ var compressor = require('node-minify');
 var server = new Hapi.Server();
 var banner = config.feedback.template;
 var HelpLinks = require('./app/config/dep-help-links');
+var ValidationErrorHandler = require('./app/lib/error-handler');
 
 server.connection({
   host: '0.0.0.0',
@@ -178,7 +179,7 @@ server.ext('onPreResponse', function (request, reply) {
       return reply.view('02-send-your-data/01-choose-your-file', {
         //TODO get content from template for this error when it becomes available
         uploadError: true,
-        errorMessage: 'Your file is too big!',//quick and dirty message until content is available
+        errorMessage: 'Your file is too big!', //quick and dirty message until content is available
         fileName: '<TODO>',
         lineErrors: null,
         isLineErrors: false,
@@ -197,6 +198,7 @@ server.ext('onPreResponse', function (request, reply) {
 server.start(function (err) {
 
   utils.createUploadDirectory();
+  //ValidationErrorHandler.loadErrorTemplates();
   console.log('==> Minifying and combining Javascript files');
   // Using UglifyJS for JS
   new compressor.minify({

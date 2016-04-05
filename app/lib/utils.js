@@ -6,6 +6,26 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var uuid = require('node-uuid');
 var path = require('path');
 
+/* loadFilesInDir: Recursivly loads file names in to an array
+ * @param dir the parent base directory to scan
+ * @param filelist an array to store filenames in
+ * @return array
+ */
+var getFileListInDir = function (dir, filelist) {
+  var files = fs.readdirSync(dir);
+  var fileName;
+  filelist = filelist || [];
+  files.forEach(function (file) {
+    if (fs.statSync(dir + '/' + file).isDirectory()) {
+      filelist = getFileListInDir(dir + '/' + file, filelist);
+    } else {
+      fileName = path.join(dir, file);
+      filelist.push(fileName);
+    }
+  });
+  return filelist;
+};
+
 module.exports = {
   /**
    * Renames a file asynchronously using a promise.
@@ -184,21 +204,6 @@ module.exports = {
    * @param filelist an array to store filenames in
    * @return array
    */
-  getFileListInDir: function (dir, filelist) {
-    var files = fs.readdirSync(dir);
-    var fileName;
-    filelist = filelist || [];
-    files.forEach(function (file) {
-      if (fs.statSync(dir + '/' + file).isDirectory()) {
-        filelist = getFileListInDir(dir + '/' + file, filelist);
-      } else {
-        fileName = path.join(file);
-        filelist.push(fileName);
-      }
-    });
-    return filelist;
-  }
-
-
+  getFileListInDir: getFileListInDir
 };
 

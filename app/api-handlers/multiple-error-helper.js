@@ -24,7 +24,7 @@ module.exports = {
 
     //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
-      var columnName = item.columnName;
+      var columnName = item.fieldName;
       var errorColumnText = item.errorValue === null ? 'Missing' : 'Incorrect';
       var groupkey = columnName + '_' + errorColumnText;
       var groupID = uuid.v4();
@@ -35,11 +35,11 @@ module.exports = {
     var lineNos = new Map();
     data.forEach(function (item) {
 
-      var columnName = item.columnName;
+      var columnName = item.fieldName;
       var errorColumnText = item.errorValue === null ? 'Missing' : 'Incorrect';
       var errorValue = item.errorValue;
-      var rowNumber = item.outputLineNo;
-      var errorMessage = item.outputMessage;
+      var rowNumber = item.lineNumber;
+      var errorMessage = item.errorMessage;
       var groupkey = columnName + '_' + errorColumnText;
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
