@@ -87,6 +87,7 @@ module.exports.postHandler = function (request, reply) {
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, '') : '';
               var links = HelpLinks.links;
+              //TODO get HTML template snippet instead of hard coded error message
               var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
               var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {

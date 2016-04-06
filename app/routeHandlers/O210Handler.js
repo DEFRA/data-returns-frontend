@@ -26,7 +26,7 @@ module.exports = {
             var firstError = result[0];
             var rowText = '';
             var item;
-            var errorType = firstError.errorColumnText;
+            var errorType = firstError.errorType;
 
             for (var i = 0; i < result.length; i++) {
               item = result[i];
@@ -41,7 +41,7 @@ module.exports = {
               rows: rowText,
               errorType: errorType,
               isMissing: (errorType.toLowerCase() === 'missing') ? true : false,
-              isIncorrect: (errorType.toLowerCase() === 'incorrect') ? true : false,
+              isIncorrect: (errorType.toLowerCase() === 'invalid') ? true : false,
               data: result
             });
           })
