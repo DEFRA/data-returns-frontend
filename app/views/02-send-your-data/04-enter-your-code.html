@@ -13,7 +13,7 @@ Send your data returns online
 
     {{#invalidPin}}
     <div class="error-summary">
-      <h1 class="heading-medium error-summary-heading">Your code doesn’t work</h1>
+      <h1 class="heading-medium error-summary-heading">Your code is missing or doesn’t work</h1>
       {{{errorMessage}}}
     </div>
     {{/invalidPin}}
@@ -22,7 +22,7 @@ Send your data returns online
       <p class="lede">Enter the confirmation code we sent to your email address.</p>
       <div class="form-group">
         <label class="form-label" for="validation-code">
-          <span class="form-hint">eg: 1234</span>
+          <span class="form-hint">eg, 1234</span>
         </label>
         <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" >
       </div>

@@ -40,11 +40,11 @@ Send your data returns online
             <span class="heading-small">Not given</span>
             {{/returnMetaData.siteName}}
           </p>
-        </li> 
+        </li>
 
         <li id="permit_found" class="panel panel-border-wide permit">
           <p>
-            <span>Permit number</span><br>
+            <span>EA unique identifier</span><br>
             <span class="heading-small">{{returnMetaData.eaId}}</span>
             <!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>-->
           </p>
@@ -53,7 +53,7 @@ Send your data returns online
         <li id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
           <div class="error">
             <p>
-              <span><span class="not-recognised error-message">Permit number not recognised</span><br>
+              <span><span class="not-recognised error-message">Your EA unique identifier isn't recognised</span><br>
                 <span class="heading-small">{{returnMetaData.eaId}}</span>
             </p>
           </div>
@@ -63,7 +63,7 @@ Send your data returns online
     <details class="help-text-reg">
       <summary><span class="summary">These details aren’t right</span></summary>
       <div class="panel panel-border-wide">
-        <p>Do you need to choose a different file? <a href="/02-send-your-data/01-choose-your-file" id="details-wrong-link">Start again</a> so you can submit the right file and details.</p>
+        <p>Do you need to choose a different file? <a href="/02-send-your-data/01-choose-your-file" id="details-wrong-link">Start again</a> so you can send the right file and details.</p>
 
 
       </div>
@@ -71,7 +71,7 @@ Send your data returns online
 
     <!-- Primary button -->
     <div class="form-group confirmed" >
-      <input id="continue.btn" type="button" class="button" value="Confirm and check file" onclick="location.href = '/02-send-your-data/06-check';">
+      <input id="continue.btn" type="button" class="button" value="Continue" onclick="location.href = '/02-send-your-data/06-check';">
     </div>
 
     </div><!-- /text -->
@@ -79,7 +79,7 @@ Send your data returns online
   <div class="form-group permit-not-found" style="display:none">
     <input id="start-again-btn" type="submit" class="button" value="Start again" onclick="location.href = '/02-send-your-data/01-choose-your-file';">
   </div>
-</main> 
+</main>
 
 {{/content}}
 
