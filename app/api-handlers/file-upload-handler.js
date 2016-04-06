@@ -45,7 +45,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         //File sent, received and processed successfully
         httpResponse = JSON.parse(body);
         var key = sessionID + '_UploadResult';
-
         if (httpResponse) {
           httpResponse.originalFileName = originalFileName;
           cacheHandler.setValue(key, httpResponse)
@@ -62,7 +61,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         //There are validation errors
         console.error('file-upload-handler.processResponse()', body);
         httpResponse = JSON.parse(body);
-
         var appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
         var lineErrorData;
         var lineErrors;
@@ -70,29 +68,34 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         var lineError;
         var sortedLineErrorData;
         var lineErrorName;
-
+        var metadata = {
+          Correction: true,
+          CorrectionDetails: false,
+          CorrectionMoreHelp: false
+        };
         switch (appStatusCode) {
           case 900://Line errors
 
             errMessage = ErrorHandler.render(900);
             apiErrors = httpResponse.validationErrors;
-
             lineErrorData = [];
-            lineErrors = apiErrors;//apiErrors.lineErrors;
+            lineErrors = apiErrors; //apiErrors.lineErrors;
             temp;
             lineError;
 
             for (lineErrorName in lineErrors) {
 
               lineError = {};
-
               temp = lineErrors[lineErrorName];
               lineError.lineNumber = parseInt(temp.lineNumber, 10);
               lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
-              lineError.errorMessage = ErrorHandler.render(temp.errorCode) || temp.errorMessage;
+              lineError.errorMessage = ErrorHandler.render(temp.errorCode,metadata) || temp.errorMessage;
               lineError.errorCode = 'DR' + Utils.pad(temp.errorCode, 4);
               lineError.errorType = temp.errorType;
+              lineError.Correction = true;
+              lineError.CorrectionDetails = true;
+              lineError.CorrectionMoreHelp = true;
               lineErrorData.push(lineError);
             }
 

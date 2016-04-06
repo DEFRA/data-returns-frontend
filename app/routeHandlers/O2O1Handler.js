@@ -31,7 +31,7 @@ module.exports.postHandler = function (request, reply) {
   var oldkey = sessionID + '_SourceName';
 
   var cookieOptions = {
-    path:'/',
+    path: '/',
     ttl: null,
     isSecure: false,
     isHttpOnly: true,
@@ -67,7 +67,7 @@ module.exports.postHandler = function (request, reply) {
       return FileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
     })
     .then(function () {
-      
+
       reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
 
     }).catch(function (errorData) {

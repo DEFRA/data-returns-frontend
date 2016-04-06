@@ -45,6 +45,9 @@ module.exports = {
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
+      var Correction = true;
+      var CorrectionDetails = true;
+      var CorrectionMoreHelp = true;
 
       if (!lineNos.has(linekey)) {
         lineNos.set(linekey, linekey);
@@ -55,6 +58,9 @@ module.exports = {
           errorType: errorType,
           errorMessage: errorMessage,
           errorCode: errorCode,
+          Correction: Correction,
+          CorrectionDetails: CorrectionDetails,
+          CorrectionMoreHelp: CorrectionMoreHelp,
           groupID: groupLinkID.get(groupkey)
         };
         group.push(temp);
