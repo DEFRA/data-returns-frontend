@@ -17,7 +17,7 @@ Send your data returns online
       Make corrections
     </h1>
 
-    <p>Before you can send {{fileName}} you need to make corrections:</p>
+    <p>Before you can send {{fileName}} you need to make these corrections:</p>
 
   </div>
 
@@ -26,23 +26,27 @@ Send your data returns online
     <table id="errorTableHeader" class="error-table">
       <thead>
         <tr>
-          <th width="10%">Column</th>
-          <th width="15%">Error</th>
-          <th width="70%">How to make corrections</th>
+          <th width="12%">Column</th>
+          <th width="13%">Error</th>
+          <th width="40%">Correction</th>
+          <th width="35%">More help</th>
         </tr>
       </thead>
       <tbody>
         {{#lineErrors}}
         <tr>
-          <td><abbr title="{{{columnName}}}">{{{columnName}}}</abbr></td>
-          <td>{{{errorColumnText}}}</td>
-          <td>
-            <p>{{{errorMessage}}}</p>
-            <p>See <a href="/02-send-your-data/10-error-detail?groupid={{groupID}}">full details</a> on how to make corrections.</p>		
-          </td>
-        </tr>
-        {{/lineErrors}}
-        {{/uploadError}}
+          <td><abbr title="{{{columnName}}}">{{{columnName}}}</abbr><hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden></td>
+          <td>{{errorType}}</td>
+      <td>
+        {{{errorMessage}}}
+        <p><a href="/02-send-your-data/10-error-detail?groupid={{groupID}}" >See details of which rows to correct</a>.</p>
+        
+      </td>
+      <!--<td>Read the full rules on <a href="http://data-returns-help.herokuapp.com/help/detailed-guides/date-and-time" target="_blank" rel="external">date and time.</a></td>-->
+      <td>TODO</td>
+      </tr>
+      {{/lineErrors}}
+      {{/uploadError}}
       </tbody>
     </table>
   </div>	

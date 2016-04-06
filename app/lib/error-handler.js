@@ -24,8 +24,9 @@ var loadErrorTemplates = function () {
         x = filename.lastIndexOf('/');
         y = filename.indexOf('.html');
         key = filename.substring(x + 1, y);
-        hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
-        compiledTemplate = Hogan.compile(hiddenField + fileContents);
+        //hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
+        //compiledTemplate = Hogan.compile(hiddenField + fileContents);
+        compiledTemplate = Hogan.compile(fileContents);
         compiledTemplates[key] = compiledTemplate;
       }
     });
@@ -37,16 +38,11 @@ var loadErrorTemplates = function () {
 
 var compiledTemplates = loadErrorTemplates();
 
-/*
- * 
- */
-function pad(num, len) {
-  return (Array(len).join('0') + num).slice(-len);
-}
+
 
 module.exports.render = function (errorcode, metadata) {
 
-  var key = 'DR' + pad(errorcode, 4);
+  var key = 'DR' + Utils.pad(errorcode, 4);
   var template, ret;
   console.log('==> error-handler.render() ', key);
 

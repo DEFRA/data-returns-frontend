@@ -91,6 +91,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
               lineError.errorMessage = ErrorHandler.render(temp.errorCode) || temp.errorMessage;
+              lineError.errorCode = 'DR' + Utils.pad(temp.errorCode, 4);
+              lineError.errorType = temp.errorType;
               lineErrorData.push(lineError);
             }
 
@@ -101,7 +103,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               isUserError: true,
               message: errMessage,
               lineErrors: sortedLineErrorData,
-              lineErrorCount:sortedLineErrorData.length
+              lineErrorCount: sortedLineErrorData.length
             });
 
             break;

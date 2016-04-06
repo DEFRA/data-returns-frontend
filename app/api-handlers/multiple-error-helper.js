@@ -25,8 +25,8 @@ module.exports = {
     //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
       var columnName = item.fieldName;
-      var errorColumnText = item.errorValue === null ? 'Missing' : 'Incorrect';
-      var groupkey = columnName + '_' + errorColumnText;
+      var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
+      var groupkey = columnName + '_' + errorType;
       var groupID = uuid.v4();
       groupLinkID.set(groupkey, groupID);
     });
@@ -36,11 +36,12 @@ module.exports = {
     data.forEach(function (item) {
 
       var columnName = item.fieldName;
-      var errorColumnText = item.errorValue === null ? 'Missing' : 'Incorrect';
+      var errorType = item.errorType; //item.errorValue === null ? 'Missing' : 'Incorrect';
       var errorValue = item.errorValue;
       var rowNumber = item.lineNumber;
+      var errorCode = item.errorCode;
       var errorMessage = item.errorMessage;
-      var groupkey = columnName + '_' + errorColumnText;
+      var groupkey = columnName + '_' + errorType;
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
@@ -51,8 +52,9 @@ module.exports = {
           rowNumber: rowNumber,
           columnName: columnName,
           errorValue: errorValue,
-          errorColumnText: errorColumnText,
+          errorType: errorType,
           errorMessage: errorMessage,
+          errorCode: errorCode,
           groupID: groupLinkID.get(groupkey)
         };
         group.push(temp);
