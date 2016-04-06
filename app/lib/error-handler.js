@@ -26,6 +26,7 @@ var loadErrorTemplates = function () {
         key = filename.substring(x + 1, y);
         //hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
         //compiledTemplate = Hogan.compile(hiddenField + fileContents);
+        //console.log('/t compiling ' + filename);
         compiledTemplate = Hogan.compile(fileContents);
         compiledTemplates[key] = compiledTemplate;
       }
