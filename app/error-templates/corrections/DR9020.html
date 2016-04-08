@@ -1,20 +1,16 @@
-Make corrections to Mon_Date
-<p>Before you can send {{filename}} you need to make corrections.</p>
+
 
 {{#Correction}}
-  <p>You must give a date in this field, but time is optional. If you're giving time then you must use a T between date and time, without spaces.</p>
-  <p>Format the date as YYYY-MM-DD or DD-MM-YYYY.</p>
-  <p>Format time as Thh:mm:ss.</p>
-  <p>Use dashes not slashes.</p>
+  <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time.</p>
+  <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only uses dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY).</p>
+  <p>Format time as hh:mm:ss.</p>
 {{/Correction}}
 
 {{#CorrectionDetails}}
-  <p>You must give a date in this field, but time is optional. If you're giving time then you must use a T between date and time, without spaces.</p>
-  <p>Format the date as YYYY-MM-DD or DD-MM-YYYY.</p>
-  <p>Format time as Thh:mm:ss.</p>
-  <p>Use dashes not slashes.</p>
+  <h1 class="heading-medium error-summary-heading">Make corrections to Mon_Date</h1>
+  <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only uses dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY). Format time as hh:mm:ss.</p>
 {{/CorrectionDetails}}
 
 {{#CorrectionMoreHelp}}
-  <p>Read the full rules on <a rel="external" target="_blank" href="{{DateAndTimeRules}}">date and time.</a></p>
+  <p>Read the <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">full rules for EPR data compliance monitoring</a>.</p>
 {{/CorrectionMoreHelp}}
