@@ -7,10 +7,13 @@ var CachHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
 var ErrorHelper = require('../api-handlers/multiple-error-helper');
 var UserHandler = require('../lib/user-handler');
+var ErrorHandler = require('../lib/error-handler');
 
 module.exports.getHandler = function (request, reply) {
   reply.view('02-send-your-data/01-choose-your-file', {
-    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
+    emptyfilemessage: ErrorHandler.render(450),
+    notcsvmessage: ErrorHandler.render(400)
   });
 };
 /*
@@ -71,9 +74,6 @@ module.exports.postHandler = function (request, reply) {
       reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
 
     }).catch(function (errorData) {
-    console.log('==> promise catch block ' + JSON.stringify(errorData));
-    request.log(['error', 'file-upload'], Utils.getBestLogMessageFromError(errorData));
-    request.session.clear('returnMetaData');
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
@@ -87,16 +87,17 @@ module.exports.postHandler = function (request, reply) {
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, '') : '';
               var links = HelpLinks.links;
-              //TODO get HTML template snippet instead of hard coded error message
-              var renderedErrorMessage = ErrorHelper.renderErrorMessage(errorData.message, links);
               var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
+              var errorCode = errorData.errorCode;
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {
                 uploadError: true,
-                errorMessage: renderedErrorMessage,
+                errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
                 lineErrors: renderedLineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
-                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
+                emptyfilemessage: ErrorHandler.render(450),
+                notcsvmessage: ErrorHandler.render(400)
               }).state('data-returns-id', sessionID, cookieOptions);
             });
         })

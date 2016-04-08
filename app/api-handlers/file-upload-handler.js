@@ -34,7 +34,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       console.log('\t' + body);
 
       var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
-      var errMessage, apiErrors = '';
+      var errorsummary, apiErrors = '';
 
       if (err) {
         reject({
@@ -68,15 +68,11 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         var lineError;
         var sortedLineErrorData;
         var lineErrorName;
-        var metadata = {
-          Correction: true,
-          CorrectionDetails: false,
-          CorrectionMoreHelp: false
-        };
+
         switch (appStatusCode) {
           case 900://Line errors
 
-            errMessage = ErrorHandler.render(900);
+            errorsummary = ErrorHandler.render(900, {filename: originalFileName});
             apiErrors = httpResponse.validationErrors;
             lineErrorData = [];
             lineErrors = apiErrors; //apiErrors.lineErrors;
@@ -84,16 +80,29 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             lineError;
 
             for (lineErrorName in lineErrors) {
-
               lineError = {};
               temp = lineErrors[lineErrorName];
               lineError.lineNumber = parseInt(temp.lineNumber, 10);
               lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
-              lineError.errorMessage = ErrorHandler.render(temp.errorCode, metadata, temp.errorMessage);
+              lineError.errorMessage = ErrorHandler.render(temp.errorCode,
+                {
+                  filename: originalFileName,
+                  Correction: true,
+                  CorrectionDetails: false,
+                  CorrectionMoreHelp: false
+                }, temp.errorMessage);
               lineError.errorCode = 'DR' + Utils.pad(temp.errorCode, 4);
               lineError.errorType = temp.errorType;
-              lineError.helpReference = temp.helpReference;
+              lineError.moreHelp = ErrorHandler.render(temp.errorCode,
+                {
+                  filename: originalFileName,
+                  Correction: false,
+                  CorrectionDetails: false,
+                  CorrectionMoreHelp: true,
+                  MoreHelpLink: temp.helpReference
+                }, temp.errorMessage);
+              //lineError.helpReference = temp.helpReference;
               lineError.definition = lineError.definition ? temp.definition : temp.fieldName;
               lineError.Correction = true;
               lineError.CorrectionDetails = true;
@@ -106,7 +115,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
             reject({
               isUserError: true,
-              message: errMessage,
+              errorsummary: errorsummary,
               lineErrors: sortedLineErrorData,
               lineErrorCount: sortedLineErrorData.length
             });
@@ -117,9 +126,12 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             var defaultErrorMessage = httpResponse.message;
             reject({
               isUserError: true,
+              errorCode: appStatusCode,
               message: ErrorHandler.render(appStatusCode, null, defaultErrorMessage),
+              errorsummary: ErrorHandler.render(appStatusCode, null, defaultErrorMessage),
               lineErrors: sortedLineErrorData,
-              lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
+              lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0,
+              defaultErrorMessage: defaultErrorMessage
             });
             break;
         }

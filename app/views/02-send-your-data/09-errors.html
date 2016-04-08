@@ -12,13 +12,7 @@ Send your data returns online
 
 
   <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-
-    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-      Make corrections
-    </h1>
-
-    <p>Before you can send {{fileName}} you need to make these corrections:</p>
-
+    {{{errorsummary}}}
   </div>
 
   {{#uploadError}}
@@ -43,9 +37,7 @@ Send your data returns online
 
       </td>
       <td>
-        {{#helpReference}}
-        Read the full rules on <a href="{{helpReference}}" target="DRHelpPage" rel="external">{{definition}}.</a>
-        {{/helpReference}}
+        {{{moreHelp}}}
       </td>
       </tr>
       {{/lineErrors}}

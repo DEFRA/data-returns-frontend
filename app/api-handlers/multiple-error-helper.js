@@ -28,7 +28,7 @@ module.exports = {
       var columnName = item.fieldName;
       //var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
       var groupkey = columnName;//+ '_' + errorType;
-      var groupID = uuid.v4();
+      var groupID = item.errorCode + '-' + uuid.v4();
       groupLinkID.set(groupkey, groupID);
     });
 
@@ -49,7 +49,8 @@ module.exports = {
       var Correction = true;
       var CorrectionDetails = true;
       var CorrectionMoreHelp = true;
-      var helpReference = item.helpReference;
+      //var helpReference = item.helpReference;
+      var moreHelp = item.moreHelp;
       var definition = item.definition;
 
       if (!lineNos.has(linekey)) {
@@ -62,11 +63,12 @@ module.exports = {
           errorType: Utils.titleCase(errorType),
           errorMessage: errorMessage,
           errorCode: errorCode,
-          helpReference: helpReference,
+          //helpReference: helpReference,
           definition: definition,
           Correction: Correction,
           CorrectionDetails: CorrectionDetails,
           CorrectionMoreHelp: CorrectionMoreHelp,
+          moreHelp: moreHelp,
           groupID: groupLinkID.get(groupkey)
         };
         group.push(temp);
