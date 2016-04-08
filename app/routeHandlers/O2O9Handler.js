@@ -2,6 +2,7 @@
 
 var CachHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
+var ErrorHelper = require('../lib/error-handler');
 
 module.exports = {
   getHandler: function (request, reply) {
@@ -25,7 +26,8 @@ module.exports = {
             uploadError: true,
             errorMessage: 'test message',
             lineErrors: errorData,
-            isLineErrors: true
+            isLineErrors: true,
+            errorsummary: ErrorHelper.render(900)
           });
         })
         .catch(function (err) {
