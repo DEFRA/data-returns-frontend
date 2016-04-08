@@ -212,6 +212,11 @@ module.exports = {
    */
   pad: function pad(num, len) {
     return (Array(len).join('0') + num).slice(-len);
+  },
+  titleCase: function (input) {
+    input = input.toLowerCase();
+    var ret = input.charAt(0).toUpperCase() + Array.prototype.slice.call(input, 1).join('');
+    return ret;
   }
 };
 

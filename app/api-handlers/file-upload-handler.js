@@ -90,9 +90,11 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               lineError.lineNumber = parseInt(temp.lineNumber, 10);
               lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
-              lineError.errorMessage = ErrorHandler.render(temp.errorCode,metadata) || temp.errorMessage;
+              lineError.errorMessage = ErrorHandler.render(temp.errorCode, metadata, temp.errorMessage);
               lineError.errorCode = 'DR' + Utils.pad(temp.errorCode, 4);
               lineError.errorType = temp.errorType;
+              lineError.helpReference = temp.helpReference;
+              lineError.definition = lineError.definition ? temp.definition : temp.fieldName;
               lineError.Correction = true;
               lineError.CorrectionDetails = true;
               lineError.CorrectionMoreHelp = true;
@@ -112,9 +114,10 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             break;
           default:
             //other errors
+            var defaultErrorMessage = httpResponse.message;
             reject({
               isUserError: true,
-              message: ErrorHandler.render(appStatusCode),
+              message: ErrorHandler.render(appStatusCode, null, defaultErrorMessage),
               lineErrors: sortedLineErrorData,
               lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0
             });

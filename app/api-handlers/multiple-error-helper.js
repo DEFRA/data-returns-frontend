@@ -6,6 +6,7 @@
 var uuid = require('node-uuid');
 var cacheHandler = require('../lib/cache-handler');
 var Hogan = require('hogan.js');
+var Utils = require('../lib/utils');
 
 module.exports = {
   /*
@@ -25,8 +26,8 @@ module.exports = {
     //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
       var columnName = item.fieldName;
-      var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
-      var groupkey = columnName + '_' + errorType;
+      //var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
+      var groupkey = columnName;//+ '_' + errorType;
       var groupID = uuid.v4();
       groupLinkID.set(groupkey, groupID);
     });
@@ -41,29 +42,43 @@ module.exports = {
       var rowNumber = item.lineNumber;
       var errorCode = item.errorCode;
       var errorMessage = item.errorMessage;
-      var groupkey = columnName + '_' + errorType;
+      var groupkey = columnName;// + '_' + errorType;
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
       var Correction = true;
       var CorrectionDetails = true;
       var CorrectionMoreHelp = true;
+      var helpReference = item.helpReference;
+      var definition = item.definition;
 
       if (!lineNos.has(linekey)) {
+        //Add a record to the group
         lineNos.set(linekey, linekey);
         temp = {
           rowNumber: rowNumber,
           columnName: columnName,
           errorValue: errorValue,
-          errorType: errorType,
+          errorType: Utils.titleCase(errorType),
           errorMessage: errorMessage,
           errorCode: errorCode,
+          helpReference: helpReference,
+          definition: definition,
           Correction: Correction,
           CorrectionDetails: CorrectionDetails,
           CorrectionMoreHelp: CorrectionMoreHelp,
           groupID: groupLinkID.get(groupkey)
         };
         group.push(temp);
+      } else {
+        //update errorType in an existing record in the group
+        group.forEach(function (record) {
+          if (record.columnName === columnName) {
+            if (record.errorType !== errorType) {
+              record.errorType = 'Missing or incorrect';
+            }
+          }
+        });
       }
 
       // add this group to a container
