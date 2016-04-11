@@ -9,4 +9,7 @@
 			margin-bottom:0;
 		}
 	}
+	a[rel="external"]::after {
+    background-position: right 4px;
+	}
 }

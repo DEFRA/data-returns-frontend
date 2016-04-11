@@ -2321,3 +2321,7 @@ input.validation-code {
 .error-table td p:last-child {
   margin-bottom: 0;
 }
+
+.error-table a[rel="external"]::after {
+  background-position: right 4px;
+}
