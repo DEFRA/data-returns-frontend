@@ -36,7 +36,8 @@ var postHandler = function (request, reply) {
           userHandler.setIsAuthenticated(sessionID, false);
           reply.view('02-send-your-data/04-enter-your-code', {
             errorMessage: errorMessage,
-            invalidPin: true
+            invalidPin: true,
+            errorcode: 'DR' + Utils.pad(errResult.code, 4)
           });
         });
 

@@ -16,8 +16,8 @@ Send your data returns online
 
     {{#invalidEmailAddress}}
     <div class="error-summary">
-      <h1 class="heading-medium error-summary-heading">Invalid email address</h1>
-      <p>You need to give us a valid email address</p>
+      {{{invalidEmailAddressErrorMessage}}}
+      <hidden id="error_code" value="{{errorcode}}" ></hidden>
     </div>
     {{/invalidEmailAddress}}
 

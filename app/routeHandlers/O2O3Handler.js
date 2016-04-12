@@ -4,6 +4,7 @@ var PinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
 var CacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
+var ErrorHandler = require('../lib/error-handler');
 
 module.exports = {
   /*
@@ -89,8 +90,9 @@ module.exports = {
       .catch(function (errResult) {
         if (errResult.invalidEmailAddress === true) {
           reply.view('02-send-your-data/03-confirm-your-email-address', {
-            returnMetaData: request.session.get('returnMetaData'),
-            invalidEmailAddress: true
+            invalidEmailAddress: true,
+            invalidEmailAddressErrorMessage: ErrorHandler.render(2050, null, 'Invalid email address'),
+            errorcode: 'DR2050'
           });
         }
       });

@@ -13,8 +13,8 @@ Send your data returns online
 
     {{#invalidPin}}
     <div class="error-summary">
-      <h1 class="heading-medium error-summary-heading">Your code is missing or doesn’t work</h1>
       {{{errorMessage}}}
+      <hidden id="error_code" value="{{errorcode}}" ></hidden>
     </div>
     {{/invalidPin}}
 
