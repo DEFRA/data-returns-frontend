@@ -10,74 +10,40 @@ Send your data returns online
 
   {{{feedbackbanner}}}
 
+
   <div class="error-summary" role="group" aria-labelledby="make-corrections" tabindex="-1">
     <h1 class="heading-medium error-summary-heading" id="make-corrections">Make corrections to {{columnName}}</h1>
     <p>Before you can send {{fileName}} you need to make corrections:</p>
+
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    {{{errorSummary}}}
+    <hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden>
+
   </div>
-  {{#isMissing}}
-  <div class="header">
-    <h2 class="heading-medium">How to make corrections</h2>
-    <p>{{{errorMessage}}}</p>
-    <p>See <a href="{{deplink}}" target="_blank" rel="external">how to format Environment Agency data</a>.</p>
-  </div>
-  <div class="grid-row">
-    <div class="column-two-thirds">
-      <div class="error-table">
-        <table id="errorTableHeader">
-          <thead>
-            <tr>
-              <th width="50%">Rows</th>
-              <th width="50%">Error</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{rows}}</td>
-              <td>{{errorType}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- error-table -->
-    </div>
-    <!-- column-two-thirds -->
-  </div>
-  {{/isMissing}}
-  {{#isIncorrect}}
-  <div class="header">
-    <h2 class="heading-medium">How to make corrections</h2>
-    <p>{{{errorMessage}}}</p>
-    <p>See <a href="{{deplink}}" target="_blank" rel="external">how to format Environment Agency data</a>.</p>
-  </div>
-  <div class="grid-row">
-    <div class="column-two-thirds">
-      <div class="error-table">
-        <table id="errorTableHeader">
-          <thead>
-            <tr>
-              <th width="50%">Row(s)</th>
-              <th width="50%">Error</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#data}}
-            <tr>
-              <td>{{rowNumber}}</td>
-              <td>{{errorValue}}</td>
-            </tr>
-            {{/data}}
-          </tbody>
-        </table>
-      </div>
-      <!-- error-table -->
-    </div>
-    <!-- column-two-thirds -->
-  </div>
-  {{/isIncorrect}}
-  <!-- grid-row -->
+
   <p class="back">
     <a class="button" href="/02-send-your-data/09-errors">Back to corrections table</a>
   </p>
+
+  <table id="errorTableHeader">
+    <thead>
+      <tr>
+        <th width="50%">Error</th>
+        <th width="50%">Row(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#data}}  
+      <tr>
+        <td>{{errorValue}}</td>
+        <td>{{rowNumberText}}</td>
+      </tr>
+      {{/data}}
+    </tbody>
+  </table>
+
+  <!-- grid-row -->
+
 </main>
 
 {{/content}}
