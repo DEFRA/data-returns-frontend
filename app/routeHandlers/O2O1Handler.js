@@ -8,11 +8,12 @@ var HelpLinks = require('../config/dep-help-links');
 var ErrorHelper = require('../api-handlers/multiple-error-helper');
 var UserHandler = require('../lib/user-handler');
 var ErrorHandler = require('../lib/error-handler');
+var Utils = require('../lib/utils');
 
 module.exports.getHandler = function (request, reply) {
   reply.view('02-send-your-data/01-choose-your-file', {
     HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-    emptyfilemessage: ErrorHandler.render(450),
+    emptyfilemessage: ErrorHandler.render(500),
     notcsvmessage: ErrorHandler.render(400)
   });
 };
@@ -28,7 +29,6 @@ module.exports.postHandler = function (request, reply) {
   var sourceName = request.payload.fileUpload.filename;
   var oldLocalName = request.payload.fileUpload.path;
   var newLocalName = oldLocalName.concat(Path.extname(sourceName));
-  var Utils = require('../lib/utils');
   var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
@@ -77,7 +77,6 @@ module.exports.postHandler = function (request, reply) {
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
-      //var sessionid = 'id_' + request.session.id;
       var cacheKey = sessionID + '_latestErrors';
       CachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function () {
@@ -87,17 +86,22 @@ module.exports.postHandler = function (request, reply) {
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, '') : '';
               var links = HelpLinks.links;
-              var renderedLineErrors = ErrorHelper.renderErrorMessage(errorData.lineErrors, links);
               var errorCode = errorData.errorCode;
+
+              if (isLineErrors !== true) {
+                links.errorCode = 'DR' + Utils.pad(errorCode, 4);
+              }
+
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {
                 uploadError: true,
                 errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
-                lineErrors: renderedLineErrors,
+                lineErrors: errorData.lineErrors, 
                 isLineErrors: errorData.lineErrors ? true : false,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-                emptyfilemessage: ErrorHandler.render(450),
-                notcsvmessage: ErrorHandler.render(400)
+                emptyfilemessage: ErrorHandler.render(500),
+                notcsvmessage: ErrorHandler.render(400),
+                errorCode: 'DR' + Utils.pad(errorCode, 4)
               }).state('data-returns-id', sessionID, cookieOptions);
             });
         })

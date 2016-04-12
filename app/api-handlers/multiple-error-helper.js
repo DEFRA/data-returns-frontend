@@ -7,7 +7,7 @@ var uuid = require('node-uuid');
 var cacheHandler = require('../lib/cache-handler');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
-
+var _ = require('lodash');
 module.exports = {
   /*
    * Groups error data by column name and error type, 
@@ -18,20 +18,17 @@ module.exports = {
   groupErrorData: function (data) {
 
     console.log('==> groupErrorData() ');
-
     var groupedData = {};
     var groupLinkID = new Map();
     var errorPageData = [];
-
     //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
       var columnName = item.fieldName;
       //var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
-      var groupkey = columnName;//+ '_' + errorType;
+      var groupkey = columnName; //+ '_' + errorType;
       var groupID = item.errorCode + '-' + uuid.v4();
       groupLinkID.set(groupkey, groupID);
     });
-
     //create grouped data for the details page
     var lineNos = new Map();
     data.forEach(function (item) {
@@ -42,7 +39,7 @@ module.exports = {
       var rowNumber = item.lineNumber;
       var errorCode = item.errorCode;
       var errorMessage = item.errorMessage;
-      var groupkey = columnName;// + '_' + errorType;
+      var groupkey = columnName; // + '_' + errorType;
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
@@ -52,7 +49,6 @@ module.exports = {
       //var helpReference = item.helpReference;
       var moreHelp = item.moreHelp;
       var definition = item.definition;
-
       if (!lineNos.has(linekey)) {
         //Add a record to the group
         lineNos.set(linekey, linekey);
@@ -86,15 +82,12 @@ module.exports = {
       // add this group to a container
       groupedData[groupkey] = group;
     });
-
     //save groups to redis for use later in details page
     for (var groupName in groupedData) {
       var groupID = groupLinkID.get(groupName);
       var group = groupedData[groupName];
       var firstErrorInGroup = group[0];
-
       errorPageData.push(firstErrorInGroup);
-
       (function (groupID, group) {
         cacheHandler.setValue('ErrorData_' + groupID, group)
           .then(function () {
@@ -120,11 +113,9 @@ module.exports = {
     var ret = template;
     var mustRender = false;
     var compiledTemplate;
-
     if (template && metadata) {
       template = (typeof (template) === 'object') ? JSON.stringify(template) : template;
       compiledTemplate = Hogan.compile(template);
-
       //Check if the template requires metadata
       for (var linkName in metadata) {
         if (template.indexOf(linkName) !== -1) {
@@ -139,9 +130,70 @@ module.exports = {
     }
 
     console.log('<== renderErrorMessage()');
-
     return ret;
+  },
+  getErrorDetails: function (data) {
 
+    return new Promise(function (resolve, reject) {
+      var errorDetails = [];
+      var dataClone = _.cloneDeep(data);
+
+      //substitute null and undefined error Values for the word 'Missing'
+      dataClone.forEach(function (row) {
+        if (row.errorValue === 'undefined' || row.errorValue === null) {
+          row.errorValue = 'Missing';
+        }
+      });
+
+      // use lodash to group errors by errorValue
+      var groupedData = _.groupBy(dataClone, 'errorValue');
+      var groupKeys = _.keys(groupedData);
+      var group, sortedGroup, index, item, prevRowNumber;
+      var rowNumberText = null, detailRow;
+
+      groupKeys.forEach(function (groupKey) {
+        group = groupedData[groupKey];
+        //sort each group by row number
+        sortedGroup = _.sortBy(group, 'rowNumber');
+
+        //Process row numbers format for display
+        rowNumberText = null;
+
+        for (index in sortedGroup) {
+          item = sortedGroup[index];
+          if (rowNumberText === null) {
+            rowNumberText = '' + item.rowNumber;
+            prevRowNumber = item.rowNumber;
+          } else {
+
+            if ((item.rowNumber - 1) === prevRowNumber) {
+              prevRowNumber = item.rowNumber;
+            } else {
+              if (rowNumberText.indexOf(prevRowNumber) === -1) {
+                rowNumberText += '-' + prevRowNumber;
+              }
+              prevRowNumber = item.rowNumber;
+              rowNumberText += ', ' + item.rowNumber;
+            }
+          }
+
+          detailRow = item;
+
+        }
+
+        detailRow.rowNumberText = rowNumberText;
+        detailRow.errorValue = _.upperFirst(groupKey);
+        errorDetails.push(detailRow);
+
+      });
+
+      //phew! and finally sort on the error !
+      errorDetails = _.sortBy(errorDetails, 'errorValue');
+
+      resolve(errorDetails);
+
+
+    });
   }
 
 };

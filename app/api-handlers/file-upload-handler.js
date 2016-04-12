@@ -103,7 +103,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
                   MoreHelpLink: temp.helpReference
                 }, temp.errorMessage);
               //lineError.helpReference = temp.helpReference;
-              lineError.definition = lineError.definition ? temp.definition : temp.fieldName;
+              lineError.definition = temp.definition ? temp.definition : temp.fieldName;
               lineError.Correction = true;
               lineError.CorrectionDetails = true;
               lineError.CorrectionMoreHelp = true;

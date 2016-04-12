@@ -217,6 +217,10 @@ module.exports = {
     input = input.toLowerCase();
     var ret = input.charAt(0).toUpperCase() + Array.prototype.slice.call(input, 1).join('');
     return ret;
+  },
+  makeValidMapKey: function (input) {
+    //remove non alphanumeric chars
+    return input.replace(/[\W_-]/g, '');
   }
 };
 
