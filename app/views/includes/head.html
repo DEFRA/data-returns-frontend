@@ -1,8 +1,13 @@
-<!--<link href="/public/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
-<link href="/public/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />-->
-<link href="/public/stylesheets/main-min.css" media="screen" rel="stylesheet" type="text/css" />
+
+{{#CSS.isCompressed}}
+  <link href="/public/stylesheets/main-min.css" media="screen" rel="stylesheet" type="text/css" />
+{{/CSS.isCompressed}}
+{{^CSS.isCompressed}}
+  <link href="/public/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+{{/CSS.isCompressed}}
+
 {{#analytics.useGoogleAnalytics}}
 <!-- Google Tag Manager -->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P34JJQ"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 {{/analytics.useGoogleAnalytics}}

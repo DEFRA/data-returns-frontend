@@ -76,5 +76,9 @@ config.dep = {
 config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
+
+config.compressCSS = true;
+
+
 // Publish the configuration.
 module.exports = config;

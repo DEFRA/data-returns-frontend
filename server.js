@@ -112,7 +112,11 @@ var sharedViewContext = {
   analytics: {
     useGoogleAnalytics: config.useGoogleAnalytics,
     googleTagManagerId: config.googleTagManagerId
+  },
+  CSS: {
+    isCompressed: config.compressCSS || false
   }
+
 };
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
@@ -210,16 +214,20 @@ server.start(function (err) {
       //console.log(min);
     }
   });
-// Using Clean-css for CSS
-  new compressor.minify({
-    type: 'clean-css',
-    fileIn: 'public/stylesheets/main.css',
-    fileOut: 'public/stylesheets/main-min.css',
-    callback: function (err, min) {
-      console.log(err);
-      //console.log(min);
-    }
-  });
+
+
+  if (config.compressCSS === true) {
+    new compressor.minify({
+      type: 'clean-css',
+      fileIn: 'public/stylesheets/main.css',
+      fileOut: 'public/stylesheets/main-min.css',
+      callback: function (err, min) {
+        console.log(err);
+        //console.log(min);
+      }
+    });
+  }
+
   if (err) {
     console.error('Failed to start server.');
     throw err;

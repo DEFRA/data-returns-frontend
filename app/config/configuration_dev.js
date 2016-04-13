@@ -69,6 +69,8 @@ config.dep = {
   returnTypeRulesLink: 'http://data-returns-help.herokuapp.com'
 };
 
+config.compressCSS = true;
+
 //http://data-returns-help.herokuapp.com/
 // Google Analytics configuration.
 config.useGoogleAnalytics = true;

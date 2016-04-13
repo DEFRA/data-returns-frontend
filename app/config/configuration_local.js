@@ -13,7 +13,7 @@ config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 25;
 config.smtp.ignoreTLS = true;
 config.smtp.username = process.env.smtpuser;
-config.smtp.password = process.env.smtppw; 
+config.smtp.password = process.env.smtppw;
 config.smtp.fromEmailAddress = 'noreply-local@environment-agency.gov.uk';
 config.smtp.useFooter = false;
 
@@ -75,6 +75,7 @@ config.dep = {
 config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
+config.compressCSS = false;
 
 // Publish the configuration.
 module.exports = config;

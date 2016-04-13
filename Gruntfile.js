@@ -48,7 +48,7 @@ module.exports = function(grunt){
           src: '**',
           dest: 'govuk_modules/govuk_template/'
         }]
-      },
+      }
     },
 
     // workaround for libsass
@@ -82,7 +82,7 @@ module.exports = function(grunt){
     },
 
     // nodemon watches for changes and restarts app
-    nodemon: {
+    /*nodemon: {
       dev: {
         script: 'server.js',
         options: {
@@ -91,11 +91,12 @@ module.exports = function(grunt){
           args: grunt.option.flags()
         }
       }
-    },
+    },*/
 
     concurrent: {
         target: {
-            tasks: ['watch', 'nodemon'],
+            //tasks: ['watch', 'nodemon'],
+            tasks: ['watch'],
             options: {
                 logConcurrentOutput: true
             }
