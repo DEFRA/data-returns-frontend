@@ -11,7 +11,6 @@ var server = new Hapi.Server();
 var banner = config.feedback.template;
 var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
-
 server.connection({
   host: '0.0.0.0',
   port: config.http.port,
@@ -160,7 +159,6 @@ server.route(require('./app/routes'));
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
   var resp = request.response;
-
   if (resp && resp.header) {
     resp.header('X-Frame-Options', 'sameorigin');
     resp.header('X-XSS-Protection', '1; mode=block');
@@ -176,15 +174,11 @@ server.ext('onPreResponse', function (request, reply) {
     var err = request.response;
     var statusCode = err.output.payload.statusCode;
     var errorMessage = err.output.payload.message;
-
     console.error(resp);
-
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
       return reply.view('02-send-your-data/01-choose-your-file', {
-        //TODO get content from template for this error when it becomes available
         uploadError: true,
-        errorMessage: 'Your file is too big!', //quick and dirty message until content is available
-        fileName: '<TODO>',
+        errorsummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
         lineErrors: null,
         isLineErrors: false,
         HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
@@ -214,8 +208,6 @@ server.start(function (err) {
       //console.log(min);
     }
   });
-
-
   if (config.compressCSS === true) {
     new compressor.minify({
       type: 'clean-css',
