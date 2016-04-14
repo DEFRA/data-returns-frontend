@@ -67,7 +67,7 @@ module.exports = [
     config: {
       payload: {
         maxBytes: config.CSV.maxfilesize,
-        timeout: 90 * 1000, // 90 seconds to allow for max file size 
+        timeout: false, //90 * 1000, // 90 seconds to allow for max file size 
         output: 'file',
         parse: true,
         uploads: config.upload.path
