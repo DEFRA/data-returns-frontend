@@ -37,7 +37,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
       var totalTime = new Date(endTime - startTime);
 
-      console.log('<== uploadFileToService() response received ', startTime, endTime, totalTime.getMilliseconds() +'ms',(totalTime.getMilliseconds()/1000) + ' seconds');
+      console.log('<== uploadFileToService() response received ', startTime, endTime, totalTime.getMilliseconds() + 'ms', (totalTime.getMilliseconds() / 1000) + ' seconds');
 
       console.log('\t' + body);
 
@@ -47,22 +47,29 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       if (err) {
         reject({
           isUserError: true,
-          message: ErrorHandler.render(3000)
+          errorsummary: ErrorHandler.render(3000)
         });
       } else if (statusCode === 200) {
         //File sent, received and processed successfully
-        httpResponse = JSON.parse(body);
-        var key = sessionID + '_UploadResult';
-        if (httpResponse) {
-          httpResponse.originalFileName = originalFileName;
-          cacheHandler.setValue(key, httpResponse)
-            .then(function () {
-              resolve(httpResponse);
-            })
-            .catch(function (result) {
-              console.error('<== successHandler() error: ' + result, httpResponse);
-              reject();
-            });
+        if (body) {
+          httpResponse = JSON.parse(body);
+          var key = sessionID + '_UploadResult';
+          if (httpResponse) {
+            httpResponse.originalFileName = originalFileName;
+            cacheHandler.setValue(key, httpResponse)
+              .then(function () {
+                resolve(httpResponse);
+              })
+              .catch(function (result) {
+                console.error('<== successHandler() error: ' + result, httpResponse);
+                reject();
+              });
+          }
+        } else {
+          reject({
+            isUserError: true,
+            errorsummary: ErrorHandler.render(3000)
+          });
         }
 
       } else {
