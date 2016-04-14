@@ -16,28 +16,22 @@ Send your data returns online
 
   {{#uploadError}}
   <div id="Validation-Summary" class="error-summary">
-    <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
+    <h1 class="heading-medium error-summary-heading">You can't send this file</h1>
     {{{errorsummary}}}
     <hidden id="error_code" value="{{errorCode}}"></hidden>
   </div>
   {{/uploadError}}
   <div id="Validation-Summary-empty-file" class="error-summary" style="display:none" >
-    <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
+    <h1 class="heading-medium error-summary-heading">You can't send this file</h1>
     {{{emptyfilemessage}}}
   </div>
 
   <div id="Validation-Summary-not-csv-file" class="error-summary" style="display:none">
-    <h1 class="heading-medium error-summary-heading">The file you selected cannot be sent</h1>
+    <h1 class="heading-medium error-summary-heading">You can't send this file</h1>
     {{{notcsvmessage}}}
   </div>
 
-  <p class="lede">You must <a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">format your data</a> to meet Environment Agency standards then save as <abbr title="Comma-separated values">CSV</abbr>.</p>
-  <details class="help-csv">
-    <summary><span class="summary">What's this?</span></summary>
-    <div class="panel panel-border-wide">
-      <p>CSV (comma separated values) format is used to move data between otherwise incompatible applications. In spreadsheet software you can use Save as&mdash;usually under the File menu&mdash;to create a CSV version of your file.</p>
-    </div>
-  </details>
+  <p class="lede">Make sure you've formatted your data using the rules and saved your file as <abbr title="Comma-separated values">CSV</abbr>.</p>
 
   <div class="text">
     <div class="form-group">
