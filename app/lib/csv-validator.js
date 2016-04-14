@@ -90,7 +90,9 @@ var validateFile = function (filePath, contentType) {
 
             reject({
               isUserError: true,
-              message: errorMessage
+              message: errorMessage,
+              errorSummary: errorMessage,
+              errorCode: 600
             });
 
           } else {
@@ -98,7 +100,9 @@ var validateFile = function (filePath, contentType) {
             errorMessage = ErrorHandler.render(3000);
             reject({
               isUserError: true,
-              err: errorMessage
+              err: errorMessage,
+              errorSummary: errorMessage,
+              errorCode: 3000
             });
           }
 
