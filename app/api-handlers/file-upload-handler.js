@@ -47,7 +47,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       if (err) {
         reject({
           isUserError: true,
-          errorsummary: ErrorHandler.render(3000)
+          message: ErrorHandler.render(3000),
+          errorsummary: ErrorHandler.render(3000),
+          errorCode: 3000
         });
       } else if (statusCode === 200) {
         //File sent, received and processed successfully
@@ -68,7 +70,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         } else {
           reject({
             isUserError: true,
-            errorsummary: ErrorHandler.render(3000)
+            message: ErrorHandler.render(3000),
+            errorsummary: ErrorHandler.render(3000),
+            errorCode: 3000
           });
         }
 
