@@ -177,6 +177,8 @@ server.ext('onPreResponse', function (request, reply) {
     var statusCode = err.output.payload.statusCode;
     var errorMessage = err.output.payload.message;
 
+    console.error('Boom Error', err);
+
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
       return reply.view('02-send-your-data/01-choose-your-file', {
         uploadError: true,

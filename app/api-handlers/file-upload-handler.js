@@ -27,9 +27,12 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       }
     };
 
+    console.log('Post to API ', new Date());
+
+
     // Make REST call into the Data Exchange service, and handle the result.
     Request.post(apiData, function (err, httpResponse, body) {
-      console.log('<== uploadFileToService() response received');
+      console.log('<== uploadFileToService() response received ', new Date());
 
       console.log('\t' + body);
 
