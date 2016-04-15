@@ -22,6 +22,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     // Define data to send to the Data Exchange service.
     var apiData = {
       url: config.API.endpoints.FILEUPLOAD,
+      gzip: true,
+      timeout: 120000, //ms 120 seconds
       formData: {
         fileUpload: FileSystem.createReadStream(filePath)
       }
