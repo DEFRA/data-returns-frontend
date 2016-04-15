@@ -90,6 +90,8 @@ module.exports.postHandler = function (request, reply) {
               if (isLineErrors !== true) {
                 links.errorCode = 'DR' + Utils.pad(errorCode, 4);
               }
+              
+              links.mailto = config.feedback.mailto;
 
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {
                 uploadError: true,
@@ -100,7 +102,8 @@ module.exports.postHandler = function (request, reply) {
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
                 emptyfilemessage: ErrorHandler.render(500, links, 'Your file is empty'),
                 notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
-                errorCode: 'DR' + Utils.pad(errorCode, 4)
+                errorCode: 'DR' + Utils.pad(errorCode, 4),
+                mailto: config.feedback.mailto
               }).state('data-returns-id', sessionID, cookieOptions);
             });
         })

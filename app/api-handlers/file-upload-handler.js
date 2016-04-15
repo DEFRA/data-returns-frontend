@@ -49,8 +49,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       if (err) {
         reject({
           isUserError: true,
-          message: ErrorHandler.render(3000),
-          errorsummary: ErrorHandler.render(3000),
+          message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+          errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
           errorCode: 3000
         });
       } else if (statusCode === 200) {
@@ -72,8 +72,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         } else {
           reject({
             isUserError: true,
-            message: ErrorHandler.render(3000),
-            errorsummary: ErrorHandler.render(3000),
+            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+            errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
             errorCode: 3000
           });
         }
@@ -148,8 +148,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             reject({
               isUserError: true,
               errorCode: appStatusCode,
-              message: ErrorHandler.render(appStatusCode, null, defaultErrorMessage),
-              errorsummary: ErrorHandler.render(appStatusCode, null, defaultErrorMessage),
+              message: ErrorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
+              errorsummary: ErrorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
               lineErrors: sortedLineErrorData,
               lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0,
               defaultErrorMessage: defaultErrorMessage

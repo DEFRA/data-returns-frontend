@@ -4,6 +4,7 @@ var FileSystem = require('fs');
 var ErrorMessages = require('./error-messages.js');
 var avHandler = require('./anitvirus-handler');
 var ErrorHandler = require('./error-handler');
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -97,13 +98,13 @@ var validateFile = function (filePath, contentType) {
 
           } else {
             console.error('\t ANTIVIRUS SCANNER ISSUE ');
-            errorMessage = ErrorHandler.render(3000);
-            reject({
-              isUserError: true,
-              err: errorMessage,
-              errorSummary: errorMessage,
-              errorCode: 3000
-            });
+            errorMessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+              reject({
+                isUserError: true,
+                err: errorMessage,
+                errorSummary: errorMessage,
+                errorCode: 3000
+              });
           }
 
         });

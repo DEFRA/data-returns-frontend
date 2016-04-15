@@ -51,7 +51,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
           reject({
             isUserError: false,
             err: err,
-            message: ErrorHandler.render(3000),
+            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
             rawResponse: response
           });
           break;
