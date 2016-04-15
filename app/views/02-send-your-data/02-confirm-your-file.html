@@ -25,7 +25,6 @@ Send your data returns online
       <p><a href="{{RegimeSpecificRules}}" rel="external" target="_blank">Find out more about how to submit the correct EA_ID</a>.</p>
       <p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">Find out about formatting all your data to meet EA standards</a>.</p>
     </div>
-
     <div class="text multi-panel">
       <p class="lede">The data returns file you’re going to send is about:</p>
 
@@ -40,23 +39,6 @@ Send your data returns online
             <span class="heading-small">Not given</span>
             {{/returnMetaData.siteName}}
           </p>
-        </li>
-
-        <li id="permit_found" class="panel panel-border-wide permit">
-          <p>
-            <span>EA unique identifier</span><br>
-            <span class="heading-small">{{returnMetaData.eaId}}</span>
-            <!--<span class="checking">(Checking <span class="loading"><img src="/public/images/icons/loading.svg"></span>)</span>-->
-          </p>
-        </li>
-
-        <li id="permit_not_found" class="panel panel-border-wide permitnotfound permit" style="display: none;">
-          <div class="error">
-            <p>
-              <span><span class="not-recognised error-message">Your EA unique identifier isn't recognised</span><br>
-                <span class="heading-small">{{returnMetaData.eaId}}</span>
-            </p>
-          </div>
         </li>
       </ul>
     </div>

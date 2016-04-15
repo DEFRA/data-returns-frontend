@@ -96,7 +96,7 @@ module.exports.postHandler = function (request, reply) {
                 uploadError: true,
                 errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
-                lineErrors: errorData.lineErrors, 
+                lineErrors: errorData.lineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
                 emptyfilemessage: ErrorHandler.render(500),
