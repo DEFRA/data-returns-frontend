@@ -34,12 +34,12 @@ module.exports = {
     data.forEach(function (item) {
 
       var columnName = item.fieldName;
-      var errorType = item.errorType; //item.errorValue === null ? 'Missing' : 'Incorrect';
-      var errorValue = item.errorValue;
+      var errorType = item.errorValue === null ? 'Missing' : 'Incorrect';
+      var errorValue = item.errorValue === null ? 'Missing' : item.errorValue;
       var rowNumber = item.lineNumber;
       var errorCode = item.errorCode;
       var errorMessage = item.errorMessage;
-      var groupkey = columnName; // + '_' + errorType;
+      var groupkey = columnName; 
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
@@ -70,11 +70,12 @@ module.exports = {
         group.push(temp);
       } else {
         //update errorType in an existing record in the group
+        //if there is both missing and incorrect in the group
+        var clonedGroup = _.groupBy(group, 'errorType');
+        var groupCount = Object.keys(clonedGroup).length;
         group.forEach(function (record) {
-          if (record.columnName === columnName) {
-            if (record.errorType !== errorType) {
-              record.errorType = 'Missing or incorrect';
-            }
+          if (record.columnName === columnName && groupCount > 1) {
+            record.errorType = 'Missing or incorrect';
           }
         });
       }
@@ -139,9 +140,13 @@ module.exports = {
       var dataClone = _.cloneDeep(data);
 
       //substitute null and undefined error Values for the word 'Missing'
+      //and LENGTH for 'Incorrect'
       dataClone.forEach(function (row) {
         if (row.errorValue === 'undefined' || row.errorValue === null) {
           row.errorValue = 'Missing';
+        }
+        if (row.errorValue === 'LENGTH') {
+          row.errorValue = 'Incorrect';
         }
       });
 
