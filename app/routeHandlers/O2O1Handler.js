@@ -12,9 +12,8 @@ var Utils = require('../lib/utils');
 
 module.exports.getHandler = function (request, reply) {
   reply.view('02-send-your-data/01-choose-your-file', {
-    HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-    emptyfilemessage: ErrorHandler.render(500),
-    notcsvmessage: ErrorHandler.render(400)
+    emptyfilemessage: ErrorHandler.render(500, HelpLinks.links, 'Your File is empty.'),
+    notcsvmessage: ErrorHandler.render(400, HelpLinks.links, 'Your file is not a CSV.')
   });
 };
 /*
@@ -96,11 +95,11 @@ module.exports.postHandler = function (request, reply) {
                 uploadError: true,
                 errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
-                lineErrors: errorData.lineErrors, 
+                lineErrors: errorData.lineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-                emptyfilemessage: ErrorHandler.render(500),
-                notcsvmessage: ErrorHandler.render(400),
+                emptyfilemessage: ErrorHandler.render(500, links, 'Your file is empty'),
+                notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
                 errorCode: 'DR' + Utils.pad(errorCode, 4)
               }).state('data-returns-id', sessionID, cookieOptions);
             });
