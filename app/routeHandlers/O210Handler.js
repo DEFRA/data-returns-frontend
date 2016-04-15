@@ -7,8 +7,6 @@ var ErrorHandler = require('../lib/error-handler');
 module.exports = {
   getHandler: function (request, reply) {
 
-
-
     var groupid = request.query.groupid;
     var key = 'ErrorData_' + groupid;
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);

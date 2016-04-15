@@ -11,7 +11,7 @@ var server = new Hapi.Server();
 var banner = config.feedback.template;
 var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
-
+console.log('Starting the Data-Returns Service');
 server.connection({
   host: '0.0.0.0',
   port: config.http.port,
@@ -196,10 +196,13 @@ server.ext('onPreResponse', function (request, reply) {
   reply.continue();
 });
 // Start the server.
-server.start(function (err) {
+
+
+  server.start(function (err) {
+
 
   utils.createUploadDirectory();
-  //ValidationErrorHandler.loadErrorTemplates();
+
   console.log('==> Minifying and combining Javascript files');
   // Using UglifyJS for JS
   new compressor.minify({
@@ -229,8 +232,5 @@ server.start(function (err) {
     console.error('Failed to start server.');
     throw err;
   }
-  server.log(
-    ['info', 'status'],
-    'Data Returns Frontend: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV
-    );
+  console.log('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
 });

@@ -16,7 +16,8 @@ var loadErrorTemplates = function () {
   console.log('==> Loading Templates...');
   var compiledTemplates = {};
   filenames.forEach(function (filename) {
-    console.log('\tLoading ' + filename, filecount++);
+    filecount++;
+    //console.log('\tLoading ' + filename, filecount++);
     Utils.readFile(filename, function (err, fileContents) {
       if (err) {
         console.error('Unable to read ' + filename, err);
@@ -24,9 +25,6 @@ var loadErrorTemplates = function () {
         x = filename.lastIndexOf('/');
         y = filename.indexOf('.html');
         key = filename.substring(x + 1, y);
-        //hiddenField = '<hidden id="error-number" value="' + key + '" ></hidden>';
-        //compiledTemplate = Hogan.compile(hiddenField + fileContents);
-        //console.log('/t compiling ' + filename);
         compiledTemplate = Hogan.compile(fileContents);
         compiledTemplates[key] = compiledTemplate;
       }
@@ -56,8 +54,8 @@ module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
   } else {
     ret = defaultErrorMessage;
   }
-  
-  console.log('<== error-handler.render()');
+
+  console.log('<== error-handler.render()', key);
   return ret;
 };
 

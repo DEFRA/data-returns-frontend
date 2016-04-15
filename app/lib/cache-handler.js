@@ -33,7 +33,7 @@ module.exports = {
               message: err.message
             });
           } else {
-            console.log('<== cache-handler.getValue() data: :' + reply);
+            console.log('<== cache-handler.getValue()');
             resolve(reply);
           }
         });
@@ -56,7 +56,7 @@ module.exports = {
 
     return new Promise(function (resolve, reject) {
       // key = key.replace(/"/g, "");
-      console.log('==> CacheHandler setValue() ', key, value);
+      console.log('==> CacheHandler setValue() ', key);
       if (value) {
         client.set(key, JSON.stringify(value), function (err, res) {
 

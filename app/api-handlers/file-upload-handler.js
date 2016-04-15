@@ -41,7 +41,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
       console.log('<== uploadFileToService() response received ', startTime, endTime, totalTime.getMilliseconds() + 'ms', (totalTime.getMilliseconds() / 1000) + ' seconds');
 
-      console.log('\t' + body);
+      //console.log('\t' + body);
 
       var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
       var errorsummary, apiErrors = '';
@@ -65,7 +65,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
                 resolve(httpResponse);
               })
               .catch(function (result) {
-                console.error('<== successHandler() error: ' + result, httpResponse);
+                console.error('<== successHandler() error: ' + result);
                 reject();
               });
           }
@@ -80,7 +80,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
       } else {
         //There are validation errors
-        console.error('file-upload-handler.processResponse()', body);
+        console.error('file-upload-handler.processResponse()');
         httpResponse = JSON.parse(body);
         var appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
         var lineErrorData;
