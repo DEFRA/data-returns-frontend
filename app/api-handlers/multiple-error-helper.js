@@ -47,7 +47,8 @@ module.exports = {
       var Correction = true;
       var CorrectionDetails = true;
       var CorrectionMoreHelp = true;
-      //var helpReference = item.helpReference;
+      
+      var helpReference = item.helpReference;
       var moreHelp = item.moreHelp;
       var definition = item.definition;
       if (!lineNos.has(linekey)) {
@@ -60,7 +61,7 @@ module.exports = {
           errorType: Utils.titleCase(errorType),
           errorMessage: errorMessage,
           errorCode: errorCode,
-          //helpReference: helpReference,
+          helpReference: helpReference,
           definition: definition,
           Correction: Correction,
           CorrectionDetails: CorrectionDetails,

@@ -32,9 +32,10 @@ module.exports = {
                     filename: fileName,
                     Correction: false,
                     CorrectionDetails: true,
-                    CorrectionMoreHelp: false,
+                    CorrectionMoreHelp: true,
                     columnName: columnName,
-                    errorCode: errorCode
+                    errorCode: errorCode,
+                    MoreHelpLink: firstError.helpReference
                   }, firstError.errorMessage);
 
                 reply.view('02-send-your-data/10-error-detail', {
