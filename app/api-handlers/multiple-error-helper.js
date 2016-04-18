@@ -8,6 +8,7 @@ var cacheHandler = require('../lib/cache-handler');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
 var _ = require('lodash');
+
 module.exports = {
   /*
    * Groups error data by column name and error type, 
@@ -39,7 +40,7 @@ module.exports = {
       var rowNumber = item.lineNumber;
       var errorCode = item.errorCode;
       var errorMessage = item.errorMessage;
-      var groupkey = columnName; 
+      var groupkey = columnName;
       var group = groupedData[groupkey] || [];
       var linekey = groupkey + rowNumber;
       var temp;
@@ -163,27 +164,35 @@ module.exports = {
 
         //Process row numbers format for display
         rowNumberText = null;
+        var max = sortedGroup.length;
+        var wasAdj = false;
 
-        for (index in sortedGroup) {
-          item = sortedGroup[index];
-          if (rowNumberText === null) {
-            rowNumberText = '' + item.rowNumber;
+        for (var i = 0; i < max; i++) {
+          item = sortedGroup[i];
+
+          //first record
+          if (i === 0) {
+            rowNumberText = item.rowNumber;
             prevRowNumber = item.rowNumber;
           } else {
-
-            if ((item.rowNumber - 1) === prevRowNumber) {
-              prevRowNumber = item.rowNumber;
+            //subsequent records 
+            //is the current row adjacent to previous row
+            if ((prevRowNumber + 1) === item.rowNumber) {
+              wasAdj = true;
             } else {
-              if (rowNumberText.indexOf(prevRowNumber) === -1) {
-                rowNumberText += '-' + prevRowNumber;
+              if (wasAdj) {
+                rowNumberText += '-' + sortedGroup[(i - 1)].rowNumber;
               }
-              prevRowNumber = item.rowNumber;
               rowNumberText += ', ' + item.rowNumber;
+              wasAdj = false;
             }
+            prevRowNumber = item.rowNumber;
           }
-
           detailRow = item;
+        }
 
+        if (wasAdj) {
+          rowNumberText += '-' + sortedGroup[max - 1].rowNumber;
         }
 
         detailRow.rowNumberText = rowNumberText;
@@ -194,10 +203,7 @@ module.exports = {
 
       //phew! and finally sort on the error !
       errorDetails = _.sortBy(errorDetails, 'errorValue');
-
       resolve(errorDetails);
-
-
     });
   }
 
