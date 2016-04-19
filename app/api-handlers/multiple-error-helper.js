@@ -77,7 +77,7 @@ module.exports = {
         var groupCount = Object.keys(clonedGroup).length;
         group.forEach(function (record) {
           if (record.columnName === columnName && groupCount > 1) {
-            record.errorType = 'Missing or incorrect';
+            record.errorType = 'Missing and incorrect';
           }
         });
       }
