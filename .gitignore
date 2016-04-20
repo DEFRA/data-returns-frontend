@@ -6,7 +6,9 @@
 node_modules
 uploads
 govuk_modules
+/govuk_modules/**
 public
+/public/**
 .idea
 /nbproject/**
 reports
@@ -18,5 +20,5 @@ stdout
 /node_modules/
 /logs/
 /uploads/
-
+/app/config/configuration_local.js
 /eclipse-launches/
