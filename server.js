@@ -198,7 +198,7 @@ server.ext('onPreResponse', function (request, reply) {
 // Start the server.
 
 
-  server.start(function (err) {
+server.start(function (err) {
 
 
   utils.createUploadDirectory();
@@ -207,14 +207,24 @@ server.ext('onPreResponse', function (request, reply) {
   // Using UglifyJS for JS
   new compressor.minify({
     type: 'uglifyjs',
-    fileIn: ['public/javascripts/details.polyfill.js', 'public/javascripts/fancy-file-upload.js'],
-    fileOut: 'public/javascripts/data-returns-min.js',
+    fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
+    fileOut: 'assets/javascripts/data-returns-min.js',
     callback: function (err, min) {
       console.log(err);
       //console.log(min);
     }
   });
 
+  //belt and braces to help sass users
+  new compressor.minify({
+    type: 'uglifyjs',
+    fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
+    fileOut: 'public/javascripts/data-returns-min.js',
+    callback: function (err, min) {
+      console.log(err);
+      //console.log(min);
+    }
+  });
 
   if (config.compressCSS === true) {
     new compressor.minify({
