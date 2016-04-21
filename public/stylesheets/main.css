@@ -2312,6 +2312,9 @@ input.validation-code {
 
 .error-table td {
   vertical-align: top;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .error-table td p:first-child {

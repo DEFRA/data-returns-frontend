@@ -2,6 +2,9 @@
 	margin-bottom:30px;
 	td {
 		vertical-align:top;
+		max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 		p:first-child {
 			margin-top:0;
 		}
