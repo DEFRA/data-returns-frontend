@@ -16,35 +16,33 @@ Send your data returns online
   </div>
 
   {{#uploadError}}
-  <div class="error-table">
-    <table id="errorTableHeader" class="error-table">
-      <thead>
-        <tr>
-          <th width="12%">Column</th>
-          <th width="13%">Error</th>
-          <th width="40%">Correction</th>
-          <th width="35%">More help</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#lineErrors}}
-        <tr>
-          <td><abbr title="{{definition}}">{{columnName}}</abbr><hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden></td>
-      <td title="Error Code:{{errorCode}}">{{errorType}}</td>
-      <td>
-        {{{errorMessage}}}
-        <p><a href="/02-send-your-data/10-error-detail?groupid={{groupID}}" >See details of which rows to correct</a>.</p>
-
-      </td>
-      <td>
-        {{{moreHelp}}}
-      </td>
+  <table id="errorTableHeader" class="error-table">
+    <thead>
+      <tr>
+        <th width="12%">Column</th>
+        <th width="13%">Error</th>
+        <th width="40%">Correction</th>
+        <th width="35%">More help</th>
       </tr>
-      {{/lineErrors}}
-      {{/uploadError}}
-      </tbody>
-    </table>
-  </div>
+    </thead>
+    <tbody>
+      {{#lineErrors}}
+      <tr>
+        <td><abbr title="{{definition}}">{{columnName}}</abbr><hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden></td>
+    <td title="Error Code:{{errorCode}}">{{errorType}}</td>
+    <td>
+      {{{errorMessage}}}
+      <p><a href="/02-send-your-data/10-error-detail?groupid={{groupID}}" >See details of which rows to correct</a>.</p>
+
+    </td>
+    <td>
+      {{{moreHelp}}}
+    </td>
+    </tr>
+    {{/lineErrors}}
+    {{/uploadError}}
+    </tbody>
+  </table>
 </div>
 
 
