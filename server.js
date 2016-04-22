@@ -11,7 +11,11 @@ var server = new Hapi.Server();
 var banner = config.feedback.template;
 var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
+var SASSHandler = require('./app/lib/SASSHandler');
+
+SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 console.log('Starting the Data-Returns Service');
+
 server.connection({
   host: '0.0.0.0',
   port: config.http.port,
@@ -118,6 +122,17 @@ var sharedViewContext = {
   }
 
 };
+
+/*server.register({
+ register: HapiSass,
+ options: sassOptions
+ }
+ , function (err) {
+ if (err)
+ throw err;
+ 
+ }
+ );*/
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
   var partialsCache = {};
@@ -195,6 +210,11 @@ server.ext('onPreResponse', function (request, reply) {
   }
   reply.continue();
 });
+
+
+
+
+
 // Start the server.
 
 
@@ -210,33 +230,23 @@ server.start(function (err) {
     fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
     fileOut: 'assets/javascripts/data-returns-min.js',
     callback: function (err, min) {
-      console.log(err);
-      //console.log(min);
+      if (err) {
+        console.error(err);
+      }
     }
   });
 
-  //belt and braces to help sass users
+
   new compressor.minify({
     type: 'uglifyjs',
     fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
     fileOut: 'public/javascripts/data-returns-min.js',
     callback: function (err, min) {
-      console.log(err);
-      //console.log(min);
+      if (err) {
+        console.error(err);
+      }
     }
   });
-
-  if (config.compressCSS === true) {
-    new compressor.minify({
-      type: 'clean-css',
-      fileIn: 'public/stylesheets/main.css',
-      fileOut: 'public/stylesheets/main-min.css',
-      callback: function (err, min) {
-        console.log(err);
-        //console.log(min);
-      }
-    });
-  }
 
   if (err) {
     console.error('Failed to start server.');
