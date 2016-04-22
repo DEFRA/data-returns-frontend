@@ -27,7 +27,7 @@
     "grunt-sass": "1.1.0",
     "grunt-text-replace": "0.3.12",
     "hapi": "^13.0.0",
-    "hapi-auth-basic": "^4.1.0"
+    "hapi-auth-basic": "^4.1.0",
     "hogan.js": "3.0.2",
     "inert": "^3.2.0",
     "joi": "^7.0.1",
