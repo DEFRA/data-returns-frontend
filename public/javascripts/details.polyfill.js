@@ -64,6 +64,17 @@
   // Initialisation function
   function addDetailsPolyfill(list) {
 
+//add cumcumber test id's
+    var items = document.all;
+    var counter = 0;
+    var title = location.pathname;
+    for (var i = 0; i < items.length; i++) {
+      var elem = items[i];
+      if (!elem.id) {
+        elem.setAttribute('id', 'T-' + title + '-' + i);
+      }
+      counter++;
+    }
 
     //add cumcumber test id's
     var items = document.all;
