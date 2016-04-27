@@ -44,6 +44,8 @@ config.smtp.success = '250 Message accepted';
 config.smtp.ealogo = 'http://assets.digital.cabinet-office.gov.uk/government/uploads/system/uploads/organisation/logo/199/EAlogo.png';
 config.smtp.govuklogo = 'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png';
 config.smtp.crownLogo = 'http://www.tax.service.gov.uk/assets/2.30.0/images/gov.uk_logotype_crown.png';
+config.smtp.max_limit = 10;
+config.smtp.max_time_minutes = 10;
 
 //Pin configuration
 config.pin = {
@@ -53,7 +55,8 @@ config.pin = {
   ValidTimePeriodMinutes: 60 * 24,
   TTL: 1000,
   useTTL: false,
-  alwaysGenerate: true
+  alwaysGenerate: true,
+  maxretries: 10
 };
 
 // initial File upload directory where virus checker can find the files

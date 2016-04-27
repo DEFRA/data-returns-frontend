@@ -81,20 +81,21 @@ module.exports = {
                   SMTPHandler.sendPinEmail(usermail, newpin);
                 })
                 .then(function () {
-                  reply.redirect('/02-send-your-data/04-enter-your-code');
+                  reply.redirect('/02-send-your-data/04-enter-your-code',
+                    {
+                      emailAddress: usermail
+                    });
                 });
             });
         }
 
       })
       .catch(function (errResult) {
-        if (errResult.invalidEmailAddress === true) {
-          reply.view('02-send-your-data/03-confirm-your-email-address', {
-            invalidEmailAddress: true,
-            invalidEmailAddressErrorMessage: ErrorHandler.render(2050, null, 'Invalid email address'),
-            errorcode: 'DR2050'
-          });
-        }
+        reply.view('02-send-your-data/03-confirm-your-email-address', {
+          invalidEmailAddress: true,
+          invalidEmailAddressErrorMessage: ErrorHandler.render(errResult.errorCode, null, 'Invalid email address'),
+          errorcode: 'DR' + errResult.errorCode
+        });
       });
   }
 };
