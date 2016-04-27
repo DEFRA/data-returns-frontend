@@ -1,7 +1,6 @@
 
 'use strict';
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
-var IndexHandler = require('./routeHandlers/indexHandler');
 var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var O1O1Handler = require('./routeHandlers/O1O1Handler');
 var O2O1Handler = require('./routeHandlers/O2O1Handler');
@@ -13,7 +12,6 @@ var O2O6Handler = require('./routeHandlers/O2O6Handler');
 var O2O8Handler = require('./routeHandlers/O2O8Handler');
 var O2O9Handler = require('./routeHandlers/O2O9Handler');
 var O21OHandler = require('./routeHandlers/O210Handler');
-
 module.exports = [
   // Static assets.
   {
@@ -30,19 +28,21 @@ module.exports = [
       }
     }
   },
-  // TODO: Make redirection environment-specific, and rename the index to "development" or similar.
-  // Redirect for site root.
+ 
   {
     method: 'GET',
     path: '/',
-    handler: IndexHandler.redirectToIndex
+    handler: function (request, reply) {//IndexHandler.redirectToIndex
+      reply.redirect('/01-start/01-start');
+    }
   },
-  // Index page (visible in development only).
-  // TODO: Remove
+  
   {
     method: 'GET',
     path: '/index',
-    handler: BasicTemplateHandler.getHandler
+    handler: function (request, reply) {//BasicTemplateHandler.getHandler
+      reply.redirect('/01-start/01-start');
+    }
   },
   // Start page.
   {
@@ -61,6 +61,23 @@ module.exports = [
     path: '/02-send-your-data/01-choose-your-file',
     handler: O2O1Handler.getHandler//BasicTemplateHandler.getHandler
   },
+  /*{
+   method: 'GET',
+   path: '/02-send-your-data/01-choose-your-file',
+   config: {plugins: {
+   'hapi-io': 'get-status'
+   }},
+   handler: function (request, reply) {
+   var io = request.plugins['hapi-io'];
+   BasicTemplateHandler.getHandler(request, reply);
+   if (io) {
+   var socket = io.socket;
+   socket.emit('upload-status', 'Server says "Processing complete"');
+   // Do something with socket
+   }
+   
+   }
+   },*/
   {
     method: 'POST',
     path: '/02-send-your-data/01-choose-your-file',
@@ -73,7 +90,9 @@ module.exports = [
         uploads: config.upload.path
       }
     },
-    handler: O2O1Handler.postHandler
+    handler: function (request, reply) {
+      O2O1Handler.postHandler(request, reply);
+    }
   },
   // 02-Verify-Your-File.
   {
@@ -139,7 +158,14 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/09-errors',
-    handler: O2O9Handler.getHandler
+    config: {
+      plugins: {
+        'hapi-io': 'get-status'
+      }
+    },
+    handler: function (request, reply) {
+      O2O9Handler.getHandler(request, reply);
+    }
   },
   {
     method: 'GET',
