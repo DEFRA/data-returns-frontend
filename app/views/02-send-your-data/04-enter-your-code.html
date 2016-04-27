@@ -18,13 +18,14 @@ Send your data returns online
     </div>
     {{/invalidPin}}
 
+    {{^startAgain}}
     <div class="text">
-      <p class="lede">Enter the confirmation code we sent to your email address.</p>
+      <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
       <div class="form-group">
         <label class="form-label" for="validation-code">
           <span class="form-hint">eg, 1234</span>
         </label>
-        <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" >
+        <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" autofocus maxlength="4" >
       </div>
       <div class="form-group">
         <a id="nextHref">
@@ -32,6 +33,12 @@ Send your data returns online
         </a>
       </div>
     </div>
+    {{/startAgain}}
+    {{#startAgain}}
+    <div class="form-group">
+      <input type="button" id="nextBtn" class="button" value="Start again" onclick="location.href = '/01-start/01-start';">
+    </div>
+    {{/startAgain}}
     <!-- /text -->
   </form>
 </main>
