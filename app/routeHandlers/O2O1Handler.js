@@ -31,6 +31,7 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
+  
 
   var cookieOptions = {
     path: '/',
@@ -80,7 +81,6 @@ module.exports.postHandler = function (request, reply) {
       CachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function () {
           var filekey = sessionID + '_SourceName';
-
           CachHandler.getValue(filekey)
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, '') : '';
@@ -90,7 +90,7 @@ module.exports.postHandler = function (request, reply) {
               if (isLineErrors !== true) {
                 links.errorCode = 'DR' + Utils.pad(errorCode, 4);
               }
-              
+
               links.mailto = config.feedback.mailto;
 
               reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {

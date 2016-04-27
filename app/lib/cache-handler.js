@@ -52,12 +52,12 @@ module.exports = {
    * @param key
    * @param value
    */
-  setValue: function (key, value) {
+  setValue: function (key, value, expiry) {
 
     return new Promise(function (resolve, reject) {
       // key = key.replace(/"/g, "");
       console.log('==> CacheHandler setValue() ', key);
-      if (value) {
+      if (value !== null || value !== 'undefined') {
         client.set(key, JSON.stringify(value), function (err, res) {
 
           if (err) {
@@ -66,9 +66,13 @@ module.exports = {
             reject(err);
           } else {
             console.log('<== CacheHandler setValue() redis response: ' + res);
+
             //auto delete any orphans after 24hrs
-            client.EXPIRE(key, (60 * 60) * 24);
+            var expireBy = expiry || ((60 * 60) * 24);
+            client.EXPIRE(key, expireBy);
+
             resolve(true);
+
           }
 
         });

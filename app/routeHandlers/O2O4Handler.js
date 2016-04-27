@@ -37,7 +37,9 @@ var postHandler = function (request, reply) {
           reply.view('02-send-your-data/04-enter-your-code', {
             errorMessage: errorMessage,
             invalidPin: true,
-            errorcode: 'DR' + Utils.pad(errResult.code, 4)
+            errorcode: 'DR' + Utils.pad(errResult.code, 4),
+            emailAddress: emailAddress,
+            startAgain: errResult.code === 2280 ? true : false
           });
         });
 

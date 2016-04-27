@@ -11,10 +11,12 @@ var Joi = require('joi');
 var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
 var Hogan = require('hogan.js');
+var CacheHandler = require('./cache-handler');
 var compiledPinTemplate;
 var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
 var compiledConfirmationEmailTextTemplate;
+
 
 //Read the pin code template files
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
@@ -55,6 +57,66 @@ var schema = {
   address: Joi.string().email()
 };
 
+/* checkLockOut
+ * @param recipient the email address
+ * @return A promise that resolves true if the user is not locked out
+ * and rejects if the user is locked out
+ */
+var checkLockOut = function (recipient) {
+
+  return new Promise(function (resolve, reject) {
+
+    var key = recipient + '-lockedout';
+    CacheHandler.getValue(key)
+      .then(function (result) {
+        if (result) {
+          // if a record exists they are locked out, the redis key will expire after an hour
+          reject(true);
+        } else {
+          resolve(false);
+        }
+      });
+  });
+};
+
+
+/*
+ * checkEmailLimit checks the number of times an email address has been used
+ * @param recipient the emails address
+ * @return a promise that resolves true if under the limit, rejects if over the limit
+ * 
+ */
+var checkEmailLimit = function (recipient) {
+
+  return new Promise(function (resolve, reject) {
+
+    var key = recipient + '-count';
+
+    CacheHandler.getValue(key)
+      .then(function (result) {
+        if (result) {
+          result = parseInt(result);
+          result++;
+          var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;// default to 10 minutes
+          CacheHandler.setValue(key, result, expiry);
+          if (result >= 10) {
+            key = recipient + '-lockedout';
+            expiry = (60 * 60);
+            CacheHandler.setValue(key, true, expiry);
+            reject({attempts: result});
+          } else {
+            resolve(true);
+          }
+        } else {
+          // not in redis, either first time in or expired
+          var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;
+          CacheHandler.setValue(key, 1, expiry);
+          resolve(true);
+        }
+      });
+  });
+};
+
 /* validateEmailAddress
  * @param emailaddress - the email address to validate
  * @return Promise
@@ -64,28 +126,45 @@ var schema = {
  *    
  *    */
 var validateEmailAddress = function (emailaddress) {
-
   return new Promise(function (resolve, reject) {
-    console.log('==> validateEmailAddress');
-    var result = Joi.validate({'address': emailaddress}, schema);
 
-    if (result.error) {
-      console.log('\t email address is invalid: ' + JSON.stringify(result));
-      reject({
-        invalidEmailAddress: true,
-        message: errorMsgs.SMTP.INVALIDEMAILADDRESS
+    checkLockOut(emailaddress)
+      .then(function (result) {
+        checkEmailLimit(emailaddress)
+          .then(function (result) {
+            console.log('==> validateEmailAddress');
+            var result = Joi.validate({'address': emailaddress}, schema);
+            if (result.error) {
+              console.log('\t email address is invalid: ' + JSON.stringify(result));
+              reject({
+                invalidEmailAddress: true,
+                errorCode: 2050
+              });
+            } else {
+              console.log('\t email address is valid');
+              resolve(true);
+            }
+          })
+          .catch(function (err) {
+            //too many attempts
+            reject({
+              invalidEmailAddress: true,
+              errorCode: 2055
+            });
+          });
+      })
+      .catch(function (err) {
+        //Locked out for an hour
+        reject({
+          invalidEmailAddress: true,
+          errorCode: 2055
+        });
       });
-    } else {
-      console.log('\t email address is valid');
-      resolve(true);
-    }
   });
 };
-
 /* Default Transport (SMTP Connection) */
 
 var isUseCatcher = config.smtp.useMailCatcher === true ? true : false;
-
 var transporter = nodemailer.createTransport({
   host: isUseCatcher ? config.smtp.mailcatcher.host : config.smtp.host,
   port: isUseCatcher ? config.smtp.mailcatcher.port : config.smtp.port,
@@ -98,6 +177,12 @@ var transporter = nodemailer.createTransport({
   // default values for sendMail method
   from: isUseCatcher ? sender : 'datareturns@envage.co.uk'
 });
+//config.smtp.max_limit = 10;
+//config.smtp.max_time_minutes = 10;
+
+
+
+
 
 /* emails a recipient
  * @param recipient The recipients email address
@@ -121,7 +206,6 @@ var sendPinEmail = function (recipient, newPin) {
       crownLogo: config.smtp.crownLogo,
       useFooter: config.smtp.useFooter
     };
-
     var emailBody = compiledPinTemplate.render(data);
     var emailTextBody = compiledPinTextTemplate.render(data);
     /* Set per email options */
@@ -147,11 +231,9 @@ var sendPinEmail = function (recipient, newPin) {
         console.log('<== Pin email sent successfully to ' + recipient);
         resolve(true);
       }
-
     });
   });
 };
-
 var sendConfirmationEmail = function (userMail, filename) {
 
   return new Promise(function (resolve, reject) {
@@ -159,7 +241,6 @@ var sendConfirmationEmail = function (userMail, filename) {
     var date = new Date();
     var displayDate = Utils.getFormatedDate(date);
     var time = Utils.getFormatedTime(date);
-
     var data = {
       FILENAME: filename,
       DATE: displayDate,
@@ -173,10 +254,8 @@ var sendConfirmationEmail = function (userMail, filename) {
       crownLogo: config.smtp.crownLogo,
       useFooter: config.smtp.useFooter
     };
-
     var emailBody = compiledConfirmationEmailTemplate.render(data);
     var emailTextBody = compiledConfirmationEmailTextTemplate.render(data);
-
     var mailOptions = {
       from: sender,
       to: userMail,
@@ -184,7 +263,6 @@ var sendConfirmationEmail = function (userMail, filename) {
       text: emailTextBody,
       html: emailBody
     };
-
     /* Send the email */
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -201,9 +279,7 @@ var sendConfirmationEmail = function (userMail, filename) {
       }
     });
   });
-
 };
-
 module.exports.validateEmailAddress = validateEmailAddress;
 module.exports.sendPinEmail = sendPinEmail;
 module.exports.sendConfirmationEmail = sendConfirmationEmail;

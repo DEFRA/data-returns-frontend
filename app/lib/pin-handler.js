@@ -13,6 +13,36 @@ var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
 var userHandler = require('../lib/user-handler');
 var Utils = require('../lib/utils');
+var CacheHandler = require('../lib/cache-handler');
+
+var checkInvalidPinCount = function (sessionID) {
+
+  return new Promise(function (resolve, reject) {
+    var key = sessionID + '-invalid-pin-count';
+
+    CacheHandler.getValue(key)
+      .then(function (result) {
+        if (result) {
+          result = parseInt(result);
+          var maxretries = config.pin.maxretries ? parseInt(config.pin.maxretries) : 10;
+          if (result > maxretries) {
+            //reset the count
+            CacheHandler.setValue(key, 1);
+            // display error message
+            reject();
+          } else {
+            CacheHandler.setValue(key, result + 1);
+            resolve();
+          }
+        } else {
+          CacheHandler.setValue(key, 1);
+          resolve();
+        }
+      });
+  });
+};
+
+
 
 module.exports = {
   /*
@@ -40,47 +70,59 @@ module.exports = {
   validatePin: function (sessionID, pin) {
     return new Promise(function (resolve, reject) {
       console.log('==> validatePin()');
-      userHandler.getUser(sessionID)
-        .then(function (user) {
 
-          if (user === null) {
-            reject({
-              error: false,
-              code: 2225
-            });
-          }
+      checkInvalidPinCount(sessionID)
+        .then(function () {
+          userHandler.getUser(sessionID)
+            .then(function (user) {
 
-          if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
-            console.log('\t pin is valid');
-            resolve({
-              error: false,
-              code: messages.PIN.VALID_PIN
-            });
-          } else {
-            var code = 2225; //Invalid
-            // Is the pin in date 
-            if (user.pinCreationTime) {
-              var pinCreationTime = new Date(user.pinCreationTime);
-              var dateNow = new Date();
-              var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
-
-              if (mins > config.pin.ValidTimePeriodMinutes) {
-                code = 2275; //Expired
+              if (user === null) {
+                reject({
+                  error: false,
+                  code: 2225
+                });
               }
-            }
 
-            console.log('\t pin is invalid');
-            reject({
-              error: false,
-              code: code
+              if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
+                console.log('\t pin is valid');
+                resolve({
+                  error: false,
+                  code: messages.PIN.VALID_PIN
+                });
+              } else {
+
+                var code = 2225; //Invalid
+                // Is the pin in date 
+                if (user.pinCreationTime) {
+                  var pinCreationTime = new Date(user.pinCreationTime);
+                  var dateNow = new Date();
+                  var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+
+                  if (mins > config.pin.ValidTimePeriodMinutes) {
+                    code = 2275; //Expired
+                  }
+                }
+
+                console.log('\t pin is invalid');
+                reject({
+                  error: false,
+                  code: code
+                });
+
+              }
+            })
+            .catch(function (errResult) {
+              reject({
+                error: true,
+                code: errResult
+              });
             });
-
-          }
         })
-        .catch(function (errResult) {
+        .catch(function () {
+          // too many pin code attempts
           reject({
-            error: true,
-            code: errResult
+            error: false,
+            code: 2280
           });
         });
     });
