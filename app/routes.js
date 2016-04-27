@@ -28,7 +28,6 @@ module.exports = [
       }
     }
   },
- 
   {
     method: 'GET',
     path: '/',
@@ -36,7 +35,6 @@ module.exports = [
       reply.redirect('/01-start/01-start');
     }
   },
-  
   {
     method: 'GET',
     path: '/index',
@@ -78,6 +76,17 @@ module.exports = [
    
    }
    },*/
+
+  /*
+   * Redirect to the start for no valid routes 
+   */
+  {
+    method: '*',
+    path: '/{p*}', // catch-all path
+    handler: function (request, reply) {
+      reply.redirect('/01-start/01-start');
+    }
+  },
   {
     method: 'POST',
     path: '/02-send-your-data/01-choose-your-file',
