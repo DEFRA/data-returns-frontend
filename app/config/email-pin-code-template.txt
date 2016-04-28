@@ -6,6 +6,10 @@ Go to your browser to enter this code. Then you can send your data returns file 
 
 We’ll send a receipt to this email address.
 
+Your site officer will get a notification about this data return file and may need to get in touch with you directly. 
+
+Ignore this email if you didn’t ask for a code.
+
 {{#useFooter}}
 Telephone: {{UKPhone}}
 Telephone from outside the UK: {{PhoneFromAbroad}}
