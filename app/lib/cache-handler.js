@@ -57,7 +57,7 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       // key = key.replace(/"/g, "");
       console.log('==> CacheHandler setValue() ', key);
-      if (value !== null || value !== 'undefined') {
+      if (value) {
         client.set(key, JSON.stringify(value), function (err, res) {
 
           if (err) {

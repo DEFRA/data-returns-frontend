@@ -56,9 +56,6 @@ module.exports = {
               .then(function () {
                 reply.redirect('/02-send-your-data/08-file-sent');
               })
-              .then(function () {
-                CacheHandler.delete(uploadResultsCacheKey);
-              })
               .catch(function (errorData) {
                 console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
                 //reply.view('02-send-your-data/07-failure', {'errorMessage': errorData.message});

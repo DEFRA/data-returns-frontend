@@ -234,7 +234,9 @@ var sendPinEmail = function (recipient, newPin) {
     });
   });
 };
-var sendConfirmationEmail = function (userMail, filename) {
+
+
+var sendConfirmationEmail = function (userMail, filename, ea_ids, sitenames) {
 
   return new Promise(function (resolve, reject) {
     console.log('==> sendConfirmationEmail() ');
@@ -242,7 +244,9 @@ var sendConfirmationEmail = function (userMail, filename) {
     var displayDate = Utils.getFormatedDate(date);
     var time = Utils.getFormatedTime(date);
     var data = {
+      EA_IDs: ea_ids,
       FILENAME: filename,
+      SITENAMES: sitenames,
       DATE: displayDate,
       TIME: time,
       EnquiryEmail: config.smtp.support.email,

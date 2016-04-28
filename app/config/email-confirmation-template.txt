@@ -1,11 +1,22 @@
 You successfully sent a data returns file to the Environment Agency.
 
 Your details:
+
+Site name: {{SITENAMES}}
 File: {{FILENAME}}
+EA_ID: {{EA_IDs}}
 Date: {{DATE}}
 Time: {{TIME}}
 
-We’ll now check your data for quality and regulatory compliance. We may need to contact you with any queries.
+What happens next?
+
+Now you’ve sent your data returns file your compliance officer can check your data for 
+quality and regulatory compliance. We may need to contact you using the email address 
+you gave to discuss compliance.
+
+You can use the service to send another data returns file online.
+
+Send us feedback to help us improve this new service.
 
 {{#useFooter}}
 Telephone: {{UKPhone}}
