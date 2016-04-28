@@ -29,17 +29,35 @@ module.exports.getHandler = function (request, reply) {
       CacheHandler.getValue(key)
         .then(function (filename) {
           filename = filename ? filename.replace(/"/g, '') : '';
-          SMTPHandler.sendConfirmationEmail(email, filename)
-            .then(function (email) {
-              console.log('\t The confirmation email has been sent to ' + email);
-            })
-            // Increment the count of uploads using the current pin number
-            .then(function () {
-              UserHandler.incrementUploadCount(sessionID);
-            })
-            // delete the file uploaded
-            .then(function () {
-              Utils.deleteFile(sessionID);
+
+          //get ea_id's and site names's from the cached upload result
+          key = sessionID + '_UploadResult';
+
+          CacheHandler.getValue(key)
+            .then(function (data) {
+
+              data = JSON.parse(data);
+            
+              var parseResult = data.parseResult;
+              var ea_ids = parseResult.permitNumber;
+              var sitenames = parseResult.siteName ? parseResult.siteName : 'Not given';
+
+              SMTPHandler.sendConfirmationEmail(email, filename, ea_ids, sitenames)
+                .then(function (email) {
+                  console.log('\t The confirmation email has been sent to ' + email);
+                })
+                // Increment the count of uploads using the current pin number
+                .then(function () {
+                  UserHandler.incrementUploadCount(sessionID);
+                })
+                // delete the file uploaded
+                .then(function () {
+                  Utils.deleteFile(sessionID);
+                })
+                //delete the upload results
+                .then(function () {
+                  CacheHandler.delete(key);
+                });
             });
         });
     })
