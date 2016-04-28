@@ -48,6 +48,34 @@ module.exports = {
     });
   },
   /*
+   * Persists a new value for a given key
+   * (no expiry)
+   * @param key
+   * @param value
+   */
+
+  setPersistedValue: function (key, value) {
+
+    return new Promise(function (resolve, reject) {
+      console.log('==> CacheHandler setPersistedValue() ', key);
+      if (value) {
+        client.set(key, JSON.stringify(value), function (err, res) {
+
+          if (err) {
+
+            console.error('<== CacheHandler setPersistedValue() error: ' + err);
+            reject(err);
+          } else {
+            resolve(true);
+          }
+
+        });
+      } else {
+        resolve(true);
+      }
+    });
+  },
+  /*
    * Sets a new value for a given key
    * @param key
    * @param value
@@ -55,7 +83,6 @@ module.exports = {
   setValue: function (key, value, expiry) {
 
     return new Promise(function (resolve, reject) {
-      // key = key.replace(/"/g, "");
       console.log('==> CacheHandler setValue() ', key);
       if (value) {
         client.set(key, JSON.stringify(value), function (err, res) {

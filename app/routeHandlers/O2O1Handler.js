@@ -9,6 +9,7 @@ var ErrorHelper = require('../api-handlers/multiple-error-helper');
 var UserHandler = require('../lib/user-handler');
 var ErrorHandler = require('../lib/error-handler');
 var Utils = require('../lib/utils');
+var MetricsHandler = require('../lib/MetricsHandler');
 
 module.exports.getHandler = function (request, reply) {
   reply.view('02-send-your-data/01-choose-your-file', {
@@ -31,7 +32,10 @@ module.exports.postHandler = function (request, reply) {
   var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
-  
+
+  var filesize = request.payload ? request.payload.fileUpload.bytes : 0;
+
+  MetricsHandler.setFileSizeHighWaterMark(filesize);
 
   var cookieOptions = {
     path: '/',
