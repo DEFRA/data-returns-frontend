@@ -97,7 +97,7 @@ module.exports.postHandler = function (request, reply) {
 
               links.mailto = config.feedback.mailto;
 
-              reply.view((isLineErrors === true) ? '02-send-your-data/09-errors' : '02-send-your-data/01-choose-your-file', {
+              var metadata = {
                 uploadError: true,
                 errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
@@ -108,7 +108,33 @@ module.exports.postHandler = function (request, reply) {
                 notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
                 errorCode: 'DR' + Utils.pad(errorCode, 4),
                 mailto: config.feedback.mailto
-              }).state('data-returns-id', sessionID, cookieOptions);
+              };
+
+
+              if (isLineErrors) {
+                var key = sessionID + '-error-page-metadata';
+                CachHandler.setValue(key, metadata)
+                  .then(function () {
+                    reply.redirect('/02-send-your-data/09-errors').state('data-returns-id', sessionID, cookieOptions);
+                  });
+              } else {
+
+                reply.view('02-send-your-data/01-choose-your-file', {
+                  uploadError: true,
+                  errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
+                  fileName: fileName,
+                  lineErrors: errorData.lineErrors,
+                  isLineErrors: errorData.lineErrors ? true : false,
+                  HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
+                  emptyfilemessage: ErrorHandler.render(500, links, 'Your file is empty'),
+                  notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
+                  errorCode: 'DR' + Utils.pad(errorCode, 4),
+                  mailto: config.feedback.mailto
+                }).state('data-returns-id', sessionID, cookieOptions);
+
+              }
+
+
             });
         })
         .catch(function (err) {

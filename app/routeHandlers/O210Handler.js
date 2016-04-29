@@ -7,9 +7,9 @@ var ErrorHandler = require('../lib/error-handler');
 module.exports = {
   getHandler: function (request, reply) {
 
-    var groupid = request.query.groupid;
-    var key = 'ErrorData_' + groupid;
+    var groupID = request.query.groupid;
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var key = sessionID + '-ErrorData-' + groupID;//'ErrorData_' + groupid;
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)

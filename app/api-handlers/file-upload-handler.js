@@ -132,7 +132,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             }
 
             sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('fieldName'));
-            sortedLineErrorData = validationErrorHelper.groupErrorData(sortedLineErrorData);
+            sortedLineErrorData = validationErrorHelper.groupErrorData(sessionID,sortedLineErrorData);
 
             reject({
               isUserError: true,

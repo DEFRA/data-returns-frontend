@@ -8,12 +8,22 @@ module.exports = {
   getHandler: function (request, reply) {
 
     console.log(request.info.referrer);
-
+    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     var ref = request.info.referrer;
 
     if (ref.search('/10-error-detail') === -1) {
       //process data from api
-      return reply.view(request.path.substring(1));
+      //return reply.view(request.path.substring(1));
+
+      var key = sessionID + '-error-page-metadata';
+
+      CachHandler.getValue(key)
+        .then(function (metadata) {
+          metadata = JSON.parse(metadata);
+          reply.view('02-send-your-data/09-errors', metadata);
+        });
+
+
     } else {
       //get cached data
       var sessionID = Utils.base64Decode(request.state['data-returns-id']);

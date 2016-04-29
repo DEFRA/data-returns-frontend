@@ -16,7 +16,7 @@ module.exports = {
    * caches the grouped data in Redis for use in error detail pages
    * @param the error data returned from the API
    */
-  groupErrorData: function (data) {
+  groupErrorData: function (sessionID, data) {
 
     console.log('==> groupErrorData() ');
     var groupedData = {};
@@ -27,7 +27,7 @@ module.exports = {
       var columnName = item.fieldName;
       //var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
       var groupkey = columnName; //+ '_' + errorType;
-      var groupID = item.errorCode + '-' + uuid.v4();
+      var groupID = item.errorCode;//+ '-' + uuid.v4();
       groupLinkID.set(groupkey, groupID);
     });
     //create grouped data for the details page
@@ -47,7 +47,7 @@ module.exports = {
       var Correction = true;
       var CorrectionDetails = true;
       var CorrectionMoreHelp = true;
-      
+
       var helpReference = item.helpReference;
       var moreHelp = item.moreHelp;
       var definition = item.definition;
@@ -92,7 +92,9 @@ module.exports = {
       var firstErrorInGroup = group[0];
       errorPageData.push(firstErrorInGroup);
       (function (groupID, group) {
-        cacheHandler.setValue('ErrorData_' + groupID, group)
+        //'ErrorData_' + groupid
+        //sessionID + '-ErrorData-' + groupID
+        cacheHandler.setValue(sessionID + '-ErrorData-' + groupID, group)
           .then(function () {
             return;
           })
