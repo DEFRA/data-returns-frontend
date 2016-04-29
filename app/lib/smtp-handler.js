@@ -16,7 +16,7 @@ var compiledPinTemplate;
 var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
 var compiledConfirmationEmailTextTemplate;
-
+var _ = require('lodash');
 
 //Read the pin code template files
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
@@ -92,6 +92,15 @@ var checkEmailLimit = function (recipient) {
 
     var key = recipient + '-count';
 
+    //Check if email address is white listed for test purposes
+    // Do not lock out if whitelisted
+    var whitelist = config.smtp.email_address_white_list; 
+    var index = _.indexOf(whitelist, recipient);
+
+    if (index !== -1) {
+      return resolve(true);
+    }
+
     CacheHandler.getValue(key)
       .then(function (result) {
         if (result) {
@@ -101,7 +110,7 @@ var checkEmailLimit = function (recipient) {
           CacheHandler.setValue(key, result, expiry);
           if (result >= 10) {
             key = recipient + '-lockedout';
-            expiry = (60 * 60);
+            expiry = config.smtp.lockout_time_seconds;
             CacheHandler.setValue(key, true, expiry);
             reject({attempts: result});
           } else {

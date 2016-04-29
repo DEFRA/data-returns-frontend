@@ -46,6 +46,10 @@ config.smtp.govuklogo = 'http://dr-dev.envage.co.uk/public/images/govuk_logotype
 config.smtp.crownLogo = 'http://www.tax.service.gov.uk/assets/2.30.0/images/gov.uk_logotype_crown.png';
 config.smtp.max_limit = 10;
 config.smtp.max_time_minutes = 10;
+config.smtp.lockout_time_seconds = (60 * 60); // 1hr
+// never lock these users out
+config.smtp.email_address_white_list = ['hkjtest@gmail.com', 'unwantedspammailcatcher@gmail.com'];
+
 
 //Pin configuration
 config.pin = {
