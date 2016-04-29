@@ -81,7 +81,23 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       } else {
         //There are validation errors
         console.error('file-upload-handler.processResponse()');
-        httpResponse = JSON.parse(body);
+        try {
+          if (body) {
+            httpResponse = JSON.parse(body);
+          }
+        } catch (e) {
+          console.error('Error parsing body ', e);
+          return reject({
+            isUserError: true,
+            errorCode: 3000,
+            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
+            errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
+            lineErrors: null,
+            lineErrorCount: 0,
+            defaultErrorMessage: 'System error'
+          });
+        }
+
         var appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
         var lineErrorData;
         var lineErrors;
