@@ -134,7 +134,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/02-send-your-data/04-enter-your-code',
-    handler: BasicTemplateHandler.getHandler
+    handler: O204Handler.getHandler//BasicTemplateHandler.getHandler
   },
   {
     method: 'POST',

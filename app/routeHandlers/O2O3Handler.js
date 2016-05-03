@@ -32,7 +32,11 @@ module.exports = {
               });
             } else {
               reply.view('02-send-your-data/03-confirm-your-email-address', {
-                fileName: fileName
+                fileName: fileName,
+                invalidEmailAddress: false,
+                showStartAgainButton: false,
+                showSendMailButton: true,
+                showInput: 'true'
               });
             }
           })
@@ -93,6 +97,9 @@ module.exports = {
       .catch(function (errResult) {
         reply.view('02-send-your-data/03-confirm-your-email-address', {
           invalidEmailAddress: true,
+          showStartAgainButton: errResult.errorCode === 2055 ? true : false,
+          showInput: errResult.errorCode === 2055 ? false : true,
+          showSendMailButton: errResult.errorCode === 2055 ? false : true,
           invalidEmailAddressErrorMessage: ErrorHandler.render(errResult.errorCode, null, 'Invalid email address'),
           errorcode: 'DR' + errResult.errorCode
         });
