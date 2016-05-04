@@ -70,7 +70,6 @@ module.exports = {
           groupID: groupLinkID.get(groupkey)
         };
         group.push(temp);
-      } else {
         //update errorType in an existing record in the group
         //if there is both missing and incorrect in the group
         var clonedGroup = _.groupBy(group, 'errorType');
