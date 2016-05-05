@@ -82,24 +82,26 @@ if (config.requireBasicAuth) {
   });
 }
 
-server.register({
-  register: require('yar'),
-  options: {
-    storeBlank: true,
-    name: 'data-returns-session',
-    cookieOptions: {
-      isSecure: false, //config.env === 'local' ? false : true,
-      isHttpOnly: true, // not accessable from javascript
-      password: config.sessionStorage.secret
-    }
-  },
-  maxCookieSize: 350
-}, function (err) {
-  if (err) {
-    console.error('Failed to initialise session storage component.');
-    throw err;
-  }
-});
+/*server.register({
+ register: require('yar'),
+ options: {
+ storeBlank: true,
+ name: 'data-returns-session',
+ cookieOptions: {
+ isSecure: false, //config.env === 'local' ? false : true,
+ isHttpOnly: true, // not accessable from javascript
+ password: config.sessionStorage.secret
+ }
+ },
+ maxCookieSize: 350
+ }, function (err) {
+ if (err) {
+ console.error('Failed to initialise session storage component.');
+ throw err;
+ }
+ });*/
+
+
 // Setup serving of static assets.
 server.register(require('inert'), function (err) {
   if (err) {
@@ -177,15 +179,14 @@ server.ext('onPreResponse', function (request, reply) {
   var resp = request.response;
 
   if (resp && resp.header) {
-    resp.header('X-Frame-Options', 'sameorigin');
+    resp.header('X-Frame-Options', 'SAMEORIGIN');
     resp.header('X-XSS-Protection', '1; mode=block');
     resp.header('X-Content-Type-Options', 'nosniff');
     resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
     resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
   }
+  
 // Payload content length greater than maximum allowed
-
-
   if (request.response.isBoom) {
 
     var err = request.response;

@@ -314,7 +314,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   .column-third,
   .column-one-third {
     float: left;
-    width: 33.3333333333%;
+    width: 33.33333%;
   }
 }
 
@@ -328,7 +328,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 @media (min-width: 641px) {
   .column-two-thirds {
     float: left;
-    width: 66.6666666667%;
+    width: 66.66667%;
   }
 }
 
@@ -344,14 +344,14 @@ main {
 @media (min-width: 641px) {
   main {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
 .font-xxlarge {
   font-family: "nta", Arial, sans-serif;
   font-size: 53px;
-  line-height: 1.0377358491;
+  line-height: 1.03774;
   font-weight: 400;
   text-transform: none;
 }
@@ -374,14 +374,14 @@ main {
 @media (min-width: 641px) {
   .font-xlarge {
     font-size: 48px;
-    line-height: 1.0416666667;
+    line-height: 1.04167;
   }
 }
 
 .font-large {
   font-family: "nta", Arial, sans-serif;
   font-size: 24px;
-  line-height: 1.0416666667;
+  line-height: 1.04167;
   font-weight: 400;
   text-transform: none;
 }
@@ -389,7 +389,7 @@ main {
 @media (min-width: 641px) {
   .font-large {
     font-size: 36px;
-    line-height: 1.1111111111;
+    line-height: 1.11111;
   }
 }
 
@@ -419,14 +419,14 @@ main {
 @media (min-width: 641px) {
   .font-small {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
 .font-xsmall {
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
 }
@@ -441,7 +441,7 @@ main {
 .bold-xxlarge {
   font-family: "nta", Arial, sans-serif;
   font-size: 53px;
-  line-height: 1.0377358491;
+  line-height: 1.03774;
   font-weight: 700;
   text-transform: none;
 }
@@ -464,14 +464,14 @@ main {
 @media (min-width: 641px) {
   .bold-xlarge {
     font-size: 48px;
-    line-height: 1.0416666667;
+    line-height: 1.04167;
   }
 }
 
 .bold-large {
   font-family: "nta", Arial, sans-serif;
   font-size: 24px;
-  line-height: 1.0416666667;
+  line-height: 1.04167;
   font-weight: 700;
   text-transform: none;
 }
@@ -479,7 +479,7 @@ main {
 @media (min-width: 641px) {
   .bold-large {
     font-size: 36px;
-    line-height: 1.1111111111;
+    line-height: 1.11111;
   }
 }
 
@@ -509,14 +509,14 @@ main {
 @media (min-width: 641px) {
   .bold-small {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
 .bold-xsmall {
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 700;
   text-transform: none;
 }
@@ -541,7 +541,7 @@ main {
 @media (min-width: 641px) {
   .heading-xlarge {
     font-size: 48px;
-    line-height: 1.0416666667;
+    line-height: 1.04167;
   }
 }
 
@@ -555,7 +555,7 @@ main {
 .heading-xlarge .heading-secondary {
   font-family: "nta", Arial, sans-serif;
   font-size: 20px;
-  line-height: 1.1111111111;
+  line-height: 1.11111;
   font-weight: 400;
   text-transform: none;
   padding-top: 8px;
@@ -567,7 +567,7 @@ main {
 @media (min-width: 641px) {
   .heading-xlarge .heading-secondary {
     font-size: 27px;
-    line-height: 1.1111111111;
+    line-height: 1.11111;
   }
 }
 
@@ -581,24 +581,24 @@ main {
 .heading-large {
   font-family: "nta", Arial, sans-serif;
   font-size: 24px;
-  line-height: 1.0416666667;
+  line-height: 1.04167;
   font-weight: 700;
   text-transform: none;
-  margin-top: 1.0416666667em;
-  margin-bottom: 0.4166666667em;
+  margin-top: 1.04167em;
+  margin-bottom: 0.41667em;
 }
 
 @media (min-width: 641px) {
   .heading-large {
     font-size: 36px;
-    line-height: 1.1111111111;
+    line-height: 1.11111;
   }
 }
 
 @media (min-width: 641px) {
   .heading-large {
     margin-top: 1.25em;
-    margin-bottom: 0.5555555556em;
+    margin-bottom: 0.55556em;
   }
 }
 
@@ -648,7 +648,7 @@ main {
 @media (min-width: 641px) {
   .heading-medium {
     margin-top: 1.875em;
-    margin-bottom: 0.8333333333em;
+    margin-bottom: 0.83333em;
   }
 }
 
@@ -665,13 +665,13 @@ main {
 @media (min-width: 641px) {
   .heading-small {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
 @media (min-width: 641px) {
   .heading-small {
-    margin-top: 1.0526315789em;
+    margin-top: 1.05263em;
   }
 }
 
@@ -682,8 +682,8 @@ p {
 
 @media (min-width: 641px) {
   p {
-    margin-top: 0.2631578947em;
-    margin-bottom: 1.0526315789em;
+    margin-top: 0.26316em;
+    margin-bottom: 1.05263em;
   }
 }
 
@@ -733,7 +733,7 @@ p {
   position: relative;
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
   margin-top: 15px;
@@ -831,9 +831,9 @@ hr {
   -moz-border-radius: 0;
   border-radius: 0;
   -webkit-appearance: none;
-  -webkit-box-shadow: 0 2px 0 #003518;
-  -moz-box-shadow: 0 2px 0 #003518;
-  box-shadow: 0 2px 0 #003518;
+  -webkit-box-shadow: 0 2px 0 #003618;
+  -moz-box-shadow: 0 2px 0 #003618;
+  box-shadow: 0 2px 0 #003618;
   font-size: 1em;
   line-height: 1.25;
   text-decoration: none;
@@ -843,7 +843,7 @@ hr {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 0.5263157895em 0.7894736842em 0.2631578947em 0.7894736842em;
+  padding: 0.52632em 0.78947em 0.26316em 0.78947em;
   vertical-align: top;
 }
 
@@ -875,9 +875,9 @@ hr {
 
 .button.disabled:active, .button[disabled="disabled"]:active, .button[disabled]:active {
   top: 0;
-  -webkit-box-shadow: 0 2px 0 #003518;
-  -moz-box-shadow: 0 2px 0 #003518;
-  box-shadow: 0 2px 0 #003518;
+  -webkit-box-shadow: 0 2px 0 #003618;
+  -moz-box-shadow: 0 2px 0 #003618;
+  box-shadow: 0 2px 0 #003618;
 }
 
 .button:link, .button:hover, .button:focus, .button:visited {
@@ -940,7 +940,7 @@ hr {
   background-image: url("/public/images/icons/icon-pointer.png");
   background-repeat: no-repeat;
   background-position: 100% 50%;
-  padding: 0.3684210526em 2.1578947368em 0.2105263158em 0.8421052632em;
+  padding: 0.36842em 2.15789em 0.21053em 0.84211em;
 }
 
 @media (min-width: 641px) {
@@ -1312,7 +1312,7 @@ table th,
 table td {
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
   padding: 0.75em 1.25em 0.5625em 0;
@@ -1340,7 +1340,7 @@ table th.numeric {
 table td.numeric {
   font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
   text-align: right;
@@ -1362,7 +1362,7 @@ details summary {
   color: #005ea5;
   cursor: pointer;
   position: relative;
-  margin-bottom: 0.2631578947em;
+  margin-bottom: 0.26316em;
 }
 
 details summary:hover {
@@ -1386,8 +1386,8 @@ details .arrow {
   clear: both;
   border-left-style: solid;
   border-color: #bfc1c3;
-  padding: 0.7894736842em;
-  margin-bottom: 0.7894736842em;
+  padding: 0.78947em;
+  margin-bottom: 0.78947em;
 }
 
 .panel :first-child {
@@ -1465,7 +1465,7 @@ textarea {
 @media (min-width: 641px) {
   .form-label {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
@@ -1480,7 +1480,7 @@ textarea {
 @media (min-width: 641px) {
   .form-label-bold {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
@@ -1523,7 +1523,7 @@ legend .form-label-bold {
 @media (min-width: 641px) {
   .form-hint {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
@@ -1545,7 +1545,7 @@ legend .form-label-bold {
 @media (min-width: 641px) {
   .form-control {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
@@ -1766,7 +1766,7 @@ input[type=number] {
 @media (min-width: 641px) {
   .error-message {
     font-size: 19px;
-    line-height: 1.3157894737;
+    line-height: 1.31579;
   }
 }
 
@@ -1822,7 +1822,7 @@ input[type=number] {
 .breadcrumbs li {
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
   float: left;
@@ -1875,7 +1875,7 @@ input[type=number] {
   color: #000;
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
 }
@@ -1895,7 +1895,7 @@ input[type=number] {
   padding: 2px 5px 0;
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 700;
   text-transform: none;
   text-transform: uppercase;
@@ -1944,7 +1944,7 @@ input[type=number] {
   color: #000;
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 400;
   text-transform: none;
 }
@@ -1964,7 +1964,7 @@ input[type=number] {
   padding: 2px 5px 0;
   font-family: "nta", Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.1428571429;
+  line-height: 1.14286;
   font-weight: 700;
   text-transform: none;
   text-transform: uppercase;
