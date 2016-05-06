@@ -5,6 +5,9 @@ var Utils = require('../lib/utils');
 var ErrorHelper = require('../lib/error-handler');
 
 module.exports = {
+  /*
+   * http GET handler for /correction/table
+   */
   getHandler: function (request, reply) {
 
     console.log(request.info.referrer);
@@ -20,7 +23,7 @@ module.exports = {
       CachHandler.getValue(key)
         .then(function (metadata) {
           metadata = JSON.parse(metadata);
-          reply.view('02-send-your-data/09-errors', metadata);
+          reply.view('data-returns/correction-table', metadata);
         });
 
 
@@ -32,7 +35,7 @@ module.exports = {
       CachHandler.getValue(cacheKey)
         .then(function (data) {
           var errorData = JSON.parse(data);
-          reply.view('02-send-your-data/09-errors', {
+          reply.view('data-returns/correction-table', {
             uploadError: true,
             errorMessage: 'test message',
             lineErrors: errorData,

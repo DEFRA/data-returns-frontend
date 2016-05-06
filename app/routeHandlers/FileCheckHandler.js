@@ -2,7 +2,7 @@
 var UserHandler = require('../lib/user-handler');
 var Utils = require('../lib/utils');
 /*
- * HTTP GET handler for gets for /02-send-your-data/06-check
+ * HTTP GET handler for gets for /file/check
  * @param {type} request
  * @param {type} reply
  */
@@ -15,13 +15,13 @@ module.exports.getHandler = function (request, reply) {
   UserHandler.isAuthenticated(sessionID)
     .then(function (result) {
       if (result === true) {
-        reply.redirect('/02-send-your-data/05-send-your-file');
+        reply.redirect('/file/send');
       } else {
-        reply.redirect('/02-send-your-data/03-confirm-your-email-address');
+        reply.redirect('/email');
       }
     })
     .catch(function (err) {
       console.error('<== O2O6Handler error: ' + err);
-      reply.redirect('/02-send-your-data/03-confirm-your-email-address');
+      reply.redirect('/email');
     });
 };

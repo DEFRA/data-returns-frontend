@@ -8,13 +8,20 @@ var ErrorHandler = require('../lib/error-handler');
 
 
 module.exports = {
+  
+  /*
+   * get handler for /pin route
+   * @param {type} request
+   * @param {type} reply
+   * 
+   */
   getHandler: function (request, reply) {
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);
     
     userHandler.getUserMail(sessionID)
       .then(function (emailAddress) {
 
-        reply.view('02-send-your-data/04-enter-your-code', {
+        reply.view('data-returns/enter-your-code', {
           errorMessage: null,
           invalidPin: false,
           errorcode: null,
@@ -26,7 +33,7 @@ module.exports = {
       });
   },
   /*
-   * HTTP POST handler for /02-send-your-data/04-enter-your-code
+   * HTTP POST handler for /pin
    * @param {type} request
    * @param {type} reply
    * @returns {undefined}
@@ -41,7 +48,7 @@ module.exports = {
       .then(function (result) {
         if (result.code === messages.PIN.VALID_PIN) {
           userHandler.setIsAuthenticated(sessionID, true);
-          reply.redirect('/02-send-your-data/05-send-your-file');
+          reply.redirect('/file/send');
         }
       })
       .catch(function (errResult) {
@@ -56,7 +63,7 @@ module.exports = {
             var errorMessage = ErrorHandler.render(errResult.code, metadata);
 
             userHandler.setIsAuthenticated(sessionID, false);
-            reply.view('02-send-your-data/04-enter-your-code', {
+            reply.view('data-returns/enter-your-code', {
               errorMessage: errorMessage,
               invalidPin: true,
               errorcode: 'DR' + Utils.pad(errResult.code, 4),

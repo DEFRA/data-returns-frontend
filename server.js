@@ -196,7 +196,7 @@ server.ext('onPreResponse', function (request, reply) {
     console.error('Boom Error', err);
 
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
-      return reply.view('02-send-your-data/01-choose-your-file', {
+      return reply.view('file/choose', {
         uploadError: true,
         errorsummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
         lineErrors: null,

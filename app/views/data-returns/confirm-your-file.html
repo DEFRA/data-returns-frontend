@@ -31,13 +31,24 @@ Send your data returns online
       <ul class="list">
         <li class="panel panel-border-wide">
           <p>
-            <span>Site name</span><br>
-            {{#returnMetaData.siteName}}
-            <span class="heading-small">{{returnMetaData.siteName}}</span>
-            {{/returnMetaData.siteName}}
-            {{^returnMetaData.siteName}}
-            <span class="heading-small">Not given</span>
-            {{/returnMetaData.siteName}}
+
+          <table align="left" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 580px; border-left: 10px #dee0e2 solid; margin: 0 0 45px 0;">
+
+            {{#data}}
+            <td>{{.}}</td><td>{{sitename}}</td><td>{{ea_id}}</td>
+            {{/data}}
+
+          </table>
+
+
+
+          <span>Site name</span><br>
+          {{#returnMetaData.siteName}}
+          <span class="heading-small">{{returnMetaData.siteName}}</span>
+          {{/returnMetaData.siteName}}
+          {{^returnMetaData.siteName}}
+          <span class="heading-small">Not given</span>
+          {{/returnMetaData.siteName}}
           </p>
         </li>
         <li id="permit_found" class="panel panel-border-wide permit">
@@ -52,7 +63,7 @@ Send your data returns online
     <details class="help-text-reg">
       <summary><span class="summary">These details aren’t right</span></summary>
       <div class="panel panel-border-wide">
-        <p>Do you need to choose a different file? <a href="/02-send-your-data/01-choose-your-file" id="details-wrong-link">Start again</a> so you can send the right file and details.</p>
+        <p>Do you need to choose a different file? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right file and details.</p>
 
 
       </div>
@@ -60,13 +71,13 @@ Send your data returns online
 
     <!-- Primary button -->
     <div class="form-group confirmed" >
-      <input id="continue.btn" type="button" class="button" value="Continue" onclick="location.href = '/02-send-your-data/06-check';">
+      <input id="continue.btn" type="button" class="button" value="Continue" onclick="location.href = '/file/check';">
     </div>
 
     </div><!-- /text -->
   </form>
   <div class="form-group permit-not-found" style="display:none">
-    <input id="start-again-btn" type="submit" class="button" value="Start again" onclick="location.href = '/02-send-your-data/01-choose-your-file';">
+    <input id="start-again-btn" type="submit" class="button" value="Start again" onclick="location.href = '/file/choose';">
   </div>
 </main>
 

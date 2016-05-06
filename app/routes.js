@@ -2,16 +2,17 @@
 'use strict';
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
 var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
-var O1O1Handler = require('./routeHandlers/O1O1Handler');
-var O2O1Handler = require('./routeHandlers/O2O1Handler');
-var O2O2Handler = require('./routeHandlers/O2O2Handler');
-var O2O3Handler = require('./routeHandlers/O2O3Handler');
-var O204Handler = require('./routeHandlers/O2O4Handler');
-var O2O5Handler = require('./routeHandlers/O2O5Handler');
-var O2O6Handler = require('./routeHandlers/O2O6Handler');
-var O2O8Handler = require('./routeHandlers/O2O8Handler');
-var O2O9Handler = require('./routeHandlers/O2O9Handler');
-var O21OHandler = require('./routeHandlers/O210Handler');
+var StartHandler = require('./routeHandlers/StartHandler');
+var ChooseFileHandler = require('./routeHandlers/ChooseFileHandler');
+var ConfirmFileHandler = require('./routeHandlers/ConfirmFileHandler');
+var EmailHandler = require('./routeHandlers/EmailHandler');
+var PinHandler = require('./routeHandlers/PinHandler');
+var FileSendHandler = require('./routeHandlers/FileSendHandler');
+var FileCheckHandler = require('./routeHandlers/FileCheckHandler');
+var FileSentHandler = require('./routeHandlers/FileSentHandler');
+var CorrectionTableHandler = require('./routeHandlers/CorrectionTableHandler');
+var CorrectionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
+
 module.exports = [
   // Static assets.
   {
@@ -28,55 +29,6 @@ module.exports = [
       }
     }
   },
-  {
-    method: 'GET',
-    path: '/',
-    handler: function (request, reply) {//IndexHandler.redirectToIndex
-      reply.redirect('/01-start/01-start');
-    }
-  },
-  {
-    method: 'GET',
-    path: '/index',
-    handler: function (request, reply) {//BasicTemplateHandler.getHandler
-      reply.redirect('/01-start/01-start');
-    }
-  },
-  // Start page.
-  {
-    method: 'GET',
-    path: '/01-start/01-start',
-    handler: O1O1Handler.getHandler//BasicTemplateHandler.getHandler
-  },
-  {
-    method: 'POST',
-    path: '/01-start/01-start',
-    handler: O1O1Handler.postHandler
-  },
-  // 01-Upload-Your-Data.
-  {
-    method: 'GET',
-    path: '/02-send-your-data/01-choose-your-file',
-    handler: O2O1Handler.getHandler//BasicTemplateHandler.getHandler
-  },
-  /*{
-   method: 'GET',
-   path: '/02-send-your-data/01-choose-your-file',
-   config: {plugins: {
-   'hapi-io': 'get-status'
-   }},
-   handler: function (request, reply) {
-   var io = request.plugins['hapi-io'];
-   BasicTemplateHandler.getHandler(request, reply);
-   if (io) {
-   var socket = io.socket;
-   socket.emit('upload-status', 'Server says "Processing complete"');
-   // Do something with socket
-   }
-   
-   }
-   },*/
-
   /*
    * Redirect to the start for no valid routes 
    */
@@ -84,102 +36,139 @@ module.exports = [
     method: '*',
     path: '/{p*}', // catch-all path
     handler: function (request, reply) {
-      reply.redirect('/01-start/01-start');
+      reply.redirect('/start');
     }
   },
   {
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+      reply.redirect('/start');
+    }
+  },
+  {
+    method: 'GET',
+    path: '/index',
+    handler: function (request, reply) {
+      reply.redirect('/start');
+    }
+  },
+  // Start page.
+  {
+    method: 'GET',
+    path: '/start',
+    handler: StartHandler.getHandler
+  },
+  {
     method: 'POST',
-    path: '/02-send-your-data/01-choose-your-file',
+    path: '/start',
+    handler: StartHandler.postHandler
+  },
+  // /file/choose
+  {
+    method: 'GET',
+    path: '/file/choose',
+    handler: ChooseFileHandler.getHandler
+  },
+  {
+    method: 'POST',
+    path: '/file/choose',
     config: {
       payload: {
         maxBytes: config.CSV.maxfilesize,
-        timeout: false, //90 * 1000, // 90 seconds to allow for max file size 
+        timeout: false,
         output: 'file',
         parse: true,
         uploads: config.upload.path
       }
     },
     handler: function (request, reply) {
-      O2O1Handler.postHandler(request, reply);
+      ChooseFileHandler.postHandler(request, reply);
     }
   },
-  // 02-Verify-Your-File.
+  // /file/confirm
   {
     method: 'GET',
-    path: '/02-send-your-data/02-confirm-your-file',
-    handler: O2O2Handler.getHandler
+    path: '/file/confirm',
+    handler: ConfirmFileHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/02-confirm-your-file',
-    handler: O2O2Handler.postHandler
+    path: '/file/confirm',
+    handler: ConfirmFileHandler.postHandler
   },
+  /*
+   * /file/check 
+   */
   {
     method: 'GET',
-    path: '/02-send-your-data/06-check',
-    handler: O2O6Handler.getHandler
+    path: '/file/check',
+    handler: FileCheckHandler.getHandler
   },
-  // 03-confirm-your-email-address.
+  // /email 
   {
     method: 'GET',
-    path: '/02-send-your-data/03-confirm-your-email-address',
-    handler: O2O3Handler.getHandler
+    path: '/email',
+    handler: EmailHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/03-confirm-your-email-address',
-    handler: O2O3Handler.postHandler
+    path: '/email',
+    handler: EmailHandler.postHandler
   },
-  // 04-enter-your-code.
+  // /pin
   {
     method: 'GET',
-    path: '/02-send-your-data/04-enter-your-code',
-    handler: O204Handler.getHandler//BasicTemplateHandler.getHandler
+    path: '/pin',
+    handler: PinHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/04-enter-your-code',
-    handler: O204Handler.postHandler
+    path: '/pin',
+    handler: PinHandler.postHandler
   },
-  // 05-Success.
+  // /file/send
   {
     method: 'GET',
-    path: '/02-send-your-data/05-send-your-file',
-    handler: O2O5Handler.getHandler
+    path: '/file/send',
+    handler: FileSendHandler.getHandler
   },
   {
     method: 'POST',
-    path: '/02-send-your-data/05-send-your-file',
-    handler: O2O5Handler.postHandler
+    path: '/file/send',
+    handler: FileSendHandler.postHandler
   },
-  // 07-Failure (unrecoverable).
+  // /failure
   {
     method: 'GET',
-    path: '/02-send-your-data/07-failure',
-    handler: BasicTemplateHandler.getHandler//O2O7Handler.getHandler
+    path: '/failure',
+    handler: BasicTemplateHandler.getHandler
   },
-  // 08-Done.
+  // /file/sent
   {
     method: 'GET',
-    path: '/02-send-your-data/08-file-sent',
-    handler: O2O8Handler.getHandler
+    path: '/file/sent',
+    handler: FileSentHandler.getHandler
   },
+  
+  // /correction/table
   {
     method: 'GET',
-    path: '/02-send-your-data/09-errors',
+    path: '/correction/table',
     config: {
       plugins: {
         'hapi-io': 'get-status'
       }
     },
     handler: function (request, reply) {
-      O2O9Handler.getHandler(request, reply);
+      CorrectionTableHandler.getHandler(request, reply);
     }
   },
+  // /correction/detail
   {
     method: 'GET',
-    path: '/02-send-your-data/10-error-detail',
-    handler: O21OHandler.getHandler
+    path: '/correction/detail',
+    handler: CorrectionDetailHandler.getHandler
   }
 ];
 
