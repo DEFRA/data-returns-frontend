@@ -5,11 +5,15 @@ var Utils = require('../lib/utils');
 var DetailsHandler = require('../api-handlers/multiple-error-helper');
 var ErrorHandler = require('../lib/error-handler');
 module.exports = {
+  
+  /*
+   * HTTP GET Handler for /correction/detail route
+   */
   getHandler: function (request, reply) {
 
-    var groupID = request.query.groupid;
+    var errorID = request.query.id;
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);
-    var key = sessionID + '-ErrorData-' + groupID;//'ErrorData_' + groupid;
+    var key = sessionID + '-ErrorData-' + errorID;//'ErrorData_' + groupid;
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)
@@ -38,7 +42,7 @@ module.exports = {
                     MoreHelpLink: firstError.helpReference
                   }, firstError.errorMessage);
 
-                reply.view('02-send-your-data/10-error-detail', {
+                reply.view('data-returns/correction-detail', {
                   fileName: fileName,
                   columnName: firstError.columnName,
                   errorSummary: errorSummary,

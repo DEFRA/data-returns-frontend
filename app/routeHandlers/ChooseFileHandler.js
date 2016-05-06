@@ -11,14 +11,20 @@ var ErrorHandler = require('../lib/error-handler');
 var Utils = require('../lib/utils');
 var MetricsHandler = require('../lib/MetricsHandler');
 
+/*
+ *  HTTP POST handler for /file/choose
+ *  @Param request
+ *  @Param reply
+ */
+
 module.exports.getHandler = function (request, reply) {
-  reply.view('02-send-your-data/01-choose-your-file', {
+  reply.view('data-returns/choose-your-file', {
     emptyfilemessage: ErrorHandler.render(500, HelpLinks.links, 'Your File is empty.'),
     notcsvmessage: ErrorHandler.render(400, HelpLinks.links, 'Your file is not a CSV.')
   });
 };
 /*
- *  HTTP POST handler for /02-send-your-data/01-choose-your-file
+ *  HTTP POST handler for /file/choose
  *  @Param request
  *  @Param reply
  */
@@ -75,7 +81,7 @@ module.exports.postHandler = function (request, reply) {
     })
     .then(function () {
 
-      reply.redirect('/02-send-your-data/02-confirm-your-file').state('data-returns-id', sessionID, cookieOptions);
+      reply.redirect('/file/confirm').state('data-returns-id', sessionID, cookieOptions);
 
     }).catch(function (errorData) {
     if ((errorData !== null) && ('isUserError' in errorData) && errorData.isUserError) {
@@ -115,11 +121,11 @@ module.exports.postHandler = function (request, reply) {
                 var key = sessionID + '-error-page-metadata';
                 CachHandler.setValue(key, metadata)
                   .then(function () {
-                    reply.redirect('/02-send-your-data/09-errors').state('data-returns-id', sessionID, cookieOptions);
+                    reply.redirect('/correction/table').state('data-returns-id', sessionID, cookieOptions);
                   });
               } else {
 
-                reply.view('02-send-your-data/01-choose-your-file', {
+                reply.view('data-returns/choose-your-file', {
                   uploadError: true,
                   errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                   fileName: fileName,
@@ -142,7 +148,7 @@ module.exports.postHandler = function (request, reply) {
         });
     } else {
       request.session.flash('errorMessage', errorData.message);
-      reply.redirect('/02-send-your-data/07-failure').state('data-returns-id', sessionID, cookieOptions);
+      reply.redirect('/failure').state('data-returns-id', sessionID, cookieOptions);
     }
   });
 };

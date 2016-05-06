@@ -3,10 +3,12 @@ var UserHandler = require('../lib/user-handler');
 var CompletionHandler = require('../api-handlers/completion-handler');
 var Utils = require('../lib/utils.js');
 var CacheHandler = require('../lib/cache-handler');
+var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+var ErrorHandler = require('../lib/error-handler');
 
 module.exports = {
   /*
-   * HTTP GET handler for gets for /02-send-your-data/05-send-your-file
+   * HTTP GET handler for gets for /file/send
    * @param {type} request
    * @param {type} reply
    * 
@@ -17,7 +19,7 @@ module.exports = {
 
     CacheHandler.getValue(key)
       .then(function (filename) {
-        reply.view('02-send-your-data/05-send-your-file', {
+        reply.view('data-returns/send-your-file', {
           filename: filename.replace(/"/g, '')
         });
 
@@ -28,7 +30,7 @@ module.exports = {
 
   },
   /*
-   * HTTP POST handler for gets for /02-send-your-data/05-send-your-file
+   * HTTP POST handler for gets for /file/send
    * @param {type} request
    * @param {type} reply
    * 
@@ -54,12 +56,12 @@ module.exports = {
           .then(function (userMail) {
             CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName, permitNo)
               .then(function () {
-                reply.redirect('/02-send-your-data/08-file-sent');
+                reply.redirect('/file/sent');
               })
               .catch(function (errorData) {
                 console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
-                //reply.view('02-send-your-data/07-failure', {'errorMessage': errorData.message});
-                reply.view('02-send-your-data/07-failure');
+                var errormessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto});
+                reply.view('data-returns/failure', {'errorMessage': errormessage});
               });
           });
       })
@@ -67,7 +69,7 @@ module.exports = {
 
         request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
         request.session.flash('errorMessage', errorData.message);
-        reply.redirect('/02-send-your-data/07-failure');
+        reply.redirect('/failure');
       });
   }
 

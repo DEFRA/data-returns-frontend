@@ -8,7 +8,7 @@ var ErrorHandler = require('../lib/error-handler');
 
 module.exports = {
   /*
-   * HTTP GET handler for /02-send-your-data/03-confirm-your-email-address
+   * HTTP GET handler for /email
    * @param {type} request
    * @param {type} reply
    * @returns {undefined}
@@ -27,11 +27,11 @@ module.exports = {
             fileName = fileName ? fileName.replace(/"/g, '') : '';
 
             if (result === true) {
-              reply.view('02-send-your-data/05-send-your-file', {
+              reply.view('data-returns/send-your-file', {
                 fileName: fileName
               });
             } else {
-              reply.view('02-send-your-data/03-confirm-your-email-address', {
+              reply.view('data-returns/confirm-your-email-address', {
                 fileName: fileName,
                 invalidEmailAddress: false,
                 showStartAgainButton: false,
@@ -45,14 +45,14 @@ module.exports = {
           });
       })
       .catch(function () {
-        reply.view('02-send-your-data/03-confirm-your-email-address', {
+        reply.view('data-returns/confirm-your-email-address', {
           returnMetaData: request.session.get('returnMetaData')
         });
       });
 
   },
   /*
-   * HTTP Post Handler for /02-send-your-data/03-confirm-your-email-address
+   * HTTP Post Handler for /email
    * @param {type} request
    * @param {type} reply
    * @returns {undefined}
@@ -85,7 +85,7 @@ module.exports = {
                   SMTPHandler.sendPinEmail(usermail, newpin);
                 })
                 .then(function () {
-                  reply.redirect('/02-send-your-data/04-enter-your-code',
+                  reply.redirect('/pin',
                     {
                       emailAddress: usermail
                     });
@@ -95,7 +95,7 @@ module.exports = {
 
       })
       .catch(function (errResult) {
-        reply.view('02-send-your-data/03-confirm-your-email-address', {
+        reply.view('data-returns/confirm-your-email-address', {
           invalidEmailAddress: true,
           showStartAgainButton: errResult.errorCode === 2055 ? true : false,
           showInput: errResult.errorCode === 2055 ? false : true,

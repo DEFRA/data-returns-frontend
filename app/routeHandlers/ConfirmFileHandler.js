@@ -1,6 +1,6 @@
 
 //var CacheHandler = require('../lib/cache-handler');
-//path: '/02-send-your-data/02-confirm-your-file',
+//path: '/file/confirm',
 //var userHandler = require('../lib/user-handler');
 
 var Utils = require('../lib/utils');
@@ -9,7 +9,7 @@ var HelpLinks = require('../config/dep-help-links');
 
 module.exports = {
   /*
-   * HTTP GET Handler for the /02-send-your-data/02-confirm-your-file route
+   * HTTP GET Handler for the /file/confirm route
    * @Param request
    * @param reply
    */
@@ -28,9 +28,7 @@ module.exports = {
 
         var uploadResult = data.uploadResult;
         var parseResult = data.parseResult;
-
-
-
+        
         var metaData = {
           fileKey: uploadResult.fileKey,
           eaId: parseResult.permitNumber,
@@ -40,7 +38,7 @@ module.exports = {
           HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
         };
 
-        reply.view('02-send-your-data/02-confirm-your-file', {
+        reply.view('data-returns/confirm-your-file', {
           returnMetaData: metaData
         });
 
@@ -51,13 +49,13 @@ module.exports = {
 
   },
   /*
-   * HTTP POST Handler for the /02-send-your-data/02-confirm-your-file route
+   * HTTP POST Handler for the /file/confirm route
    * @Param request
    * @param reply
    * Redirects the current page
    */
   postHandler: function (request, reply) {
-    reply.redirect('/02-send-your-data/06-failure');
+    reply.redirect('/failure');
   }
 };
 
