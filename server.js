@@ -185,7 +185,7 @@ server.ext('onPreResponse', function (request, reply) {
     resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
     resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
   }
-  
+
 // Payload content length greater than maximum allowed
   if (request.response.isBoom) {
 
@@ -196,7 +196,7 @@ server.ext('onPreResponse', function (request, reply) {
     console.error('Boom Error', err);
 
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
-      return reply.view('file/choose', {
+      return reply.view('data-returns/choose-your-file', {
         uploadError: true,
         errorsummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
         lineErrors: null,
