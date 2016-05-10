@@ -94,7 +94,7 @@ var checkEmailLimit = function (recipient) {
 
     //Check if email address is white listed for test purposes
     // Do not lock out if whitelisted
-    var whitelist = config.smtp.email_address_white_list; 
+    var whitelist = config.smtp.email_address_white_list;
     var index = _.indexOf(whitelist, recipient);
 
     if (index !== -1) {
@@ -245,33 +245,32 @@ var sendPinEmail = function (recipient, newPin) {
 };
 
 
-var sendConfirmationEmail = function (userMail, filename, ea_ids, sitenames) {
+var sendConfirmationEmail = function (metadata) {
 
   return new Promise(function (resolve, reject) {
     console.log('==> sendConfirmationEmail() ');
     var date = new Date();
     var displayDate = Utils.getFormatedDate(date);
     var time = Utils.getFormatedTime(date);
-    var data = {
-      EA_IDs: ea_ids,
-      FILENAME: filename,
-      SITENAMES: sitenames,
+    var templatedata = {
+      FILENAME: metadata.filename,
       DATE: displayDate,
       TIME: time,
+      data: metadata.data,
       EnquiryEmail: config.smtp.support.email,
       UKPhone: config.smtp.support.UKPhone,
       PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
       MiniCommNumber: config.smtp.support.MiniCommNumber,
-      govuklogo: config.smtp.govuklogo, //'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-      ealogo: config.smtp.ealogo, //'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
+      govuklogo: config.smtp.govuklogo,
+      ealogo: config.smtp.ealogo,
       crownLogo: config.smtp.crownLogo,
       useFooter: config.smtp.useFooter
     };
-    var emailBody = compiledConfirmationEmailTemplate.render(data);
-    var emailTextBody = compiledConfirmationEmailTextTemplate.render(data);
+    var emailBody = compiledConfirmationEmailTemplate.render(templatedata);
+    var emailTextBody = compiledConfirmationEmailTextTemplate.render(templatedata);
     var mailOptions = {
       from: sender,
-      to: userMail,
+      to: metadata.email,
       subject: config.smtp.confirmsubject,
       text: emailTextBody,
       html: emailBody
@@ -287,8 +286,8 @@ var sendConfirmationEmail = function (userMail, filename, ea_ids, sitenames) {
           });
         }
       } else {
-        console.log('<== Confirmation Email sent successfully to ' + userMail, 'smtp response:', info);
-        resolve(userMail);
+        console.log('<== Confirmation Email sent successfully to ' + metadata.email, 'smtp response:', info);
+        resolve(metadata.email);
       }
     });
   });

@@ -17,7 +17,6 @@ module.exports = {
     //var key = 'id_' + request.session.id + '_UploadResult';
     console.log('==> O2O2Handler getHandler() ');
     var sessionID = Utils.base64Decode(request.state['data-returns-id']);
-
     var key = sessionID + '_UploadResult';
 
     CacheHandler.getValue(key)
@@ -28,18 +27,19 @@ module.exports = {
 
         var uploadResult = data.uploadResult;
         var parseResult = data.parseResult;
+        var mappings = parseResult.mappings;
+        var originalFileName = data.originalFileName;
         
         var metaData = {
           fileKey: uploadResult.fileKey,
-          eaId: parseResult.permitNumber,
-          siteName: parseResult.siteName,
-          returnType: parseResult.returnType,
+          mappings:mappings,
+          filename:originalFileName,
           RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
           HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
         };
 
         reply.view('data-returns/confirm-your-file', {
-          returnMetaData: metaData
+          data: metaData
         });
 
       })

@@ -2,11 +2,19 @@ You successfully sent a data returns file to the Environment Agency.
 
 Your details:
 
-Site name: {{SITENAMES}}
+
 File: {{FILENAME}}
-EA_ID: {{EA_IDs}}
 Date: {{DATE}}
 Time: {{TIME}}
+{{#data}}
+{{#data.mappings}}
+Site name:{{#site}}{{site}}{{/site}}{{^site}}Not given{{/site}}
+{{#identifiers}}
+EA_ID: {{identifier}}
+{{/identifiers}}
+{{/data.mappings}}
+{{/data}}
+
 
 What happens next?
 

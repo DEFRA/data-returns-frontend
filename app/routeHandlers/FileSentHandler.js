@@ -37,12 +37,18 @@ module.exports.getHandler = function (request, reply) {
             .then(function (data) {
 
               data = JSON.parse(data);
-            
-              var parseResult = data.parseResult;
-              var ea_ids = parseResult.permitNumber;
-              var sitenames = parseResult.siteName ? parseResult.siteName : 'Not given';
 
-              SMTPHandler.sendConfirmationEmail(email, filename, ea_ids, sitenames)
+              var parseResult = data.parseResult;
+              //var ea_ids = parseResult.permitNumber;
+              //var sitenames = parseResult.siteName ? parseResult.siteName : 'Not given';
+
+              var metadata = {
+                email: email,
+                filename: filename,
+                data: parseResult
+              };
+
+              SMTPHandler.sendConfirmationEmail(metadata)
                 .then(function (email) {
                   console.log('\t The confirmation email has been sent to ' + email);
                 })

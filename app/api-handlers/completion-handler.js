@@ -30,8 +30,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
       formData: {
         fileKey: fileKey,
         userEmail: userEmail,
-        orgFileName: originalFileName,
-        permitNo: permitNo
+        orgFileName: originalFileName
       }
     };
     console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
