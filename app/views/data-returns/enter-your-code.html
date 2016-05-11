@@ -19,19 +19,17 @@ Send your data returns online
     {{/invalidPin}}
 
     {{^startAgain}}
-    <div class="text">
-      <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
-      <div class="form-group">
-        <label class="form-label" for="validation-code">
-          <span class="form-hint">eg, 1234</span>
-        </label>
-        <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" autofocus maxlength="4" >
-      </div>
-      <div class="form-group">
-        <a id="nextHref">
-          <input type="submit" id="nextBtn" class="button" value="Send code">
-        </a>
-      </div>
+    <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
+    <div class="form-group">
+      <label class="form-label" for="validation-code">
+        <span class="form-hint">eg, 1234</span>
+      </label>
+      <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" autofocus maxlength="4" >
+    </div>
+    <div class="form-group">
+      <a id="nextHref">
+        <input type="submit" id="nextBtn" class="button" value="Send code">
+      </a>
     </div>
     {{/startAgain}}
     {{#startAgain}}
@@ -39,7 +37,6 @@ Send your data returns online
       <input type="button" id="nextBtn" class="button" value="Start again" onclick="location.href = '/start';">
     </div>
     {{/startAgain}}
-    <!-- /text -->
   </form>
 </main>
 
