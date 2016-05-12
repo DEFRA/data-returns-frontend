@@ -12,27 +12,14 @@ Send your data returns online
 
   <form method="post" class="form">
     <h1 class="heading-large">Confirm your file</h1>
-    <div class="error-summary permit-not-found" role="group" aria-labelledby="error-summary-heading" tabindex="-1" style="display: none;">
-      <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-        Your EA unique identifier (EA_ID) isn’t recognised
-      </h1>
-      <p>Check that the reference you’ve given is:</p>
-      <ul class="list list-bullet">
-        <li>either 2 letters and 4 numbers (EPR permits) or a 5- or 6-figure number (older waste management licences)</li>
-        <li>without separators, eg, slashes, or any exotic characters</li>
-        <li>exactly the same as given in your original permit, licence or mineral extractions agreement</li>
-      </ul>
-      <p><a href="{{RegimeSpecificRules}}" rel="external" target="_blank">Find out more about how to submit the correct EA_ID</a>.</p>
-      <p><a href="{{HowToFormatEnvironmentAgencyData}}" rel="external" target="_blank">Find out about formatting all your data to meet EA standards</a>.</p>
-    </div>
 
     <p class="lede">The data returns file you’re going to send is about:</p>
 
     <div class="text panel panel-border-wide">
       {{#data}}
-      <p>File: {{filename}}</p>
+      <h2 class="heading-medium">Your file: {{filename}}</h2>
       {{#data.mappings}}
-      <dt class="heading-small"> {{#site}}{{site}}{{/site}}{{^site}}Not given{{/site}}</dt>
+      <dt>{{#site}}{{site}}{{/site}}{{^site}}Not given{{/site}}</dt>
       <dl>
         {{#identifiers}}
         <dd>{{identifier}}</dd>
@@ -42,12 +29,7 @@ Send your data returns online
       {{/data}}
     </div>
 
-    <p><details class="help-text-reg">
-      <summary><span class="summary">These details aren’t right</span></summary>
-      <div class="panel panel-border-wide">
-        <p>Do you need to choose a different file? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right file and details.</p>
-      </div>
-    </details>
+    <p>Do you need to choose a different file? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right file and details.</p>
 
     <!-- Primary button -->
     <div class="form-group confirmed" >
