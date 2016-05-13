@@ -6,6 +6,7 @@
 var Utils = require('../lib/utils');
 var CacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
+var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
   /*
@@ -29,11 +30,11 @@ module.exports = {
         var parseResult = data.parseResult;
         var mappings = parseResult.mappings;
         var originalFileName = data.originalFileName;
-        
+
         var metaData = {
           fileKey: uploadResult.fileKey,
-          mappings:mappings,
-          filename:originalFileName,
+          mappings: mappings,
+          filename: originalFileName,
           RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
           HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
         };
@@ -44,7 +45,8 @@ module.exports = {
 
       })
       .catch(function (err) {
-        console.error('0202Handler', err);
+        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 46);
+        console.error(msg);
       });
 
   },

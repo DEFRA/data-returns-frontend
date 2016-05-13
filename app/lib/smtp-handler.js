@@ -17,11 +17,14 @@ var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
 var compiledConfirmationEmailTextTemplate;
 var _ = require('lodash');
+var errBit = require('../lib/errbitErrorMessage');
+
 
 //Read the pin code template files
 Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
   if (err) {
-    console.error('Unable to read pin email template ' + err);
+    var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 26);
+    console.error(msg);
   } else {
     compiledPinTemplate = Hogan.compile(result);
   }
@@ -29,7 +32,8 @@ Utils.readFile('../config/email-pin-code-template.html', function (err, result) 
 
 Utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
   if (err) {
-    console.error('Unable to read pin email text template ' + err);
+    var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 32);
+    console.error(msg);
   } else {
     compiledPinTextTemplate = Hogan.compile(result);
   }
@@ -38,7 +42,8 @@ Utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
 //Read the confirmation email templates
 Utils.readFile('../config/email-confirmation-template.html', function (err, result) {
   if (err) {
-    console.error('Unable to read confirmation email template ' + err);
+    var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 43);
+    console.error(msg);
   } else {
     compiledConfirmationEmailTemplate = Hogan.compile(result);
   }
@@ -46,7 +51,8 @@ Utils.readFile('../config/email-confirmation-template.html', function (err, resu
 
 Utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
   if (err) {
-    console.error('Unable to read confirmation email template ' + err);
+    var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 52);
+    console.error(msg);
   } else {
     compiledConfirmationEmailTextTemplate = Hogan.compile(result);
   }
@@ -227,10 +233,11 @@ var sendPinEmail = function (recipient, newPin) {
     };
     console.log(__dirname);
     /* Send the email */
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.error('\t error sending email ' + error);
-        if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
+    transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        var msg = new errBit.errBitMessage(err, __filename, 'sendPinEmail()', 237);
+        console.error(msg);
+        if (err.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors
             message: errorMsgs.SMTP.CONNECTION_REFUSED.message
@@ -276,10 +283,11 @@ var sendConfirmationEmail = function (metadata) {
       html: emailBody
     };
     /* Send the email */
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.error('\t error sending confirmation email ' + error);
-        if (error.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
+    transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        var msg = new errBit.errBitMessage(err, __filename, 'sendConfirmationEmail()', 286);
+        console.error(msg);
+        if (err.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
           reject({
             isUserError: false, //TODO decide what to do with smtp server errors
             message: errorMsgs.SMTP.CONNECTION_REFUSED.message

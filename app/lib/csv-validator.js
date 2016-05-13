@@ -5,6 +5,8 @@ var ErrorMessages = require('./error-messages.js');
 var avHandler = require('./anitvirus-handler');
 var ErrorHandler = require('./error-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+var errBit = require('./errbitErrorMessage');
+
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -51,7 +53,7 @@ var validateFile = function (filePath, contentType) {
 
             // Test file extension.
             else if (Path.extname(filePath).toLowerCase() !== '.csv') {
-              console.error('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
+              console.log('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
               reject({
                 isUserError: true,
                 message: ErrorMessages.FILE_HANDLER.NOT_CSV
@@ -97,7 +99,8 @@ var validateFile = function (filePath, contentType) {
             });
 
           } else {
-            console.error('\t ANTIVIRUS SCANNER ISSUE ');
+            var msg = new errBit.errBitMessage('ClamAV system error unable to scan files!', __filename, 'isInfected()', 102);
+            console.error(msg);
             errorMessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
               reject({
                 isUserError: true,

@@ -1,14 +1,15 @@
 
 var UserHandler = require('../lib/user-handler');
 var Utils = require('../lib/utils');
+var errBit = require('../lib/errbitErrorMessage');
 /*
  * HTTP GET handler for gets for /file/check
  * @param {type} request
  * @param {type} reply
  */
 module.exports.getHandler = function (request, reply) {
-  
- //console.log(request);
+
+  //console.log(request);
 
   var sessionID = Utils.base64Decode(request.state['data-returns-id']);
   console.log('==> O2O6Handler.getHandler() ');
@@ -21,7 +22,8 @@ module.exports.getHandler = function (request, reply) {
       }
     })
     .catch(function (err) {
-      console.error('<== O2O6Handler error: ' + err);
+      var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 24);
+      console.error(msg);
       reply.redirect('/email');
     });
 };

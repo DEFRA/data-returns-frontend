@@ -3,6 +3,7 @@
 var CachHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var ErrorHelper = require('../lib/error-handler');
+var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
   /*
@@ -44,7 +45,8 @@ module.exports = {
           });
         })
         .catch(function (err) {
-          console.error(err);
+          var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 47);
+          console.error(msg);
         });
     }
   }

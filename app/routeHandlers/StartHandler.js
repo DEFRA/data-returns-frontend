@@ -1,8 +1,6 @@
 
 
 var HelpLinks = require('../config/dep-help-links');
-
-
 //path: '/start',
 
 
@@ -15,7 +13,6 @@ module.exports = {
   postHandler: function (request, reply) {
 
     reply.redirect('/file/choose');
-
   },
   /*
    * get handler for '/start' route
@@ -31,7 +28,7 @@ module.exports = {
       clearInvalid: false,
       strictHeader: true
     };
-
+    
     reply.view('data-returns/start', {
       HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
       EnvironmentalPermittingLandfillSectorTechnicalGuidance: HelpLinks.links.EnvironmentalPermittingLandfillSectorTechnicalGuidance,

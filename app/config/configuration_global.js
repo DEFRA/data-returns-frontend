@@ -14,6 +14,8 @@
  *    DRF_SS_REDIS_***   "Data Returns Frontend Session Storage (using Redis) ***"
  */
 var config = {};
+config.appversion = '1.0.17';
+
 // By default we'll start with a non-specific environment name.
 // This should always be overridden with something more meaningful.
 config.env = 'default';

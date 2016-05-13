@@ -1,7 +1,7 @@
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('./cache-handler');
 var Utils = require('./utils');
-
+var errBit = require('./errbitErrorMessage');
 
 /*
  * Saves a user object JSON to Redis
@@ -39,9 +39,10 @@ var getUser = function (sessionID) {
         resolve(result);
 
       })
-      .catch(function (errResult) {
+      .catch(function (err) {
         reject('errResult');
-        console.error('<== getUser() ' + errResult);
+        var msg = new errBit.errBitMessage(err, __filename, 'getUser()', 32);
+        console.error(msg);
       });
   });
 };
@@ -53,7 +54,9 @@ module.exports.doesExists = function (sessionID) {
       return (result !== null) ? true : false;
     })
     .catch(function (err) {
-      console.error('doesExists', err);
+      var msg = new errBit.errBitMessage(err, __filename, 'doesExists()', 50);
+        console.error(msg);
+     
       return false;
     });
 };

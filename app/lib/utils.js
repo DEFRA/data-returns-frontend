@@ -5,6 +5,7 @@ var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
 var path = require('path');
+var errBit = require('./errbitErrorMessage');
 
 /* loadFilesInDir: Recursivly loads file names in to an array
  * @param dir the parent base directory to scan
@@ -156,7 +157,8 @@ module.exports = {
       if (stats === null || !stats.isDirectory()) {
         mkdirp(config.upload.path, function (err) {
           if (err) {
-            console.error(err);
+            var msg = new errBit.errBitMessage(err, __filename, 'createUploadDirectory()', 158);
+            console.error(msg);
           } else {
             console.log('<== createUploadDirectory() ' + config.upload.path + ' created.');
           }
@@ -165,7 +167,8 @@ module.exports = {
         console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
       }
     } catch (err) {
-      console.error('<== createUploadDirectory() error: ' + err);
+      var msg = new errBit.errBitMessage(err, __filename, 'createUploadDirectory()', 170);
+      console.error(msg);
     }
   },
   /*
