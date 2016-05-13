@@ -10,6 +10,7 @@ var defaultTemplateName = 'DR3000';
 var filenames = Utils.getFileListInDir(templateDir);
 var filecount = 1;
 var x, y, key, hiddenField, compiledTemplate;
+var errBit = require('../lib/errbitErrorMessage');
 
 //preload and compile error-templates
 var loadErrorTemplates = function () {
@@ -20,7 +21,8 @@ var loadErrorTemplates = function () {
     //console.log('\tLoading ' + filename, filecount++);
     Utils.readFile(filename, function (err, fileContents) {
       if (err) {
-        console.error('Unable to read ' + filename, err);
+        var msg = new errBit.errBitMessage(err, __filename, 'loadErrorTemplates())', 24);
+        console.error(msg);
       } else {
         x = filename.lastIndexOf('/');
         y = filename.indexOf('.html');

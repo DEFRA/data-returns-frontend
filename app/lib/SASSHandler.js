@@ -6,6 +6,7 @@ var sass = require('node-sass');
 var path = require('path');
 var rootPath = path.resolve(__dirname, '../../');
 var compressor = require('node-minify');
+var errBit = require('../lib/errbitErrorMessage');
 
 var updateCSS = function (filepath) {
 
@@ -33,7 +34,8 @@ var updateCSS = function (filepath) {
               fileOut: 'public/stylesheets/main-min.css',
               callback: function (err, min) {
                 if (err) {
-                  console.error(err);
+                  var msg = new errBit.errBitMessage(err, __filename, 'updateCSS()', 36);
+                  console.error(msg);
                 } else {
                   console.log('\t /public/stylesheets/main-min.css has been updated');
                   console.log('Changes ready to view');
@@ -43,12 +45,14 @@ var updateCSS = function (filepath) {
           }
         });
       } else {
-        console.error(err);
+        var msg = new errBit.errBitMessage(err, __filename, 'updateCSS()', 48);
+        console.error(msg);
       }
 
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    var msg = new errBit.errBitMessage(err, __filename, 'updateCSS()', 54);
+    console.error(msg);
   }
 };
 

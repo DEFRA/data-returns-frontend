@@ -10,6 +10,7 @@ var UserHandler = require('../lib/user-handler');
 var ErrorHandler = require('../lib/error-handler');
 var Utils = require('../lib/utils');
 var MetricsHandler = require('../lib/MetricsHandler');
+var errBit = require('../lib/errbitErrorMessage');
 
 /*
  *  HTTP POST handler for /file/choose
@@ -144,7 +145,8 @@ module.exports.postHandler = function (request, reply) {
             });
         })
         .catch(function (err) {
-          console.error(err);
+          var msg = new errBit.errBitMessage(err, __filename, 'postHandler', 148);
+          console.error(msg);
         });
     } else {
       request.session.flash('errorMessage', errorData.message);

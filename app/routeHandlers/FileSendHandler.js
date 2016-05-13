@@ -5,6 +5,7 @@ var Utils = require('../lib/utils.js');
 var CacheHandler = require('../lib/cache-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorHandler = require('../lib/error-handler');
+var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
   /*
@@ -25,7 +26,8 @@ module.exports = {
 
       })
       .catch(function (err) {
-        console.error('O2O5GetHandler', err);
+        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 28);
+        console.error(msg);
       });
 
   },
@@ -58,8 +60,7 @@ module.exports = {
               .then(function () {
                 reply.redirect('/file/sent');
               })
-              .catch(function (errorData) {
-                console.error('\t O2O5Handler.postHandler() error' + JSON.stringify(errorData));
+              .catch(function () {
                 var errormessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto});
                 reply.view('data-returns/failure', {'errorMessage': errormessage});
               });

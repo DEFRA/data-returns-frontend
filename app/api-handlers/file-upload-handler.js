@@ -5,8 +5,7 @@ var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var ErrorHandler = require('../lib/error-handler');
-
-
+var errBit = require('../lib/errbitErrorMessage');
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -49,6 +48,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       var errorsummary, apiErrors = '';
 
       if (err) {
+        var msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 51);
+        console.error(msg);
         reject({
           isUserError: true,
           message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
@@ -66,8 +67,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               .then(function () {
                 resolve(httpResponse);
               })
-              .catch(function (result) {
-                console.error('<== successHandler() error: ' + result);
+              .catch(function (err) {
+                var msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 71);
+                console.error(msg);
                 reject();
               });
           }
@@ -82,13 +84,14 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
 
       } else {
         //There are validation errors
-        console.error('file-upload-handler.processResponse()');
+
         try {
           if (body) {
             httpResponse = JSON.parse(body);
           }
         } catch (e) {
-          console.error('Error parsing body ', e);
+          var msg = new errBit.errBitMessage(e, __filename, 'uploadFileToService()', 90);
+          console.error(msg);
           return reject({
             isUserError: true,
             errorCode: 3000,
@@ -150,7 +153,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             }
 
             sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('fieldName'));
-            sortedLineErrorData = validationErrorHelper.groupErrorData(sessionID,sortedLineErrorData);
+            sortedLineErrorData = validationErrorHelper.groupErrorData(sessionID, sortedLineErrorData);
 
             reject({
               isUserError: true,

@@ -76,5 +76,17 @@ config.compressCSS = true;
 config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
+//errbit integration config
+config.errbit = {};
+config.errbit.options = {
+  enabled: false,
+  apiKey: '',
+  appUrl: 'https://dr-dev.envage.co.uk/start',
+  appName: 'Data-Returns Front End (AWS DEV)',
+  projectRoot: '/data-returns-frontend',
+  serverName: 'localhost',
+  errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
+};
+
 // Publish the configuration.
 module.exports = config;

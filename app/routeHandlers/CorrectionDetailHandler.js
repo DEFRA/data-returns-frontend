@@ -4,8 +4,9 @@ var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var DetailsHandler = require('../api-handlers/multiple-error-helper');
 var ErrorHandler = require('../lib/error-handler');
+var errBit = require('../lib/errbitErrorMessage');
+
 module.exports = {
-  
   /*
    * HTTP GET Handler for /correction/detail route
    */
@@ -52,11 +53,13 @@ module.exports = {
               });
           })
           .catch(function (err) {
-            console.error('Error getting ' + key, err);
+            var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 56);
+            console.error(msg);
           });
       })
       .catch(function (err) {
-        console.error('Error getting ' + key, err);
+        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 61);
+        console.error(msg);
       });
 
   }

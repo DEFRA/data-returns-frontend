@@ -6,7 +6,7 @@
 'use strict';
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorMessages = require('./error-messages.js');
-
+var errBit = require('./errbitErrorMessage');
 var redis = require('redis'),
   client = redis.createClient(config.redis.clientOptions);
 
@@ -27,7 +27,8 @@ module.exports = {
         client.get(key, function (err, reply) {
 
           if (err) {
-            console.error('<== cache-handler.getValue() error :' + err);
+            var msg = new errBit.errBitMessage(err, __filename, 'getValue()', 30);
+            console.error(msg);
             reject({
               error: true,
               message: err.message
@@ -38,7 +39,8 @@ module.exports = {
           }
         });
       } else {
-        console.error('Error: cache-handler.getValue() ' + ErrorMessages.REDIS.NOT_CONNECTED);
+        var msg = new errBit.errBitMessage(ErrorMessages.REDIS.NOT_CONNECTED, __filename, 'getValue()', 42);
+        console.error(msg);
         reject({
           error: true,
           message: ErrorMessages.REDIS.NOT_CONNECTED
@@ -62,8 +64,8 @@ module.exports = {
         client.set(key, JSON.stringify(value), function (err, res) {
 
           if (err) {
-
-            console.error('<== CacheHandler setPersistedValue() error: ' + err);
+            var msg = new errBit.errBitMessage(err, __filename, 'setPersistedValue()', 42);
+            console.error(msg);
             reject(err);
           } else {
             resolve(true);
@@ -88,8 +90,8 @@ module.exports = {
         client.set(key, JSON.stringify(value), function (err, res) {
 
           if (err) {
-
-            console.error('<== CacheHandler setValue() error: ' + err);
+            var msg = new errBit.errBitMessage(err, __filename, 'setValue()', 92);
+            console.error(msg);
             reject(err);
           } else {
             console.log('<== CacheHandler setValue() redis response: ' + res);
@@ -116,7 +118,8 @@ module.exports = {
 
       client.DEL(key, function (err, res) {
         if (err) {
-          console.error('\t CacheHandler.delete' + err, res);
+          var msg = new errBit.errBitMessage(err, __filename, 'delete()', 121);
+          console.error(msg);
           reject();
         } else {
           console.log('\t' + key + ' deleted');
@@ -131,5 +134,6 @@ module.exports = {
 };
 
 client.on('error', function (err) {
-  console.error('Redis Error: ' + err);
+  var msg = new errBit.errBitMessage(err, __filename, 'REDIS Error', 136);
+  console.error(msg);
 });

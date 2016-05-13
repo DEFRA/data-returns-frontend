@@ -4,6 +4,7 @@ var SMTPHandler = require('../lib/smtp-handler');
 var Utils = require('../lib/utils');
 var CacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
+var errBit = require('../lib/errbitErrorMessage');
 
 /*
  * HTTP GET Handler for /file/sent
@@ -68,7 +69,8 @@ module.exports.getHandler = function (request, reply) {
         });
     })
     .catch(function (err) {
-      console.error('<== O2O8Handler.getHandler() Unknown error' + err);
+      var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 70);
+      console.error(msg);
     });
 
 };

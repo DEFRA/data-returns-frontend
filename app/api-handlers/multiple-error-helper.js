@@ -8,6 +8,7 @@ var cacheHandler = require('../lib/cache-handler');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
 var _ = require('lodash');
+var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
   /*
@@ -98,7 +99,8 @@ module.exports = {
             return;
           })
           .catch(function (err) {
-            console.error(err);
+            var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 30);
+            console.error(msg);
           });
       })(groupID, group);
     }

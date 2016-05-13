@@ -2,6 +2,7 @@
 var Request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorHandler = require('../lib/error-handler');
+var errBit = require('../lib/errbitErrorMessage');
 
 /**
  * Asks the Data Exchange service to submit a file that has previously been
@@ -36,7 +37,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
     console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
 
     // Make REST call into the Data Exchange service.
-    Request.post(apiData, function (err, response) {
+    Request.post(apiData, function (err, response, body) {
       console.log('==> confirmFileSubmission response received');
 
       var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
@@ -45,14 +46,21 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
         case 200:
           resolve(true);
           break;
+        case 500:
+          if (body) {
+            body = JSON.parse(body);
+            var msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
+            console.error(msg);
+            reject();
+            break;
+          }
         default:
+          if (err) {
+            var msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
+            console.error(msg);
+          }
           console.log('completion-handler processResponse statuscode:', statusCode);
-          reject({
-            isUserError: false,
-            err: err,
-            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
-            rawResponse: response
-          });
+          reject();
           break;
       }
     });

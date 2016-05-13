@@ -12,7 +12,31 @@ var banner = config.feedback.template;
 var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
+var errBit = require('./app/lib/errbitErrorMessage');
 
+var origConsolError = console['error'];
+//override console.error so we can send to errBit when an exception is logged
+console.error = function () {
+
+  var d = new Date();
+  var formattedDate = d.getFullYear() + '-' + utils.pad(d.getMonth(), 2) + '-' + utils.pad(d.getDate(), 2) + ' ' + utils.pad(d.getHours(), 2) + ':' + utils.pad(d.getMinutes(), 2) + ':' + utils.pad(d.getSeconds(), 2);
+
+
+  // send to errBit
+  var errbitHandler = require('./app/lib/errbitHandler');
+  errbitHandler.notify(arguments[0]);
+
+  var args = [];
+  args[0] = '[ERROR] ' + formattedDate;
+  args[1] = arguments[0];
+
+  if (origConsolError.apply) {
+    origConsolError.apply(console, args);
+  }
+
+};
+
+//listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 console.log('Starting the Data-Returns Service');
 
@@ -55,15 +79,15 @@ server.register({
   }
 }, function (err) {
   if (err) {
-    console.error('Failed to initialise logging components.');
-    throw err;
+    var msg = new errBit.errBitMessage(err, __filename, 'server.register()', 80);
+    console.error(msg);
   }
 });
 // If configured, require the user to provide Basic Authentication details to view
 // this site (useful when the site is hosted publicly but still in development).
 if (config.requireBasicAuth) {
   if (!config.basicAuthUsername || !config.basicAuthPassword) {
-    console.error('Basic Authentication username or password is not set; exiting.');
+    console.log('Basic Authentication username or password is not set; exiting.');
     process.exit(1);
   }
 
@@ -71,7 +95,8 @@ if (config.requireBasicAuth) {
 // to individual testers.
   server.register(require('hapi-auth-basic'), function (err) {
     if (err) {
-      console.error('Failed to initialise authorisation component.');
+      var msg = new errBit.errBitMessage(err, __filename, 'server.register()', 80);
+      console.error(msg);
       throw err;
     }
     server.auth.strategy('simple', 'basic', 'required', {
@@ -81,26 +106,6 @@ if (config.requireBasicAuth) {
     });
   });
 }
-
-/*server.register({
- register: require('yar'),
- options: {
- storeBlank: true,
- name: 'data-returns-session',
- cookieOptions: {
- isSecure: false, //config.env === 'local' ? false : true,
- isHttpOnly: true, // not accessable from javascript
- password: config.sessionStorage.secret
- }
- },
- maxCookieSize: 350
- }, function (err) {
- if (err) {
- console.error('Failed to initialise session storage component.');
- throw err;
- }
- });*/
-
 
 // Setup serving of static assets.
 server.register(require('inert'), function (err) {
@@ -125,16 +130,6 @@ var sharedViewContext = {
 
 };
 
-/*server.register({
- register: HapiSass,
- options: sassOptions
- }
- , function (err) {
- if (err)
- throw err;
- 
- }
- );*/
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
   var partialsCache = {};
@@ -212,13 +207,7 @@ server.ext('onPreResponse', function (request, reply) {
   reply.continue();
 });
 
-
-
-
-
 // Start the server.
-
-
 server.start(function (err) {
 
 
@@ -232,11 +221,11 @@ server.start(function (err) {
     fileOut: 'assets/javascripts/data-returns-min.js',
     callback: function (err, min) {
       if (err) {
-        console.error(err);
+        var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 252);
+        console.error(msg);
       }
     }
   });
-
 
   new compressor.minify({
     type: 'uglifyjs',
@@ -244,14 +233,22 @@ server.start(function (err) {
     fileOut: 'public/javascripts/data-returns-min.js',
     callback: function (err, min) {
       if (err) {
-        console.error(err);
+        var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 259);
+        console.error(msg);
       }
     }
   });
 
   if (err) {
-    console.error('Failed to start server.');
+    var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 271);
+    console.error(msg);
     throw err;
   }
   console.log('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
+});
+
+
+process.on('uncaughtException', function (err) {
+  var msg = new errBit.errBitMessage(err, __filename, 'uncaughtException!', 1);
+  console.error(msg);
 });

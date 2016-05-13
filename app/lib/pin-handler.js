@@ -11,9 +11,10 @@ var random = require('random-js')();
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
-var userHandler = require('../lib/user-handler');
-var Utils = require('../lib/utils');
-var CacheHandler = require('../lib/cache-handler');
+var userHandler = require('./user-handler');
+var Utils = require('./utils');
+var CacheHandler = require('./cache-handler');
+var errBit = require('./errbitErrorMessage');
 
 var checkInvalidPinCount = function (sessionID) {
 
@@ -58,8 +59,9 @@ module.exports = {
           pin = pin + random.integer(1, 9);
         }
         resolve(parseInt(pin));
-      } catch (e) {
-        console.error('newPin()', e);
+      } catch (err) {
+        var msg = new errBit.errBitMessage(err, __filename, 'newPin()', 63);
+        console.error(msg);
         reject();
       }
     });
