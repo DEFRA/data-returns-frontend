@@ -81,6 +81,10 @@ config.feedback.subject = 'Feedback from Data Returns (' + config.env + ')';
 config.feedback.mailto = config.feedback.emailaddress + '?Subject=' + config.feedback.subject;
 config.feedback.template = {feedbackbanner: '<div class="phase-banner-beta"><p><strong class="phase-tag">BETA</strong><span>This is a new service – your <a href="mailto:' + config.feedback.mailto + '">feedback</a> will help us to improve it.</span></p></div>'};
 
+// Secret key for the HMAC-SHA256 hash
+config.crypto = {};
+config.crypto.sha_function = 'sha256';
+config.crypto.secret_key = 'failYRand0mizedk3Y';
 
 // Publish the configuration
 module.exports = config;

@@ -40,6 +40,14 @@ console.error = function () {
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 console.log('Starting the Data-Returns Service');
 
+// Test for cryptography support
+try {
+  require('crypto');
+} catch (err) {
+  console.log('Cryptography support is disabled!');
+  throw err;
+}
+
 server.connection({
   host: '0.0.0.0',
   port: config.http.port,

@@ -5,7 +5,11 @@ var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var ErrorHandler = require('../lib/error-handler');
+<<<<<<< 7f6c8e8ccaa0e12e4f2d649300cbb5b701acc7e0
 var errBit = require('../lib/errbitErrorMessage');
+=======
+var crypto = require('../lib/crypto-handler');
+>>>>>>> Added cryptographic hashing signature for requests
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -15,7 +19,7 @@ var errBit = require('../lib/errbitErrorMessage');
  * @returns {Promise} A promise that is fulfilled when the upload completes
  *   successfully, or is rejected if an error occurs.  If successful, the
  *   promise is resolved with an object containing the fields 'fileKey',
- *   'eaId', 'siteName' and 'returnType' as returned from the API.  
+ *   'eaId', 'siteName' and 'returnType' as returned from the API.
  */
 module.exports.uploadFileToService = function (filePath, sessionID, originalFileName) {
   console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
@@ -25,12 +29,16 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       url: config.API.endpoints.FILEUPLOAD,
       gzip: true,
       timeout: 120000, //ms 120 seconds
+      headers: {
+        'Authorization': crypto.calculateAuthorizationHeader(filePath),
+        'filename': filePath
+      },
       formData: {
         fileUpload: FileSystem.createReadStream(filePath)
       }
     };
 
-
+    console.log(crypto);
     var startTime = new Date();
     console.log('Post to API ', startTime);
 
