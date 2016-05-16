@@ -12,10 +12,10 @@ module.exports.status = {
   'SUCCESSFULL': {code: 0},
   'APPLICATION_ERROR_CODE': {code: 801},
   'VALIDATION_ERRORS': {code: 801, errormessage: 'Validation Errors', helplink: ''},
-  'ECONNREFUSED': {code: 'ECONNREFUSED', errormessage: '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
+  'ECONNREFUSED': {code: 'ECONNREFUSED', errormessage: '<h1 class="heading-medium error-summary-heading"><span class="error-message">Your file hasn’t been sent</span></h1>'
       + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>', helplink: ''},
   'NOTIFICATION_FAILURE': {code: 604, errormessage: 'The smtp service (SES) is not available.', helplink: ''},
-  'UNKNOWN': {code: 0, errormessage: '<h2 class="heading-small"><span class="error-message">Your file hasn’t been sent</span></h2>'
+  'UNKNOWN': {code: 0, errormessage: '<h1 class="heading-medium error-summary-heading"><span class="error-message">Your file hasn’t been sent</span></h1>'
       + '<p>We’re sorry but something has gone wrong with the service which means you can’t send your file.</p>', helplink: ''}
 };
 
@@ -37,5 +37,3 @@ module.exports.PIN = {
   INVALID_PIN: 2225,
   PIN_EXPIRED: 2275
 };
-
-
