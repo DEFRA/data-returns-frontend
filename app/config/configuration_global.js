@@ -84,7 +84,7 @@ config.feedback.template = {feedbackbanner: '<div class="phase-banner-beta"><p><
 // Secret key for the HMAC-SHA256 hash
 config.crypto = {};
 config.crypto.sha_function = 'sha256';
-config.crypto.secret_key = 'failYRand0mizedk3Y';
-
+//config.crypto.secret_key = 'failYRand0mizedk3Y';
+config.crypto.secret_key = process.env.DR_API_KEY;
 // Publish the configuration
 module.exports = config;

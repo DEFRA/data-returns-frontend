@@ -6,7 +6,6 @@ const crypto = require('crypto');
 function encodeHmac(key, data) {
   const func = crypto.createHmac(config.crypto.sha_function, key);
   const encoded = func.update(data);
-  console.log("undigested" + encoded);
   return encoded.digest('hex');
 };
 
@@ -24,9 +23,5 @@ module.exports.calculateAuthorizationHeader = function(dataToSign) {
   const dateKey = encodeHmac(config.crypto.secret_key, today);
   const signedData = encodeHmac(dateKey, dataToSign);
 
-  console.log("Encrypt");
-  console.log(today);
-  console.log(dateKey);
-  console.log(signedData);
   return signedData;
 };

@@ -3,6 +3,7 @@ var Request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var ErrorHandler = require('../lib/error-handler');
 var errBit = require('../lib/errbitErrorMessage');
+var crypto = require('../lib/crypto-handler');
 
 /**
  * Asks the Data Exchange service to submit a file that has previously been
@@ -12,7 +13,7 @@ var errBit = require('../lib/errbitErrorMessage');
  * @param userEmail A string containing the user's email address.
  * @param userEmail The email address entered by the user.
  * @param originalFileName Th original clientside file name uploaded.
- * @param permitNo The EA_ID (permit number) 
+ * @param permitNo The EA_ID (permit number)
  * @returns {Promise} A promise that is fulfilled when submission is
  *   successfully competed, or rejected if an error occurs.  If
  *   successful, the promise is resolve with Boolean true.  For rejection
@@ -26,7 +27,9 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
     var apiData = {
       url: config.API.endpoints.FILEUPLOADCOMPLETE,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': crypto.calculateAuthorizationHeader(originalFileName + userEmail),
+        'filename': originalFileName + userEmail
       },
       formData: {
         fileKey: fileKey,
