@@ -35,7 +35,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       }
     };
 
-    console.log(crypto);
     var startTime = new Date();
     console.log('Post to API ', startTime);
 
