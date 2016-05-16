@@ -27,7 +27,7 @@ module.exports = {
    * @param error - the error object
    */
   notify: function (message) {
-    if (compiledTemplate && config.errbit.options.enabled === true) {
+    if (compiledTemplate && config.errbit.options.enabled === true && config.errbit.options.apiKey) {
       var data = {
         apiKey: config.errbit.options.apiKey,
         appVersion: config.appversion,

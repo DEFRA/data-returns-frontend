@@ -79,7 +79,7 @@ config.compressCSS = true;
 config.errbit = {};
 config.errbit.options = {
   enabled: false,
-  apiKey: '',
+  apiKey: process.env.ERRBIT_API_KEY,
   appUrl: 'https://dr-dev.envage.co.uk/start',
   appName: 'Data-Returns Front End (AWS TEST)',
   projectRoot: '/data-returns-frontend',
