@@ -70,12 +70,11 @@ config.compressCSS = false;
 //errbit integration config
 config.errbit = {};
 config.errbit.options = {
-  enabled: true,
+  enabled: false,
   apiKey: process.env.ERRBIT_API_KEY, 
   appUrl: 'https://localhost:3000/start',
   appName: 'Data-Returns Front End (AWS LOCAL)',
   projectRoot: '/data-returns-frontend',
-  serverName: 'localhost',
   errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
 };
 

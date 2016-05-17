@@ -10,8 +10,9 @@ var Utils = require('../lib/utils');
 var Hogan = require('hogan.js');
 var request = require('request');
 var path = require('path');
-
+var os = require("os");
 var compiledTemplate;
+
 //load and precompile the errbit xml template
 Utils.readFile('../config/errBitTemplate.xml', function (err, result) {
   if (err) {
@@ -38,7 +39,7 @@ module.exports = {
         method: message.method || 'Unknown',
         fileName: path.basename(message.fileName) || 'Unknown',
         lineNumber: message.lineNumber || 0,
-        serverName: config.errbit.options.serverName,
+        serverName: os.hostname(),
         projectRoot: config.errbit.options.projectRoot
       };
 

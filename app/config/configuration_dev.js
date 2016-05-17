@@ -1,4 +1,5 @@
 'use strict';
+
 /*
  * Settings for the 'development' environment.
  */
@@ -13,7 +14,7 @@ config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 587;
 config.smtp.ignoreTLS = true;
 config.smtp.username = process.env.smtpuser;
-config.smtp.password = process.env.smtppw; 
+config.smtp.password = process.env.smtppw;
 config.smtp.fromEmailAddress = 'noreply-dev@environment-agency.gov.uk';
 config.smtp.useFooter = false;
 // mail catcher config
@@ -84,7 +85,6 @@ config.errbit.options = {
   appUrl: 'https://dr-dev.envage.co.uk/start',
   appName: 'Data-Returns Front End (AWS DEV)',
   projectRoot: '/data-returns-frontend',
-  serverName: 'localhost',
   errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
 };
 
