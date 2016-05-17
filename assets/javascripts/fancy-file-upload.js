@@ -6,8 +6,11 @@ $(document).on('change', '.btn-file :file', function () {
   label = input.val().replace("C:\\fakepath\\", "");
   label = label.replace(/\\/g, '/').replace(/.*\//, '');
 
+//Validation-Summary
+
 
   var f = input.get(0).files[0];
+  $('#Validation-Summary-header').show();
   $('#Validation-Summary').hide();
   $('#Validation-Summary-empty-file').hide();
   $('#Validation-Summary-not-csv-file').hide();
@@ -17,6 +20,7 @@ $(document).on('change', '.btn-file :file', function () {
   } else {
     //empty_file
     $('#remove-link').click();
+    $('#Validation-Summary-header').hide();
     $('#Validation-Summary-empty-file').show();
   }
 
@@ -73,6 +77,8 @@ $(document).ready(function () {
   }
   $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
     if (label !== '') {
+      
+      $('#Validation-Summary-header').show();
       $('#statusbar-header').show();
       $('.file-label').html(label);
       $('.del-label').html('<a id="remove-link" href="#">Remove file</a>');
@@ -103,6 +109,7 @@ $(document).ready(function () {
         $('#check-for-errors-btn').attr('disabled', 'disabled');
         $('#check-for-errors-btn').attr('aria-disabled', true);
         $('#file-select-button').show();
+        $('#Validation-Summary-header').show();
         $('.fancy-file-button').css({'-ms-filter': 'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)',
           'filter': 'alpha(opacity=100)',
           '-moz-opacity': '1.0',
@@ -113,6 +120,7 @@ $(document).ready(function () {
       });
       if (!label.includes(".csv")) {
         $('#remove-link').click();
+        $('#Validation-Summary-header').hide();
         $('#Validation-Summary-not-csv-file').show();
       }
     }
