@@ -20,6 +20,7 @@ var errBit = require('../lib/errbitErrorMessage');
 
 module.exports.getHandler = function (request, reply) {
   reply.view('data-returns/choose-your-file', {
+    uploadError: false,
     emptyfilemessage: ErrorHandler.render(500, HelpLinks.links, 'Your File is empty.'),
     notcsvmessage: ErrorHandler.render(400, HelpLinks.links, 'Your file is not a CSV.')
   });
@@ -128,6 +129,7 @@ module.exports.postHandler = function (request, reply) {
 
                 reply.view('data-returns/choose-your-file', {
                   uploadError: true,
+                  
                   errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                   fileName: fileName,
                   lineErrors: errorData.lineErrors,

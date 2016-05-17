@@ -10,12 +10,15 @@ Send your data returns online
 
   {{{feedbackbanner}}}
 
-  {{^uploadError}}
-  <h1 class="heading-large">
-    <span id="title">Choose your file</span>
-  </h1>
-  {{/uploadError}}
-
+  
+  <div id="Validation-Summary-header">
+    <h1 class="heading-large">
+      <span id="title">
+      </span>
+    </h1>
+  </div>
+  
+ 
   {{#uploadError}}
   <div id="Validation-Summary">
     <h1 class="heading-large">You can't send this file</h1>
@@ -26,7 +29,7 @@ Send your data returns online
   </div>
   {{/uploadError}}
 
-  <div id="Validation-Summary-empty-file" style="display:none" >
+  <div id="Validation-Summary-empty-file"  style="display:none" >
     <h1 class="heading-large">You can't send this file</h1>
     <div class="error-summary">
       {{{emptyfilemessage}}}
@@ -34,9 +37,9 @@ Send your data returns online
     </div>
   </div>
 
-  <div id="Validation-Summary-not-csv-file" style="display:none">
+  <div id="Validation-Summary-not-csv-file"  style="display:none">
     <h1 class="heading-large">You can't send this file</h1>
-      <div class="error-summary">
+    <div class="error-summary">
       {{{notcsvmessage}}}
       <hidden id="error_code" value="DR0400"></hidden>
     </div>
