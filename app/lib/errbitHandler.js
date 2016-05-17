@@ -28,6 +28,7 @@ module.exports = {
    */
   notify: function (message) {
     if (compiledTemplate && config.errbit.options.enabled === true && config.errbit.options.apiKey) {
+      console.log('==> notify() sending message to errbit ', message);
       var data = {
         apiKey: config.errbit.options.apiKey,
         appVersion: config.appversion,
@@ -53,7 +54,10 @@ module.exports = {
         }
       };
 
+      console.log('  Posting to ', config.errbit.options.appUrl);
       var req = request(postRequest, function (error, response, body) {
+
+        console.log('Response from errbit recieved');
 
         if (error) {
           console.log(error);
