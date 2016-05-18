@@ -5,7 +5,6 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var FileUploadHandler = require('../api-handlers/file-upload-handler');
 var CachHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
-var ErrorHelper = require('../api-handlers/multiple-error-helper');
 var UserHandler = require('../lib/user-handler');
 var ErrorHandler = require('../lib/error-handler');
 var Utils = require('../lib/utils');

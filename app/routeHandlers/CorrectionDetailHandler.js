@@ -1,5 +1,5 @@
 
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+
 var cacheHandler = require('../lib/cache-handler');
 var Utils = require('../lib/utils');
 var DetailsHandler = require('../api-handlers/multiple-error-helper');

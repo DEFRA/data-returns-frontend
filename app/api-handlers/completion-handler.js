@@ -1,7 +1,6 @@
 'use strict';
 var Request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var ErrorHandler = require('../lib/error-handler');
 var errBit = require('../lib/errbitErrorMessage');
 var crypto = require('../lib/crypto-handler');
 
@@ -13,16 +12,16 @@ var crypto = require('../lib/crypto-handler');
  * @param userEmail A string containing the user's email address.
  * @param userEmail The email address entered by the user.
  * @param originalFileName Th original clientside file name uploaded.
- * @param permitNo The EA_ID (permit number)
  * @returns {Promise} A promise that is fulfilled when submission is
  *   successfully competed, or rejected if an error occurs.  If
  *   successful, the promise is resolve with Boolean true.  For rejection
  *   details see processApiResponse().
  */
-module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName, permitNo) {
+module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
 
   return new Promise(function (resolve, reject) {
     console.log('==> confirmFileSubmission ()');
+    var msg;
     // Define data to send to the Data Exchange service.
     var apiData = {
       url: config.API.endpoints.FILEUPLOADCOMPLETE,
@@ -52,14 +51,14 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
         case 500:
           if (body) {
             body = JSON.parse(body);
-            var msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
+            msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
             console.error(msg);
             reject();
-            break;
           }
+          break;
         default:
           if (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
+            msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
             console.error(msg);
           }
           console.log('completion-handler processResponse statuscode:', statusCode);

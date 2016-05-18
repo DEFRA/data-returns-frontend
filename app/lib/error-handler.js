@@ -6,10 +6,9 @@ var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
 var path = require('path');
 var templateDir = path.resolve(__dirname, '../error-templates/');
-var defaultTemplateName = 'DR3000';
 var filenames = Utils.getFileListInDir(templateDir);
 var filecount = 1;
-var x, y, key, hiddenField, compiledTemplate;
+var x, y, key, compiledTemplate;
 var errBit = require('../lib/errbitErrorMessage');
 
 //preload and compile error-templates

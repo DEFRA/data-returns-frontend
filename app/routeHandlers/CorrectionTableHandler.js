@@ -30,7 +30,6 @@ module.exports = {
 
     } else {
       //get cached data
-      var sessionID = Utils.base64Decode(request.state['data-returns-id']);
       var cacheKey = sessionID + '_latestErrors';
 
       CachHandler.getValue(cacheKey)

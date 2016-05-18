@@ -32,7 +32,7 @@ var updateCSS = function (filepath) {
               type: 'clean-css',
               fileIn: 'public/stylesheets/main.css',
               fileOut: 'public/stylesheets/main-min.css',
-              callback: function (err, min) {
+              callback: function (err) {
                 if (err) {
                   var msg = new errBit.errBitMessage(err, __filename, 'updateCSS()', 36);
                   console.error(msg);
@@ -69,22 +69,30 @@ module.exports = {
     // compile css at startup
     updateCSS(rootPath + '/assets/sass/main.scss');
     //listen for subsequent changes
-    gaze(dir + '/**/*', function (err, watcher) {
+    gaze(dir + '/**/*', function (err) {
+
+      if (err) {
+        var msg = new errBit.errBitMessage(err, __filename, 'startSASSWatch()', 67);
+        console.error(msg);
+      }
 
       // Get all watched files
       var watched = this.watched();
-      // On file changed
-      this.on('changed', function (filepath) {
-        updateCSS(filepath);
-      });
-      // On file added
-      this.on('added', function (filepath) {
-        console.log(filepath + ' was added');
-      });
-      // On file deleted
-      this.on('deleted', function (filepath) {
-        console.log(filepath + ' was deleted');
-      });
+
+      if (watched) {
+        // On file changed
+        this.on('changed', function (filepath) {
+          updateCSS(filepath);
+        });
+        // On file added
+        this.on('added', function (filepath) {
+          console.log(filepath + ' was added');
+        });
+        // On file deleted
+        this.on('deleted', function (filepath) {
+          console.log(filepath + ' was deleted');
+        });
+      }
     });
   }
 };
