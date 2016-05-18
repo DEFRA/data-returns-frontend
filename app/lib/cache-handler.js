@@ -61,7 +61,7 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       console.log('==> CacheHandler setPersistedValue() ', key);
       if (value) {
-        client.set(key, JSON.stringify(value), function (err, res) {
+        client.set(key, JSON.stringify(value), function (err) {
 
           if (err) {
             var msg = new errBit.errBitMessage(err, __filename, 'setPersistedValue()', 42);
@@ -116,7 +116,7 @@ module.exports = {
       //key = key.replace(/"/g, "");
       console.log('==> CacheHandler.delete(' + key + ')');
 
-      client.DEL(key, function (err, res) {
+      client.DEL(key, function (err) {
         if (err) {
           var msg = new errBit.errBitMessage(err, __filename, 'delete()', 121);
           console.error(msg);

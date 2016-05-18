@@ -3,18 +3,6 @@ var CacheHandler = require('../lib/cache-handler');
 
 
 module.exports = {
-  setStartDateTime: function () {
-
-    return new Promise(function (resolve, reject) {
-      var d = new Date();
-    });
-  },
-  setEndDateTime: function () {
-
-    return new Promise(function (resolve, reject) {
-      var d = new Date();
-    });
-  },
   /* setFileSizeHighWaterMark
    * @param fileSizeBytes the size of the file
    * Add a record of the largest file size used in the service
@@ -38,11 +26,5 @@ module.exports = {
         }
 
       });
-  },
-  getFileSizeHighWaterMark: function (fileSizeBytes) {
-    var key = 'data-returns-high-water-mark';
-    CacheHandler.get(key);
   }
-
-
 };

@@ -43,7 +43,7 @@ module.exports = {
     var uploadResultsCacheKey = sessionID + '_UploadResult';
     var uploadResult, fileKey;
     var originalFileName;
-    var permitNo;
+    
 
     CacheHandler.getValue(uploadResultsCacheKey)
       .then(function (result) {
@@ -51,12 +51,11 @@ module.exports = {
         uploadResult = JSON.parse(result);
         fileKey = uploadResult.uploadResult.fileKey;
         originalFileName = uploadResult.originalFileName;
-        permitNo = uploadResult.parseResult.permitNumber;
       })
       .then(function () {
         UserHandler.getUserMail(sessionID)
           .then(function (userMail) {
-            CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName, permitNo)
+            CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName)
               .then(function () {
                 reply.redirect('/file/sent');
               })

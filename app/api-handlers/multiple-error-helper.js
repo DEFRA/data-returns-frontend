@@ -3,7 +3,6 @@
  * 
  * 
  */
-var uuid = require('node-uuid');
 var cacheHandler = require('../lib/cache-handler');
 var Hogan = require('hogan.js');
 var Utils = require('../lib/utils');
@@ -26,9 +25,8 @@ module.exports = {
     //create linkid's for each group (used in html page links)
     data.forEach(function (item) {
       var columnName = item.fieldName;
-      //var errorType = item.errorType;//item.errorValue === null ? 'Missing' : 'Incorrect';
-      var groupkey = columnName; //+ '_' + errorType;
-      var groupID = item.errorCode;//+ '-' + uuid.v4();
+      var groupkey = columnName; 
+      var groupID = item.errorCode;
       groupLinkID.set(groupkey, groupID);
     });
     //create grouped data for the details page
@@ -140,7 +138,7 @@ module.exports = {
   },
   getErrorDetails: function (data) {
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       var errorDetails = [];
       var dataClone = _.cloneDeep(data);
 
@@ -158,7 +156,7 @@ module.exports = {
       // use lodash to group errors by errorValue
       var groupedData = _.groupBy(dataClone, 'errorValue');
       var groupKeys = _.keys(groupedData);
-      var group, sortedGroup, index, item, prevRowNumber;
+      var group, sortedGroup, item, prevRowNumber;
       var rowNumberText = null, detailRow;
 
       groupKeys.forEach(function (groupKey) {

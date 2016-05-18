@@ -79,7 +79,7 @@ var checkLockOut = function (recipient) {
           // if a record exists they are locked out, the redis key will expire after an hour
           reject(true);
         } else {
-          resolve(false);
+          resolve();
         }
       });
   });
@@ -104,15 +104,18 @@ var checkEmailLimit = function (recipient) {
     var index = _.indexOf(whitelist, recipient);
 
     if (index !== -1) {
-      return resolve(true);
+      return resolve();
     }
 
     CacheHandler.getValue(key)
       .then(function (result) {
+
+        var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;// default to 10 minutes
+
         if (result) {
           result = parseInt(result);
           result++;
-          var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;// default to 10 minutes
+
           CacheHandler.setValue(key, result, expiry);
           if (result >= 10) {
             key = recipient + '-lockedout';
@@ -120,13 +123,12 @@ var checkEmailLimit = function (recipient) {
             CacheHandler.setValue(key, true, expiry);
             reject({attempts: result});
           } else {
-            resolve(true);
+            resolve();
           }
         } else {
           // not in redis, either first time in or expired
-          var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;
           CacheHandler.setValue(key, 1, expiry);
-          resolve(true);
+          resolve();
         }
       });
   });
@@ -144,9 +146,9 @@ var validateEmailAddress = function (emailaddress) {
   return new Promise(function (resolve, reject) {
 
     checkLockOut(emailaddress)
-      .then(function (result) {
+      .then(function () {
         checkEmailLimit(emailaddress)
-          .then(function (result) {
+          .then(function () {
             console.log('==> validateEmailAddress');
             var result = Joi.validate({'address': emailaddress}, schema);
             if (result.error) {
@@ -161,6 +163,7 @@ var validateEmailAddress = function (emailaddress) {
             }
           })
           .catch(function (err) {
+            console.log(err);
             //too many attempts
             reject({
               invalidEmailAddress: true,
@@ -169,6 +172,7 @@ var validateEmailAddress = function (emailaddress) {
           });
       })
       .catch(function (err) {
+        console.log(err);
         //Locked out for an hour
         reject({
           invalidEmailAddress: true,
@@ -192,12 +196,6 @@ var transporter = nodemailer.createTransport({
   // default values for sendMail method
   from: isUseCatcher ? sender : 'datareturns@envage.co.uk'
 });
-//config.smtp.max_limit = 10;
-//config.smtp.max_time_minutes = 10;
-
-
-
-
 
 /* emails a recipient
  * @param recipient The recipients email address

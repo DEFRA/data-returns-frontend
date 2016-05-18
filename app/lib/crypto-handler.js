@@ -7,7 +7,7 @@ function encodeHmac(key, data) {
   const func = crypto.createHmac(config.crypto.sha_function, key);
   const encoded = func.update(data);
   return encoded.digest('hex');
-};
+}
 
 /*
  * To calculate the authorization header use the following scheme

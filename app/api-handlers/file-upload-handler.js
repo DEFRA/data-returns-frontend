@@ -22,6 +22,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
   console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
   return new Promise(function (resolve, reject) {
     // Define data to send to the Data Exchange service.
+    
+    
     var apiData = {
       url: config.API.endpoints.FILEUPLOAD,
       gzip: true,
@@ -41,7 +43,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     // Make REST call into the Data Exchange service, and handle the result.
     Request.post(apiData, function (err, httpResponse, body) {
       var endTime = new Date();
-
+      var msg;
       var totalTime = new Date(endTime - startTime);
 
       console.log('<== uploadFileToService() response received ', startTime, endTime, totalTime.getMilliseconds() + 'ms', (totalTime.getMilliseconds() / 1000) + ' seconds');
@@ -52,7 +54,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
       var errorsummary, apiErrors = '';
 
       if (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 51);
+        msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 51);
         console.error(msg);
         reject({
           isUserError: true,
@@ -72,7 +74,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
                 resolve(httpResponse);
               })
               .catch(function (err) {
-                var msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 71);
+                msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 71);
                 console.error(msg);
                 reject();
               });
@@ -94,7 +96,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             httpResponse = JSON.parse(body);
           }
         } catch (e) {
-          var msg = new errBit.errBitMessage(e, __filename, 'uploadFileToService()', 90);
+          msg = new errBit.errBitMessage(e, __filename, 'uploadFileToService()', 90);
           console.error(msg);
           return reject({
             isUserError: true,

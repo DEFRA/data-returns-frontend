@@ -10,7 +10,7 @@ var Utils = require('../lib/utils');
 var Hogan = require('hogan.js');
 var request = require('request');
 var path = require('path');
-var os = require("os");
+var os = require('os');
 var compiledTemplate;
 
 //load and precompile the errbit xml template
