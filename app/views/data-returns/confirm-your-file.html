@@ -17,10 +17,9 @@ Send your data returns online
 
     <div class="text panel panel-border-wide">
       {{#data}}
-      <h2 class="heading-medium">Your file: {{filename}}</h2>
-      {{#data.mappings}}
-      <dt>{{#site}}{{site}}{{/site}}{{^site}}Not given{{/site}}</dt>
       <dl>
+        {{#data.mappings}}
+        <dt>{{#site}}{{site}}{{/site}}{{^site}}Not given{{/site}}</dt>
         {{#identifiers}}
         <dd>{{identifier}}</dd>
         {{/identifiers}}
@@ -35,7 +34,6 @@ Send your data returns online
     <div class="form-group confirmed" >
       <input id="continue.btn" type="button" class="button" value="Continue" onclick="location.href = '/file/check';">
     </div>
-
 
   </form>
   <div class="form-group permit-not-found" style="display:none">
