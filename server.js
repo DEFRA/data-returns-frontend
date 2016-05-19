@@ -13,33 +13,26 @@ var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
 var errBit = require('./app/lib/errbitErrorMessage');
-
 var origConsolError = console['error'];
 //override console.error so we can send to errBit when an exception is logged
 console.error = function () {
 
   var d = new Date();
   var formattedDate = d.getFullYear() + '-' + utils.pad(d.getMonth(), 2) + '-' + utils.pad(d.getDate(), 2) + ' ' + utils.pad(d.getHours(), 2) + ':' + utils.pad(d.getMinutes(), 2) + ':' + utils.pad(d.getSeconds(), 2);
-
-
   // send to errBit
   var errbitHandler = require('./app/lib/errbitHandler');
   errbitHandler.notify(arguments[0]);
-
   var args = [];
   args[0] = '[ERROR] ' + formattedDate;
   args[1] = arguments[0];
-
   if (origConsolError.apply) {
     origConsolError.apply(console, args);
   }
 
 };
-
 //listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 console.log('Starting the Data-Returns Service');
-
 // Test for cryptography support
 try {
   require('crypto');
@@ -137,7 +130,6 @@ var sharedViewContext = {
   }
 
 };
-
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
   var partialsCache = {};
@@ -180,7 +172,6 @@ server.route(require('./app/routes'));
 // add security headers
 server.ext('onPreResponse', function (request, reply) {
   var resp = request.response;
-
   if (resp && resp.header) {
     resp.header('X-Frame-Options', 'SAMEORIGIN');
     resp.header('X-XSS-Protection', '1; mode=block');
@@ -195,9 +186,7 @@ server.ext('onPreResponse', function (request, reply) {
     var err = request.response;
     var statusCode = err.output.payload.statusCode;
     var errorMessage = err.output.payload.message;
-
     console.error('Boom Error', err);
-
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
       return reply.view('data-returns/choose-your-file', {
         uploadError: true,
@@ -215,12 +204,22 @@ server.ext('onPreResponse', function (request, reply) {
   reply.continue();
 });
 
+
+//lint js files
+var exec = require('child_process').exec;
+
+exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
+  console.log('Checking javascript files ');
+  console.log(stdout);
+});
+
+
+
 // Start the server.
 server.start(function (err) {
 
 
   utils.createUploadDirectory();
-
   console.log('==> Minifying and combining Javascript files');
   // Using UglifyJS for JS
   new compressor.minify({
@@ -234,7 +233,6 @@ server.start(function (err) {
       }
     }
   });
-
   new compressor.minify({
     type: 'uglifyjs',
     fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
@@ -246,16 +244,16 @@ server.start(function (err) {
       }
     }
   });
-
   if (err) {
     var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 271);
     console.error(msg);
     throw err;
   }
+
+
+
   console.log('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
 });
-
-
 process.on('uncaughtException', function (err) {
   var msg = new errBit.errBitMessage(err, __filename, 'uncaughtException!', 1);
   console.error(msg);

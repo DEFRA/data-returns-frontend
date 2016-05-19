@@ -3,7 +3,7 @@ var Request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var errBit = require('../lib/errbitErrorMessage');
 var crypto = require('../lib/crypto-handler');
-
+var test;
 /**
  * Asks the Data Exchange service to submit a file that has previously been
  * uploaded and validated.
