@@ -118,7 +118,7 @@ $(document).ready(function () {
         var control = $('#file-select-button');
         control.replaceWith(control = control.clone(true));
       });
-      if (!label.includes(".csv")) {
+      if (label && label.indexOf(".csv") === -1) {
         $('#remove-link').click();
         $('#Validation-Summary-header').hide();
         $('#Validation-Summary-not-csv-file').show();
