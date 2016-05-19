@@ -19,13 +19,22 @@ Send your data returns online
     {{/invalidPin}}
 
     {{^startAgain}}
-    <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
+    <p class="lede">Enter the confirmation code we sent to {{emailAddress}}</p>
     <div class="form-group">
       <label class="form-label" for="validation-code">
         <span class="form-hint">eg, 1234</span>
       </label>
       <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" autofocus maxlength="4" >
     </div>
+
+    <p>If you haven’t received an email with a code to enter here you may need to:</p>
+    <ul class="list list-bullet">
+      <li>check your junk or spam folder in your inbox</li>
+      <li>check you’ve given a valid email address</li>
+    </ul>
+
+    <p>Wrong email address? <a href="/email">Go back</a> to enter a valid email address and get a new code.</p>
+
     <div class="form-group">
       <a id="nextHref">
         <input type="submit" id="nextBtn" class="button" value="Send code">
