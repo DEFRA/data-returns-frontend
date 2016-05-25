@@ -2229,6 +2229,10 @@ input.validation-code {
   width: 100px;
 }
 
+.govuk-box-highlight {
+  padding: 2em 0 3em 0;
+}
+
 .file-upload .well {
   margin-bottom: 30px;
 }
