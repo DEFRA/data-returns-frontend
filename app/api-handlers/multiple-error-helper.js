@@ -4,8 +4,8 @@
  * 
  */
 var cacheHandler = require('../lib/cache-handler');
-var Hogan = require('hogan.js');
-var Utils = require('../lib/utils');
+var hogan = require('hogan.js');
+var utils = require('../lib/utils');
 var _ = require('lodash');
 var errBit = require('../lib/errbitErrorMessage');
 
@@ -57,7 +57,7 @@ module.exports = {
           rowNumber: rowNumber,
           columnName: columnName,
           errorValue: errorValue,
-          errorType: Utils.titleCase(errorType),
+          errorType: utils.titleCase(errorType),
           errorMessage: errorMessage,
           errorCode: errorCode,
           helpReference: helpReference,
@@ -119,7 +119,7 @@ module.exports = {
     var compiledTemplate;
     if (template && metadata) {
       template = (typeof (template) === 'object') ? JSON.stringify(template) : template;
-      compiledTemplate = Hogan.compile(template);
+      compiledTemplate = hogan.compile(template);
       //Check if the template requires metadata
       for (var linkName in metadata) {
         if (template.indexOf(linkName) !== -1) {

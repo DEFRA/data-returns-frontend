@@ -6,19 +6,19 @@
  */
 
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var Utils = require('../lib/utils');
-var Hogan = require('hogan.js');
+var utils = require('../lib/utils');
+var hogan = require('hogan.js');
 var request = require('request');
 var path = require('path');
 var os = require('os');
 var compiledTemplate;
 
 //load and precompile the errbit xml template
-Utils.readFile('../config/errBitTemplate.xml', function (err, result) {
+utils.readFile('../config/errBitTemplate.xml', function (err, result) {
   if (err) {
     console.log('Unable to read errBit template ' + err);
   } else {
-    compiledTemplate = Hogan.compile(result);
+    compiledTemplate = hogan.compile(result);
   }
 });
 

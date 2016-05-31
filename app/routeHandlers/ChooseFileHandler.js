@@ -1,14 +1,14 @@
 
-var CsvValidator = require('../lib/csv-validator');
-var Path = require('path');
+var csvValidator = require('../lib/csv-validator');
+var path = require('path');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var FileUploadHandler = require('../api-handlers/file-upload-handler');
-var CachHandler = require('../lib/cache-handler');
-var HelpLinks = require('../config/dep-help-links');
-var UserHandler = require('../lib/user-handler');
-var ErrorHandler = require('../lib/error-handler');
-var Utils = require('../lib/utils');
-var MetricsHandler = require('../lib/MetricsHandler');
+var fileUploadHandler = require('../api-handlers/file-upload-handler');
+var cachHandler = require('../lib/cache-handler');
+var helpLinks = require('../config/dep-help-links');
+var userHandler = require('../lib/user-handler');
+var errorHandler = require('../lib/error-handler');
+var utils = require('../lib/utils');
+var metricsHandler = require('../lib/MetricsHandler');
 var errBit = require('../lib/errbitErrorMessage');
 
 /*
@@ -20,8 +20,8 @@ var errBit = require('../lib/errbitErrorMessage');
 module.exports.getHandler = function (request, reply) {
   reply.view('data-returns/choose-your-file', {
     uploadError: false,
-    emptyfilemessage: ErrorHandler.render(500, HelpLinks.links, 'Your File is empty.'),
-    notcsvmessage: ErrorHandler.render(400, HelpLinks.links, 'Your file is not a CSV.')
+    emptyfilemessage: errorHandler.render(500, helpLinks.links, 'Your File is empty.'),
+    notcsvmessage: errorHandler.render(400, helpLinks.links, 'Your file is not a CSV.')
   });
 };
 /*
@@ -35,14 +35,14 @@ module.exports.postHandler = function (request, reply) {
   var contentType = request.payload.fileUpload.headers['content-type'] || null;
   var sourceName = request.payload.fileUpload.filename;
   var oldLocalName = request.payload.fileUpload.path;
-  var newLocalName = oldLocalName.concat(Path.extname(sourceName));
-  var sessionID = request.state['data-returns-id'] ? Utils.base64Decode(request.state['data-returns-id']) : UserHandler.getNewUserID();
+  var newLocalName = oldLocalName.concat(path.extname(sourceName));
+  var sessionID = request.state['data-returns-id'] ? utils.base64Decode(request.state['data-returns-id']) : userHandler.getNewUserID();
   var key = sessionID + '_FilePath';
   var oldkey = sessionID + '_SourceName';
 
   var filesize = request.payload ? request.payload.fileUpload.bytes : 0;
 
-  MetricsHandler.setFileSizeHighWaterMark(filesize);
+  metricsHandler.setFileSizeHighWaterMark(filesize);
 
   var cookieOptions = {
     path: '/',
@@ -54,31 +54,31 @@ module.exports.postHandler = function (request, reply) {
     strictHeader: true
   };
 
-  Utils.renameFile(oldLocalName, newLocalName)
+  utils.renameFile(oldLocalName, newLocalName)
     .then(function () {
       //cache the filenames
-      CachHandler.setValue(oldkey, sourceName);
+      cachHandler.setValue(oldkey, sourceName);
     })
     .then(function () {
       if (config.CSV.validate === true) {
-        return CsvValidator.validateFile(newLocalName, contentType);
+        return csvValidator.validateFile(newLocalName, contentType);
       } else {
         return true;
       }
     })
     .then(function () {
-      UserHandler.getUser(sessionID)
+      userHandler.getUser(sessionID)
         .then(function (user) {
           if (user === null) {
-            UserHandler.setUser(sessionID, user);
+            userHandler.setUser(sessionID, user);
           }
         });
     })
     .then(function () {
-      CachHandler.setValue(key, newLocalName);
+      cachHandler.setValue(key, newLocalName);
     })
     .then(function () {
-      return FileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
+      return fileUploadHandler.uploadFileToService(newLocalName, sessionID, sourceName);
     })
     .then(function () {
 
@@ -89,38 +89,38 @@ module.exports.postHandler = function (request, reply) {
 
       var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0 ? true : false;
       var cacheKey = sessionID + '_latestErrors';
-      CachHandler.setValue(cacheKey, errorData.lineErrors)
+      cachHandler.setValue(cacheKey, errorData.lineErrors)
         .then(function () {
           var filekey = sessionID + '_SourceName';
-          CachHandler.getValue(filekey)
+          cachHandler.getValue(filekey)
             .then(function (fileName) {
               fileName = fileName ? fileName.replace(/"/g, '') : '';
-              var links = HelpLinks.links;
+              var links = helpLinks.links;
               var errorCode = errorData.errorCode;
 
               if (isLineErrors !== true) {
-                links.errorCode = 'DR' + Utils.pad(errorCode, 4);
+                links.errorCode = 'DR' + utils.pad(errorCode, 4);
               }
 
               links.mailto = config.feedback.mailto;
 
               var metadata = {
                 uploadError: true,
-                errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
+                errorsummary: (isLineErrors === true) ? errorData.errorsummary : errorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                 fileName: fileName,
                 lineErrors: errorData.lineErrors,
                 isLineErrors: errorData.lineErrors ? true : false,
-                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-                emptyfilemessage: ErrorHandler.render(500, links, 'Your file is empty'),
-                notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
-                errorCode: 'DR' + Utils.pad(errorCode, 4),
+                HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
+                emptyfilemessage: errorHandler.render(500, links, 'Your file is empty'),
+                notcsvmessage: errorHandler.render(400, links, 'Your file is not a CSV.'),
+                errorCode: 'DR' + utils.pad(errorCode, 4),
                 mailto: config.feedback.mailto
               };
 
 
               if (isLineErrors) {
                 var key = sessionID + '-error-page-metadata';
-                CachHandler.setValue(key, metadata)
+                cachHandler.setValue(key, metadata)
                   .then(function () {
                     reply.redirect('/correction/table').state('data-returns-id', sessionID, cookieOptions);
                   });
@@ -129,14 +129,14 @@ module.exports.postHandler = function (request, reply) {
                 reply.view('data-returns/choose-your-file', {
                   uploadError: true,
                   
-                  errorsummary: (isLineErrors === true) ? errorData.errorsummary : ErrorHandler.render(errorCode, links, errorData.defaultErrorMessage),
+                  errorsummary: (isLineErrors === true) ? errorData.errorsummary : errorHandler.render(errorCode, links, errorData.defaultErrorMessage),
                   fileName: fileName,
                   lineErrors: errorData.lineErrors,
                   isLineErrors: errorData.lineErrors ? true : false,
-                  HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-                  emptyfilemessage: ErrorHandler.render(500, links, 'Your file is empty'),
-                  notcsvmessage: ErrorHandler.render(400, links, 'Your file is not a CSV.'),
-                  errorCode: 'DR' + Utils.pad(errorCode, 4),
+                  HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
+                  emptyfilemessage: errorHandler.render(500, links, 'Your file is empty'),
+                  notcsvmessage: errorHandler.render(400, links, 'Your file is not a CSV.'),
+                  errorCode: 'DR' + utils.pad(errorCode, 4),
                   mailto: config.feedback.mailto
                 }).state('data-returns-id', sessionID, cookieOptions);
 

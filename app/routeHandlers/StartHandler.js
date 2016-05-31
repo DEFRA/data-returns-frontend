@@ -1,6 +1,6 @@
 
 
-var HelpLinks = require('../config/dep-help-links');
+var helpLinks = require('../config/dep-help-links');
 //path: '/start',
 
 
@@ -30,12 +30,12 @@ module.exports = {
     };
     
     reply.view('data-returns/start', {
-      HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData,
-      EnvironmentalPermittingLandfillSectorTechnicalGuidance: HelpLinks.links.EnvironmentalPermittingLandfillSectorTechnicalGuidance,
-      CreateAndSaveCSVFile: HelpLinks.links.CreateAndSaveCSVFile,
-      ScottishLink: HelpLinks.links.ScottishLink,
-      WelshLink: HelpLinks.links.WelshLink,
-      NorthernIrelandLink: HelpLinks.links.NorthernIrelandLink
+      HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
+      EnvironmentalPermittingLandfillSectorTechnicalGuidance: helpLinks.links.EnvironmentalPermittingLandfillSectorTechnicalGuidance,
+      CreateAndSaveCSVFile: helpLinks.links.CreateAndSaveCSVFile,
+      ScottishLink: helpLinks.links.ScottishLink,
+      WelshLink: helpLinks.links.WelshLink,
+      NorthernIrelandLink: helpLinks.links.NorthernIrelandLink
     }).unstate('data-returns-id').state('data-returns-id', null, cookieOptions);
   }
 };

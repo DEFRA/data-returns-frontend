@@ -4,14 +4,14 @@
  *  An SMTP Helper module
  *  Note email configuration is per environment.
  */
-var Utils = require('./utils');
+var utils = require('./utils');
 var nodemailer = require('nodemailer');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var Joi = require('joi');
+var joi = require('joi');
 var errorMsgs = require('./error-messages.js');
 var sender = config.smtp.fromEmailAddress;
-var Hogan = require('hogan.js');
-var CacheHandler = require('./cache-handler');
+var hogan = require('hogan.js');
+var cacheHandler = require('./cache-handler');
 var compiledPinTemplate;
 var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
@@ -21,46 +21,46 @@ var errBit = require('../lib/errbitErrorMessage');
 
 
 //Read the pin code template files
-Utils.readFile('../config/email-pin-code-template.html', function (err, result) {
+utils.readFile('../config/email-pin-code-template.html', function (err, result) {
   if (err) {
     var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 26);
     console.error(msg);
   } else {
-    compiledPinTemplate = Hogan.compile(result);
+    compiledPinTemplate = hogan.compile(result);
   }
 });
 
-Utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
+utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
   if (err) {
     var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 32);
     console.error(msg);
   } else {
-    compiledPinTextTemplate = Hogan.compile(result);
+    compiledPinTextTemplate = hogan.compile(result);
   }
 });
 
 //Read the confirmation email templates
-Utils.readFile('../config/email-confirmation-template.html', function (err, result) {
+utils.readFile('../config/email-confirmation-template.html', function (err, result) {
   if (err) {
     var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 43);
     console.error(msg);
   } else {
-    compiledConfirmationEmailTemplate = Hogan.compile(result);
+    compiledConfirmationEmailTemplate = hogan.compile(result);
   }
 });
 
-Utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
+utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
   if (err) {
     var msg = new errBit.errBitMessage(err, __filename, 'Utils.readFile', 52);
     console.error(msg);
   } else {
-    compiledConfirmationEmailTextTemplate = Hogan.compile(result);
+    compiledConfirmationEmailTextTemplate = hogan.compile(result);
   }
 });
 
 /* used by Joi to validate the email address */
 var schema = {
-  address: Joi.string().email()
+  address: joi.string().email()
 };
 
 /* checkLockOut
@@ -73,7 +73,7 @@ var checkLockOut = function (recipient) {
   return new Promise(function (resolve, reject) {
 
     var key = recipient + '-lockedout';
-    CacheHandler.getValue(key)
+    cacheHandler.getValue(key)
       .then(function (result) {
         if (result) {
           // if a record exists they are locked out, the redis key will expire after an hour
@@ -107,7 +107,7 @@ var checkEmailLimit = function (recipient) {
       return resolve();
     }
 
-    CacheHandler.getValue(key)
+    cacheHandler.getValue(key)
       .then(function (result) {
 
         var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;// default to 10 minutes
@@ -116,18 +116,18 @@ var checkEmailLimit = function (recipient) {
           result = parseInt(result);
           result++;
 
-          CacheHandler.setValue(key, result, expiry);
+          cacheHandler.setValue(key, result, expiry);
           if (result >= 10) {
             key = recipient + '-lockedout';
             expiry = config.smtp.lockout_time_seconds;
-            CacheHandler.setValue(key, true, expiry);
+            cacheHandler.setValue(key, true, expiry);
             reject({attempts: result});
           } else {
             resolve();
           }
         } else {
           // not in redis, either first time in or expired
-          CacheHandler.setValue(key, 1, expiry);
+          cacheHandler.setValue(key, 1, expiry);
           resolve();
         }
       });
@@ -150,7 +150,7 @@ var validateEmailAddress = function (emailaddress) {
         checkEmailLimit(emailaddress)
           .then(function () {
             console.log('==> validateEmailAddress');
-            var result = Joi.validate({'address': emailaddress}, schema);
+            var result = joi.validate({'address': emailaddress}, schema);
             if (result.error) {
               console.log('\t email address is invalid: ' + JSON.stringify(result));
               reject({
@@ -255,8 +255,8 @@ var sendConfirmationEmail = function (metadata) {
   return new Promise(function (resolve, reject) {
     console.log('==> sendConfirmationEmail() ');
     var date = new Date();
-    var displayDate = Utils.getFormatedDate(date);
-    var time = Utils.getFormatedTime(date);
+    var displayDate = utils.getFormatedDate(date);
+    var time = utils.getFormatedTime(date);
     var templatedata = {
       FILENAME: metadata.filename,
       DATE: displayDate,

@@ -1,17 +1,17 @@
 
 'use strict';
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
-var BasicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
-var StartHandler = require('./routeHandlers/StartHandler');
-var ChooseFileHandler = require('./routeHandlers/ChooseFileHandler');
-var ConfirmFileHandler = require('./routeHandlers/ConfirmFileHandler');
-var EmailHandler = require('./routeHandlers/EmailHandler');
-var PinHandler = require('./routeHandlers/PinHandler');
-var FileSendHandler = require('./routeHandlers/FileSendHandler');
-var FileCheckHandler = require('./routeHandlers/FileCheckHandler');
-var FileSentHandler = require('./routeHandlers/FileSentHandler');
-var CorrectionTableHandler = require('./routeHandlers/CorrectionTableHandler');
-var CorrectionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
+var basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
+var startHandler = require('./routeHandlers/StartHandler');
+var chooseFileHandler = require('./routeHandlers/ChooseFileHandler');
+var confirmFileHandler = require('./routeHandlers/ConfirmFileHandler');
+var emailHandler = require('./routeHandlers/EmailHandler');
+var pinHandler = require('./routeHandlers/PinHandler');
+var fileSendHandler = require('./routeHandlers/FileSendHandler');
+var fileCheckHandler = require('./routeHandlers/FileCheckHandler');
+var fileSentHandler = require('./routeHandlers/FileSentHandler');
+var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
+var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
 
 module.exports = [
   // Static assets.
@@ -57,18 +57,18 @@ module.exports = [
   {
     method: 'GET',
     path: '/start',
-    handler: StartHandler.getHandler
+    handler: startHandler.getHandler
   },
   {
     method: 'POST',
     path: '/start',
-    handler: StartHandler.postHandler
+    handler: startHandler.postHandler
   },
   // /file/choose
   {
     method: 'GET',
     path: '/file/choose',
-    handler: ChooseFileHandler.getHandler
+    handler: chooseFileHandler.getHandler
   },
   {
     method: 'POST',
@@ -83,19 +83,19 @@ module.exports = [
       }
     },
     handler: function (request, reply) {
-      ChooseFileHandler.postHandler(request, reply);
+      chooseFileHandler.postHandler(request, reply);
     }
   },
   // /file/confirm
   {
     method: 'GET',
     path: '/file/confirm',
-    handler: ConfirmFileHandler.getHandler
+    handler: confirmFileHandler.getHandler
   },
   {
     method: 'POST',
     path: '/file/confirm',
-    handler: ConfirmFileHandler.postHandler
+    handler: confirmFileHandler.postHandler
   },
   /*
    * /file/check 
@@ -103,52 +103,52 @@ module.exports = [
   {
     method: 'GET',
     path: '/file/check',
-    handler: FileCheckHandler.getHandler
+    handler: fileCheckHandler.getHandler
   },
   // /email 
   {
     method: 'GET',
     path: '/email',
-    handler: EmailHandler.getHandler
+    handler: emailHandler.getHandler
   },
   {
     method: 'POST',
     path: '/email',
-    handler: EmailHandler.postHandler
+    handler: emailHandler.postHandler
   },
   // /pin
   {
     method: 'GET',
     path: '/pin',
-    handler: PinHandler.getHandler
+    handler: pinHandler.getHandler
   },
   {
     method: 'POST',
     path: '/pin',
-    handler: PinHandler.postHandler
+    handler: pinHandler.postHandler
   },
   // /file/send
   {
     method: 'GET',
     path: '/file/send',
-    handler: FileSendHandler.getHandler
+    handler: fileSendHandler.getHandler
   },
   {
     method: 'POST',
     path: '/file/send',
-    handler: FileSendHandler.postHandler
+    handler: fileSendHandler.postHandler
   },
   // /failure
   {
     method: 'GET',
     path: '/failure',
-    handler: BasicTemplateHandler.getHandler
+    handler: basicTemplateHandler.getHandler
   },
   // /file/sent
   {
     method: 'GET',
     path: '/file/sent',
-    handler: FileSentHandler.getHandler
+    handler: fileSentHandler.getHandler
   },
   
   // /correction/table
@@ -161,14 +161,14 @@ module.exports = [
       }
     },
     handler: function (request, reply) {
-      CorrectionTableHandler.getHandler(request, reply);
+      correctionTableHandler.getHandler(request, reply);
     }
   },
   // /correction/detail
   {
     method: 'GET',
     path: '/correction/detail',
-    handler: CorrectionDetailHandler.getHandler
+    handler: correctionDetailHandler.getHandler
   }
 ];
 

@@ -1,6 +1,6 @@
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('./cache-handler');
-var Utils = require('./utils');
+var utils = require('./utils');
 var errBit = require('./errbitErrorMessage');
 
 /*
@@ -100,7 +100,7 @@ module.exports.isAuthenticated = function (sessionID) {
           if (user.pinCreationTime) {
             var pinCreationTime = new Date(user.pinCreationTime);
             var dateNow = new Date();
-            var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+            var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
             if (mins > config.pin.ValidTimePeriodMinutes) {
               autenticated = false;
@@ -137,7 +137,7 @@ module.exports.incrementUploadCount = function (sessionID) {
 };
 
 module.exports.getNewUserID = function () {
-  var ret = Utils.getNewUUID();
+  var ret = utils.getNewUUID();
   return ret;//'id' + ret.replace(/"/g, "");
 };
 

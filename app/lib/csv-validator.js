@@ -1,9 +1,9 @@
 'use strict';
-var Path = require('path');
-var FileSystem = require('fs');
-var ErrorMessages = require('./error-messages.js');
+var path = require('path');
+var fs = require('fs');
+var errorMessages = require('./error-messages.js');
 var avHandler = require('./anitvirus-handler');
-var ErrorHandler = require('./error-handler');
+var errorHandler = require('./error-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var errBit = require('./errbitErrorMessage');
 
@@ -52,18 +52,18 @@ var validateFile = function (filePath, contentType) {
             }
 
             // Test file extension.
-            else if (Path.extname(filePath).toLowerCase() !== '.csv') {
-              console.log('\t ' + ErrorMessages.FILE_HANDLER.NOT_CSV);
+            else if (path.extname(filePath).toLowerCase() !== '.csv') {
+              console.log('\t ' + errorMessages.FILE_HANDLER.NOT_CSV);
               reject({
                 isUserError: true,
-                message: ErrorMessages.FILE_HANDLER.NOT_CSV
+                message: errorMessages.FILE_HANDLER.NOT_CSV
               });
             }
 
             // Test file is not empty.
             else {
 
-              FileSystem.stat(filePath, function (err, stats) {
+              fs.stat(filePath, function (err, stats) {
                 if (err !== null) {
                   reject({
                     isUserError: false,
@@ -71,7 +71,7 @@ var validateFile = function (filePath, contentType) {
                   });
                 } else if (stats.size === 0) {
                   // File is empty.
-                  var errorMessage = ErrorHandler.render(500);
+                  var errorMessage = errorHandler.render(500);
                   reject({
                     isUserError: true,
                     message: errorMessage
@@ -89,7 +89,7 @@ var validateFile = function (filePath, contentType) {
         })
         .catch(function (result) {
           if (result === true) {
-            errorMessage = ErrorHandler.render(600);
+            errorMessage = errorHandler.render(600);
 
             reject({
               isUserError: true,
@@ -101,7 +101,7 @@ var validateFile = function (filePath, contentType) {
           } else {
             var msg = new errBit.errBitMessage('ClamAV system error unable to scan files!', __filename, 'isInfected()', 102);
             console.error(msg);
-            errorMessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+            errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto}),
               reject({
                 isUserError: true,
                 err: errorMessage,

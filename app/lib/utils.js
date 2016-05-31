@@ -1,6 +1,6 @@
 'use strict';
 var fs = require('fs');
-var CacheHandler = require('./cache-handler');
+var cacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
@@ -111,7 +111,7 @@ module.exports = {
   deleteFile: function (sessionID) {
     return new Promise(function (resolve, reject) {
       var key = sessionID + '_FilePath';
-      CacheHandler.getValue(key)
+      cacheHandler.getValue(key)
         .then(function (filePath) {
           filePath = filePath ? filePath.replace(/"/g, '') : '';
           fs.unlink(filePath, function (err) {

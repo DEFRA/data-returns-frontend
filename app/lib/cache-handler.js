@@ -5,7 +5,7 @@
  */
 'use strict';
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var ErrorMessages = require('./error-messages.js');
+var errorMessages = require('./error-messages.js');
 var errBit = require('./errbitErrorMessage');
 var redis = require('redis'),
   client = redis.createClient(config.redis.clientOptions);
@@ -39,11 +39,11 @@ module.exports = {
           }
         });
       } else {
-        var msg = new errBit.errBitMessage(ErrorMessages.REDIS.NOT_CONNECTED, __filename, 'getValue()', 42);
+        var msg = new errBit.errBitMessage(errorMessages.REDIS.NOT_CONNECTED, __filename, 'getValue()', 42);
         console.error(msg);
         reject({
           error: true,
-          message: ErrorMessages.REDIS.NOT_CONNECTED
+          message: errorMessages.REDIS.NOT_CONNECTED
         });
 
       }

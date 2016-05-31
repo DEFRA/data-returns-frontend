@@ -2,8 +2,8 @@
 var userHandler = require('../lib/user-handler');
 var pinHandler = require('../lib/pin-handler');
 var messages = require('../lib/error-messages');
-var Utils = require('../lib/utils');
-var ErrorHandler = require('../lib/error-handler');
+var utils = require('../lib/utils');
+var errorHandler = require('../lib/error-handler');
 
 
 
@@ -16,7 +16,7 @@ module.exports = {
    * 
    */
   getHandler: function (request, reply) {
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     
     userHandler.getUserMail(sessionID)
       .then(function (emailAddress) {
@@ -41,7 +41,7 @@ module.exports = {
 
   postHandler: function (request, reply) {
 
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     var userPin = request.payload['validation_code'].toString().trim();
     userPin = userPin ? parseInt(userPin) : 0;
     pinHandler.validatePin(sessionID, userPin)
@@ -60,13 +60,13 @@ module.exports = {
               emailAddress: emailAddress
             };
 
-            var errorMessage = ErrorHandler.render(errResult.code, metadata);
+            var errorMessage = errorHandler.render(errResult.code, metadata);
 
             userHandler.setIsAuthenticated(sessionID, false);
             reply.view('data-returns/enter-your-code', {
               errorMessage: errorMessage,
               invalidPin: true,
-              errorcode: 'DR' + Utils.pad(errResult.code, 4),
+              errorcode: 'DR' + utils.pad(errResult.code, 4),
               emailAddress: emailAddress,
               startAgain: errResult.code === 2280 ? true : false
             });

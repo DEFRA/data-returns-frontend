@@ -2,11 +2,11 @@
 'use strict';
 
 
-var Hogan = require('hogan.js');
-var Utils = require('../lib/utils');
+var hogan = require('hogan.js');
+var utils = require('../lib/utils');
 var path = require('path');
 var templateDir = path.resolve(__dirname, '../error-templates/');
-var filenames = Utils.getFileListInDir(templateDir);
+var filenames = utils.getFileListInDir(templateDir);
 var filecount = 1;
 var x, y, key, compiledTemplate;
 var errBit = require('../lib/errbitErrorMessage');
@@ -18,7 +18,7 @@ var loadErrorTemplates = function () {
   filenames.forEach(function (filename) {
     filecount++;
     //console.log('\tLoading ' + filename, filecount++);
-    Utils.readFile(filename, function (err, fileContents) {
+    utils.readFile(filename, function (err, fileContents) {
       if (err) {
         var msg = new errBit.errBitMessage(err, __filename, 'loadErrorTemplates())', 24);
         console.error(msg);
@@ -26,7 +26,7 @@ var loadErrorTemplates = function () {
         x = filename.lastIndexOf('/');
         y = filename.indexOf('.html');
         key = filename.substring(x + 1, y);
-        compiledTemplate = Hogan.compile(fileContents);
+        compiledTemplate = hogan.compile(fileContents);
         compiledTemplates[key] = compiledTemplate;
       }
     });
@@ -40,7 +40,7 @@ var compiledTemplates = loadErrorTemplates();
 
 module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
 
-  var key = 'DR' + Utils.pad(errorcode, 4);
+  var key = 'DR' + utils.pad(errorcode, 4);
   var template, ret;
   console.log('==> error-handler.render() ', key);
 

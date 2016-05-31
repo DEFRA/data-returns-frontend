@@ -1,10 +1,10 @@
 
-var UserHandler = require('../lib/user-handler');
-var CompletionHandler = require('../api-handlers/completion-handler');
-var Utils = require('../lib/utils.js');
-var CacheHandler = require('../lib/cache-handler');
+var userHandler = require('../lib/user-handler');
+var completionHandler = require('../api-handlers/completion-handler');
+var utils = require('../lib/utils.js');
+var cacheHandler = require('../lib/cache-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var ErrorHandler = require('../lib/error-handler');
+var errorHandler = require('../lib/error-handler');
 var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
@@ -15,10 +15,10 @@ module.exports = {
    * 
    */
   getHandler: function (request, reply) {
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     var key = sessionID + '_SourceName';
 
-    CacheHandler.getValue(key)
+    cacheHandler.getValue(key)
       .then(function (filename) {
         reply.view('data-returns/send-your-file', {
           filename: filename.replace(/"/g, '')
@@ -39,13 +39,13 @@ module.exports = {
    */
   postHandler: function (request, reply) {
 
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     var uploadResultsCacheKey = sessionID + '_UploadResult';
     var uploadResult, fileKey;
     var originalFileName;
     
 
-    CacheHandler.getValue(uploadResultsCacheKey)
+    cacheHandler.getValue(uploadResultsCacheKey)
       .then(function (result) {
         console.log('data:', result);
         uploadResult = JSON.parse(result);
@@ -53,21 +53,21 @@ module.exports = {
         originalFileName = uploadResult.originalFileName;
       })
       .then(function () {
-        UserHandler.getUserMail(sessionID)
+        userHandler.getUserMail(sessionID)
           .then(function (userMail) {
-            CompletionHandler.confirmFileSubmission(fileKey, userMail, originalFileName)
+            completionHandler.confirmFileSubmission(fileKey, userMail, originalFileName)
               .then(function () {
                 reply.redirect('/file/sent');
               })
               .catch(function () {
-                var errormessage = ErrorHandler.render(3000, {mailto: config.feedback.mailto});
+                var errormessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
                 reply.view('data-returns/failure', {'errorMessage': errormessage});
               });
           });
       })
       .catch(function (errorData) {
 
-        request.log(['error', 'file-submit'], Utils.getBestLogMessageFromError(errorData));
+        request.log(['error', 'file-submit'], utils.getBestLogMessageFromError(errorData));
         request.session.flash('errorMessage', errorData.message);
         reply.redirect('/failure');
       });

@@ -1,10 +1,10 @@
 
-var SMTPHandler = require('../lib/smtp-handler');
-var PinHandler = require('../lib/pin-handler');
+var smtpHandler = require('../lib/smtp-handler');
+var pinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
-var CacheHandler = require('../lib/cache-handler');
-var Utils = require('../lib/utils');
-var ErrorHandler = require('../lib/error-handler');
+var cacheHandler = require('../lib/cache-handler');
+var utils = require('../lib/utils');
+var errorHandler = require('../lib/error-handler');
 var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
@@ -16,14 +16,12 @@ module.exports = {
    */
   getHandler: function (request, reply) {
 
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     var filekey = sessionID + '_SourceName';
-
-
-
+    
     userHandler.isAuthenticated(sessionID)
       .then(function (result) {
-        CacheHandler.getValue(filekey)
+        cacheHandler.getValue(filekey)
           .then(function (fileName) {
             fileName = fileName ? fileName.replace(/"/g, '') : '';
 
@@ -62,14 +60,14 @@ module.exports = {
   postHandler: function (request, reply) {
     /* get the users email address */
     var usermail = request.payload['user_email'];
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     usermail = usermail.trim();
     /* Validate the email address */
-    SMTPHandler.validateEmailAddress(usermail)
+    smtpHandler.validateEmailAddress(usermail)
       .then(function (result) {
         if (result === true) {
           /* Get a new pin code */
-          PinHandler.newPin()
+          pinHandler.newPin()
             .then(function (newpin) {
               /* Store in REDIS */
               var datenow = new Date();
@@ -84,7 +82,7 @@ module.exports = {
 
               userHandler.setUser(sessionID, user)
                 .then(function () {
-                  SMTPHandler.sendPinEmail(usermail, newpin);
+                  smtpHandler.sendPinEmail(usermail, newpin);
                 })
                 .then(function () {
                   reply.redirect('/pin',
@@ -102,7 +100,7 @@ module.exports = {
           showStartAgainButton: errResult.errorCode === 2055 ? true : false,
           showInput: errResult.errorCode === 2055 ? false : true,
           showSendMailButton: errResult.errorCode === 2055 ? false : true,
-          invalidEmailAddressErrorMessage: ErrorHandler.render(errResult.errorCode, null, 'Invalid email address'),
+          invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
           errorcode: 'DR' + errResult.errorCode
         });
       });

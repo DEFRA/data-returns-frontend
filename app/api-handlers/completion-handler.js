@@ -1,9 +1,9 @@
 'use strict';
-var Request = require('request');
+var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var errBit = require('../lib/errbitErrorMessage');
 var crypto = require('../lib/crypto-handler');
-var test;
+
 /**
  * Asks the Data Exchange service to submit a file that has previously been
  * uploaded and validated.
@@ -39,7 +39,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
     console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
 
     // Make REST call into the Data Exchange service.
-    Request.post(apiData, function (err, response, body) {
+    request.post(apiData, function (err, response, body) {
       console.log('==> confirmFileSubmission response received');
 
       var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;

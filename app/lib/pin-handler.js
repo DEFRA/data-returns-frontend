@@ -12,8 +12,8 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
 var userHandler = require('./user-handler');
-var Utils = require('./utils');
-var CacheHandler = require('./cache-handler');
+var utils = require('./utils');
+var cacheHandler = require('./cache-handler');
 var errBit = require('./errbitErrorMessage');
 
 var checkInvalidPinCount = function (sessionID) {
@@ -21,22 +21,22 @@ var checkInvalidPinCount = function (sessionID) {
   return new Promise(function (resolve, reject) {
     var key = sessionID + '-invalid-pin-count';
 
-    CacheHandler.getValue(key)
+    cacheHandler.getValue(key)
       .then(function (result) {
         if (result) {
           result = parseInt(result);
           var maxretries = config.pin.maxretries ? parseInt(config.pin.maxretries) : 10;
           if (result > maxretries) {
             //reset the count
-            CacheHandler.setValue(key, 1);
+            cacheHandler.setValue(key, 1);
             // display error message
             reject();
           } else {
-            CacheHandler.setValue(key, result + 1);
+            cacheHandler.setValue(key, result + 1);
             resolve();
           }
         } else {
-          CacheHandler.setValue(key, 1);
+          cacheHandler.setValue(key, 1);
           resolve();
         }
       });
@@ -98,7 +98,7 @@ module.exports = {
                 if (user.pinCreationTime) {
                   var pinCreationTime = new Date(user.pinCreationTime);
                   var dateNow = new Date();
-                  var mins = Utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+                  var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
                   if (mins > config.pin.ValidTimePeriodMinutes) {
                     code = 2275; //Expired

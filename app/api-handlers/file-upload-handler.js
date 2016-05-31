@@ -1,10 +1,10 @@
-var FileSystem = require('fs');
-var Request = require('request');
+var fs = require('fs');
+var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
-var Utils = require('../lib/utils');
+var utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
-var ErrorHandler = require('../lib/error-handler');
+var errorHandler = require('../lib/error-handler');
 var errBit = require('../lib/errbitErrorMessage');
 var crypto = require('../lib/crypto-handler');
 
@@ -33,7 +33,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         'filename': filePath
       },
       formData: {
-        fileUpload: FileSystem.createReadStream(filePath)
+        fileUpload: fs.createReadStream(filePath)
       }
     };
 
@@ -41,7 +41,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
     console.log('Post to API ', startTime);
 
     // Make REST call into the Data Exchange service, and handle the result.
-    Request.post(apiData, function (err, httpResponse, body) {
+    request.post(apiData, function (err, httpResponse, body) {
       var endTime = new Date();
       var msg;
       var totalTime = new Date(endTime - startTime);
@@ -58,8 +58,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         console.error(msg);
         reject({
           isUserError: true,
-          message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
-          errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+          message: errorHandler.render(3000, {mailto: config.feedback.mailto}),
+          errorsummary: errorHandler.render(3000, {mailto: config.feedback.mailto}),
           errorCode: 3000
         });
       } else if (statusCode === 200) {
@@ -82,8 +82,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         } else {
           reject({
             isUserError: true,
-            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
-            errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}),
+            message: errorHandler.render(3000, {mailto: config.feedback.mailto}),
+            errorsummary: errorHandler.render(3000, {mailto: config.feedback.mailto}),
             errorCode: 3000
           });
         }
@@ -101,8 +101,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
           return reject({
             isUserError: true,
             errorCode: 3000,
-            message: ErrorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
-            errorsummary: ErrorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
+            message: errorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
+            errorsummary: errorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
             lineErrors: null,
             lineErrorCount: 0,
             defaultErrorMessage: 'System error'
@@ -120,7 +120,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
         switch (appStatusCode) {
           case 900://Line errors
 
-            errorsummary = ErrorHandler.render(900, {filename: originalFileName});
+            errorsummary = errorHandler.render(900, {filename: originalFileName});
             apiErrors = httpResponse.validationErrors;
             lineErrorData = [];
             lineErrors = apiErrors; //apiErrors.lineErrors;
@@ -133,16 +133,16 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               lineError.lineNumber = parseInt(temp.lineNumber, 10);
               lineError.fieldName = temp.fieldName;
               lineError.errorValue = temp.errorValue;
-              lineError.errorMessage = ErrorHandler.render(temp.errorCode,
+              lineError.errorMessage = errorHandler.render(temp.errorCode,
                 {
                   filename: originalFileName,
                   Correction: true,
                   CorrectionDetails: false,
                   CorrectionMoreHelp: false
                 }, temp.errorMessage);
-              lineError.errorCode = 'DR' + Utils.pad(temp.errorCode, 4);
+              lineError.errorCode = 'DR' + utils.pad(temp.errorCode, 4);
               lineError.errorType = temp.errorType;
-              lineError.moreHelp = ErrorHandler.render(temp.errorCode,
+              lineError.moreHelp = errorHandler.render(temp.errorCode,
                 {
                   filename: originalFileName,
                   Correction: false,
@@ -158,7 +158,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
               lineErrorData.push(lineError);
             }
 
-            sortedLineErrorData = lineErrorData.sort(Utils.sortByProperty('fieldName'));
+            sortedLineErrorData = lineErrorData.sort(utils.sortByProperty('fieldName'));
             sortedLineErrorData = validationErrorHelper.groupErrorData(sessionID, sortedLineErrorData);
 
             reject({
@@ -175,8 +175,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, originalFile
             reject({
               isUserError: true,
               errorCode: appStatusCode,
-              message: ErrorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
-              errorsummary: ErrorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
+              message: errorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
+              errorsummary: errorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
               lineErrors: sortedLineErrorData,
               lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0,
               defaultErrorMessage: defaultErrorMessage

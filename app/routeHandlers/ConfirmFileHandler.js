@@ -1,10 +1,6 @@
 
-//var CacheHandler = require('../lib/cache-handler');
-//path: '/file/confirm',
-//var userHandler = require('../lib/user-handler');
-
-var Utils = require('../lib/utils');
-var CacheHandler = require('../lib/cache-handler');
+var utils = require('../lib/utils');
+var cacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
 var errBit = require('../lib/errbitErrorMessage');
 
@@ -15,12 +11,11 @@ module.exports = {
    * @param reply
    */
   getHandler: function (request, reply) {
-    //var key = 'id_' + request.session.id + '_UploadResult';
     console.log('==> O2O2Handler getHandler() ');
-    var sessionID = Utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = utils.base64Decode(request.state['data-returns-id']);
     var key = sessionID + '_UploadResult';
 
-    CacheHandler.getValue(key)
+    cacheHandler.getValue(key)
       .then(function (data) {
 
         console.log(data);
