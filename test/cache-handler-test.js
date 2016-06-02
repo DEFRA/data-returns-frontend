@@ -1,25 +1,44 @@
 
 var cachehandler = require('../app/lib/cache-handler');
-var Code = require('code');
+var code = require('code');
 var Lab = require('lab');
 var lab = exports.lab = Lab.script();
-var expect = Code.expect;
+var expect = code.expect;
+var testKey = 'data-returns-test-key';
+var testValue = 'Data Returns test value';
 
-lab.test('Ping REDIS2', function (done) {
 
-cachehandler.pingRedis()
+/*
+ * Test if we can write to REDIS
+ */
+lab.test('REDIS setValue()', function (done) {
+
+  cachehandler.setValue(testKey, testValue)
   .then(function (result) {
-    console.log('Result: ' + JSON.stringify(result));
-    expect(result).toEqual('PONG');
-
+    expect(result).to.equal(true);
     done();
   })
-  .catch(function (rejectValue) {
-    console.log('Error: ' + JSON.stringify(rejectValue));
+  .catch(function (e) {
+    console.log('Error: ' + JSON.stringify(e));
     done();
   });
 
 });
 
+/*
+ * Test if we can read from REDIS
+ */
+lab.test('REDIS getValue()', function (done) {
+  cachehandler.getValue(testKey)
+  .then(function (result) {
 
+    expect(result.replace(/"/g, '')).to.equal(testValue);
+    done();
 
+  })
+  .catch(function (e) {
+    console.log('Error: ' + JSON.stringify(e));
+    done();
+  });
+
+});
