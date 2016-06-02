@@ -35,17 +35,3 @@ lab.test('Bad email address', function (done) {
         });
 
 });
-
-lab.test('Send Test email (may not actualy send email)', function (done) {
-    smtpMailer.sendEmail(goodaddress, 'Test email')
-        .then(function (result) {
-            expect(result).to.be.true;
-            done();
-        })
-        .catch(function (errorData) {
-            if (errorData) {
-                expect(errorData).to.be.an.Object;
-                done();
-            }
-        });
-});
