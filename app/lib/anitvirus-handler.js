@@ -12,29 +12,29 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
  */
 module.exports.isInfected = function (filePath) {
   return new Promise(function (resolve, reject) {
-
     //set up clamav config
-    if (config.CSV.VIRUS_SCAN === true) {
+    if (config && config.CSV && config.CSV.VIRUS_SCAN && config.CSV.VIRUS_SCAN === true) {
       console.log('==> av is scanning ' + filePath);
+      
       var clam = require('clamscan')(
-        {
-          remove_infected: false,
-          quarantine_infected: false,
-          scan_recursively: true,
-          clamscan: {
-            path: '/usr/bin/clamscan',
-            scan_archives: true,
-            active: true
-          },
-          clamdscan: {
-            path: '/usr/bin/clamdscan',
-            config_file: '/etc/clamav/clamd.conf',
-            multiscan: true,
-            reload_db: false,
-            active: true
-          },
-          preference: 'clamdscan'//'clamscan'
-        }
+      {
+        remove_infected: false,
+        quarantine_infected: false,
+        scan_recursively: true,
+        clamscan: {
+          path: '/usr/bin/clamscan',
+          scan_archives: true,
+          active: true
+        },
+        clamdscan: {
+          path: '/usr/bin/clamdscan',
+          config_file: '/etc/clamav/clamd.conf',
+          multiscan: true,
+          reload_db: false,
+          active: true
+        },
+        preference: 'clamdscan'//'clamscan'
+      }
       );
 
       // Do the av scan
@@ -51,7 +51,7 @@ module.exports.isInfected = function (filePath) {
           reject(true);
         } else if (is_infected === false) {
           resolve(false);
-        } 
+        }
 
       });
     } else {

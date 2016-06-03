@@ -32,7 +32,6 @@ module.exports.getHandler = function (request, reply) {
 module.exports.postHandler = function (request, reply) {
 
   request.log(['info', 'file-upload'], 'Processing uploaded file...');
-  var contentType = request.payload.fileUpload.headers['content-type'] || null;
   var sourceName = request.payload.fileUpload.filename;
   var oldLocalName = request.payload.fileUpload.path;
   var newLocalName = oldLocalName.concat(path.extname(sourceName));
@@ -61,7 +60,7 @@ module.exports.postHandler = function (request, reply) {
     })
     .then(function () {
       if (config.CSV.validate === true) {
-        return csvValidator.validateFile(newLocalName, contentType);
+        return csvValidator.validateFile(newLocalName);
       } else {
         return true;
       }

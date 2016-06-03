@@ -25,6 +25,40 @@ lab.test('REDIS setValue()', function (done) {
 
 });
 
+lab.test('REDIS persistValue()', function (done) {
+
+  cachehandler.setPersistedValue('persisted-testKey', testValue)
+  .then(function (result) {
+    expect(result).to.equal(true);
+    done();
+  })
+  .catch(function (e) {
+    console.log('Error: ' + JSON.stringify(e));
+    done();
+  });
+
+});
+
+/*
+ * Test if we can delete a key
+ */
+lab.test('REDIS delete()', function (done) {
+
+  cachehandler.delete('persisted-testKey')
+  .then(function (result) {
+    expect(result).to.equal(true);
+    done();
+  })
+  .catch(function (e) {
+    console.log('Error: ' + JSON.stringify(e));
+    done();
+  });
+
+});
+
+
+
+
 /*
  * Test if we can read from REDIS
  */
