@@ -1,2 +1,2 @@
-eaID,siteName,retType,dateSt,dateEn,periodName,periodYear,sampleRef,sampledBy,monPoint,parameter,value,tValue,Unit,MeasurePeriod,testMethod,Comments,CiC,addParameter1,addParameter2,addParameter3,addParameter4,addParameter5
-AB1234Z1,ABC Limited,Landfill Gas Monitoring,2015-08-05,2015-08-05,Period 1,1970,Sample Ref,Sampled by 1,Monitor point 1,Temperature,100,Test Text,Metres,Annual,Test method 1,Test CSV file with no errors,True,Par 1,Par 2,Par 3,Par 4,Par 5
+EA_ID,Site_Name,Rtn_Type,Mon_Date,Mon_Period,Smpl_Ref,Smpl_By,Mon_Point,Parameter,Value,Txt_Value,Unit,Ref_Period,Meth_Stand,Comments,CiC,CAS,RD_Code
+10009,ABC Limited,EPR/IED Landfill Gas infrastructure monitoring,2015-08-05,Biannual,Sample Ref,Sampled by 1,Monitor point 1,"16-(Thienylmethylene)Androstane-3,17-Diol SVOCS",123,Extreme weather,ºC,Instantaneous,BS EN 14792,Test comments,True,123,rd code
