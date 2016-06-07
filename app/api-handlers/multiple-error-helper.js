@@ -106,36 +106,6 @@ module.exports = {
     console.log('<== groupErrorData() ');
     return errorPageData;
   },
-  /*
-   * Injects metadata into a template if the metadata place holder and data exists.
-   * @param template the Handlebars template to render.
-   * @param metadata the Metadata to inject into the template.
-   * @return rendered string 
-   */
-  renderErrorMessage: function (template, metadata) {
-    console.log('==> renderErrorMessage()');
-    var ret = template;
-    var mustRender = false;
-    var compiledTemplate;
-    if (template && metadata) {
-      template = (typeof (template) === 'object') ? JSON.stringify(template) : template;
-      compiledTemplate = hogan.compile(template);
-      //Check if the template requires metadata
-      for (var linkName in metadata) {
-        if (template.indexOf(linkName) !== -1) {
-          mustRender = true;
-          break;
-        }
-      }
-
-      if (mustRender) {
-        ret = compiledTemplate.render(metadata);
-      }
-    }
-
-    console.log('<== renderErrorMessage()');
-    return ret;
-  },
   getErrorDetails: function (data) {
 
     return new Promise(function (resolve) {

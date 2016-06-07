@@ -18,49 +18,49 @@ module.exports = {
     var filekey = sessionID + '_SourceName';
     filekey = sessionID + '_SourceName';
     cacheHandler.getValue(filekey)
-      .then(function (fileName) {
-        fileName = fileName ? fileName.replace(/"/g, '') : '';
-        cacheHandler.getValue(key)
-          .then(function (result) {
+    .then(function (fileName) {
+      fileName = fileName ? fileName.replace(/"/g, '') : '';
+      cacheHandler.getValue(key)
+      .then(function (result) {
+        
+        result = JSON.parse(result);
+        
+        detailsHandler.getErrorDetails(result)
+        .then(function (data) {
 
-            result = JSON.parse(result);
+          //get the first error and extract basic error details
+          var firstError = data[0];
+          var errorCode = firstError.errorCode;
+          var columnName = firstError.columnName;
+          var errorSummary = errorHandler.render(errorCode,
+          {
+            filename: fileName,
+            Correction: false,
+            CorrectionDetails: true,
+            CorrectionMoreHelp: true,
+            columnName: columnName,
+            errorCode: errorCode,
+            MoreHelpLink: firstError.helpReference
+          }, firstError.errorMessage);
 
-            detailsHandler.getErrorDetails(result)
-              .then(function (data) {
-
-                //get the first error and extract basic error details
-                var firstError = data[0];
-                var errorCode = firstError.errorCode;
-                var columnName = firstError.columnName;
-                var errorSummary = errorHandler.render(errorCode,
-                  {
-                    filename: fileName,
-                    Correction: false,
-                    CorrectionDetails: true,
-                    CorrectionMoreHelp: true,
-                    columnName: columnName,
-                    errorCode: errorCode,
-                    MoreHelpLink: firstError.helpReference
-                  }, firstError.errorMessage);
-
-                reply.view('data-returns/correction-detail', {
-                  fileName: fileName,
-                  columnName: firstError.columnName,
-                  errorSummary: errorSummary,
-                  errorCode: errorCode,
-                  data: data
-                });
-              });
-          })
-          .catch(function (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 56);
-            console.error(msg);
+          reply.view('data-returns/correction-detail', {
+            fileName: fileName,
+            columnName: firstError.columnName,
+            errorSummary: errorSummary,
+            errorCode: errorCode,
+            data: data
           });
+        });
       })
       .catch(function (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 61);
+        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 56);
         console.error(msg);
       });
+    })
+    .catch(function (err) {
+      var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 61);
+      console.error(msg);
+    });
 
   }
 
