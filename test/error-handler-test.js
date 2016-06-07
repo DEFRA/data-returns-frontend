@@ -44,7 +44,7 @@ lab.experiment('error-handler.js library', function () {
   //testData
 
 
-  lab.test('Test that error messages can be rendered ', function (done) {
+  lab.test('Test error details', function (done) {
     multipleErrorHandler.getErrorDetails(testData.data)
     .then(function (result) {
 
