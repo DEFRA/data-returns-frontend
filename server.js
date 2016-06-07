@@ -57,7 +57,7 @@ server.register({
         events: {
           log: '*',
           error: '*'
-            //response: config.log.responses === true ? '*' : 'none'
+          //response: config.log.responses === true ? '*' : 'none'
         }
       },
       {
@@ -213,7 +213,15 @@ exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', fun
   console.log(stdout);
 });
 
-
+var exec2 = require('child_process').exec;
+exec2('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
+  if(error){
+    console.log(error);
+  }
+  
+  console.log('Running Unit Tests ');
+  console.log(stdout);
+});
 
 // Start the server.
 server.start(function (err) {
