@@ -4,7 +4,6 @@
  * 
  */
 var cacheHandler = require('../lib/cache-handler');
-var hogan = require('hogan.js');
 var utils = require('../lib/utils');
 var _ = require('lodash');
 var errBit = require('../lib/errbitErrorMessage');
