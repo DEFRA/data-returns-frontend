@@ -4,7 +4,7 @@
  */
 var config = require('./configuration_global');
 // Set a meaningful name for this environment.
-config.env = 'local';
+config.env = 'vagrant';
 config.sessionStorage.mode = 'redis';
 /* Local SMTP Configuration */
 config.smtp = config.smtp || {};
