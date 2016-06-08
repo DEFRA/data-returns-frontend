@@ -8,6 +8,8 @@ var utils = require('../app/lib/utils');
 var path = require('path');
 var templateDir = path.resolve(__dirname, '../app/error-templates/');
 var filenames = utils.getFileListInDir(templateDir);
+var testData = require(__dirname + '/data/testData');
+var multipleErrorHandler = require('../app/api-handlers/multiple-error-helper');
 
 var errCode;
 
@@ -38,4 +40,18 @@ lab.experiment('error-handler.js library', function () {
       }
     });
   });
+
+  //testData
+
+
+  lab.test('Test error details', function (done) {
+    multipleErrorHandler.getErrorDetails(testData.data)
+    .then(function (result) {
+
+      expect(result).to.be.an.array();
+      done();
+
+    });
+  });
+
 });
