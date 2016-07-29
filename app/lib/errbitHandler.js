@@ -15,70 +15,70 @@ var compiledTemplate;
 
 //load and precompile the errbit xml template
 utils.readFile('../config/errBitTemplate.xml', function (err, result) {
-  if (err) {
-    console.log('Unable to read errBit template ' + err);
-  } else {
-    compiledTemplate = hogan.compile(result);
-  }
+    if (err) {
+        console.log('Unable to read errBit template ' + err);
+    } else {
+        compiledTemplate = hogan.compile(result);
+    }
 });
 
 module.exports = {
-  /*
-   * notify
-   * @param error - the error object
-   */
-  notify: function (message) {
-    if (compiledTemplate && config.errbit.options.enabled === true && config.errbit.options.apiKey) {
-      console.log('==> notify() sending message to errbit ', message);
-      var data = {
-        apiKey: config.errbit.options.apiKey,
-        appVersion: config.appversion,
-        appUrl: config.errbit.options.appUrl,
-        errorClass: message.errorClass || 'Exception',
-        errorMessage: message.message,
-        method: message.method || 'Unknown',
-        fileName: path.basename(message.fileName) || 'Unknown',
-        lineNumber: message.lineNumber || 0,
-        serverName: os.hostname(),
-        projectRoot: config.errbit.options.projectRoot
-      };
+    /*
+     * notify
+     * @param error - the error object
+     */
+    notify: function (message) {
+        if (compiledTemplate && config.errbit.options.enabled === true && config.errbit.options.apiKey) {
+            console.log('==> notify() sending message to errbit ', message);
+            var data = {
+                apiKey: config.errbit.options.apiKey,
+                appVersion: config.appversion,
+                appUrl: config.errbit.options.appUrl,
+                errorClass: message.errorClass || 'Exception',
+                errorMessage: message.message,
+                method: message.method || 'Unknown',
+                fileName: path.basename(message.fileName) || 'Unknown',
+                lineNumber: message.lineNumber || 0,
+                serverName: os.hostname(),
+                projectRoot: config.errbit.options.projectRoot
+            };
 
-      var renderedXML = compiledTemplate.render(data);
-      //console.log(renderedXML);
+            var renderedXML = compiledTemplate.render(data);
+            //console.log(renderedXML);
 
-      var postRequest = {
-        method: 'POST',
-        uri: config.errbit.options.errBitServerURI,
-        headers: {
-          'Content-Type': 'text/xml',
-          'Content-Length': Buffer.byteLength(renderedXML)
+            var postRequest = {
+                method: 'POST',
+                uri: config.errbit.options.errBitServerURI,
+                headers: {
+                    'Content-Type': 'text/xml',
+                    'Content-Length': Buffer.byteLength(renderedXML)
+                }
+            };
+
+            console.log('  Posting to ', config.errbit.options.appUrl);
+            var req = request(postRequest, function (error, response, body) {
+
+                console.log('Response from errbit recieved');
+
+                if (error) {
+                    console.log(error);
+                }
+
+                if (response) {
+                    console.log(response);
+                }
+
+                if (body) {
+                    console.log(body);
+                }
+
+            });
+
+            req.write(renderedXML);
+            req.end();
+
+            console.log('Message sent to errBit');
         }
-      };
-
-      console.log('  Posting to ', config.errbit.options.appUrl);
-      var req = request(postRequest, function (error, response, body) {
-
-        console.log('Response from errbit recieved');
-
-        if (error) {
-          console.log(error);
-        }
-
-        if (response) {
-          console.log(response);
-        }
-
-        if (body) {
-          console.log(body);
-        }
-
-      });
-
-      req.write(renderedXML);
-      req.end();
-
-      console.log('Message sent to errBit');
+        return;
     }
-    return;
-  }
 };

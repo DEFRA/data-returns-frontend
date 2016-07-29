@@ -7,30 +7,29 @@ Send your data returns online
 {{$content}}
 
 <main id="content" role="main">
+    {{{feedbackbanner}}}
 
- {{{feedbackbanner}}}
+    <form method="post" class="form">
+        <h1 class="heading-large">Send your files</h1>
+        <div class="text">
+            <p class="lede">Send your files now and we’ll email you a receipt.</p>
+            <div class="text panel panel-border-wide">
+                {{#files}}
+                <p>{{name}}</p>
+                {{/files}}
+            </div>
 
-  <form method="post" class="form">
-    <h1 class="heading-large">Send your file</h1>
-    <div class="text">
-      <p class="lede">Send your file now and we’ll email you a receipt.</p>
-      <div class="text panel panel-border-wide">
-        <p>{{filename}}</p>
-      </div>
+            <div class="help-notice">
+                <p>By sending files, you confirm that the information you’ve given is correct and complete.</p>
+            </div>
 
-      <div class="help-notice">
-        <p>By sending this data file, you confirm that the information you’ve given is correct and complete.</p>
-      </div>
-
-      <div class="form-group">
-        <a id="nextHref">
-          <input type="submit" id="nextBtn" class="button" value="Accept and send file">
-        </a>
-      </div>
-    </div><!-- /text -->
-  </form>
+            <div class="form-group">
+                <a id="nextHref">
+                    <input type="submit" id="nextBtn" class="button" value="Accept and send files">
+                </a>
+            </div>
+        </div><!-- /text -->
+    </form>
 </main>
-
 {{/content}}
-
 {{/layout}}

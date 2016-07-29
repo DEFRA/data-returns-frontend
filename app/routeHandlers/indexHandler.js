@@ -1,7 +1,3 @@
-
-
-
-
 module.exports.redirectToIndex = function (request, reply) {
-  reply.redirect('/start');
+    reply.redirect('/start');
 };

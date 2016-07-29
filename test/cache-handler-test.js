@@ -1,4 +1,3 @@
-
 var cachehandler = require('../app/lib/cache-handler');
 var code = require('code');
 var Lab = require('lab');
@@ -13,29 +12,29 @@ var testValue = 'Data Returns test value';
  */
 lab.test('REDIS setValue()', function (done) {
 
-  cachehandler.setValue(testKey, testValue)
-  .then(function (result) {
-    expect(result).to.equal(true);
-    done();
-  })
-  .catch(function (e) {
-    console.log('Error: ' + JSON.stringify(e));
-    done();
-  });
+    cachehandler.setValue(testKey, testValue)
+        .then(function (result) {
+            expect(result).to.equal(true);
+            done();
+        })
+        .catch(function (e) {
+            console.log('Error: ' + JSON.stringify(e));
+            done();
+        });
 
 });
 
 lab.test('REDIS persistValue()', function (done) {
 
-  cachehandler.setPersistedValue('persisted-testKey', testValue)
-  .then(function (result) {
-    expect(result).to.equal(true);
-    done();
-  })
-  .catch(function (e) {
-    console.log('Error: ' + JSON.stringify(e));
-    done();
-  });
+    cachehandler.setPersistedValue('persisted-testKey', testValue)
+        .then(function (result) {
+            expect(result).to.equal(true);
+            done();
+        })
+        .catch(function (e) {
+            console.log('Error: ' + JSON.stringify(e));
+            done();
+        });
 
 });
 
@@ -44,35 +43,33 @@ lab.test('REDIS persistValue()', function (done) {
  */
 lab.test('REDIS delete()', function (done) {
 
-  cachehandler.delete('persisted-testKey')
-  .then(function (result) {
-    expect(result).to.equal(true);
-    done();
-  })
-  .catch(function (e) {
-    console.log('Error: ' + JSON.stringify(e));
-    done();
-  });
+    cachehandler.delete('persisted-testKey')
+        .then(function (result) {
+            expect(result).to.equal(true);
+            done();
+        })
+        .catch(function (e) {
+            console.log('Error: ' + JSON.stringify(e));
+            done();
+        });
 
 });
-
-
 
 
 /*
  * Test if we can read from REDIS
  */
 lab.test('REDIS getValue()', function (done) {
-  cachehandler.getValue(testKey)
-  .then(function (result) {
+    cachehandler.getValue(testKey)
+        .then(function (result) {
 
-    expect(result.replace(/"/g, '')).to.equal(testValue);
-    done();
+            expect(result.replace(/"/g, '')).to.equal(testValue);
+            done();
 
-  })
-  .catch(function (e) {
-    console.log('Error: ' + JSON.stringify(e));
-    done();
-  });
+        })
+        .catch(function (e) {
+            console.log('Error: ' + JSON.stringify(e));
+            done();
+        });
 
 });

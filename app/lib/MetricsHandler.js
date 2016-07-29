@@ -1,30 +1,29 @@
-
 var cacheHandler = require('../lib/cache-handler');
 
 
 module.exports = {
-  /* setFileSizeHighWaterMark
-   * @param fileSizeBytes the size of the file
-   * Add a record of the largest file size used in the service
-   * @returns none
-   */
-  setFileSizeHighWaterMark: function (fileSizeBytes) {
-    var key = 'data-returns-high-water-mark';
+    /* setFileSizeHighWaterMark
+     * @param fileSizeBytes the size of the file
+     * Add a record of the largest file size used in the service
+     * @returns none
+     */
+    setFileSizeHighWaterMark: function (fileSizeBytes) {
+        var key = 'data-returns-high-water-mark';
 
-    cacheHandler.getValue(key)
-      .then(function (data) {
-        if (data) {
-          fileSizeBytes = parseInt(fileSizeBytes);
-          data = parseInt(data);
+        cacheHandler.getValue(key)
+            .then(function (data) {
+                if (data) {
+                    fileSizeBytes = parseInt(fileSizeBytes);
+                    data = parseInt(data);
 
-          if (fileSizeBytes > data) {
-            cacheHandler.setPersistedValue(key, fileSizeBytes);
-          }
+                    if (fileSizeBytes > data) {
+                        cacheHandler.setPersistedValue(key, fileSizeBytes);
+                    }
 
-        } else {
-          cacheHandler.setPersistedValue(key, fileSizeBytes);
-        }
+                } else {
+                    cacheHandler.setPersistedValue(key, fileSizeBytes);
+                }
 
-      });
-  }
+            });
+    }
 };

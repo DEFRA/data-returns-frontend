@@ -19,52 +19,49 @@ var crypto = require('../lib/crypto-handler');
  */
 module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
 
-  return new Promise(function (resolve, reject) {
-    console.log('==> confirmFileSubmission ()');
-    var msg;
-    // Define data to send to the Data Exchange service.
-    var apiData = {
-      url: config.API.endpoints.FILEUPLOADCOMPLETE,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': crypto.calculateAuthorizationHeader(originalFileName + userEmail),
-        'filename': originalFileName + userEmail
-      },
-      formData: {
-        fileKey: fileKey,
-        userEmail: userEmail,
-        orgFileName: originalFileName
-      }
-    };
-    console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
+    return new Promise(function (resolve, reject) {
+        var msg;
+        // Define data to send to the Data Exchange service.
+        var apiData = {
+            url: config.API.endpoints.FILEUPLOADCOMPLETE,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': crypto.calculateAuthorizationHeader(originalFileName + userEmail),
+                'filename': originalFileName + userEmail
+            },
+            formData: {
+                fileKey: fileKey,
+                userEmail: userEmail,
+                orgFileName: originalFileName
+            }
+        };
+        console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
 
-    // Make REST call into the Data Exchange service.
-    request.post(apiData, function (err, response, body) {
-      console.log('==> confirmFileSubmission response received');
+        // Make REST call into the Data Exchange service.
+        request.post(apiData, function (err, response, body) {
+            var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
 
-      var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
-
-      switch (statusCode) {
-        case 200:
-          resolve(true);
-          break;
-        case 500:
-          if (body) {
-            body = JSON.parse(body);
-            msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
-            console.error(msg);
-            reject();
-          }
-          break;
-        default:
-          if (err) {
-            msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
-            console.error(msg);
-          }
-          console.log('completion-handler processResponse statuscode:', statusCode);
-          reject();
-          break;
-      }
+            switch (statusCode) {
+                case 200:
+                    resolve(true);
+                    break;
+                case 500:
+                    if (body) {
+                        body = JSON.parse(body);
+                        msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
+                        console.error(msg);
+                        reject();
+                    }
+                    break;
+                default:
+                    if (err) {
+                        msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
+                        console.error(msg);
+                    }
+                    console.log('completion-handler processResponse statuscode:', statusCode);
+                    reject();
+                    break;
+            }
+        });
     });
-  });
 };

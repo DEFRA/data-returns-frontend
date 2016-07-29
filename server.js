@@ -13,7 +13,10 @@ var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
 var errBit = require('./app/lib/errbitErrorMessage');
+require('hotswap');
+
 var origConsolError = console['error'];
+
 //override console.error so we can send to errBit when an exception is logged
 console.error = function () {
 
@@ -162,9 +165,11 @@ server.register(require('vision'), function (err) {
     allowInsecureAccess: false,
     partialsPath: [
       './app/views/includes',
+      './app/views/data-returns/includes',
       './govuk_modules/govuk_template/views/layouts'
     ],
-    context: sharedViewContext
+    context: sharedViewContext,
+    isCached: config.html.cached
   });
 });
 // Configure server routes.
@@ -190,7 +195,7 @@ server.ext('onPreResponse', function (request, reply) {
     if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
       return reply.view('data-returns/choose-your-file', {
         uploadError: true,
-        errorsummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
+        errorSummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
         lineErrors: null,
         isLineErrors: false
       });
@@ -232,18 +237,7 @@ server.start(function (err) {
   // Using UglifyJS for JS
   new compressor.minify({
     type: 'uglifyjs',
-    fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
-    fileOut: 'assets/javascripts/data-returns-min.js',
-    callback: function (err, min) {
-      if (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 252);
-        console.error(msg);
-      }
-    }
-  });
-  new compressor.minify({
-    type: 'uglifyjs',
-    fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/fancy-file-upload.js'],
+    fileIn: ['assets/javascripts/details.polyfill.js', 'assets/javascripts/jquery-1.11.1.min.js'],
     fileOut: 'public/javascripts/data-returns-min.js',
     callback: function (err, min) {
       if (err) {

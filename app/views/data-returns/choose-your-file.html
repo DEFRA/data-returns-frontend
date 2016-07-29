@@ -1,5 +1,36 @@
 {{<layout}}
+{{$head}}
+{{>head}}
+    {{>scripts}}
+    {{>fineuploader_head}}
+    <link href="/public/javascripts/fine-uploader/fine-uploader-new.css" rel="stylesheet" type="text/css"/>
+    <script src="/public/javascripts/fine-uploader/fine-uploader.min.js" type="text/javascript"></script>
 
+    <script type="text/template" id="fu-template">
+        <div>
+            <div id="choose-file-button" class="choose-file-button">
+                <div>Choose a file</div>
+            </div>
+            <div>Or drag and drop your files onto this window.</div>
+        </div>
+    </script>
+
+    <script type="text/template" id="fur-template">
+        <div class="file-upload-summary">
+            <div class="file-upload-filename"></div>
+            <div class="file-upload-status"></div>
+            <div class="file-upload-delete">
+                <form method="post" action="/file/choose" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="remove"></input>
+                    <input type="hidden" name="uuid" class="file-uuid"></input>
+                    <input type="submit" class="remove-uuid-submit" value="Remove file"></input>
+                </form>
+
+            </div>
+            <div class="file-upload-details"></div>
+        </div>
+    </script>
+{{/head}}
 {{$pageTitle}}
 Send your data returns online
 {{/pageTitle}}
@@ -7,80 +38,223 @@ Send your data returns online
 {{$content}}
 
 <main id="content" role="main">
-
-  {{{feedbackbanner}}}
-
-  
-  <div id="Validation-Summary-header">
-    <h1 class="heading-large">
-      <span id="title">Choose your file</span>
-    </h1>
-  </div>
-  
- 
-  {{#uploadError}}
-  <div id="Validation-Summary">
-    <h1 class="heading-large">You can't send this file</h1>
-    <div class="error-summary">
-      {{{errorsummary}}}
-      <hidden id="error_code" value="{{errorCode}}"></hidden>
+    {{{feedbackbanner}}}
+    <div id="Validation-Summary-header">
+        <h1 class="heading-large">
+            <span id="title">Choose your file</span>
+        </h1>
     </div>
-  </div>
-  {{/uploadError}}
 
-  <div id="Validation-Summary-empty-file"  style="display:none" >
-    <h1 class="heading-large">You can't send this file</h1>
-    <div class="error-summary">
-      {{{emptyfilemessage}}}
-      <hidden id="error_code" value="DR0500"></hidden>
-    </div>
-  </div>
-
-  <div id="Validation-Summary-not-csv-file"  style="display:none">
-    <h1 class="heading-large">You can't send this file</h1>
-    <div class="error-summary">
-      {{{notcsvmessage}}}
-      <hidden id="error_code" value="DR0400"></hidden>
-    </div>
-  </div>
-
-  <p class="lede">Make sure you've formatted your data using the rules and saved your file as <abbr title="Comma-separated values">CSV</abbr>.</p>
-
-  <div class="text">
-    <div class="form-group">
-      <div id="statusbar-header" class="form-group" style="display:none; width:100%; box-sizing:border-box;">
-        <div class="statusbar statusbar-title" style="width: 100%; display: block;">
-          <div class="filename" style="width:70%; display:inline-block;">Name of data file to be checked
-          </div>
-          <div class="delname" style="width:30%; display:inline;">Action</div>
+    <div class="text">
+        <div class="form-group">
+            <div id="uploader-container">
+                <form id="uploadForm" enctype="multipart/form-data" method="post" action="/file/choose">
+                    <input type="file" name="fileUpload" multiple="multiple"></input>
+                    <p>
+                        <input id="submit-upload" class="upload-button" type="submit" value="Upload Files" name="submit"></input>
+                    </p>
+                </form>
+            </div>
         </div>
-        <div class='statusbar odd' style='width: 100%;'>
-          <div class='filename file-label' style='width: 70%; display:inline-block;'></div>
-          <div class='delname del-label' style='width: 30%; display:inline;'></div>
-        </div>
-      </div>
-
-      <div id='file-upload-div' class="upload-file" >
-        <p class="file-display" style="display:none;"></p>
-
-        <form id="uploadForm" Content-Type="text/csv" enctype="multipart/form-data" method="post">
-          <div class="fancy-file-button button-choose-file button-secondary" style='margin-bottom: 15px'>
-            <input id="file-select-button" type="hidden" name="fileUpload">
-            <span class="browse-text">Choose file</span>
-          </div>
-          <p>
-            <input id="check-for-errors-btn" class="button" type="submit" value="Continue" name="submit" disabled>
-            <span id='loading-image' style="display:none" class="checking">Checking your file...<span class="loading"><img src="/public/images/icons/loader.gif" alt="Loading"></span></span>
-          </p>
-        </form>
-      </div>
-      <!-- /.upload-file -->
+        <!-- /.form-group -->
     </div>
-    <!-- /.form-group -->
-  </div>
-  <!-- /.text -->
+    <!-- /.text -->
+
+    <div id="upload-list" class="upload-list">
+        <div class="upload-list-title">Name of the data file to send</div>
+        {{#files}}
+            <div id="summary-{{{id}}}" class="file-upload-summary">
+                <div class="file-upload-filename">{{{name}}}</div>
+                <div class="file-upload-status file-{{{status.state}}}">{{{status.description}}}</div>
+                <div class="file-upload-delete">
+                    <form method="post" action="/file/choose" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="remove"></input>
+                        <input type="hidden" name="uuid" class="file-uuid" value="{{{id}}}"></input>
+                        <input type="submit" class="remove-uuid-submit" value="Remove file"></input>
+                    </form>
+
+                </div>
+                <div class="file-upload-details">
+                    {{#status.moreDetailsUrl}}
+                        <a href="{{{status.moreDetailsUrl}}}">More details</a>
+                    {{/status.moreDetailsUrl}}
+                </div>
+            </div>
+        {{/files}}
+        {{^files}}
+        <div class="upload-list-no-files">No files uploaded</div>
+        {{/files}}
+    </div>
+
+    <div class="drag-drop-indicator">
+        <div class="drag-drop-message">Drop your files here</div>
+    </div>
+
+    <p>
+        {{#canContinue}}
+            <a href="/file/confirm" class="button">Continue</a>
+        {{/canContinue}}
+        {{^canContinue}}
+            {{#hasInvalidUploads}}
+                <p>
+                    A file you uploaded contains errors that must be corrected before you can continue.
+                </p>
+            {{/hasInvalidUploads}}
+            <a class="button disabled" disabled="disabled">Continue</a>
+        {{/canContinue}}
+    </p>
+
+
+    {{>fineuploader_body}}
+    <script type="text/javascript">
+        (function () {
+            var $uploader = $("#uploader-container");
+            var $template = $("#fu-template");
+            $uploader.html($template.html());
+
+            var $uploadList = $("#upload-list");
+            var $resultTemplate = $("#fur-template");
+
+            // Hide upload list if there are no uploads.
+//            if ($uploadList.find(".file-upload-summary").size() === 0) {
+//                $uploadList.hide();
+//            }
+
+            /*
+             * Update the file status list.
+             */
+            var setFileStatus = function(details) {
+                if (details) {
+                    console.log("Updating details for " + details.id + " (" + details.name + ")");
+                    $(".upload-list-no-files").hide();
+
+                    var rowId = "summary-" + details.id;
+                    var $uploadRow = $uploadList.children("#" + rowId);
+
+                    if (!$uploadRow.length) {
+                        // No existing row for this file.  Create a new row
+                        $uploadRow = $($resultTemplate.html());
+                        $uploadRow.attr("id", rowId);
+                        $uploadList.append($uploadRow);
+                    }
+
+                    $uploadRow.find(".file-upload-filename").html(details.name);
+                    $uploadRow.find(".file-upload-status").html(details.status.description);
+                    $uploadRow.find(".file-upload-status")
+                            .removeClass("file-success file-error file-pending")
+                            .addClass("file-" + details.status.state);
+
+                    var moreDetailsHtml = "";
+                    if (details.status.moreDetailsUrl != null) {
+                        moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">More details</a>";
+                    }
+                    $uploadRow.find(".file-upload-details").html(moreDetailsHtml);
+
+                    $uploadRow.find(".file-uuid").val(details.id);
+                }
+            };
+
+            var dragAndDropModule = new qq.DragAndDrop({
+                dropZoneElements: [document.body],
+                classes: {
+                    dropActive: "file-drop-active"
+                },
+                callbacks: {
+                    processingDroppedFilesComplete: function(files, dropTarget) {
+                        fileUploader.addFiles(files);
+                    }
+                }
+            });
+            var fileUploader = new qq.FineUploaderBasic({
+                element: document.getElementById("uploader-container"),
+                button: document.getElementById("choose-file-button"),
+                debug: true,
+                autoUpload: true,
+                multiple: false,
+                disableCancelForFormUploads: true,
+                validation: {
+                    allowedExtensions: ["csv"],
+                    stopOnFirstInvalidFile: false,
+                    sizeLimit: 10000000 // 10 MiB
+                },
+                request: {
+                    endpoint: "/file/choose?fineuploader=true",
+                    inputName: "fileUpload",
+                    method: "POST"
+                },
+                deleteFile: {
+                    enabled: true,
+                    endpoint: "/file/choose?fineuploader=true&delete=true"
+                },
+                chunking: {
+                    enabled: false
+                },
+                cors: {
+                    allowXdr: false
+                },
+                resume: {
+                    enabled: true
+                },
+                retry: {
+                    enableAuto: false
+                },
+                text: {
+                    defaultResponseError: 'An unknown upload error occurred.'
+                },
+                messages: {
+                    emptyError: "File is empty",
+                    typeError: "Not a supported file type ({extensions})",
+                },
+                callbacks: {
+                    onDelete: function(id) {
+
+                    },
+                    onDeleteComplete: function(id, xhr, isError) {
+
+                    },
+                    onError: function(id, name, errorReason, xhrOrXdr) {
+                        var uuid = "Unsubmitted" + Math.random();
+                        if (id != null) {
+                            uuid = fileUploader.getUuid(id);
+                        }
+                        var responseJSON  = {
+                            "id": uuid,
+                            "name": name,
+                            "status": {
+                                "state": "error",
+                                "description": errorReason
+                            }
+                        };
+                        try {
+                            responseJSON = JSON.parse(xhrOrXdr.responseText);
+                        } catch (e) {}
+                        setFileStatus(responseJSON);
+                    },
+                    onComplete: function(id, name, responseJSON, xhr) {
+                        console.log("Upload.onComplete() for " + id);
+                        setFileStatus(responseJSON.details);
+                    },
+                    onAllComplete: function(succeeded, failed) {
+                        if (failed.length == 0 ) {
+                            $("#continue-button").removeAttr("disabled");
+                            $("#continue-button").removeAttr("aria-disabled", true);
+                        }
+                    },
+                    onSubmit: function(id, name) {
+                        var details = {
+                            "id": fileUploader.getUuid(id),
+                            "name": name,
+                            "status": {
+                                "state": "pending",
+                                "description": "Checking ..."
+                            }
+                        };
+                        setFileStatus(details);
+                    }
+                }
+            });
+        }())
+    </script>
 </main>
-
 {{/content}}
-
 {{/layout}}

@@ -1,3 +1,149 @@
+.choose-file-button {
+  @include button($grey-2);
+}
+.choose-file-button:focus {
+  @include button($grey-4);
+}
+
+div.drag-drop-indicator {
+	display: none;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background:  darkorange;
+	opacity: 0.5;
+
+	div.drag-drop-message {
+		position: absolute;
+		width: 300px;
+		height: 200px;
+		z-index: 15;
+		top: 50%;
+		left: 50%;
+		margin: -100px 0 0 -150px;
+		font-size: 250%;
+		color: black;
+		text-align: center;
+	}
+}
+
+.file-drop-active div.drag-drop-indicator {
+	display: block;
+}
+
+// TODO: Talk to Jeremy about styles.  the .text style is using max-width: 30em which seems a little odd.
+
+div.upload-list {
+	clear: both;
+}
+div.upload-list-title {
+	font-weight: bold;
+}
+div.upload-list-no-files {
+	clear: both;
+	border-top: 1px solid $grey-2;
+	border-bottom: 1px solid $grey-2;
+	margin-top: -1px; // this slightly overlays with the previous to remove the double thickness borders
+	padding: 6px;
+	width: 100%;
+	overflow: auto;
+	background: #ededff;
+}
+
+div.file-upload-summary {
+	clear: both;
+	border-top: 1px solid $grey-2;
+	border-bottom: 1px solid $grey-2;
+	margin-top: -1px; // this slightly overlays with the previous to remove the double thickness borders
+	width: 100%;
+	overflow: auto;
+
+	&:nth-child(even) {
+		background: transparent;
+	}
+	&:nth-child(odd) {
+		background: #ededff;
+	}
+
+	div.file-upload-filename {
+		float: left;
+		margin: 5px;
+		padding: 3px;
+		min-width: 325px;
+		max-width: 45%;
+	}
+	div.file-upload-status {
+		float: left;
+		margin: 5px;
+		padding: 3px;
+		min-width: 250px;
+		max-width: 35%;
+	}
+	div.file-upload-details {
+		float: right;
+		margin: 5px;
+		padding: 3px;
+		min-width: 120px;
+		max-width: 10%;
+	}
+	div.file-upload-delete {
+		float: right;
+		margin: 5px;
+		padding: 3px;
+		min-width: 100px;
+		max-width: 10%;
+	}
+}
+
+div.error-900::after {
+	content: "Multiple validation errors";
+}
+
+div.file-pending {
+	color: $black;
+}
+
+div.file-ready {
+	color: $green;
+	border: 2px solid $green;
+}
+
+div.file-error {
+	color: $red;
+	border: 2px solid $red;
+}
+
+input.remove-uuid-submit {
+	background: transparent;
+	border: none;
+	color: $link-colour;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
+	text-decoration: underline;
+	cursor: pointer;
+}
+input.remove-uuid-submit:focus {
+	background-color: $focus-colour;
+	outline: 3px solid $focus-colour;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .file-upload {
 	.well {
 		margin-bottom:30px;

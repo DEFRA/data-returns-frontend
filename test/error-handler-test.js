@@ -15,43 +15,36 @@ var errCode;
 
 lab.experiment('error-handler.js library', function () {
 
-  filenames.forEach(function (filename) {
-    lab.test('Test render ' + filename, function (done) {
-      //console.log('Test that error messages can be rendered', filename);
+    filenames.forEach(function (filename) {
+        lab.test('Test render ' + filename, function (done) {
+            //console.log('Test that error messages can be rendered', filename);
 
-      var f = filename.split('/');
-      var s = f.length;
+            var f = filename.split('/');
+            var s = f.length;
 
-      errCode = f[s - 1];
+            errCode = f[s - 1];
 
-      if (errCode.indexOf('DR0') !== -1) {
-        errCode = errCode.replace('DR0', '');
-      } else {
-        errCode = filename.replace('DR', '');
-      }
+            if (errCode.indexOf('DR0') !== -1) {
+                errCode = errCode.replace('DR0', '');
+            } else {
+                errCode = filename.replace('DR', '');
+            }
 
-      errCode = errCode.replace('.html', '');
+            errCode = errCode.replace('.html', '');
 
-      var message = errorHandler.render(errCode, helpLinks.links, 'default error message');
-      if (message) {
-        expect(message).to.be.a.String;
-        console.log('succesfully rendered ' + f[s - 1]);
+            var message = errorHandler.render(errCode, helpLinks.links, 'default error message');
+            if (message) {
+                expect(message).to.be.a.String;
+                console.log('succesfully rendered ' + f[s - 1]);
+                done();
+            }
+        });
+    });
+
+    //testData
+    lab.test('Test error details', function (done) {
+        var result = multipleErrorHandler.getErrorDetails(testData.data);
+        expect(result).to.be.an.array();
         done();
-      }
     });
-  });
-
-  //testData
-
-
-  lab.test('Test error details', function (done) {
-    multipleErrorHandler.getErrorDetails(testData.data)
-    .then(function (result) {
-
-      expect(result).to.be.an.array();
-      done();
-
-    });
-  });
-
 });

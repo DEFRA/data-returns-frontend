@@ -6,36 +6,32 @@ Send your data returns online
 
 {{$content}}
 <main id="content" role="main">
-
-  {{{feedbackbanner}}}
-
-  <form method="post" class="form" action="/start">
+    {{{feedbackbanner}}}
 
     <div class="text">
+        <div class="govuk-box-highlight">
+            <h1 class="heading-large">
+                <span id="title">Data returns file sent</span>
+            </h1>
+        </div>
 
-      <div class="govuk-box-highlight">
-        <h1 class="heading-large">
-          <span id="title">Data returns file sent</span>
-        </h1>
-      </div>
+        <p>You’ve successfully sent your data returns to the Environment Agency.</p>
 
-      <p>You’ve successfully sent your data returns to the Environment Agency.</p>
+        <p>We’ve emailed a receipt to this address:</p>
 
-      <p>We’ve emailed a receipt to this address:</p>
+        <div class="panel panel-border-wide">
+            <p>{{{userEmail}}}</p>
+        </div>
 
-      <div class="panel panel-border-wide">
-        <p>{{{userEmail}}}</p>
-      </div>
+        <h2 class="heading-medium">What happens next?</h2>
 
-      <h2 class="heading-medium">What happens next?</h2>
+        <p>We’ll check your data for quality and regulatory compliance and contact you if we need to.</p>
 
-      <p>We’ll check your data for quality and regulatory compliance and contact you if we need to.</p>
-
-      <p>You can <a href="/file/choose">send another data returns file</a> or return to the <a href="{{EnvironmentAgencyHome}}">Environment Agency homepage.</a></p>
+        <p>
+            You can <a href="/file/choose">send another data returns file</a> or return to the
+            <a href="{{EnvironmentAgencyHome}}">Environment Agency homepage.</a>
+        </p>
     </div>
-  </form>
 </main>
-
 {{/content}}
-
 {{/layout}}

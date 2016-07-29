@@ -33,7 +33,7 @@ Send your data returns online
       <li>check you’ve given a valid email address</li>
     </ul>
 
-    <p>Wrong email address? <a href="/email">Go back</a> to enter a valid email address and get a new code.</p>
+    <p>Wrong email address? <a  href="/email">Go back</a> to enter a valid email address and get a new code.</p>
 
     <div class="form-group">
       <a id="nextHref">
@@ -43,7 +43,7 @@ Send your data returns online
     {{/startAgain}}
     {{#startAgain}}
     <div class="form-group">
-      <input type="button" id="nextBtn" class="button" value="Start again" onclick="location.href = '/start';">
+      <a id="returnToStartBtn" href="/start" class="button">Start again</a>
     </div>
     {{/startAgain}}
   </form>

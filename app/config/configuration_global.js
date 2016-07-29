@@ -32,9 +32,9 @@ config.basicAuthPassword = process.env.DRF_BA_PASSWORD;
 // 'mode' can be 'default' or 'redis'.
 // A good secret key should be used in public-facing environments.
 config.sessionStorage = {
-  mode: 'default',
-  /* From HAPI v13.0.0 the secret must be at least 32 chars  */
-  secret: process.env.DRF_SS_SECRET_KEY || 'zaq12wsXcDe34rfvbgt56yHnmJu78ik9o'
+    mode: 'default',
+    /* From HAPI v13.0.0 the secret must be at least 32 chars  */
+    secret: process.env.DRF_SS_SECRET_KEY || 'zaq12wsXcDe34rfvbgt56yHnmJu78ik9o'
 };
 
 //SMTP Configuration
@@ -50,24 +50,24 @@ config.smtp.max_limit = 10;
 config.smtp.max_time_minutes = 10;
 config.smtp.lockout_time_seconds = (60 * 60); // 1hr
 // never lock these users out
-config.smtp.email_address_white_list = ['hkjtest@gmail.com','hkjtest2@gmail.com', 'unwantedspammailcatcher@gmail.com'];
+config.smtp.email_address_white_list = ['hkjtest@gmail.com', 'hkjtest2@gmail.com', 'unwantedspammailcatcher@gmail.com'];
 
 
 //Pin configuration
 config.pin = {
-  maxDigits: 4,
-  defaultPin: 1960,
-  MaxUploadsPerPin: 10,
-  ValidTimePeriodMinutes: 60 * 24,
-  TTL: 1000,
-  useTTL: false,
-  alwaysGenerate: true,
-  maxretries: 10
+    maxDigits: 4,
+    defaultPin: 1960,
+    MaxUploadsPerPin: 10,
+    ValidTimePeriodMinutes: 60 * 24,
+    TTL: 1000,
+    useTTL: false,
+    alwaysGenerate: true,
+    maxretries: 10
 };
 
 // initial File upload directory where virus checker can find the files
 config.upload = {
-  path: '/tmp/data-returns/uploads'
+    path: '/tmp/data-returns/uploads'
 };
 
 //logging config
