@@ -1,0 +1,28 @@
+{{<layout}}
+
+{{$pageTitle}}
+Controlled Lists
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+    <h2 class="heading-large">Controlled lists</h2>
+
+    <div class="text">
+        You need to select the correct name from these controlled lists under certain field headings, such as parameter, when you complete your data returns. These lists support Environment Agency data standards and help reduce errors in your compliance monitoring.
+    </div>
+
+    <p>
+        <ul>
+            {{#controlledLists}}
+            <li><a href="{{path}}">{{description}}</a></li>
+            {{/controlledLists}}
+        </ul>
+    </p>
+</main>
+
+{{/content}}
+
+{{/layout}}

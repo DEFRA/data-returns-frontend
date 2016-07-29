@@ -12,6 +12,7 @@ var fileCheckHandler = require('./routeHandlers/FileCheckHandler');
 var fileSentHandler = require('./routeHandlers/FileSentHandler');
 var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
 var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
+var listHandler = require('./routeHandlers/ListHandler');
 
 module.exports = [
   // Static assets.
@@ -150,7 +151,11 @@ module.exports = [
     path: '/file/sent',
     handler: fileSentHandler.getHandler
   },
-  
+  {
+    method: 'GET',
+    path: '/controlled-lists',
+    handler: listHandler.getHandler
+  },
   // /correction/table
   {
     method: 'GET',

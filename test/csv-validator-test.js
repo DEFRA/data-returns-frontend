@@ -69,14 +69,6 @@ const CsvValidator = require('../app/lib/csv-validator.js');
       expectedMessage: null
     },
     {
-      title: 'rejects an empty file (with correct content type)',
-      testFilePath: Path.join(__dirname, 'data/empty.csv'),
-      testContentType: correctContentType,
-      expectReject: true,
-      expectedIsUserError: true,
-      expectedMessage: ErrorMessages.status.NO_RETURNS.errormessage
-    },
-    {
       title: 'rejects a file with the wrong extension (with correct content type)',
       testFilePath: Path.join(__dirname, 'data/not_csv.txt'),
       testContentType: correctContentType,
