@@ -17,7 +17,6 @@ function newKey(keyId) {
             if (Array.isArray(keys)) {
                 lookup = keys.join('_');
             }
-            console.log("Composite Key: " + (lookup + '_' + keyId));
             return lookup + '_' + keyId;
         }
     };

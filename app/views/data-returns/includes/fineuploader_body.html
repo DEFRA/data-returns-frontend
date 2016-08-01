@@ -1,0 +1,154 @@
+<script type="text/javascript">
+    (function () {
+        var $uploader = $("#uploader-container");
+        var $template = $("#fu-template");
+        $uploader.html($template.html());
+
+        var $uploadList = $("#upload-list");
+        var $resultTemplate = $("#fur-template");
+
+        /*
+         * Update the file status list.
+         */
+        var setFileStatus = function(details) {
+            if (details && details.id) {
+                console.log("Updating details for " + details.id + " (" + details.name + ")");
+                $(".upload-list-no-files").hide();
+
+                var rowId = "summary-" + details.id;
+                var $uploadRow = $uploadList.children("#" + rowId);
+
+                if (!$uploadRow.length) {
+                    // No existing row for this file.  Create a new row
+                    $uploadRow = $($resultTemplate.html());
+                    $uploadRow.attr("id", rowId);
+                    $uploadList.append($uploadRow);
+                }
+
+                $uploadRow.find(".file-upload-filename").html(details.name);
+                $uploadRow.find(".file-upload-status").html(details.status.description);
+                $uploadRow.find(".file-upload-status")
+                        .removeClass("file-success file-error file-pending")
+                        .addClass("file-" + details.status.state);
+
+                var moreDetailsHtml = "";
+                if (details.status.moreDetailsUrl != null) {
+                    moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">More details</a>";
+                }
+                $uploadRow.find(".file-upload-details").html(moreDetailsHtml);
+                $uploadRow.find(".file-uuid").val(details.id);
+            }
+        };
+
+        var dragAndDropModule = new qq.DragAndDrop({
+            dropZoneElements: [document.body],
+            classes: {
+                dropActive: "file-drop-active"
+            },
+            callbacks: {
+                processingDroppedFilesComplete: function(files, dropTarget) {
+                    fileUploader.addFiles(files);
+                }
+            }
+        });
+        var fileUploader = new qq.FineUploaderBasic({
+            element: document.getElementById("uploader-container"),
+            button: document.getElementById("choose-file-button"),
+            debug: true,
+            autoUpload: true,
+            multiple: true,
+            disableCancelForFormUploads: true,
+            validation: {
+                allowedExtensions: ["csv"],
+                stopOnFirstInvalidFile: false,
+                sizeLimit: 10000000 // 10 MiB
+            },
+            request: {
+                endpoint: "/file/choose?fineuploader=true",
+                inputName: "fileUpload",
+                method: "POST"
+            },
+            deleteFile: {
+                enabled: true,
+                endpoint: "/file/choose?fineuploader=true&delete=true"
+            },
+            chunking: {
+                enabled: false
+            },
+            cors: {
+                allowXdr: false
+            },
+            resume: {
+                enabled: true
+            },
+            retry: {
+                enableAuto: false
+            },
+            text: {
+                defaultResponseError: 'An unknown upload error occurred.'
+            },
+            messages: {
+                emptyError: "File is empty",
+                typeError: "Not a supported file type ({extensions})",
+            },
+            callbacks: {
+                onDelete: function(id) {
+
+                },
+                onDeleteComplete: function(id, xhr, isError) {
+
+                },
+                onError: function(id, name, errorReason, xhrOrXdr) {
+                    var uuid = "Unsubmitted" + Math.random();
+                    if (id != null) {
+                        uuid = fileUploader.getUuid(id);
+                    }
+                    var responseJSON  = {
+                        "id": uuid,
+                        "name": name,
+                        "status": {
+                            "state": "error",
+                            "description": errorReason
+                        }
+                    };
+
+                    try {
+                        responseJSON = JSON.parse(xhrOrXdr.responseText);
+                        setFileStatus(responseJSON);
+                    } catch (e) {}
+                },
+                onComplete: function(id, name, responseJSON, xhr) {
+                    setFileStatus(responseJSON.details);
+                },
+                onAllComplete: function(succeeded, failed) {
+                    $.getJSON( "/file/choose?status=true", function(status) {
+                        var $continue = $("#continue-btn");
+                        if (status.canContinue) {
+                            $continue.removeAttr("disabled");
+                            $continue.attr("href", "/file/confirm");
+                            $continue.removeAttr("aria-disabled");
+                        } else {
+                            $continue.attr("disabled", "disabled");
+                            $continue.removeAttr("href");
+                            $continue.attr("aria-disabled", "true");
+                        }
+
+                        var $invalidMsg = $("#invalid-upload-msg");
+                        $invalidMsg.toggle(status.hasInvalidUploads);
+                    });
+                },
+                onSubmit: function(id, name) {
+                    var details = {
+                        "id": fileUploader.getUuid(id),
+                        "name": name,
+                        "status": {
+                            "state": "pending",
+                            "description": "Checking ..."
+                        }
+                    };
+                    setFileStatus(details);
+                }
+            }
+        });
+    }())
+</script>

@@ -161,32 +161,47 @@ function handleUploadedFile(reqInfo) {
     });
 }
 
+function buildStatusJson(sessionID) {
+    return new Promise(function (resolve, reject) {
+        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
+        console.log("Retrieving uploaded files for " + sessionID);
+        let hasInvalidUploads = false;
+        cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
+            var files = [];
+            uploads.forEach(function (uploadStr) {
+                var upload = JSON.parse(uploadStr);
+                hasInvalidUploads = hasInvalidUploads || upload.status.state !== "ready";
+                files.push(upload);
+            });
+            var status = {
+                "canContinue": uploads.length > 0 && !hasInvalidUploads,
+                "hasInvalidUploads": hasInvalidUploads,
+                "files": files
+            };
+            resolve(status);
+        });
+    });
+}
+
 /*
  *  HTTP GET handler for /file/choose
  *  @Param request
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    var sessionID = request.state['data-returns-id'] ? utils.base64Decode(request.state['data-returns-id']) : userHandler.getNewUserID();
-
-    var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-    console.log("Retrieving uploaded files for " + sessionID);
-    let hasInvalidUploads = false;
-    cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
-        var files = [];
-        uploads.forEach(function (uploadStr) {
-            var upload = JSON.parse(uploadStr);
-            hasInvalidUploads = hasInvalidUploads || upload.status.state !== "ready";
-            files.push(upload);
-        });
-        var status = {
-            "canContinue": uploads.length > 0 && !hasInvalidUploads,
-            "hasInvalidUploads": hasInvalidUploads,
-            "files": files
-        };
+    let sessionID = utils.base64Decode(request.state['data-returns-id']);
+    let loadPageCallback = function(status) {
         reply.view('data-returns/choose-your-file', status);
-    });
+    };
+    let statusJsonCallback = function(status) {
+        reply(status).type('application/json');
+    };
+    let handler = request.query.status === "true" ? statusJsonCallback : loadPageCallback;
+    buildStatusJson(sessionID).then(handler);
 };
+
+
+
 /*
  *  HTTP POST handler for /file/choose
  *  @Param request
