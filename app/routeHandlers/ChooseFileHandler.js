@@ -162,7 +162,7 @@ function handleUploadedFile(reqInfo) {
 }
 
 function buildStatusJson(sessionID) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
         console.log("Retrieving uploaded files for " + sessionID);
         let hasInvalidUploads = false;
