@@ -1,5 +1,6 @@
 var helpLinks = require('../config/dep-help-links');
 var handler = require('../api-handlers/controlled-lists.js');
+var errBit = require('../lib/errbitErrorMessage');
 
 module.exports = {
   /*
@@ -13,14 +14,14 @@ module.exports = {
    */
   getHandler: function (request, reply) {
       console.log('==> /controlled-lists Handler getHandler() ');
-
-      handler.getListData().then(function successHandler(result) {
+      handler.getListData().then(function(result) {
           console.log(result);
           reply.view('data-returns/controlled-lists', {
               controlledLists: result
           });
-      }, function failureHandler(error) {
-          console.log(error);
+      }).catch(function(err) {
+          var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
+          console.error(msg);
       });
   },
     

@@ -19,9 +19,12 @@ function encodeHmac(key, data) {
  *
  */
 module.exports.calculateAuthorizationHeader = function(dataToSign) {
-  const today = new Date().toISOString().substr(0, 10).replace('-', '').replace('-', '');
-  const dateKey = encodeHmac(config.crypto.secret_key, today);
-  const signedData = encodeHmac(dateKey, dataToSign);
-
-  return signedData;
+  if (!config.crypto.secret_key) {
+    return null;
+  } else {
+    const today = new Date().toISOString().substr(0, 10).replace('-', '').replace('-', '');
+    const dateKey = encodeHmac(config.crypto.secret_key, today);
+    const signedData = encodeHmac(dateKey, dataToSign);
+    return signedData;
+  }
 };
