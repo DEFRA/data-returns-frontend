@@ -25,9 +25,13 @@
                     $uploadList.append($uploadRow);
                 }
 
-                $uploadRow.find(".file-upload-filename").html(details.name);
-                $uploadRow.find(".file-upload-status").html(details.status.description);
-                $uploadRow.find(".file-upload-status")
+                $uploadRow.find(".filename").html(details.name);
+                var $statusDiv = $uploadRow.find(".status");
+                $statusDiv.empty();
+                var $innerStatusDiv = $("<div>");
+                $statusDiv.append($innerStatusDiv);
+                $innerStatusDiv.html(details.status.description);
+                $innerStatusDiv
                         .removeClass("file-success file-error file-pending")
                         .addClass("file-" + details.status.state);
 
@@ -35,7 +39,7 @@
                 if (details.status.moreDetailsUrl != null) {
                     moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">More details</a>";
                 }
-                $uploadRow.find(".file-upload-details").html(moreDetailsHtml);
+                $uploadRow.find(".details").html(moreDetailsHtml);
                 $uploadRow.find(".file-uuid").val(details.id);
             }
         };

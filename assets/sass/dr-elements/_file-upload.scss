@@ -1,210 +1,105 @@
-.choose-file-button {
-  @include button($grey-2);
-}
-.choose-file-button:focus {
-  @include button($grey-4);
-}
-
-div.drag-drop-indicator {
+.drag-drop-indicator {
 	display: none;
-	position: absolute;
-	left: 0px;
-	right: 0px;
-	top: 0px;
-	bottom: 0px;
-	background:  darkorange;
-	opacity: 0.5;
-
-	div.drag-drop-message {
-		position: absolute;
-		width: 300px;
-		height: 200px;
-		z-index: 15;
-		top: 50%;
-		left: 50%;
-		margin: -100px 0 0 -150px;
-		font-size: 250%;
-		color: black;
-		text-align: center;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+	.drag-drop-message {
+    border: 10px solid $yellow;
+    display:table-cell;
 	}
 }
 
-.file-drop-active div.drag-drop-indicator {
-	display: block;
+.file-drop-active .drag-drop-indicator {
+	display: table;
 }
-
-// TODO: Talk to Jeremy about styles.  the .text style is using max-width: 30em which seems a little odd.
-
-div.upload-list {
-	clear: both;
-}
-div.upload-list-title {
-	font-weight: bold;
-}
-div.upload-list-no-files {
-	clear: both;
-	border-top: 1px solid $grey-2;
-	border-bottom: 1px solid $grey-2;
-	margin-top: -1px; // this slightly overlays with the previous to remove the double thickness borders
-	padding: 6px;
-	width: 100%;
-	overflow: auto;
-	background: #ededff;
-}
-
-div.file-upload-summary {
-	clear: both;
-	border-top: 1px solid $grey-2;
-	border-bottom: 1px solid $grey-2;
-	margin-top: -1px; // this slightly overlays with the previous to remove the double thickness borders
-	width: 100%;
-	overflow: auto;
-
-	&:nth-child(even) {
-		background: transparent;
-	}
-	&:nth-child(odd) {
-		background: #ededff;
-	}
-
-	div.file-upload-filename {
-		float: left;
-		margin: 5px;
-		padding: 3px;
-		min-width: 325px;
-		max-width: 45%;
-	}
-	div.file-upload-status {
-		float: left;
-		margin: 5px;
-		padding: 3px;
-		min-width: 250px;
-		max-width: 35%;
-	}
-	div.file-upload-details {
-		float: right;
-		margin: 5px;
-		padding: 3px;
-		min-width: 120px;
-		max-width: 10%;
-	}
-	div.file-upload-delete {
-		float: right;
-		margin: 5px;
-		padding: 3px;
-		min-width: 100px;
-		max-width: 10%;
-	}
-}
-
-div.error-900::after {
-	content: "Multiple validation errors";
-}
-
-div.file-pending {
-	color: $black;
-}
-
-div.file-ready {
-	color: $green;
-	border: 2px solid $green;
-}
-
-div.file-error {
-	color: $red;
-	border: 2px solid $red;
-}
-
-input.remove-uuid-submit {
-	background: transparent;
-	border: none;
-	color: $link-colour;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
-	text-decoration: underline;
-	cursor: pointer;
-}
-input.remove-uuid-submit:focus {
-	background-color: $focus-colour;
-	outline: 3px solid $focus-colour;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .file-upload {
-	.well {
-		margin-bottom:30px;
-		.button-choose-file {
-			margin:15px 0;
-		}
-	}
-	#banner-notification {
-		margin-top:15px;
-	}
-}
+  .uploader-container p {
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: 5px;
+    vertical-align: top;
+  }
+  .upload-list {
+    clear:both;
+  }
+  .statusbar-header {
+  	font-weight:600;
+  }
 
-.help-text-reg {
-	margin-bottom:30px;
-}
+  .statusbar {
+  	border-top: none;
+  	border-bottom:1px solid #BFC1C3;
+  	width: auto;
+  	vertical-align: middle;
+  	font-size: 16px;
+  	position: relative;
+  	.filename, .status, .details, .remove  {
+  		position: relative;
+  		margin: 5px 0;
+  		padding: 5px 0 3px;
+  		vertical-align: top;
+  	}
+  	@include media(tablet) {
+  		.filename, .status, .details, .remove  {
+  			display: inline-block;
+  		}
+  		.filename {
+  		 width:35%;
+       overflow:hidden;
+       text-overflow: ellipsis;
+  		}
+  		.status {
+  		 width:35%;
+  		}
+  		.details {
+  		 width:20%;
+  		}
+  		.remove {
+  			width:10%;
+  		}
+  	}
+  }
 
-.btn-file {
-    position: relative;
-    overflow: hidden;
-    margin-bottom:15px;
-}
+  .statusbar {
+    .status {
+      .file-error, .file-ready {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        max-width: 90%;
+        text-transform: uppercase;
+      }
+      .file-ready {
+        color: $green;
+        border:1px solid $green;
+        padding: 2px 4px 0;
+        @include border-radius(2px);
+      }
+      .file-error {
+        color: $red;
+      }
+    }
+  	.action {
+  	 width:60%;
+  	 display: inline-block;
+  	}
+  	.remove {
+  		text-align:right;
+  		display: inline-block;
+        .link {
+          font-size: 16px;
+          background: transparent none repeat scroll 0 0;
+          border:0;
+          padding:0;
+          line-height: 1;
+        }
 
-.btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-
-}
-
-.statusbar {
-	border-top: none;
-	border-bottom:1px solid #BFC1C3;
-	border-left: 4px solid #fff;
-	min-height: 25px;
-	width: auto;
-	padding: 10px 0 5px 0;
-	vertical-align: top;
-	font-size: 16px;
-}
-
-.statusbar-title {
-	font-weight:600;
-}
-
-.filename {
-	display: inline-block;
-	vertical-align: top;
-	width: 190px;
-	min-height:25px;
-	max-height: 50px;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+        .link:hover {
+          cursor: pointer;
+        }
+      }
+  }
 }
