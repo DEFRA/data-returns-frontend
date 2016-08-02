@@ -1,5 +1,4 @@
 "use strict";
-var Path = require('path');
 var Hapi = require('hapi');
 var Hogan = require('hogan.js');
 var userHandler = require('./app/lib/user-handler');
@@ -8,13 +7,12 @@ var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'l
 // Create and initialise the server.
 var utils = require('./app/lib/utils');
 var Compressor = require('node-minify');
-var server = new Hapi.Server();
-var banner = config.feedback.template;
-var HelpLinks = require('./app/config/dep-help-links');
 var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
 var errBit = require('./app/lib/errbitErrorMessage');
-require('hotswap');
+
+var server = new Hapi.Server();
+var banner = config.feedback.template;
 
 var origConsolError = console['error'];
 

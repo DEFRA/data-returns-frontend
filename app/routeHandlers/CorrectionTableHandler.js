@@ -13,8 +13,8 @@ module.exports = {
         console.log(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
         if (fileUuid) {
             cacheHandler.getValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]))
+                .then(JSON.parse)
                 .then(function (fileData) {
-                    fileData = JSON.parse(fileData);
                     reply.view('data-returns/correction-table', fileData);
                 });
         } else {

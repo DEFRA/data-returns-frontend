@@ -7,11 +7,7 @@ var errBit = require('../lib/errbitErrorMessage');
  * @param {type} reply
  */
 module.exports.getHandler = function (request, reply) {
-
-    //console.log(request);
-
     var sessionID = utils.base64Decode(request.state['data-returns-id']);
-    console.log('==> O2O6Handler.getHandler() ');
     userHandler.isAuthenticated(sessionID)
         .then(function (result) {
             if (result === true) {

@@ -1,3 +1,4 @@
+"use strict";
 var utils = require('../lib/utils');
 var cacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
@@ -11,24 +12,18 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         var sessionID = utils.base64Decode(request.state['data-returns-id']);
-
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-        cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
-            var files = [];
-            uploads.forEach(function (uploadStr) {
-                try {
-                    var upload = JSON.parse(uploadStr);
-                    files.push(upload);
-                } catch (e) {
-                    console.log(e.message);
-                }
-            });
+
+        cacheHandler.arrayGet(key).then(function(uploads) {
             var data = {
-                "files": files,
+                "files": uploads,
                 RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
                 HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
             };
             reply.view('data-returns/confirm-your-file', data);
+        }).catch(function() {
+            console.log("Unable to retrieve stored uploads array.");
+            reply.redirect('data-returns/failure');
         });
     },
     /*

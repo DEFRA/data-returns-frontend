@@ -76,7 +76,7 @@ function handleUploadedFile(reqInfo) {
                         "server": fileStatus
                     }
                 };
-                cacheHandler.client.rpush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), JSON.stringify(fileData));
+                cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
                 resolve({"success": true, "details": fileData});
             })
             .catch(function (errorData) {
@@ -147,7 +147,8 @@ function handleUploadedFile(reqInfo) {
 
                     cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([reqInfo.sessionID, reqInfo.id]), fileData).then(function () {
                         console.log("Pushing status for " + reqInfo.clientFilename);
-                        cacheHandler.client.rpush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), JSON.stringify(fileData));
+
+                        cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
                         resolve({
                             "success": false,
                             "preventRetry": true,
@@ -162,24 +163,33 @@ function handleUploadedFile(reqInfo) {
 }
 
 function buildStatusJson(sessionID) {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-        console.log("Retrieving uploaded files for " + sessionID);
-        let hasInvalidUploads = false;
-        cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
-            var files = [];
-            uploads.forEach(function (uploadStr) {
-                var upload = JSON.parse(uploadStr);
-                hasInvalidUploads = hasInvalidUploads || upload.status.state !== "ready";
-                files.push(upload);
-            });
+        cacheHandler.arrayGet(key).then(function (uploads) {
+            var hasInvalidUploads = uploads.filter(u => u.status.state !== "ready").length > 0;
             var status = {
                 "canContinue": uploads.length > 0 && !hasInvalidUploads,
                 "hasInvalidUploads": hasInvalidUploads,
-                "files": files
+                "files": uploads
             };
             resolve(status);
-        });
+        }).catch(reject);
+    });
+}
+
+function removeUpload(sessionID, uuid) {
+    return new Promise(function (resolve, reject) {
+        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
+        cacheHandler.arrayGet(key).then(function (uploads) {
+            for (let upload of uploads) {
+                if (upload.id === uuid) return upload;
+            }
+            return null;
+        }).then(function (uploadToRemove) {
+            if (uploadToRemove !== null) {
+                return cacheHandler.arrayRemove(key, uploadToRemove);
+            }
+        }).then(resolve).catch(reject);
     });
 }
 
@@ -190,16 +200,15 @@ function buildStatusJson(sessionID) {
  */
 module.exports.getHandler = function (request, reply) {
     let sessionID = utils.base64Decode(request.state['data-returns-id']);
-    let loadPageCallback = function(status) {
+    let loadPageCallback = function (status) {
         reply.view('data-returns/choose-your-file', status);
     };
-    let statusJsonCallback = function(status) {
+    let statusJsonCallback = function (status) {
         reply(status).type('application/json');
     };
     let handler = request.query.status === "true" ? statusJsonCallback : loadPageCallback;
     buildStatusJson(sessionID).then(handler);
 };
-
 
 
 /*
@@ -208,26 +217,13 @@ module.exports.getHandler = function (request, reply) {
  *  @Param reply
  */
 module.exports.postHandler = function (request, reply) {
-    var sessionID = request.state['data-returns-id'] ? utils.base64Decode(request.state['data-returns-id']) : userHandler.getNewUserID();
+    let sessionID = utils.base64Decode(request.state['data-returns-id']);
 
     if (request.payload.action === "remove") {
-        var uuid = request.payload.uuid;
-        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-
-        cacheHandler.client.lrange(key, 0, -1, function (error, items) {
-            var itemData = null;
-            for (var i = 0; i < items.length; i++) {
-                var item = JSON.parse(items[i]);
-                if (item.id === uuid) {
-                    console.log("Found item to remove at index " + i);
-                    itemData = items[i];
-                    break;
-                }
-            }
-            if (itemData !== null) {
-                cacheHandler.client.lrem(key, 0, itemData);
-            }
+        removeUpload(sessionID, request.payload.uuid).then(function() {
             reply.redirect('/file/choose').rewritable(true);
+        }).catch(function() {
+            reply.redirect('data-returns/failure');
         });
     } else if (request.query.fineuploader === 'true') {
         fineUploaderHandler(request, reply);

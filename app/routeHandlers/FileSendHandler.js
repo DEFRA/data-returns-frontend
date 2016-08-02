@@ -6,6 +6,8 @@ var cacheHandler = require('../lib/cache-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var redisKeys = require('../lib/redis-keys');
 var smtpHandler = require('../lib/smtp-handler');
+var errorHandler = require('../lib/error-handler');
+
 
 module.exports = {
     /*
@@ -17,8 +19,11 @@ module.exports = {
     getHandler: function (request, reply) {
         var sessionID = utils.base64Decode(request.state['data-returns-id']);
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-        cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
-            reply.view('data-returns/send-your-file', {"files":  uploads.map(JSON.parse)});
+        cacheHandler.arrayGet(key).then(function(uploads) {
+            reply.view('data-returns/send-your-file', {"files":  uploads});
+        }).catch(function() {
+            console.log("Unable to retrieve stored uploads array.");
+            reply.redirect('data-returns/failure');
         });
     },
 
@@ -32,20 +37,26 @@ module.exports = {
         var sessionID = utils.base64Decode(request.state['data-returns-id']);
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
+        var exceptionHandler = function() {
+            var errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
+            reply.view('data-returns/failure', {'errorMessage': errorMessage});
+        };
+
         userHandler.getUserMail(sessionID).then(function (userMail) {
-            cacheHandler.client.lrange(key, 0, -1, function (error, uploads) {
+            cacheHandler.arrayGet(key).then(function(uploads) {
                 let callbacks = 0;
                 var onFileSubmitted = function () {
                     if (++callbacks === uploads.length) {
                         console.log("All uploads complete, sending confirmation emails");
                         var metadata = {
                             "email": userMail,
-                            "files": uploads.map(JSON.parse)
+                            "files": uploads
                         };
 
                         // TODO: SESSION CLEANUP NEEDS TO BE BETTER THAN THIS!
                         smtpHandler.sendConfirmationEmail(metadata).then(function () {
                             // Increment the count of uploads using the current pin number
+                            // TODO: This does not take multiple uploads into account - not sure if it really should?
                             userHandler.incrementUploadCount(sessionID);
                         }).then(function () {
                             // delete the file uploaded
@@ -59,25 +70,13 @@ module.exports = {
                     }
                 };
 
-                var errorHandler = function () {
-                    var errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
-                    reply.view('data-returns/failure', {'errorMessage': errorMessage});
-                };
-
-                for (let uploadStr of uploads) {
-                    try {
-                        var upload = JSON.parse(uploadStr);
-                        var fileKey = upload.status.server.uploadResult.fileKey;
-
-                        completionHandler.confirmFileSubmission(fileKey, userMail, upload.name)
-                            .then(onFileSubmitted)
-                            .catch(errorHandler);
-                    } catch (e) {
-                        errorHandler();
-                        break;
-                    }
+                for (let upload of uploads) {
+                    var fileKey = upload.status.server.uploadResult.fileKey;
+                    completionHandler.confirmFileSubmission(fileKey, userMail, upload.name)
+                        .then(onFileSubmitted)
+                        .catch(exceptionHandler);
                 }
-            });
+            }).catch(exceptionHandler);
         });
     }
 };
