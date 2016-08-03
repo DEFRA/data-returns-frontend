@@ -2251,7 +2251,11 @@ input.validation-code {
   display: table;
 }
 
-.file-upload .uploader-container p {
+.file-upload .uploader-container .form-control {
+  width: 75%;
+}
+
+.file-upload .uploader-container p.choose-file {
   display: inline-block;
   margin-left: 10px;
   margin-top: 5px;

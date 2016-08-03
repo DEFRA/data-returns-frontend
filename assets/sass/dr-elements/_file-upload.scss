@@ -10,17 +10,20 @@
     display:table-cell;
 	}
 }
-
 .file-drop-active .drag-drop-indicator {
 	display: table;
 }
-
 .file-upload {
-  .uploader-container p {
-    display: inline-block;
-    margin-left: 10px;
-    margin-top: 5px;
-    vertical-align: top;
+  .uploader-container {
+		.form-control {
+			width:75%;
+		}
+		p.choose-file {
+	    display: inline-block;
+	    margin-left: 10px;
+	    margin-top: 5px;
+	    vertical-align: top;
+		}
   }
   .upload-list {
     clear:both;
@@ -28,7 +31,6 @@
   .statusbar-header {
   	font-weight:600;
   }
-
   .statusbar {
   	border-top: none;
   	border-bottom:1px solid #BFC1C3;
@@ -62,7 +64,6 @@
   		}
   	}
   }
-
   .statusbar {
     .status {
       .file-error, .file-ready {
@@ -89,17 +90,16 @@
   	.remove {
   		text-align:right;
   		display: inline-block;
-        .link {
-          font-size: 16px;
-          background: transparent none repeat scroll 0 0;
-          border:0;
-          padding:0;
-          line-height: 1;
-        }
-
-        .link:hover {
-          cursor: pointer;
-        }
+      .link {
+        font-size: 16px;
+        background: transparent none repeat scroll 0 0;
+        border:0;
+        padding:0;
+        line-height: 1;
       }
+      .link:hover {
+        cursor: pointer;
+      }
+    }
   }
 }
