@@ -1,0 +1,38 @@
+{{<layout}}
+
+{{$pageTitle}}
+Controlled Lists
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+    <h2 class="heading-large">{{listMetaData.description}}</h2>
+
+    <a href="/csv-list.csv?list={{listMetaData.path}}">Download the list as a .csv file</a>
+
+    <table>
+        <thead>
+            <tr>
+                {{#tableHeadings}}
+                <th>{{description}}</th>
+                {{/tableHeadings}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#rows}}
+            <tr>
+                {{#row}}
+                    <td>{{.}}</td>
+                {{/row}}
+            </tr>
+            {{/rows}}
+        </tbody>
+    </table>
+
+ </main>
+
+{{/content}}
+
+{{/layout}}

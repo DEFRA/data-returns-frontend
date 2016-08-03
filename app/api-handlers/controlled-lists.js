@@ -10,7 +10,7 @@ var cacheHandler = require('../lib/cache-handler');
 
 function apiCallList(list) {
     var apiData = {
-        url: config.API.endpoints.CONTROLLEDLISTS,
+        url: list ? config.API.endpoints.CONTROLLEDLISTS + '/' + list : config.API.endpoints.CONTROLLEDLISTS,
         headers: {}
     };
 
@@ -52,16 +52,18 @@ function apiCallList(list) {
     });
 }
 
-module.exports.getListData = function (list) {
+/*
+ * The list meta data is cached in redis
+ */
+module.exports.getListMetaData = function () {
     return new Promise(function (resolve, reject) {
         // List is undefined for the metadata -
-        cacheHandler.getValue(list || 'metadata').then(function (val) {
+        cacheHandler.getValue('metadata').then(function (val) {
             if (val) {
                 resolve(JSON.parse(val));
             } else {
-                //var ret = [{"displayHeaders":{"name":"Units","description":"Description","measureType":"Measurement Type"},"description":"Units and measures","path":"units"},{"displayHeaders":{"name":"Name"},"description":"Parameters - substance names - and CAS","path":"parameters"},{"displayHeaders":{"name":"Name"},"description":"Reference period","path":"ref_period"},{"displayHeaders":{"name":"Name"},"description":"Monitoring period","path":"mon_period"},{"displayHeaders":{"name":"Name"},"description":"Monitoring standard or method","path":"method"},{"displayHeaders":{"name":"Name"},"description":"Return type","path":"rtn_type"}];
-                apiCallList(list || 'metadata').then(function (result) {
-                    cacheHandler.setValue(list || 'metadata', result).then(function (status) {
+                apiCallList().then(function (result) {
+                    cacheHandler.setValue('metadata', result).then(function (status) {
                         resolve(result);
                     }).catch(function (cacheErrSet) {
                         reject(cacheErrSet);
@@ -74,4 +76,16 @@ module.exports.getListData = function (list) {
             reject(cacheErrGet);
         });
     });
-}
+};
+
+// The list data will not be cached as it can be large and filtered
+// for the moment anyway
+module.exports.getListData = function (list) {
+    return new Promise(function (resolve, reject) {
+        apiCallList(list).then(function (result) {
+            resolve(result);
+        }).catch(function (apiErr) {
+            reject(apiErr);
+        });
+    });
+};

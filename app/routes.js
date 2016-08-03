@@ -156,7 +156,16 @@ module.exports = [
     path: '/controlled-lists',
     handler: listHandler.getHandler
   },
-  // /correction/table
+  {
+    method: 'GET',
+    path: '/display-list',
+    handler: listHandler.getDisplayHandler
+  },
+  {
+    method: 'GET',
+    path: '/csv-list.csv',
+    handler: listHandler.getCSVHandler
+  },
   {
     method: 'GET',
     path: '/correction/table',
