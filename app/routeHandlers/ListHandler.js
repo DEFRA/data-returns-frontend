@@ -1,9 +1,7 @@
 'use strict';
-
-var helpLinks = require('../config/dep-help-links');
 var handler = require('../api-handlers/controlled-lists.js');
 var errBit = require('../lib/errbitErrorMessage');
-var Joi = require('joi');
+//var Joi = require('joi');
 
 module.exports = {
     /*
@@ -78,7 +76,7 @@ module.exports = {
     getCSVHandler: function(request, reply) {
         var list = request.query.list;
         console.log('==> /csv-list ' + list);
-        var h = request.response.headers;
+        //var h = request.response.headers;
         reply.file(__filename);
 
     }

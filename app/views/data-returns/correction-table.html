@@ -7,55 +7,47 @@ Send your data returns online
 {{$content}}
 
 <main id="content" role="main">
+    {{{feedbackbanner}}}
 
-  {{{feedbackbanner}}}
+    <h1 class="heading-large">You can't send this file</h1>
 
-  <h1 class="heading-large">You can't send this file</h1>
+    <div class="error-summary" role="group" aria-labelledby="make-corrections" tabindex="-1">
+        {{{correctionsData.errorSummary}}}
+    </div>
 
-  <div class="error-summary" role="group" aria-labelledby="make-corrections" tabindex="-1">
-    {{{errorsummary}}}
-  </div>
+    <table id="errorTableHeader" class="error-table">
+        <thead>
+        <tr>
+            <th width="12%">Column</th>
+            <th width="13%">Error</th>
+            <th width="40%">Correction</th>
+            <th width="35%">More help</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#correctionsData.lineErrors}}
+        <tr>
+            <td>
+                <abbr title="{{definition}}">{{columnName}}</abbr>
+                <hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden>
+            </td>
+            <td title="Error Code:{{errorCode}}">{{errorType}}</td>
+            <td>
+                {{{errorMessage}}}
+                <p>
+                    <a href="/correction/detail?uuid={{id}}&id={{groupID}}">See details of which rows to correct</a>.
+                </p>
+            </td>
+            <td>
+                {{{moreHelp}}}
+            </td>
+        </tr>
+        {{/correctionsData.lineErrors}}
+        </tbody>
+    </table>
 
-  {{#uploadError}}
-  <table id="errorTableHeader" class="error-table">
-    <thead>
-      <tr>
-        <th width="12%">Column</th>
-        <th width="13%">Error</th>
-        <th width="40%">Correction</th>
-        <th width="35%">More help</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#lineErrors}}
-      <tr>
-        <td><abbr title="{{definition}}">{{columnName}}</abbr><hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden></td>
-    <td title="Error Code:{{errorCode}}">{{errorType}}</td>
-    <td>
-      {{{errorMessage}}}
-      <p><a href="/correction/detail?id={{groupID}}" >See details of which rows to correct</a>.</p>
-
-    </td>
-    <td>
-      {{{moreHelp}}}
-    </td>
-    </tr>
-    {{/lineErrors}}
-    {{/uploadError}}
-    </tbody>
-  </table>
-</div>
-
-
-<div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
-
-<form action="/file/choose" class="form" method="get">
-  <div class="form-group">
-    <input type="submit" value="Start again" class="button">
-  </div>
-</form>
+    <div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
+    <a id="back.btn" href="/file/choose" class="button">Back to file list</a>
 </main>
-
 {{/content}}
-
 {{/layout}}

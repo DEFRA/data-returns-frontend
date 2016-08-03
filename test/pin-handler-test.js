@@ -1,4 +1,3 @@
-
 var pinhandler = require('../app/lib/pin-handler');
 var config = require('../app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 var Code = require('code');
@@ -19,12 +18,12 @@ maxvalue = parseInt(maxvalue);
 
 lab.test('Pin Generation Test', function (done) {
 
-pinhandler.newPin()
-    .then(function (pin) {
-        expect(pin).to.be.a.number();
-        expect(pin).to.be.between(9, maxvalue);
-        done();
-    });
+    pinhandler.newPin()
+        .then(function (pin) {
+            expect(pin).to.be.a.number();
+            expect(pin).to.be.between(9, maxvalue);
+            done();
+        });
 });
 
 

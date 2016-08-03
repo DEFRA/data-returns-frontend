@@ -24,7 +24,7 @@ Send your data returns online
 
     <div class="text">
       {{^invalidEmailAddress}}
-      <p class="lede">Your file has been checked and is ready to send.</p>
+      <p class="lede">Your files have been checked and are ready to send.</p>
       <p>We need to send you a code to confirm your email address before we can send you a receipt.</p>
       {{/invalidEmailAddress}}
 
@@ -48,13 +48,12 @@ Send your data returns online
         </a>
       </div>
       {{/showSendMailButton}}
-
     </div>
 
 
     {{#showStartAgainButton}}
     <div class="form-group">
-      <input type="button" id="nextBtn" class="button" value="Start again" onclick="location.href = '/start';">
+      <a id="startagain.btn" href="/start" class="button">Start again</a>
     </div>
     {{/showStartAgainButton}}
 

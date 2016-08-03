@@ -10,19 +10,17 @@ var errBit = require('./errbitErrorMessage');
  */
 var setUser = function (sessionID, user) {
 
-  return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
+        user.last_updated = new Date().toUTCString();
 
-    var datenow = new Date();
-    user.last_updated = datenow.toUTCString();
-
-    cacheHandler.setValue(sessionID, user)
-      .then(function (result) {
-        resolve(result);
-      })
-      .catch(function (errResult) {
-        reject(errResult);
-      });
-  });
+        cacheHandler.setValue(sessionID, user)
+            .then(function (result) {
+                resolve(result);
+            })
+            .catch(function (errResult) {
+                reject(errResult);
+            });
+    });
 };
 
 /*
@@ -31,114 +29,114 @@ var setUser = function (sessionID, user) {
  */
 var getUser = function (sessionID) {
 
-  return new Promise(function (resolve, reject) {
-    cacheHandler.getValue(sessionID)
-      .then(function (result) {
+    return new Promise(function (resolve, reject) {
+        cacheHandler.getValue(sessionID)
+            .then(function (result) {
 
-        result = JSON.parse(result) || null;
-        resolve(result);
+                result = JSON.parse(result) || null;
+                resolve(result);
 
-      })
-      .catch(function (err) {
-        reject('errResult');
-        var msg = new errBit.errBitMessage(err, __filename, 'getUser()', 32);
-        console.error(msg);
-      });
-  });
-};
-
-module.exports.doesExists = function (sessionID) {
-  console.log('==> userHandler doesExist()');
-  getUser(sessionID)
-    .then(function (result) {
-      return (result !== null) ? true : false;
-    })
-    .catch(function (err) {
-      var msg = new errBit.errBitMessage(err, __filename, 'doesExists()', 50);
-        console.error(msg);
-     
-      return false;
+            })
+            .catch(function (err) {
+                reject('errResult');
+                var msg = new errBit.errBitMessage(err, __filename, 'getUser()', 32);
+                console.error(msg);
+            });
     });
 };
 
-module.exports.getUserMail = function (sessionID) {
-  return new Promise(function (resolve, reject) {
+module.exports.doesExists = function (sessionID) {
+    console.log('==> userHandler doesExist()');
     getUser(sessionID)
-      .then(function (user) {
-        if (user && user.email) {
-          resolve(user.email);
-        } else {
-          reject(false);
-        }
-      })
-      .catch(function () {
-        reject(false);
-      });
-  });
+        .then(function (result) {
+            return (result !== null) ? true : false;
+        })
+        .catch(function (err) {
+            var msg = new errBit.errBitMessage(err, __filename, 'doesExists()', 50);
+            console.error(msg);
+
+            return false;
+        });
+};
+
+module.exports.getUserMail = function (sessionID) {
+    return new Promise(function (resolve, reject) {
+        getUser(sessionID)
+            .then(function (user) {
+                if (user && user.email) {
+                    resolve(user.email);
+                } else {
+                    reject(false);
+                }
+            })
+            .catch(function () {
+                reject(false);
+            });
+    });
 };
 
 module.exports.isAuthenticated = function (sessionID) {
 
-  return new Promise(function (resolve, reject) {
-    getUser(sessionID)
-      .then(function (user) {
-        var autenticated = true;
+    return new Promise(function (resolve, reject) {
+        getUser(sessionID)
+            .then(function (user) {
+                var autenticated = true;
 
-        if (user === null) {
-          autenticated = false;
-        } else {
+                if (user === null) {
+                    autenticated = false;
+                } else {
 
-          // Pin validation
-          if (user.authenticated !== true) {
-            autenticated = false;
-          }
-          // Max no of uses per pin
-          if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
-            autenticated = false;
-          }
-          // Is the pin in date 
-          if (user.pinCreationTime) {
-            var pinCreationTime = new Date(user.pinCreationTime);
-            var dateNow = new Date();
-            var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
+                    // Pin validation
+                    if (user.authenticated !== true) {
+                        autenticated = false;
+                    }
+                    // Max no of uses per pin
+                    if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
+                        autenticated = false;
+                    }
+                    // Is the pin in date
+                    if (user.pinCreationTime) {
+                        var pinCreationTime = new Date(user.pinCreationTime);
+                        var dateNow = new Date();
+                        var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
-            if (mins > config.pin.ValidTimePeriodMinutes) {
-              autenticated = false;
-            }
-          }
-        }
+                        if (mins > config.pin.ValidTimePeriodMinutes) {
+                            autenticated = false;
+                        }
+                    }
+                }
 
-        resolve(autenticated);
+                resolve(autenticated);
 
-      })
-      .catch(function (err) {
-        reject(err);
-      });
-  });
+            })
+            .catch(function (err) {
+                reject(err);
+            });
+    });
 };
 
 module.exports.setIsAuthenticated = function (sessionID, value) {
-  console.log('==> setIsAuthenticated() ', value, sessionID);
-  getUser(sessionID)
-    .then(function (user) {
-      user.authenticated = value;
-      setUser(sessionID, user);
-    });
+    console.log('==> setIsAuthenticated() ', value, sessionID);
+    getUser(sessionID)
+        .then(function (user) {
+            user.authenticated = value;
+            setUser(sessionID, user);
+        });
 };
 
 module.exports.incrementUploadCount = function (sessionID) {
-  getUser(sessionID)
-    .then(function (user) {
-      if (user !== null) {
-        user.uploadCount++;
-        setUser(sessionID, user);
-      }
-    });
+    getUser(sessionID)
+        .then(function (user) {
+            if (user !== null) {
+                user.uploadCount++;
+                setUser(sessionID, user);
+            }
+        });
 };
 
 module.exports.getNewUserID = function () {
-  var ret = utils.getNewUUID();
-  return ret;//'id' + ret.replace(/"/g, "");
+    var ret = utils.getNewUUID();
+    return ret;//'id' + ret.replace(/"/g, "");
 };
 
 module.exports.getUser = getUser;

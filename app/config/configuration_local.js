@@ -23,45 +23,45 @@ config.smtp.mailcatcher.port = 1025;
 config.smtp.mailcatcher.ignoreTLS = true;
 //Support Contact details on emails
 config.smtp.support = {
-  email: 'enquiries@environment-agency.gov.uk',
-  UKPhone: '03708 506 506',
-  PhoneFromAbroad: '00 44 1709 389 201',
-  MiniCommNumber: '03702 422 549'
+    email: 'enquiries@environment-agency.gov.uk',
+    UKPhone: '03708 506 506',
+    PhoneFromAbroad: '00 44 1709 389 201',
+    MiniCommNumber: '03702 422 549'
 };
 /* cache configuration */
 config.redis = {
-  clientOptions: {
-    host: 'localhost',
-    port: 6379
-  }
+    clientOptions: {
+        host: 'localhost',
+        port: 6379
+    }
 };
 // CSV Validation
 config.CSV = {
-  validate: true,
-  VIRUS_SCAN: false,
-  maxfilesize: 2 * Math.pow(2, 20) //2MB
+    validate: true,
+    VIRUS_SCAN: false,
+    maxfilesize: 2 * Math.pow(2, 20) //2MB
 };
 // API Endpoints
 
 var BASEURL = {
-  PROTOCOL: 'http://',
-  SERVER: 'localhost:',
-  PORT: 9020
+    PROTOCOL: 'http://',
+    SERVER: 'localhost:',
+    PORT: 9020
 };
 config.API = {};
 config.API.endpoints = {
-  'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
-  'FILEUPLOADCOMPLETE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
-  'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/controlled-list',
-  'ERRORCHECKING': 'error_checking',
-  'ERRORSENDING': 'error_sending'
+    'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
+    'FILEUPLOADCOMPLETE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
+    'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/controlled-list',
+    'ERRORCHECKING': 'error_checking',
+    'ERRORSENDING': 'error_sending'
 };
 config.API.STATUS_CODES = {
-  OK: 200
+    OK: 200
 };
 //DEP specific configuration
 config.dep = {
-  returnTypeRulesLink: 'http://data-returns-help.herokuapp.com'
+    returnTypeRulesLink: 'http://data-returns-help.herokuapp.com'
 };
 // Google Analytics configuration.
 config.useGoogleAnalytics = true;
@@ -71,13 +71,19 @@ config.compressCSS = false;
 //errbit integration config
 config.errbit = {};
 config.errbit.options = {
-  enabled: false,
-  apiKey: process.env.ERRBIT_API_KEY, 
-  appUrl: 'https://localhost:3000/start',
-  appName: 'Data-Returns Front End (AWS LOCAL)',
-  projectRoot: '/data-returns-frontend',
-  errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
+    enabled: false,
+    apiKey: process.env.ERRBIT_API_KEY,
+    appUrl: 'https://localhost:3000/start',
+    appName: 'Data-Returns Front End (AWS LOCAL)',
+    projectRoot: '/data-returns-frontend',
+    errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
 };
+
+// html view cache control
+config.html = {
+    cached: false
+};
+
 
 // Publish the configuration.
 module.exports = config;

@@ -28,7 +28,7 @@ function apiCallList(list) {
                     messageDetail: err.message
                 });
             } else {
-                if (httpResponse.statusCode != 200) {
+                if (httpResponse.statusCode !== 200) {
                     reject({
                         isUserError: true,
                         message: 'Request Error: ' + httpResponse.statusCode,
@@ -63,7 +63,7 @@ module.exports.getListMetaData = function () {
                 resolve(JSON.parse(val));
             } else {
                 apiCallList().then(function (result) {
-                    cacheHandler.setValue('metadata', result).then(function (status) {
+                    cacheHandler.setValue('metadata', result).then(function () {
                         resolve(result);
                     }).catch(function (cacheErrSet) {
                         reject(cacheErrSet);

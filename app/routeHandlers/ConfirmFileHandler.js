@@ -1,58 +1,38 @@
-
+"use strict";
 var utils = require('../lib/utils');
 var cacheHandler = require('../lib/cache-handler');
 var HelpLinks = require('../config/dep-help-links');
-var errBit = require('../lib/errbitErrorMessage');
+var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
-  /*
-   * HTTP GET Handler for the /file/confirm route
-   * @Param request
-   * @param reply
-   */
-  getHandler: function (request, reply) {
-    console.log('==> O2O2Handler getHandler() ');
-    var sessionID = utils.base64Decode(request.state['data-returns-id']);
-    var key = sessionID + '_UploadResult';
+    /*
+     * HTTP GET Handler for the /file/confirm route
+     * @Param request
+     * @param reply
+     */
+    getHandler: function (request, reply) {
+        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
-    cacheHandler.getValue(key)
-      .then(function (data) {
-
-        console.log(data);
-        data = JSON.parse(data);
-
-        var uploadResult = data.uploadResult;
-        var parseResult = data.parseResult;
-        var mappings = parseResult.mappings;
-        var originalFileName = data.originalFileName;
-
-        var metaData = {
-          fileKey: uploadResult.fileKey,
-          mappings: mappings,
-          filename: originalFileName,
-          RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
-          HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-        };
-
-        reply.view('data-returns/confirm-your-file', {
-          data: metaData
+        cacheHandler.arrayGet(key).then(function(uploads) {
+            var data = {
+                "files": uploads,
+                RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
+                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
+            };
+            reply.view('data-returns/confirm-your-file', data);
+        }).catch(function() {
+            console.log("Unable to retrieve stored uploads array.");
+            reply.redirect('data-returns/failure');
         });
-
-      })
-      .catch(function (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 46);
-        console.error(msg);
-      });
-
-  },
-  /*
-   * HTTP POST Handler for the /file/confirm route
-   * @Param request
-   * @param reply
-   * Redirects the current page
-   */
-  postHandler: function (request, reply) {
-    reply.redirect('/failure');
-  }
+    },
+    /*
+     * HTTP POST Handler for the /file/confirm route
+     * @Param request
+     * @param reply
+     * Redirects the current page
+     */
+    postHandler: function (request, reply) {
+        reply.redirect('data-returns/failure');
+    }
 };
-

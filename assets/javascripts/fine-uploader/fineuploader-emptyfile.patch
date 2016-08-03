@@ -1,0 +1,16 @@
+Index: assets/javascripts/fine-uploader/fine-uploader.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- assets/javascripts/fine-uploader/fine-uploader.js	(revision 16f5a20e5dbb655543ec827d34a1eb040621a17d)
++++ assets/javascripts/fine-uploader/fine-uploader.js	(revision )
+@@ -3375,7 +3375,7 @@
+                 return validityChecker.failure();
+             }
+ 
+-            if (size === 0) {
++            if (this._options.validation.preventEmptyFileUpload && size === 0) {
+                 this._itemError("emptyError", name, file);
+                 return validityChecker.failure();
+             }

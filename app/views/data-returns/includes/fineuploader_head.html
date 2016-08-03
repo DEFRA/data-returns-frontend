@@ -1,0 +1,20 @@
+<script src="/public/javascripts/fine-uploader/fine-uploader.js" type="text/javascript"></script>
+
+<script type="text/template" id="fu-template">
+    <div id="choose-file-button" class="button-choose-file button-secondary">
+        <div>Choose a file</div>
+    </div>
+    <p class="choose-file">Or drag and drop your files onto this window.</p>
+</script>
+
+<script type="text/template" id="fur-template">
+    <div class="statusbar">
+        <div class="filename"></div><div class="status"></div><div class="details"></div><div class="remove">
+            <form method="post" action="/file/choose" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="remove"></input>
+                <input type="hidden" name="uuid" class="file-uuid"></input>
+                <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
+            </form>
+        </div>
+    </div>
+</script>
