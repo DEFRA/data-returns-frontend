@@ -14,7 +14,7 @@ var messages = require('./error-messages.js');
 var userHandler = require('./user-handler');
 var utils = require('./utils');
 var cacheHandler = require('./cache-handler');
-var errBit = require('./errbitErrorMessage');
+const errbit = require("./errbit-handler");
 
 var checkInvalidPinCount = function (sessionID) {
 
@@ -59,8 +59,7 @@ module.exports = {
                 }
                 resolve(parseInt(pin));
             } catch (err) {
-                var msg = new errBit.errBitMessage(err, __filename, 'newPin()', 63);
-                console.error(msg);
+                errbit.notify(err);
                 reject();
             }
         });

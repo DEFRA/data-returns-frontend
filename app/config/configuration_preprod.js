@@ -85,10 +85,7 @@ config.errbit = {};
 config.errbit.options = {
     enabled: true,
     apiKey: process.env.ERRBIT_API_KEY,
-    appUrl: 'https://data-returns-preprod.envage.co.uk/start',
-    appName: 'Data-Returns Front End (AWS PRE-PROD)',
-    projectRoot: '/data-returns-frontend',
-    errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
+    appName: 'Data-Returns Front End (AWS PRE-PROD)'
 };
 
 // html view cache control

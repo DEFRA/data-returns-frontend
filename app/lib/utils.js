@@ -5,7 +5,7 @@ var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
 var path = require('path');
-var errBit = require('./errbitErrorMessage');
+const errbit = require("./errbit-handler");
 
 /* loadFilesInDir: Recursivly loads file names in to an array
  * @param dir the parent base directory to scan
@@ -152,23 +152,17 @@ module.exports = {
             stats = null;
         }
 
-        try {
-            // Is it a directory already?
-            if (stats === null || !stats.isDirectory()) {
-                mkdirp(config.upload.path, function (err) {
-                    if (err) {
-                        var msg = new errBit.errBitMessage(err, __filename, 'createUploadDirectory()', 158);
-                        console.error(msg);
-                    } else {
-                        console.log('<== createUploadDirectory() ' + config.upload.path + ' created.');
-                    }
-                });
-            } else {
-                console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
-            }
-        } catch (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'createUploadDirectory()', 170);
-            console.error(msg);
+        // Is it a directory already?
+        if (stats === null || !stats.isDirectory()) {
+            mkdirp(config.upload.path, function (err) {
+                if (err) {
+                    errbit.notify(err);
+                } else {
+                    console.log('<== createUploadDirectory() ' + config.upload.path + ' created.');
+                }
+            });
+        } else {
+            console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
         }
     },
     /*

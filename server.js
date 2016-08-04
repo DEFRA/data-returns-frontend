@@ -1,37 +1,20 @@
 "use strict";
-var Hapi = require('hapi');
-var Hogan = require('hogan.js');
-var userHandler = require('./app/lib/user-handler');
+const Hapi = require('hapi');
+const Hogan = require('hogan.js');
+const errbit = require("./app/lib/errbit-handler");
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
 var utils = require('./app/lib/utils');
-var Compressor = require('node-minify');
+const Compressor = require('node-minify');
 var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
-var errBit = require('./app/lib/errbitErrorMessage');
-
-var server = new Hapi.Server();
 var banner = config.feedback.template;
+var server = new Hapi.Server();
 
-var origConsolError = console['error'];
+// Register the hapi server with the errbit handler
+errbit.registerHapi(server);
 
-//override console.error so we can send to errBit when an exception is logged
-console.error = function () {
-
-    var d = new Date();
-    var formattedDate = d.getFullYear() + '-' + utils.pad(d.getMonth(), 2) + '-' + utils.pad(d.getDate(), 2) + ' ' + utils.pad(d.getHours(), 2) + ':' + utils.pad(d.getMinutes(), 2) + ':' + utils.pad(d.getSeconds(), 2);
-    // send to errBit
-    var errbitHandler = require('./app/lib/errbitHandler');
-    errbitHandler.notify(arguments[0]);
-    var args = [];
-    args[0] = '[ERROR] ' + formattedDate;
-    args[1] = arguments[0];
-    if (origConsolError.apply) {
-        origConsolError.apply(console, args);
-    }
-
-};
 //listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 console.log('Starting the Data-Returns Service');
@@ -95,10 +78,10 @@ server.register({
     }
 }, function (err) {
     if (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'server.register()', 80);
-        console.error(msg);
+        throw err;
     }
 });
+
 // If configured, require the user to provide Basic Authentication details to view
 // this site (useful when the site is hosted publicly but still in development).
 if (config.requireBasicAuth) {
@@ -111,8 +94,6 @@ if (config.requireBasicAuth) {
 // to individual testers.
     server.register(require('hapi-auth-basic'), function (err) {
         if (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'server.register()', 80);
-            console.error(msg);
             throw err;
         }
         server.auth.strategy('simple', 'basic', 'required', {
@@ -194,28 +175,31 @@ server.ext('onPreResponse', function (request, reply) {
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
 
-// Payload content length greater than maximum allowed
+    // Payload content length greater than maximum allowed
     if (request.response.isBoom) {
-
         var err = request.response;
         var statusCode = err.output.payload.statusCode;
         var errorMessage = err.output.payload.message;
         console.error('Boom Error', err);
         if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
-            return reply.view('data-returns/choose-your-file', {
-                uploadError: true,
-                errorSummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
-                lineErrors: null,
-                isLineErrors: false
-            });
+            // TODO: Improve handling when the upload payload is too big - need to return a 413 for the fineuploader lib to respond correctly to the error???
+            // return reply({success: false});
+            return reply(ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big')).code(413);
+            // return reply.view('data-returns/choose-your-file', {
+            //     uploadError: true,
+            //     errorSummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
+            //     lineErrors: null,
+            //     isLineErrors: false
+            // });
         } else {
+            errbit.notify((errorMessage || err));
+
             return reply(resp);
         }
 
     } else {
         return reply(resp);
     }
-    reply.continue();
 });
 
 
@@ -240,8 +224,6 @@ exec2('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o repor
 // Start the server.
 server.start(function (err) {
     if (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 271);
-        console.error(msg);
         throw err;
     }
 
@@ -274,15 +256,10 @@ server.start(function (err) {
             fileOut: mapping.out,
             callback: function (err, min) {
                 if (err) {
-                    var msg = new errBit.errBitMessage(err, __filename, 'server.start()', 259);
-                    console.error(msg);
+                    throw err;
                 }
             }
         });
     }
     console.log('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
-});
-process.on('uncaughtException', function (err) {
-    var msg = new errBit.errBitMessage(err, __filename, 'uncaughtException!', 1);
-    console.error(msg);
 });

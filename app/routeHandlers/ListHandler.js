@@ -1,6 +1,6 @@
 'use strict';
 var handler = require('../api-handlers/controlled-lists.js');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var csv = require('../lib/csv-handler.js');
 
 module.exports = {
@@ -27,10 +27,7 @@ module.exports = {
             reply.view('data-returns/controlled-lists', {
                 controlledLists: items
             });
-        }).catch(function (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
-            console.error(msg);
-        });
+        }).catch(errbit.notify);
     },
 
     /**
@@ -47,10 +44,7 @@ module.exports = {
                 tableHeadings: header,
                 rows: data
             });
-        }).catch(function (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
-            console.error(msg);
-        });
+        }).catch(errbit.notify);
     },
 
     /**
@@ -72,11 +66,6 @@ module.exports = {
                 .header('Content-Type', 'text/csv; charset=utf-8;')
                 .header('content-disposition', `attachment; filename=${filename};`).hold();
             response.send();
-        }).catch(function (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
-            console.error(msg);
-        });
+        }).catch(errbit.notify);
     }
 };
-
-

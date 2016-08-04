@@ -4,7 +4,7 @@ var userHandler = require('../lib/user-handler');
 var cacheHandler = require('../lib/cache-handler');
 var utils = require('../lib/utils');
 var errorHandler = require('../lib/error-handler');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -39,8 +39,7 @@ module.exports = {
                         }
                     })
                     .catch(function (err) {
-                        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 45);
-                        console.error(msg);
+                        errbit.notify(err);
                     });
             })
             .catch(function () {

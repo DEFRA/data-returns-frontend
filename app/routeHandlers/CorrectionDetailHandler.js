@@ -3,7 +3,7 @@ var cacheHandler = require('../lib/cache-handler');
 var utils = require('../lib/utils');
 var detailsHandler = require('../api-handlers/multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -54,8 +54,7 @@ module.exports = {
                         data: errorDetails
                     });
                 }).catch(function (err) {
-                    var msg = new errBit.errBitMessage(err, __filename, 'getHandler', err.stack);
-                    console.error(msg);
+                    errbit.notify(err);
                 });
         } else {
             reply.redirect('/file/choose');

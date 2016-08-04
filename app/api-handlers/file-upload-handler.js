@@ -1,10 +1,11 @@
+"use strict";
 var fs = require('fs');
 var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var crypto = require('../lib/crypto-handler');
 
 /**
@@ -36,14 +37,12 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
         // Make REST call into the Data Exchange service, and handle the result.
         request.post(apiData, function (err, httpResponse, body) {
-            var msg;
             var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
             var errorSummary, apiErrors = '';
 
             console.log("Received upload response for " + originalFileName);
             if (err) {
-                msg = new errBit.errBitMessage(err, __filename, 'uploadFileToService()', 51);
-                console.error(msg);
+                errbit.notify(err);
                 reject({
                     isUserError: true,
                     message: errorHandler.render(3000, {mailto: config.feedback.mailto}),
@@ -75,8 +74,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                         httpResponse = JSON.parse(body);
                     }
                 } catch (e) {
-                    msg = new errBit.errBitMessage(e, __filename, 'uploadFileToService()', 90);
-                    console.error(msg);
+                    errbit.notify(e);
 
                     return reject({
                         isUserError: true,

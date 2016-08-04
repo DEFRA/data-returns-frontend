@@ -2,7 +2,7 @@
 var userHandler = require('../lib/user-handler');
 var utils = require('../lib/utils');
 var helpLinks = require('../config/dep-help-links');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 
 /*
  * HTTP GET Handler for /file/sent
@@ -16,7 +16,6 @@ module.exports.getHandler = function (request, reply) {
             EnvironmentAgencyHome: helpLinks.links.EnvironmentAgencyHome
         });
     }).catch(function (err) {
-        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 70);
-        console.error(msg);
+        errbit.notify(err);
     });
 };

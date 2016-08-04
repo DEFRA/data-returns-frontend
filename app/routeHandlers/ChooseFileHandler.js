@@ -12,7 +12,7 @@ var errorHandler = require('../lib/error-handler');
 var errorDescs = require('../lib/error-descriptions');
 var utils = require('../lib/utils');
 var metricsHandler = require('../lib/MetricsHandler');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 /**
@@ -53,6 +53,13 @@ function extractUploadDetails(request, fileUpload) {
     };
 }
 
+/**
+ * Handle uploads from the fineuploader JS client library.  Each file is uploaded individually to the service and the
+ * service responds with a JSON document which is processed by the client library.
+ *
+ * @param reqInfo JSON structure describing the request - see extractUploadDetails
+ * @returns {Promise}
+ */
 function handleUploadedFile(reqInfo) {
     return new Promise(function (resolve, reject) {
         var newLocalPath = reqInfo.localFilename.concat(path.extname(reqInfo.clientFilename));
@@ -65,7 +72,6 @@ function handleUploadedFile(reqInfo) {
                 return fileUploadHandler.uploadFileToService(newLocalPath, reqInfo.sessionID, reqInfo.id, reqInfo.clientFilename);
             })
             .then(function (fileStatus) {
-                console.log("Adding " + fileStatus.originalFileName);
                 var fileData = {
                     "id": reqInfo.id,
                     "sid": fileStatus.uploadResult.fileKey,
@@ -76,19 +82,16 @@ function handleUploadedFile(reqInfo) {
                         "server": fileStatus
                     }
                 };
-                cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+                return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+            }).then(function(fileData) {
                 resolve({"success": true, "details": fileData});
-            })
-            .catch(function (errorData) {
+            }).catch(function (errorData) {
                 if (errorData === null || !('isUserError' in errorData) || !errorData.isUserError) {
-                    console.log("Unexpected error for  " + reqInfo.clientFilename);
-                    var msg = new errBit.errBitMessage(errorData, __filename, 'unexpectedErrorHandler', errorData.stack);
-                    console.error(msg);
+                    errbit.notify(errorData);
                     reject({
                         "success": false,
                         "preventRetry": false,
                         "errorType": "unexpected",
-                        "message": msg,
                         "details": {
                             "id": reqInfo.id,
                             "name": reqInfo.clientFilename,

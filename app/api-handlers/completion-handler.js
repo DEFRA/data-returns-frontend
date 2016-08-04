@@ -1,7 +1,7 @@
 'use strict';
 var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var crypto = require('../lib/crypto-handler');
 
 /**
@@ -20,7 +20,6 @@ var crypto = require('../lib/crypto-handler');
 module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
 
     return new Promise(function (resolve, reject) {
-        var msg;
         // Define data to send to the Data Exchange service.
         var apiData = {
             url: config.API.endpoints.FILEUPLOADCOMPLETE,
@@ -48,15 +47,13 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                 case 500:
                     if (body) {
                         body = JSON.parse(body);
-                        msg = new errBit.errBitMessage(body.message, __filename, 'confirmFileSubmission()', 52);
-                        console.error(msg);
+                        errbit.notify(new Error(body.message));
                         reject();
                     }
                     break;
                 default:
                     if (err) {
-                        msg = new errBit.errBitMessage(err, __filename, 'confirmFileSubmission()', 56);
-                        console.error(msg);
+                        errbit.notify(err);
                     }
                     console.log('completion-handler processResponse statuscode:', statusCode);
                     reject();

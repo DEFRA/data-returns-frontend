@@ -4,7 +4,7 @@ var fs = require('fs');
 var avHandler = require('./antivirus-handler');
 var errorHandler = require('./error-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var errBit = require('./errbitErrorMessage');
+const errbit = require("./errbit-handler");
 var helpLinks = require('../config/dep-help-links');
 var emptyFileErrorMessage = errorHandler.render(500, helpLinks.links, 'Your File is empty.');
 var notCSVMessage = errorHandler.render(400, helpLinks.links, 'Your File is not a csv.');
@@ -89,8 +89,7 @@ var validateFile = function (filePath) {
                             errorCode: 600
                         });
                     } else {
-                        var msg = new errBit.errBitMessage('ClamAV system error unable to scan files!', __filename, 'isInfected()', 102);
-                        console.error(msg);
+                        errbit.notify(new Error("ClamAV system error unable to scan files!"));
                         errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
                         reject({
                             isUserError: true,

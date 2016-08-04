@@ -18,13 +18,11 @@ lab.experiment('error-handler.js library', function () {
 
         fileUploadHandler.uploadFileToService(filePath, sessionID, fileName)
             .then(function (result) {
-                //console.log('succes:', JSON.stringify(result));
                 testFileKey = result.uploadResult.fileKey;
                 expect(result.uploadResult.fileName).to.equal(fileName);
 
                 completionHandler.confirmFileSubmission(testFileKey, testEmail, fileName)
-                    .then(function (result) {
-                        console.log('succes:', JSON.stringify(result));
+                    .then(function () {
                         done();
                     })
                     .catch(function (err) {
@@ -50,7 +48,6 @@ lab.experiment('error-handler.js library', function () {
         filePath = __dirname + '/data/' + fileName;
         fileUploadHandler.uploadFileToService(filePath, sessionID, fileName)
             .then(function (result) {
-                //console.log('succes:', JSON.stringify(result));
                 expect(result.uploadResult.fileName).to.equal(fileName);
                 done();
             })
@@ -71,7 +68,6 @@ lab.experiment('error-handler.js library', function () {
         filePath = __dirname + '/data/' + fileName;
         fileUploadHandler.uploadFileToService(filePath, sessionID, fileName)
             .then(function (result) {
-                //console.log('succes:', JSON.stringify(result));
                 expect(result.uploadResult.fileName).to.equal(fileName);
                 done();
             })
@@ -92,7 +88,6 @@ lab.experiment('error-handler.js library', function () {
         filePath = __dirname + '/data/' + fileName;
         fileUploadHandler.uploadFileToService(filePath, sessionID, fileName)
             .then(function (result) {
-                // console.log('succes:', JSON.stringify(result));
                 expect(result.uploadResult.fileName).to.equal(fileName);
                 done();
             })

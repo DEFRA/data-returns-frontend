@@ -6,7 +6,7 @@
 'use strict';
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var errorMessages = require('./error-messages.js');
-var errBit = require('./errbitErrorMessage');
+const errbit = require("./errbit-handler");
 var redis = require('redis'),
     client = redis.createClient(config.redis.clientOptions);
 
@@ -40,8 +40,7 @@ module.exports = {
             if (client && client.connected) {
                 client.get(key, function (err, reply) {
                     if (err) {
-                        var msg = new errBit.errBitMessage(err, __filename, 'getValue()', 30);
-                        console.error(msg);
+                        errbit.notify(err);
                         reject({
                             error: true,
                             message: err.message
@@ -51,8 +50,7 @@ module.exports = {
                     }
                 });
             } else {
-                var msg = new errBit.errBitMessage(errorMessages.REDIS.NOT_CONNECTED, __filename, 'getValue()', 42);
-                console.error(msg);
+                errbit.notify(new Error(errorMessages.REDIS.NOT_CONNECTED));
                 reject({
                     error: true,
                     message: errorMessages.REDIS.NOT_CONNECTED
@@ -70,8 +68,7 @@ module.exports = {
             if (value) {
                 client.set(key, JSON.stringify(value), function (err) {
                     if (err) {
-                        var msg = new errBit.errBitMessage(err, __filename, 'setValue()', 92);
-                        console.error(msg);
+                        errbit.notify(err);
                         reject(err);
                     } else {
                         setExpiry(key, expiry);
@@ -122,13 +119,13 @@ module.exports = {
      *
      * @param key the key used to address the array
      * @param item the item to add (may be any value, non-string values are JSON.stringified)
-     * @returns {Promise} resolved with the new array length on success, rejected with the error/exception object on failure
+     * @returns {Promise} resolved with the newly stored item on success, rejected with the error/exception object on failure
      */
     arrayRPush: function (key, item) {
         return new Promise(function (resolve, reject) {
             let value = (typeof item === "string") ? item : JSON.stringify(item);
             client.rpush(key, value, function (error, arrayLength) {
-                if (error) reject(error); else resolve(arrayLength);
+                if (error) reject(error); else resolve(item);
                 setExpiry(key);
             });
         });
@@ -152,8 +149,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             client.DEL(key, function (err) {
                 if (err) {
-                    var msg = new errBit.errBitMessage(err, __filename, 'delete()', 121);
-                    console.error(msg);
+                    errbit.notify(err);
                     reject();
                 }
                 resolve(true);
@@ -162,7 +158,4 @@ module.exports = {
     }
 };
 
-client.on('error', function (err) {
-    var msg = new errBit.errBitMessage(err, __filename, 'REDIS Error', 136);
-    console.error(msg);
-});
+client.on('error', errbit.notify);

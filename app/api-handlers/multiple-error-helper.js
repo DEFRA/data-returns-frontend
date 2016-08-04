@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Helper module to help handle multiple errors returned from the backend API
  * 
@@ -6,7 +7,7 @@
 var cacheHandler = require('../lib/cache-handler');
 var utils = require('../lib/utils');
 var _ = require('lodash');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -93,10 +94,7 @@ module.exports = {
                     .then(function () {
                         return;
                     })
-                    .catch(function (err) {
-                        var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 30);
-                        console.error(msg);
-                    });
+                    .catch(errbit.notify);
             })(groupID, group);
         }
         return errorPageData;

@@ -1,6 +1,6 @@
 var userHandler = require('../lib/user-handler');
 var utils = require('../lib/utils');
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("../lib/errbit-handler");
 /*
  * HTTP GET handler for gets for /file/check
  * @param {type} request
@@ -17,8 +17,7 @@ module.exports.getHandler = function (request, reply) {
             }
         })
         .catch(function (err) {
-            var msg = new errBit.errBitMessage(err, __filename, 'getHandler', 24);
-            console.error(msg);
+            errbit.notify(err);
             reply.redirect('/email');
         });
 };

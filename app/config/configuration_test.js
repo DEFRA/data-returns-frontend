@@ -81,10 +81,7 @@ config.errbit = {};
 config.errbit.options = {
     enabled: false,
     apiKey: process.env.ERRBIT_API_KEY,
-    appUrl: 'https://dr-dev.envage.co.uk/start',
-    appName: 'Data-Returns Front End (AWS TEST)',
-    projectRoot: '/data-returns-frontend',
-    errBitServerURI: 'https://errbit.envage.co.uk/notifier_api/v2/notices'
+    appName: 'Data-Returns Front End (AWS TEST)'
 };
 
 // html view cache control

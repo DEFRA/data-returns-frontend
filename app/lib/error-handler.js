@@ -8,7 +8,7 @@ var templateDir = path.resolve(__dirname, '../error-templates/');
 var filenames = utils.getFileListInDir(templateDir);
 var filecount = 1;
 var x, y, key, compiledTemplate;
-var errBit = require('../lib/errbitErrorMessage');
+const errbit = require("./errbit-handler");
 
 //preload and compile error-templates
 var loadErrorTemplates = function () {
@@ -19,8 +19,7 @@ var loadErrorTemplates = function () {
         //console.log('\tLoading ' + filename, filecount++);
         utils.readFile(filename, function (err, fileContents) {
             if (err) {
-                var msg = new errBit.errBitMessage(err, __filename, 'loadErrorTemplates())', 24);
-                console.error(msg);
+                errbit.notify(err);
             } else {
                 x = filename.lastIndexOf('/');
                 y = filename.indexOf('.html');
