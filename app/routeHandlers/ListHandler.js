@@ -1,7 +1,7 @@
 'use strict';
 var handler = require('../api-handlers/controlled-lists.js');
 var errBit = require('../lib/errbitErrorMessage');
-//var Joi = require('joi');
+var csv = require('../lib/csv-handler.js');
 
 module.exports = {
     /*
@@ -10,8 +10,10 @@ module.exports = {
      *  @Param reply
      */
 
-    /*
-     * get handler for '/controlled-lists' route
+    /**
+     * Display list metadata
+     * @param request
+     * @param reply
      */
     getHandler: function (request, reply) {
         console.log('==> /controlled-lists');
@@ -31,41 +33,19 @@ module.exports = {
         });
     },
 
+    /**
+     * Display list data
+     * @param request
+     * @param reply
+     */
     getDisplayHandler: function (request, reply) {
         var list = request.query.list;
         console.log('==> /display-list ' + list);
-
-        // Get the meta data again - from the redis cache
-        handler.getListMetaData().then(function (result) {
-            var listMetaData = result[list];
-            var tableHeadings = [];
-            // Generate an array for the column headings...hogan cannot handle maps/objects
-            for (var key in listMetaData.displayHeaders) {
-                if (listMetaData.displayHeaders.hasOwnProperty(key)) {
-                    tableHeadings.push({ name: key, description: listMetaData.displayHeaders[key]});
-                }
-            }
-            // Now the actual list data
-            handler.getListData(list).then(function (listData) {
-                // The list data has to be converted into an array of arrays
-                // because the mustache templating does not
-                // support procedural logic
-                var rows = [];
-                for (var i = 0; i < listData.length; i++) {
-                    var cols = [];
-                    for (var key in listData[i]) {
-                        if(listData[i].hasOwnProperty(key) && listMetaData.displayHeaders.hasOwnProperty(key)) {
-                            cols.push(listData[i][key]);
-                        }
-                    }
-                    rows.push({row: cols});
-                }
-                //console.log(rows);
-                reply.view('data-returns/display-list', {
-                    listMetaData: listMetaData,
-                    tableHeadings: tableHeadings,
-                    rows: rows
-                });
+        handler.getListProcessor(list, function(metadata, header, data) {
+            reply.view('data-returns/display-list', {
+                listMetaData: metadata,
+                tableHeadings: header,
+                rows: data
             });
         }).catch(function (err) {
             var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
@@ -73,19 +53,30 @@ module.exports = {
         });
     },
 
-    getCSVHandler: function(request, reply) {
-        var list = request.query.list;
-        console.log('==> /csv-list ' + list);
-        //var h = request.response.headers;
-        reply.file(__filename);
-
-    }
-    /*
-     header("Content-disposition: attachment; filename=huge_document.pdf");
-
-     Then set the MIME-type of the file:
-
-     header("Content-type: application/pdf");
+    /**
+     * Serve list csv
+     * @param request
+     * @param reply
      */
+    getCSVHandler: function(request, reply) {
+        if (!request.params || !request.params.list) {
+            throw 'Excepted - filename';
+        }
+
+        var filename = request.params.list + '.csv';
+        console.log('==> /csv-list ' + filename);
+
+        handler.getListProcessor(request.params.list, function(metadata, header, data) {
+            var result = csv.createCSV(header.map(h => h.name), data.map(r => r.row));
+            var response = reply(result)
+                .header('Content-Type', 'text/csv; charset=utf-8;')
+                .header('content-disposition', `attachment; filename=${filename};`).hold();
+            response.send();
+        }).catch(function (err) {
+            var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
+            console.error(msg);
+        });
+    }
 };
+
 

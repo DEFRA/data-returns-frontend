@@ -13,6 +13,7 @@ var fileSentHandler = require('./routeHandlers/FileSentHandler');
 var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
 var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
 var listHandler = require('./routeHandlers/ListHandler');
+var Joi = require('joi');
 
 module.exports = [
     // Static assets.
@@ -182,7 +183,7 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/csv-list.csv',
+        path: '/csv/{list*}',
         handler: listHandler.getCSVHandler
     }
 ];
