@@ -2312,19 +2312,20 @@ input.validation-code {
   font-weight: bold;
   max-width: 90%;
   text-transform: uppercase;
-}
-
-.file-upload .statusbar .status .file-ready {
-  color: #006435;
-  border: 1px solid #006435;
   padding: 2px 4px 0;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
 
+.file-upload .statusbar .status .file-ready {
+  color: #006435;
+  border: 1px solid #006435;
+}
+
 .file-upload .statusbar .status .file-error {
   color: #b10e1e;
+  border: 1px solid #b10e1e;
 }
 
 .file-upload .statusbar .action {
