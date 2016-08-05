@@ -28,7 +28,7 @@ module.exports = {
                 throw 'Unexpected headers: require [Object]';
             }
 
-            for (var i = 0; i < line.length; i++) {
+            for (i = 0; i < line.length; i++) {
                 row += '"' + line[i] + '"';
                 if (i < line.length - 1) {
                     row += ',';

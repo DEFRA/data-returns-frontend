@@ -10,7 +10,8 @@ var sessionID = 'testsession';
 var completionHandler = require('../app/api-handlers/completion-handler');
 var testFileKey;
 var testEmail = 'eanhathaway@gmail.com';
-
+var fileUploadHandler = require('../app/api-handlers/file-upload-handler');
+var controlledListsHandler = require('../app/api-handlers/controlled-lists');
 
 lab.experiment('error-handler.js library', function () {
 
@@ -99,5 +100,20 @@ lab.experiment('error-handler.js library', function () {
             });
     });
 
+    /*
+     * Test for the controlled list metadata
+     */
+    lab.test('Controlled lists metadata test', function(done) {
+        "use strict";
+        controlledListsHandler.getListMetaData().then(function(result) {
+            expect(typeof result === 'object').to.be.true;
+            done();
+        }).catch(function (err) {
+            //console.log('Error' + JSON.stringify(err));
+            expect(err.isUserError).to.be.true;
+            expect(err.errorSummary).not.to.be.null;
+            done();
+        });
+    });
 
 });

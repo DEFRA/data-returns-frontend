@@ -3,17 +3,24 @@
 var Request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
+var redisKeys = require('../lib/redis-keys.js');
 
 /**
  * Generalized async call to fetch data from the API
  * @param the list to be fetch or null for the list metadata
  * @returns {Promise}
  */
-function apiCallList(list) {
-    var apiData = {
-        url: list ? config.API.endpoints.CONTROLLEDLISTS + '/' + list : config.API.endpoints.CONTROLLEDLISTS,
-        headers: {}
-    };
+function apiCallList(list, search) {
+    var apiData = null;
+    if (list)  {
+        if (search) {
+            apiData = { url: config.API.endpoints.CONTROLLEDLISTS + '/' + list + '?field=' + search.field + '&contains=' + search.contains };
+        } else {
+            apiData = { url: config.API.endpoints.CONTROLLEDLISTS + '/' + list };
+        }
+    } else {
+        apiData = { url: config.API.endpoints.CONTROLLEDLISTS };
+    }
 
     return new Promise(function (resolve, reject) {
         Request.get(apiData, function (err, httpResponse) {
@@ -60,12 +67,12 @@ function apiCallList(list) {
 module.exports.getListMetaData = function () {
     return new Promise(function (resolve, reject) {
         // List is undefined for the metadata -
-        cacheHandler.getValue('metadata').then(function (val) {
+        cacheHandler.getValue(redisKeys.LIST_METADATA.key).then(function (val) {
             if (val) {
                 resolve(JSON.parse(val));
             } else {
                 apiCallList().then(function (result) {
-                    cacheHandler.setValue('metadata', result).then(function () {
+                    cacheHandler.setValue(redisKeys.LIST_METADATA.key, result).then(function () {
                         resolve(result);
                     }).catch(reject);
                 }).catch(reject);
@@ -79,9 +86,9 @@ module.exports.getListMetaData = function () {
  * @param list
  * @returns {Promise}
  */
-module.exports.getListData = function (list) {
+module.exports.getListData = function (list, search) {
     return new Promise(function (resolve, reject) {
-        apiCallList(list).then(function (result) {
+        apiCallList(list, search).then(function (result) {
             resolve(result);
         }).catch(reject);
     });
@@ -93,7 +100,7 @@ module.exports.getListData = function (list) {
  * @param processor a function(metadata, header[], data[]) to act the result of the API
  * call for controlled list information. Returns via a promise
  */
-module.exports.getListProcessor = function (list, processor) {
+module.exports.getListProcessor = function (list, processor, search) {
     return new Promise(function (resolve, reject) {
         module.exports.getListMetaData().then(function (result) {
             var listMetaData = result[list];
@@ -110,7 +117,7 @@ module.exports.getListProcessor = function (list, processor) {
                 }
             }
             // Now the actual list data
-            module.exports.getListData(list).then(function (listData) {
+            module.exports.getListData(list, search).then(function (listData) {
                 var rows = [];
                 for (var i = 0; i < listData.length; i++) {
                     var cols = [];

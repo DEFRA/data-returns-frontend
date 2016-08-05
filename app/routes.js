@@ -13,7 +13,6 @@ var fileSentHandler = require('./routeHandlers/FileSentHandler');
 var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
 var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
 var listHandler = require('./routeHandlers/ListHandler');
-var Joi = require('joi');
 
 module.exports = [
     // Static assets.
@@ -180,6 +179,11 @@ module.exports = [
         method: 'GET',
         path: '/display-list',
         handler: listHandler.getDisplayHandler
+    },
+    {
+        method: 'POST',
+        path: '/display-list-search',
+        handler: listHandler.getDisplayHandlerWithSearch
     },
     {
         method: 'GET',

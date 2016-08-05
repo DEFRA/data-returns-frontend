@@ -28,5 +28,6 @@ module.exports = {
 
     CLIENT_FILENAME: newKey('SourceName'),
     ERROR_PAGE_METADATA: newKey('error-page-metadata'),
-    BACKEND_UPLOAD_RESULT: newKey('UploadResult')
+    BACKEND_UPLOAD_RESULT: newKey('UploadResult'),
+    LIST_METADATA: newKey('list-meta-data')
 };

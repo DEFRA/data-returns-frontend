@@ -42,13 +42,40 @@ module.exports = {
             reply.view('data-returns/display-list', {
                 listMetaData: metadata,
                 tableHeadings: header,
-                rows: data
+                rows: data,
+                clear: false
             });
         }).catch(errbit.notify);
     },
 
+    getDisplayHandlerWithSearch: function (request, reply) {
+        var list = request.query.list;
+        // if no search term pass control back to teh full list handler
+        if (request.payload.search === '') {
+            module.exports.getDisplayHandler(request, reply);
+        } else {
+            handler.getListMetaData().then(function (metadata) {
+                handler.getListProcessor(list, function (metadata, header, data) {
+                    console.log(`==> /display-list-search list=${list} search=${metadata.defaultSearch} for search=${request.payload.search}`);
+                    reply.view('data-returns/display-list', {
+                        listMetaData: metadata,
+                        tableHeadings: header,
+                        rows: data,
+                        clear: true
+                    });
+                }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
+                    throw err.message;
+                });
+            }).catch(function (err) {
+                var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
+                console.error(msg);
+            });
+        }
+    },
+
     /**
      * Serve list csv
+     *
      * @param request
      * @param reply
      */
