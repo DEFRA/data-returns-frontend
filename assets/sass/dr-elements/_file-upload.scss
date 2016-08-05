@@ -72,15 +72,16 @@
         font-weight: bold;
         max-width: 90%;
         text-transform: uppercase;
+        padding: 2px 4px 0;
+        @include border-radius(2px);
       }
       .file-ready {
         color: $green;
         border:1px solid $green;
-        padding: 2px 4px 0;
-        @include border-radius(2px);
       }
       .file-error {
         color: $red;
+        border:1px solid $red;
       }
     }
   	.action {
