@@ -124,7 +124,7 @@ module.exports = {
     arrayRPush: function (key, item) {
         return new Promise(function (resolve, reject) {
             let value = (typeof item === "string") ? item : JSON.stringify(item);
-            client.rpush(key, value, function (error, arrayLength) {
+            client.rpush(key, value, function (error) {
                 if (error) reject(error); else resolve(item);
                 setExpiry(key);
             });

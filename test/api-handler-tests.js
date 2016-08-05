@@ -10,7 +10,6 @@ var sessionID = 'testsession';
 var completionHandler = require('../app/api-handlers/completion-handler');
 var testFileKey;
 var testEmail = 'eanhathaway@gmail.com';
-var fileUploadHandler = require('../app/api-handlers/file-upload-handler');
 var controlledListsHandler = require('../app/api-handlers/controlled-lists');
 
 lab.experiment('error-handler.js library', function () {

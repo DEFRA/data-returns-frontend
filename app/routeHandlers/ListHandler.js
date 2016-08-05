@@ -66,10 +66,7 @@ module.exports = {
                 }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
                     throw err.message;
                 });
-            }).catch(function (err) {
-                var msg = new errBit.errBitMessage(err, __filename, 'getHandler()', err.stack);
-                console.error(msg);
-            });
+            }).catch(errbit.notify);
         }
     },
 
