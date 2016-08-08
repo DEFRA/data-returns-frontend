@@ -113,7 +113,7 @@ p + .help-notice {
 .img-responsive {
 	min-width:100%;
 	width: 100%;
-	    height: auto;
+	height: auto;
 }
 
 .panel-indent.error {
@@ -121,17 +121,18 @@ p + .help-notice {
 }
 
 .file-summary {
-	margin-top:0;
 	margin-bottom:30px;
-	p {
-		.name	{
-			font-weight: bold;
-		}
-	}
-	.title {
-		font-weight:600;
-		margin-bottom:0;
-	}
+  .file-name {
+   width:100%;
+   overflow:hidden;
+   text-overflow: ellipsis;
+  }
+  .site-name {
+    font-weight: 600;
+  }
+  ul {
+    margin: 0 0 30px 25px;
+  }
 }
 
 input.validation-code {
@@ -140,4 +141,4 @@ input.validation-code {
 
 .govuk-box-highlight {
   padding: 2em 0 3em 0;
-} 
+}

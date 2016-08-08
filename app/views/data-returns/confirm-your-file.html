@@ -11,26 +11,26 @@ Send your data returns online
 
     <p class="lede">The data returns files you’re going to send:</p>
 
-    {{#files}}
-    <div class="text panel panel-border-wide">
-        <div style="font-style: italic;">{{{name}}}</div style="font-st; text-decoration: underline;">
-        <dl>
+    <div class="text panel panel-border-wide file-summary">
+      {{#files}}
+        <div class="file-name">{{{name}}}</div>
+        <ul>
             {{#status.server.parseResult.mappings}}
-                <dt>
+                <li class="site-name">
                     {{#site}}
                         {{site}}
                     {{/site}}
                     {{^site}}
                         Not given
                     {{/site}}
-                </dt>
+                </li>
                 {{#identifiers}}
-                    <dd>{{identifier}}</dd>
+                <li class="ea-id">{{identifier}}</li>
                 {{/identifiers}}
             {{/status.server.parseResult.mappings}}
-        </dl>
+        </ul>
+      {{/files}}
     </div>
-    {{/files}}
 
     <p>Do you need to choose a different file? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can
         send the right file and details.</p>

@@ -2212,17 +2212,21 @@ p + .help-notice {
 }
 
 .file-summary {
-  margin-top: 0;
   margin-bottom: 30px;
 }
 
-.file-summary p .name {
-  font-weight: bold;
+.file-summary .file-name {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.file-summary .title {
+.file-summary .site-name {
   font-weight: 600;
-  margin-bottom: 0;
+}
+
+.file-summary ul {
+  margin: 0 0 30px 25px;
 }
 
 input.validation-code {
