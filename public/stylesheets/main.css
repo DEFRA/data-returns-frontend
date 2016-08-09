@@ -2266,12 +2266,32 @@ input.validation-code {
   vertical-align: top;
 }
 
+@media (max-width: 640px) {
+  .file-upload .uploader-container p.choose-file {
+    display: none;
+  }
+}
+
 .file-upload .upload-list {
   clear: both;
 }
 
-.file-upload .statusbar-header {
+.file-upload .statusbar.statusbar-header {
   font-weight: 600;
+}
+
+.file-upload .statusbar.statusbar-header .status, .file-upload .statusbar.statusbar-header .details, .file-upload .statusbar.statusbar-header .remove {
+  padding: 0;
+  vertical-align: middle;
+}
+
+@media (max-width: 640px) {
+  .file-upload .statusbar.statusbar-header::after {
+    content: "Your files";
+  }
+  .file-upload .statusbar.statusbar-header .filename {
+    display: none;
+  }
 }
 
 .file-upload .statusbar {
@@ -2288,6 +2308,17 @@ input.validation-code {
   margin: 5px 0;
   padding: 5px 0 3px;
   vertical-align: top;
+}
+
+@media (max-width: 640px) {
+  .file-upload .statusbar .details {
+    display: inline-block;
+    width: 50%;
+  }
+  .file-upload .statusbar .remove {
+    display: inline-block;
+    width: 50%;
+  }
 }
 
 @media (min-width: 641px) {
@@ -2310,7 +2341,7 @@ input.validation-code {
   }
 }
 
-.file-upload .statusbar .status .file-error, .file-upload .statusbar .status .file-ready {
+.file-upload .status .file-error, .file-upload .status .file-ready {
   display: inline-block;
   font-size: 14px;
   font-weight: bold;
@@ -2322,27 +2353,33 @@ input.validation-code {
   border-radius: 2px;
 }
 
-.file-upload .statusbar .status .file-ready {
+.file-upload .status .file-ready {
   color: #006435;
   border: 1px solid #006435;
 }
 
-.file-upload .statusbar .status .file-error {
+.file-upload .status .file-error {
   color: #b10e1e;
   border: 1px solid #b10e1e;
 }
 
-.file-upload .statusbar .action {
+@media (max-width: 640px) {
+  .file-upload .statusbar {
+    padding: 10px 0;
+  }
+}
+
+.file-upload .action {
   width: 60%;
   display: inline-block;
 }
 
-.file-upload .statusbar .remove {
+.file-upload .remove {
   text-align: right;
   display: inline-block;
 }
 
-.file-upload .statusbar .remove .link {
+.file-upload .remove .link {
   font-size: 16px;
   background: transparent none repeat scroll 0 0;
   border: 0;
@@ -2350,7 +2387,7 @@ input.validation-code {
   line-height: 1;
 }
 
-.file-upload .statusbar .remove .link:hover {
+.file-upload .remove .link:hover {
   cursor: pointer;
 }
 

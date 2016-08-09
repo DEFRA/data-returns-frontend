@@ -36,7 +36,7 @@ Send your data returns online
 
       <div id="upload-list" class="upload-list">
         <div class="statusbar statusbar-header">
-          <div class="filename">Name of data file to be checked</div><div class="status">Status</div><div class="details"></div>
+          <div class="filename">File name</div><div class="status visually-hidden">Status</div><div class="details visually-hidden">Action</div><div class="remove visually-hidden">Remove</div>
         </div>
 
         {{#files}}
@@ -65,7 +65,6 @@ Send your data returns online
     <div class="drag-drop-indicator">
         <div class="drag-drop-message">Drop your files here</div>
     </div>
-
     <p>
         <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;"{{/hasInvalidUploads}}>
             A file you uploaded contains errors that must be corrected before you can continue.
