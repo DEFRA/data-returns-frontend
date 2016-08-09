@@ -2310,6 +2310,11 @@ input.validation-code {
   vertical-align: top;
 }
 
+.file-upload .statusbar .filename {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 640px) {
   .file-upload .statusbar .details {
     display: inline-block;
@@ -2327,8 +2332,6 @@ input.validation-code {
   }
   .file-upload .statusbar .filename {
     width: 35%;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .file-upload .statusbar .status {
     width: 35%;

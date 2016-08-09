@@ -64,6 +64,10 @@
   		padding: 5px 0 3px;
   		vertical-align: top;
   	}
+		.filename {
+			overflow:hidden;
+			text-overflow: ellipsis;
+		}
   	@include media(mobile) {
 			.details {
 				display:inline-block;
@@ -80,8 +84,6 @@
   		}
   		.filename {
   		 width:35%;
-       overflow:hidden;
-       text-overflow: ellipsis;
   		}
   		.status {
   		 width:35%;
