@@ -24,13 +24,33 @@
 	    margin-top: 5px;
 	    vertical-align: top;
 		}
+  	@include media(mobile) {
+			p.choose-file {
+		    display:none;
+			}
+		}
   }
   .upload-list {
     clear:both;
   }
-  .statusbar-header {
+  .statusbar.statusbar-header {
   	font-weight:600;
+		.status, .details, .remove  {
+  		padding: 0;
+  		vertical-align: middle;
+  	}
   }
+
+	@include media(mobile) {
+  	.statusbar.statusbar-header::after {
+			content:"Your files";
+		}
+  	.statusbar.statusbar-header {
+			.filename {
+				display:none;
+			}
+		}
+	}
   .statusbar {
   	border-top: none;
   	border-bottom:1px solid #BFC1C3;
@@ -44,14 +64,26 @@
   		padding: 5px 0 3px;
   		vertical-align: top;
   	}
+		.filename {
+			overflow:hidden;
+			text-overflow: ellipsis;
+		}
+  	@include media(mobile) {
+			.details {
+				display:inline-block;
+				width:50%;
+			}
+			.remove {
+				display:inline-block;
+				width:50%;
+			}
+		}
   	@include media(tablet) {
   		.filename, .status, .details, .remove  {
   			display: inline-block;
   		}
   		.filename {
   		 width:35%;
-       overflow:hidden;
-       text-overflow: ellipsis;
   		}
   		.status {
   		 width:35%;
@@ -64,43 +96,46 @@
   		}
   	}
   }
-  .statusbar {
-    .status {
-      .file-error, .file-ready {
-        display: inline-block;
-        font-size: 14px;
-        font-weight: bold;
-        max-width: 90%;
-        text-transform: uppercase;
-        padding: 2px 4px 0;
-        @include border-radius(2px);
-      }
-      .file-ready {
-        color: $green;
-        border:1px solid $green;
-      }
-      .file-error {
-        color: $red;
-        border:1px solid $red;
-      }
+  .status {
+    .file-error, .file-ready {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: bold;
+      max-width: 90%;
+      text-transform: uppercase;
+      padding: 2px 4px 0;
+      @include border-radius(2px);
     }
-  	.action {
-  	 width:60%;
-  	 display: inline-block;
-  	}
-  	.remove {
-  		text-align:right;
-  		display: inline-block;
-      .link {
-        font-size: 16px;
-        background: transparent none repeat scroll 0 0;
-        border:0;
-        padding:0;
-        line-height: 1;
-      }
-      .link:hover {
-        cursor: pointer;
-      }
+    .file-ready {
+      color: $green;
+      border:1px solid $green;
+    }
+    .file-error {
+      color: $red;
+      border:1px solid $red;
+    }
+  }
+	@include media(mobile) {
+		.statusbar {
+			padding:10px 0;
+		}
+	}
+	.action {
+	 width:60%;
+	 display: inline-block;
+	}
+	.remove {
+		text-align:right;
+		display: inline-block;
+    .link {
+      font-size: 16px;
+      background: transparent none repeat scroll 0 0;
+      border:0;
+      padding:0;
+      line-height: 1;
+    }
+    .link:hover {
+      cursor: pointer;
     }
   }
 }

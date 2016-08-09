@@ -10,10 +10,13 @@ Send your data returns online
     {{{feedbackbanner}}}
 
     <h1 class="heading-large">You can't send this file</h1>
-
     <div class="error-summary" role="group" aria-labelledby="make-corrections" tabindex="-1">
         {{{correctionsData.errorSummary}}}
     </div>
+
+    <p class="back">
+      <a id="back.btn" href="/file/choose" class="button">Back to file list</a>
+    </p>
 
     <table id="errorTableHeader" class="error-table">
         <thead>
@@ -45,9 +48,6 @@ Send your data returns online
         {{/correctionsData.lineErrors}}
         </tbody>
     </table>
-
-    <div class="text"><p>You must correct any errors before this file can be sent to the Environment Agency.</p></div>
-    <a id="back.btn" href="/file/choose" class="button">Back to file list</a>
 </main>
 {{/content}}
 {{/layout}}
