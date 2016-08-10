@@ -29,12 +29,12 @@ Send your data returns online
         </thead>
         <tbody>
         {{#correctionsData.lineErrors}}
-        <tr>
+        <tr id="ERR_{{errorCode}}">
             <td>
                 <abbr title="{{definition}}">{{columnName}}</abbr>
                 <hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden>
             </td>
-            <td title="Error Code:{{errorCode}}">{{errorType}}</td>
+            <td title="Error Code: {{errorCode}}">{{errorType}}</td>
             <td>
                 {{{errorMessage}}}
                 <p>
