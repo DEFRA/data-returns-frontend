@@ -2,6 +2,7 @@
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
 const errbit = require("./app/lib/errbit-handler");
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -27,9 +28,13 @@ try {
     throw err;
 }
 
-// Remove existing upload dir
+// Remove and recreate upload dir
 console.log(`Removing old upload folder ${config.upload.path}`);
-rimraf(config.upload.path, function() {});
+rimraf(config.upload.path, function() {
+    mkdirp(config.upload.path, function(err) {
+       console.log(err);
+    });
+});
 
 server.connection({
     "host": '0.0.0.0',
