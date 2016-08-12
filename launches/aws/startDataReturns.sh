@@ -4,4 +4,4 @@ pm2 stop all
 npm prune
 npm install
 npm update
-pm2 start startserver.sh
+pm2 start data-returns.sh
