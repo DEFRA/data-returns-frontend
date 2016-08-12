@@ -28,7 +28,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
             timeout: 60000, //ms 60 seconds
             headers: {
                 'Authorization': crypto.calculateAuthorizationHeader(filePath),
-                'filename': originalFileName
+                'filename': filePath
             },
             formData: {
                 fileUpload: {
