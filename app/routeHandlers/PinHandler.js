@@ -14,7 +14,7 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
 
         userHandler.getUserMail(sessionID)
             .then(function (emailAddress) {
@@ -36,10 +36,8 @@ module.exports = {
      * @param {type} reply
      * @returns {undefined}
      */
-
     postHandler: function (request, reply) {
-
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         var userPin = request.payload['validation_code'].toString().trim();
         userPin = userPin ? parseInt(userPin) : 0;
         pinHandler.validatePin(sessionID, userPin)

@@ -1,6 +1,7 @@
 "use strict";
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
+const rimraf = require('rimraf');
 const errbit = require("./app/lib/errbit-handler");
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -25,6 +26,10 @@ try {
     console.log('Cryptography support is disabled!');
     throw err;
 }
+
+// Remove existing upload dir
+console.log(`Removing old upload folder ${config.upload.path}`);
+rimraf(config.upload.path, function() {});
 
 server.connection({
     "host": '0.0.0.0',

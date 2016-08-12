@@ -1,7 +1,10 @@
+"use strict";
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('./cache-handler');
+const redisKeys = require('./redis-keys');
 var utils = require('./utils');
 const errbit = require("./errbit-handler");
+const DATA_RETURNS_COOKIE_ID = "data-returns-id";
 
 /*
  * Saves a user object JSON to Redis
@@ -9,11 +12,10 @@ const errbit = require("./errbit-handler");
  * @param user the JSON object representing a user object
  */
 var setUser = function (sessionID, user) {
-
     return new Promise(function (resolve, reject) {
         user.last_updated = new Date().toUTCString();
 
-        cacheHandler.setValue(sessionID, user)
+        cacheHandler.setValue(redisKeys.USER_DATA.compositeKey(sessionID), user)
             .then(function (result) {
                 resolve(result);
             })
@@ -28,32 +30,14 @@ var setUser = function (sessionID, user) {
  * @param sessionID used as the key
  */
 var getUser = function (sessionID) {
-
     return new Promise(function (resolve, reject) {
-        cacheHandler.getValue(sessionID)
-            .then(function (result) {
-
-                result = JSON.parse(result) || null;
-                resolve(result);
-
-            })
+        cacheHandler.getJsonValue(redisKeys.USER_DATA.compositeKey(sessionID))
+            .then(resolve)
             .catch(function (err) {
                 errbit.notify(err);
-                reject('errResult');
+                reject(err);
             });
     });
-};
-
-module.exports.doesExists = function (sessionID) {
-    console.log('==> userHandler doesExist()');
-    getUser(sessionID)
-        .then(function (result) {
-            return (result !== null) ? true : false;
-        })
-        .catch(function (err) {
-            errbit.notify(err);
-            return false;
-        });
 };
 
 module.exports.getUserMail = function (sessionID) {
@@ -77,19 +61,15 @@ module.exports.isAuthenticated = function (sessionID) {
     return new Promise(function (resolve, reject) {
         getUser(sessionID)
             .then(function (user) {
-                var autenticated = true;
+                var authenticated = false;
 
-                if (user === null) {
-                    autenticated = false;
-                } else {
-
+                if (user !== null) {
                     // Pin validation
-                    if (user.authenticated !== true) {
-                        autenticated = false;
-                    }
+                    authenticated = user.authenticated === true;
+
                     // Max no of uses per pin
                     if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
-                        autenticated = false;
+                        authenticated = false;
                     }
                     // Is the pin in date
                     if (user.pinCreationTime) {
@@ -98,13 +78,12 @@ module.exports.isAuthenticated = function (sessionID) {
                         var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
                         if (mins > config.pin.ValidTimePeriodMinutes) {
-                            autenticated = false;
+                            authenticated = false;
                         }
                     }
                 }
 
-                resolve(autenticated);
-
+                resolve(authenticated);
             })
             .catch(function (err) {
                 reject(err);
@@ -131,10 +110,36 @@ module.exports.incrementUploadCount = function (sessionID) {
         });
 };
 
-module.exports.getNewUserID = function () {
-    var ret = utils.getNewUUID();
-    return ret;//'id' + ret.replace(/"/g, "");
+module.exports.getSessionID = function(request) {
+    return request.state[DATA_RETURNS_COOKIE_ID];
+};
+module.exports.deleteSession = function(request, reply) {
+    // Cleanup current session
+    let currentSessionId = this.getSessionID(request, reply);
+    let keyPattern = `${currentSessionId}*`;
+    console.log(`Removing redis keys for pattern ${keyPattern}`);
+    cacheHandler.deleteKeys(keyPattern);
+    reply.unstate(DATA_RETURNS_COOKIE_ID);
 };
 
+module.exports.newUserSession = function(request, reply) {
+    // Cleanup current session
+    this.deleteSession(request, reply);
+
+    // Generate new session
+    let newSessionId = utils.getNewUUID();
+    var cookieOptions = {
+        "path": '/',
+        "ttl": 24 * 60 * 60 * 1000,
+        //"ttl": null,
+        "isSecure": false,
+        "isHttpOnly": true,
+        "encoding": "none", //base64json',
+        "ignoreErrors": false,
+        "clearInvalid": false,
+        "strictHeader": true
+    };
+    reply.state(DATA_RETURNS_COOKIE_ID, newSessionId, cookieOptions);
+};
 module.exports.getUser = getUser;
 module.exports.setUser = setUser;

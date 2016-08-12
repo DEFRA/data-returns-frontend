@@ -1,6 +1,5 @@
 'use strict';
 var fs = require('fs');
-var cacheHandler = require('./cache-handler');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
@@ -46,29 +45,6 @@ module.exports = {
             });
         });
     },
-    /**
-     * Returns the best possible message text for an error object returned by
-     * one of the library modules in this project.  This message is intended
-     * for a log only; not for display to the user.
-     * @param errorData Error information returned by one of the methods in
-     *   a library module from this project.
-     * @returns {string} A string describing the error.
-     */
-    getBestLogMessageFromError: function (errorData) {
-        var msg = '"errorData" object was null; no details available.';
-        if (errorData !== null) {
-            if ('err' in errorData) {
-                msg = errorData.err.toString();
-            } else if ('message' in errorData) {
-                msg = errorData.message.toString();
-            } else if (('apiErrors' in errorData) && (errorData.apiErrors.length > 0)) {
-                if ('reason' in errorData.apiErrors[0]) {
-                    msg = errorData.apiErrors[0].reason;
-                }
-            }
-        }
-        return msg;
-    },
     /*
      * Calculates the number of minutes between 2 dates
      * @param {Date} startDate
@@ -84,7 +60,7 @@ module.exports = {
      * @param {type} date
      * @returns String representing a formatted date with leading zero's date i.e. 01-01-2000
      */
-    getFormatedDate: function (date) {
+    getFormattedDate: function (date) {
 
         var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
         var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
@@ -97,32 +73,11 @@ module.exports = {
      * @param {type} date
      * @returns String representing a date formatted with leading zero's
      */
-    getFormatedTime: function (date) {
+    getFormattedTime: function (date) {
         var hr = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
         var min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
         var sep = ':';
         return hr + sep + min;
-    },
-    /*
-     * deletes a file using a promise
-     * @param sessionID the session id associated with this call
-     * resolves true if the file is deleted
-     */
-    deleteFile: function (sessionID) {
-        return new Promise(function (resolve, reject) {
-            var key = sessionID + '_FilePath';
-            cacheHandler.getValue(key)
-                .then(function (filePath) {
-                    filePath = filePath ? filePath.replace(/"/g, '') : '';
-                    fs.unlink(filePath, function (err) {
-                        if (err === null) {
-                            resolve(true);
-                        } else {
-                            reject(err);
-                        }
-                    });
-                });
-        });
     },
     /*
      * Sorts an array of JSON objects based on a property in the objects
@@ -176,16 +131,10 @@ module.exports = {
             callback(e);
         }
     },
-    base64Decode: function (encodedInput) {
-        //var ret = new Buffer(encodedInput, 'base64').toString('ascii');
-        return encodedInput;// ret.replace(/"/g, "");
-    },
     /*
      * generate a uuid
      */
-    getNewUUID: function () {
-        return uuid.v4();
-    },
+    getNewUUID: uuid.v4,
     /*
      * returns a list of files for a single directory name
      * @param dir the directory to scan for files.
@@ -214,10 +163,6 @@ module.exports = {
         input = input.toLowerCase();
         var ret = input.charAt(0).toUpperCase() + Array.prototype.slice.call(input, 1).join('');
         return ret;
-    },
-    makeValidMapKey: function (input) {
-        //remove non alphanumeric chars
-        return input.replace(/[\W_-]/g, '');
     }
 };
 

@@ -1,6 +1,5 @@
 "use strict";
 var csvValidator = require('../lib/csv-validator');
-var path = require('path');
 var fs = require('fs');
 var uuidGen = require('node-uuid');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -49,7 +48,7 @@ function extractUploadDetails(request, fileUpload) {
         "id": request.payload.qquuid || uuidGen.v4(),
         "clientFilename": fileUpload.filename,
         "localFilename": fileUpload.path,
-        "sessionID": request.state['data-returns-id'] ? utils.base64Decode(request.state['data-returns-id']) : userHandler.getNewUserID()
+        "sessionID": userHandler.getSessionID(request)
     };
 }
 
@@ -62,106 +61,113 @@ function extractUploadDetails(request, fileUpload) {
  */
 function handleUploadedFile(reqInfo) {
     return new Promise(function (resolve, reject) {
-        var newLocalPath = reqInfo.localFilename.concat(path.extname(reqInfo.clientFilename));
         var fileSize = fs.statSync(reqInfo.localFilename).size;
         metricsHandler.setFileSizeHighWaterMark(fileSize);
         console.log('==> ChooseFileHandler: Processing new uploaded file: ' + reqInfo.clientFilename);
-        utils.renameFile(reqInfo.localFilename, newLocalPath)
-            .then(csvValidator.validateFile)
-            .then(function () {
-                return fileUploadHandler.uploadFileToService(newLocalPath, reqInfo.sessionID, reqInfo.id, reqInfo.clientFilename);
-            })
-            .then(function (fileStatus) {
-                var fileData = {
-                    "id": reqInfo.id,
-                    "sid": fileStatus.uploadResult.fileKey,
-                    "name": fileStatus.originalFileName,
-                    "status": {
-                        "state": "ready",
-                        "description": "Ready to send",
-                        "server": fileStatus
-                    }
-                };
-                return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
-            }).then(function(fileData) {
-                resolve({"success": true, "details": fileData});
-            }).catch(function (errorData) {
-                if (errorData === null || !('isUserError' in errorData) || !errorData.isUserError) {
-                    errbit.notify(errorData);
-                    reject({
-                        "success": false,
-                        "preventRetry": false,
-                        "errorType": "unexpected",
-                        "details": {
-                            "id": reqInfo.id,
-                            "name": reqInfo.clientFilename,
-                            "status": {
-                                "state": "error",
-                                "errorCode": 3000,
-                                "description": errorDescs.getDescription(3000)
-                            }
-                        }
-                    });
-                } else {
-                    console.log("Validation errors found " + reqInfo.clientFilename);
-                    // Handle expected errors...
-                    var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0;
-                    var links = helpLinks.links;
-                    var errorCode = errorData.errorCode;
-
-                    if (!isLineErrors) {
-                        links.errorCode = 'DR' + utils.pad(errorCode, 4);
-                    }
-
-                    links.mailto = config.feedback.mailto;
-
-                    var metadata = {
-                        uploadError: true,
-                        errorSummary: isLineErrors ? errorData.errorSummary : errorHandler.render(errorCode, links, errorData.defaultErrorMessage),
-                        fileName: reqInfo.clientFilename,
-                        lineErrors: errorData.lineErrors,
-                        isLineErrors: errorData.lineErrors ? true : false,
-                        HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
-                        errorCode: 'DR' + utils.pad(errorCode, 4),
-                        mailto: config.feedback.mailto
-                    };
-
-                    var fileData = {
+        csvValidator.validateFile(reqInfo.localFilename, fileSize).then(function () {
+            return fileUploadHandler.uploadFileToService(reqInfo.localFilename, reqInfo.sessionID, reqInfo.id, reqInfo.clientFilename);
+        }).then(function (fileStatus) {
+            var fileData = {
+                "id": reqInfo.id,
+                "sid": fileStatus.uploadResult.fileKey,
+                "name": fileStatus.originalFileName,
+                "status": {
+                    "state": "ready",
+                    "description": "Ready to send",
+                    "server": fileStatus
+                }
+            };
+            return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+        }).then(function (fileData) {
+            resolve({"success": true, "details": fileData});
+        }).catch(function (errorData) {
+            if (errorData === null || !('isUserError' in errorData) || !errorData.isUserError) {
+                errbit.notify(errorData);
+                reject({
+                    "success": false,
+                    "preventRetry": false,
+                    "errorType": "unexpected",
+                    "details": {
                         "id": reqInfo.id,
-                        "sid": null,
                         "name": reqInfo.clientFilename,
                         "status": {
                             "state": "error",
-                            "errorCode": errorData.errorCode,
-                            "moreDetailsUrl": "data-returns/failure?uuid=" + reqInfo.id,
-                            "description": errorDescs.getDescription(errorData.errorCode)
-                        },
-                        "correctionsData": metadata
-                    };
-
-                    var errorType;
-                    if (isLineErrors) {
-                        errorType = "content";
-                        fileData.status.moreDetailsUrl = "/correction/table?uuid=" + reqInfo.id;
-                    } else {
-                        errorType = "file";
-                        fileData.status.moreDetailsUrl = "/file/invalid?uuid=" + reqInfo.id;
+                            "errorCode": 3000,
+                            "description": errorDescs.getDescription(3000)
+                        }
                     }
+                });
+            } else {
+                console.log("Validation errors found " + reqInfo.clientFilename);
+                // Handle expected errors...
+                var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0;
+                var links = helpLinks.links;
+                var errorCode = errorData.errorCode;
 
-                    cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([reqInfo.sessionID, reqInfo.id]), fileData).then(function () {
-                        console.log("Pushing status for " + reqInfo.clientFilename);
+                if (!isLineErrors) {
+                    links.errorCode = 'DR' + utils.pad(errorCode, 4);
+                }
 
-                        cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
-                        resolve({
-                            "success": false,
-                            "preventRetry": true,
-                            "errorType": errorType,
-                            "metadata": metadata,
-                            "details": fileData
-                        });
+                links.mailto = config.feedback.mailto;
+
+                var metadata = {
+                    uploadError: true,
+                    errorSummary: isLineErrors ? errorData.errorSummary : errorHandler.render(errorCode, links, errorData.defaultErrorMessage),
+                    fileName: reqInfo.clientFilename,
+                    lineErrors: errorData.lineErrors,
+                    isLineErrors: errorData.lineErrors ? true : false,
+                    HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
+                    errorCode: 'DR' + utils.pad(errorCode, 4),
+                    mailto: config.feedback.mailto
+                };
+
+                var fileData = {
+                    "id": reqInfo.id,
+                    "sid": null,
+                    "name": reqInfo.clientFilename,
+                    "status": {
+                        "state": "error",
+                        "errorCode": errorData.errorCode,
+                        "moreDetailsUrl": "data-returns/failure?uuid=" + reqInfo.id,
+                        "description": errorDescs.getDescription(errorData.errorCode)
+                    },
+                    "correctionsData": metadata
+                };
+
+                var errorType;
+                if (isLineErrors) {
+                    errorType = "content";
+                    fileData.status.moreDetailsUrl = "/correction/table?uuid=" + reqInfo.id;
+                } else {
+                    errorType = "file";
+                    fileData.status.moreDetailsUrl = "/file/invalid?uuid=" + reqInfo.id;
+                }
+
+                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([reqInfo.sessionID, reqInfo.id]), fileData).then(function () {
+                    console.log("Pushing status for " + reqInfo.clientFilename);
+
+                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+                    resolve({
+                        "success": false,
+                        "preventRetry": true,
+                        "errorType": errorType,
+                        "metadata": metadata,
+                        "details": fileData
                     });
+                });
+            }
+        }).then(function () {
+            // Finally delete the uploaded file
+            // We can delete it here because any valid file will be stored on the backend API and we don't care about
+            // invalid files
+            console.log(`Removing uploaded file ${reqInfo.localFilename}`);
+            fs.unlink(reqInfo.localFilename, function (err) {
+                if (err !== null) {
+                    errbit.notify(err);
+                    console.error(`Unable to delete uploaded file ${reqInfo.localFilename}, reason: ${err.message}`);
                 }
             });
+        });
     });
 }
 
@@ -202,7 +208,7 @@ function removeUpload(sessionID, uuid) {
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    let sessionID = utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = userHandler.getSessionID(request);
     let loadPageCallback = function (status) {
         reply.view('data-returns/choose-your-file', status);
     };
@@ -220,12 +226,12 @@ module.exports.getHandler = function (request, reply) {
  *  @Param reply
  */
 module.exports.postHandler = function (request, reply) {
-    let sessionID = utils.base64Decode(request.state['data-returns-id']);
+    let sessionID = userHandler.getSessionID(request);
 
     if (request.payload.action === "remove") {
-        removeUpload(sessionID, request.payload.uuid).then(function() {
+        removeUpload(sessionID, request.payload.uuid).then(function () {
             reply.redirect('/file/choose').rewritable(true);
-        }).catch(function() {
+        }).catch(function () {
             reply.redirect('data-returns/failure');
         });
     } else if (request.query.fineuploader === 'true') {

@@ -17,17 +17,8 @@ module.exports = {
      * get handler for '/start' route
      */
     getHandler: function (request, reply) {
-        var cookieOptions = {
-            "path": '/',
-            "ttl": 24 * 60 * 60 * 1000,
-            //"ttl": null,
-            "isSecure": false,
-            "isHttpOnly": true,
-            "encoding": "none", //base64json',
-            "ignoreErrors": false,
-            "clearInvalid": false,
-            "strictHeader": true
-        };
+        // Generate a new session
+        userHandler.newUserSession(request, reply);
 
         reply.view('data-returns/start', {
             HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
@@ -36,6 +27,6 @@ module.exports = {
             ScottishLink: helpLinks.links.ScottishLink,
             WelshLink: helpLinks.links.WelshLink,
             NorthernIrelandLink: helpLinks.links.NorthernIrelandLink
-        }).unstate('data-returns-id').state('data-returns-id', userHandler.getNewUserID(), cookieOptions);
+        });
     }
 };

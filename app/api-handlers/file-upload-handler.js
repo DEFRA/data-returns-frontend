@@ -28,10 +28,15 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
             timeout: 60000, //ms 60 seconds
             headers: {
                 'Authorization': crypto.calculateAuthorizationHeader(filePath),
-                'filename': filePath
+                'filename': originalFileName
             },
             formData: {
-                fileUpload: fs.createReadStream(filePath)
+                fileUpload: {
+                    value: fs.createReadStream(filePath),
+                    options: {
+                        filename: originalFileName
+                    }
+                }
             }
         };
 

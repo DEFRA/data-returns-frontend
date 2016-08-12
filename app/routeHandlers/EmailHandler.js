@@ -2,7 +2,6 @@ var smtpHandler = require('../lib/smtp-handler');
 var pinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
 var cacheHandler = require('../lib/cache-handler');
-var utils = require('../lib/utils');
 var errorHandler = require('../lib/error-handler');
 const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
@@ -15,8 +14,7 @@ module.exports = {
      * @returns {undefined}
      */
     getHandler: function (request, reply) {
-
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
 
         userHandler.isAuthenticated(sessionID)
             .then(function (result) {
@@ -58,7 +56,7 @@ module.exports = {
     postHandler: function (request, reply) {
         /* get the users email address */
         var usermail = request.payload['user_email'];
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         usermail = usermail.trim();
         /* Validate the email address */
         smtpHandler.validateEmailAddress(usermail)

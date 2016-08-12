@@ -81,6 +81,53 @@ module.exports = {
             }
         });
     },
+    /**
+     * Retrieve all redis keys that match a given pattern
+     *
+     * @param pattern
+     * @returns {Promise}
+     */
+    findKeys: function (pattern) {
+        return new Promise(function (resolve, reject) {
+            client.keys(pattern, function (err, keys) {
+                console.log(`Looked up ${keys.length} keys for pattern ${pattern}`);
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(keys);
+                }
+            });
+        });
+    },
+    /**
+     * Delete all redis keys which match the given pattern
+     *
+     * @param pattern
+     * @returns {Promise}
+     */
+    deleteKeys: function (pattern) {
+        this.findKeys(pattern).then(function (keys) {
+            console.log(`Found ${keys.length} keys to remove for pattern ${pattern}`);
+            if (keys.length > 0) {
+                client.del(keys, function (err) {
+                    if (err) {
+                        console.log("Failed to delete keys");
+                    } else {
+                        console.log("Successfully deleted keys");
+                    }
+                });
+            }
+        });
+    },
+    /**
+     * Retrieve a JSON object for the specified key
+     *
+     * @param key
+     * @returns {*}
+     */
+    getJsonValue: function (key) {
+        return this.getValue(key).then(JSON.parse);
+    },
     /*
      * Persists a new value for a given key
      * (no expiry)

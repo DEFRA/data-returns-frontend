@@ -1,7 +1,6 @@
 "use strict";
 var userHandler = require('../lib/user-handler');
 var completionHandler = require('../api-handlers/completion-handler');
-var utils = require('../lib/utils.js');
 var cacheHandler = require('../lib/cache-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var redisKeys = require('../lib/redis-keys');
@@ -17,7 +16,7 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
         cacheHandler.arrayGet(key).then(function(uploads) {
             reply.view('data-returns/send-your-file', {"files":  uploads});
@@ -34,7 +33,7 @@ module.exports = {
      *
      */
     postHandler: function (request, reply) {
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
         var exceptionHandler = function() {
@@ -53,17 +52,10 @@ module.exports = {
                             "files": uploads
                         };
 
-                        // TODO: SESSION CLEANUP NEEDS TO BE BETTER THAN THIS!
                         smtpHandler.sendConfirmationEmail(metadata).then(function () {
                             // Increment the count of uploads using the current pin number
                             // TODO: This does not take multiple uploads into account - not sure if it really should?
                             userHandler.incrementUploadCount(sessionID);
-                        }).then(function () {
-                            // delete the file uploaded
-                            utils.deleteFile(sessionID);
-                        }).then(function () {
-                            //delete the upload results
-                            cacheHandler.delete(redisKeys.BACKEND_UPLOAD_RESULT.compositeKey(sessionID));
                         }).then(function () {
                             reply.redirect('/file/sent').rewritable(true);
                         });

@@ -1,6 +1,6 @@
 "use strict";
 var cacheHandler = require('../lib/cache-handler');
-var utils = require('../lib/utils');
+var userHandler = require('../lib/user-handler');
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
      * http GET handler for /correction/table
      */
     getHandler: function (request, reply) {
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         var fileUuid = request.query.uuid;
         console.log(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
         if (fileUuid) {

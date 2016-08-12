@@ -1,6 +1,6 @@
 "use strict";
 var cacheHandler = require('../lib/cache-handler');
-var utils = require('../lib/utils');
+var userHandler = require('../lib/user-handler');
 var redisKeys = require('../lib/redis-keys');
 
 /*
@@ -9,7 +9,7 @@ var redisKeys = require('../lib/redis-keys');
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    var sessionID = utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = userHandler.getSessionID(request);
     if (request.query.uuid) {
         console.log(`Retrieve validation errors for session ${sessionID} with uuid ${request.query.uuid}`);
         var key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, request.query.uuid]);

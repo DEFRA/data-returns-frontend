@@ -1,6 +1,6 @@
 "use strict";
-var utils = require('../lib/utils');
 var cacheHandler = require('../lib/cache-handler');
+var userHandler = require('../lib/user-handler');
 var HelpLinks = require('../config/dep-help-links');
 var redisKeys = require('../lib/redis-keys');
 
@@ -11,7 +11,7 @@ module.exports = {
      * @param reply
      */
     getHandler: function (request, reply) {
-        var sessionID = utils.base64Decode(request.state['data-returns-id']);
+        var sessionID = userHandler.getSessionID(request);
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
         cacheHandler.arrayGet(key).then(function(uploads) {

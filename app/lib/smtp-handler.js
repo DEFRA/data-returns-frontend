@@ -250,8 +250,8 @@ var sendConfirmationEmail = function (metadata) {
     return new Promise(function (resolve, reject) {
         console.log('==> sendConfirmationEmail() ');
         var date = new Date();
-        var displayDate = utils.getFormatedDate(date);
-        var time = utils.getFormatedTime(date);
+        var displayDate = utils.getFormattedDate(date);
+        var time = utils.getFormattedTime(date);
         var templatedata = {
             DATE: displayDate,
             TIME: time,

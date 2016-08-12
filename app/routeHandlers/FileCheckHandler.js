@@ -1,5 +1,4 @@
 var userHandler = require('../lib/user-handler');
-var utils = require('../lib/utils');
 const errbit = require("../lib/errbit-handler");
 /*
  * HTTP GET handler for gets for /file/check
@@ -7,7 +6,7 @@ const errbit = require("../lib/errbit-handler");
  * @param {type} reply
  */
 module.exports.getHandler = function (request, reply) {
-    var sessionID = utils.base64Decode(request.state['data-returns-id']);
+    var sessionID = userHandler.getSessionID(request);
     userHandler.isAuthenticated(sessionID)
         .then(function (result) {
             if (result === true) {

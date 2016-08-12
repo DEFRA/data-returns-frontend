@@ -1,6 +1,6 @@
 "use strict";
 var cacheHandler = require('../lib/cache-handler');
-var utils = require('../lib/utils');
+var userHandler = require('../lib/user-handler');
 var detailsHandler = require('../api-handlers/multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
 const errbit = require("../lib/errbit-handler");
@@ -11,7 +11,7 @@ module.exports = {
      * HTTP GET Handler for /correction/detail route
      */
     getHandler: function (request, reply) {
-        let sessionID = utils.base64Decode(request.state['data-returns-id']);
+        let sessionID = userHandler.getSessionID(request);
         var fileUuid = request.query.uuid;
         let errorID = request.query.id;
 
