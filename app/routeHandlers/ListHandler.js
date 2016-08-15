@@ -43,7 +43,8 @@ module.exports = {
                 listMetaData: metadata,
                 tableHeadings: header,
                 rows: data,
-                clear: false
+                clear: false,
+                back: request.info.referrer
             });
         }).catch(errbit.notify);
     },
@@ -61,7 +62,8 @@ module.exports = {
                         listMetaData: metadata,
                         tableHeadings: header,
                         rows: data,
-                        clear: true
+                        clear: true,
+                        back: request.info.referrer
                     });
                 }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
                     throw err.message;
