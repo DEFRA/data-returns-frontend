@@ -52,6 +52,7 @@ config.API = {};
 config.API.endpoints = {
     'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
     'FILEUPLOADCOMPLETE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
+    'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/controlled-list',
     'ERRORCHECKING': 'error_checking',
     'ERRORSENDING': 'error_sending'
 };
