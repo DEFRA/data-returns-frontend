@@ -40,20 +40,24 @@ module.exports.isInfected = function (filePath) {
 
                 if (err) {
                     console.log(err);
-                    reject(false);
+                    if (config.CSV.ignoreScanFailure) {
+                        return resolve(false);
+                    } else {
+                        return reject(false);
+                    }
                 }
 
                 console.log('<== av scanning complete, infected: ' + is_infected);
 
                 if (is_infected === true) {
-                    reject(true);
+                    return reject(true);
                 } else if (is_infected === false) {
-                    resolve(false);
+                    return resolve(false);
                 }
 
             });
         } else {
-            resolve(false);
+            return resolve(false);
         }
     });
 };
