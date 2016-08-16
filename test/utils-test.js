@@ -11,7 +11,7 @@ var utils = require('../app/lib/utils');
 //var filenames = utils.getFileListInDir(templateDir);
 
 
-lab.experiment('error-handler.js library', function () {
+lab.experiment('utils-test.js library', function () {
     lab.test('Test that error messages can be rendered ', function (done) {
         var filenames = utils.getFileListInDir(templateDir);
 

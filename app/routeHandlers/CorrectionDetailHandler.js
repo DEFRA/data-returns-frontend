@@ -21,11 +21,10 @@ module.exports = {
             const detailsKey = redisKeys.CORRECTION_DETAIL.compositeKey([sessionID, fileUuid, errorID]);
 
             var fileData = null;
-            cacheHandler.getValue(fileDataKey)
-                .then(JSON.parse)
+            cacheHandler.getJsonValue(fileDataKey)
                 .then(data => fileData = data)
                 .then(function () {
-                    return cacheHandler.getValue(detailsKey).then(JSON.parse);
+                    return cacheHandler.getJsonValue(detailsKey);
                 })
                 .then(function (correctionDetail) {
                     console.log(`Getting error details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorID}`);

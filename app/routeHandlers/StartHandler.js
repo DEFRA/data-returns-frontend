@@ -1,5 +1,4 @@
 "use strict";
-var helpLinks = require('../config/dep-help-links');
 var userHandler = require('../lib/user-handler');
 //path: '/start',
 
@@ -19,14 +18,6 @@ module.exports = {
     getHandler: function (request, reply) {
         // Generate a new session
         userHandler.newUserSession(request, reply);
-
-        reply.view('data-returns/start', {
-            HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
-            EnvironmentalPermittingLandfillSectorTechnicalGuidance: helpLinks.links.EnvironmentalPermittingLandfillSectorTechnicalGuidance,
-            CreateAndSaveCSVFile: helpLinks.links.CreateAndSaveCSVFile,
-            ScottishLink: helpLinks.links.ScottishLink,
-            WelshLink: helpLinks.links.WelshLink,
-            NorthernIrelandLink: helpLinks.links.NorthernIrelandLink
-        });
+        reply.view('data-returns/start');
     }
 };

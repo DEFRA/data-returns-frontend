@@ -1,7 +1,6 @@
 "use strict";
 var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
-var HelpLinks = require('../config/dep-help-links');
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -15,12 +14,7 @@ module.exports = {
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
         cacheHandler.arrayGet(key).then(function(uploads) {
-            var data = {
-                "files": uploads,
-                RegimeSpecificRules: HelpLinks.links.RegimeSpecificRules,
-                HowToFormatEnvironmentAgencyData: HelpLinks.links.HowToFormatEnvironmentAgencyData
-            };
-            reply.view('data-returns/confirm-your-file', data);
+            reply.view('data-returns/confirm-your-file', { "files": uploads });
         }).catch(function() {
             console.log("Unable to retrieve stored uploads array.");
             reply.redirect('data-returns/failure');

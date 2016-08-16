@@ -1,42 +1,40 @@
 'use strict';
-
-
-var hogan = require('hogan.js');
-var utils = require('../lib/utils');
-var path = require('path');
-var templateDir = path.resolve(__dirname, '../error-templates/');
-var filenames = utils.getFileListInDir(templateDir);
-var filecount = 1;
-var x, y, key, compiledTemplate;
+const hogan = require('hogan.js');
+const utils = require('../lib/utils');
+const path = require('path');
+const merge = require('merge');
+const commonViewData = require("../lib/common-view-data");
+const templateDir = path.resolve(__dirname, '../error-templates/');
+const filenames = utils.getFileListInDir(templateDir);
 const errbit = require("./errbit-handler");
 
 //preload and compile error-templates
 var loadErrorTemplates = function () {
     console.log('==> Loading Templates...');
-    var compiledTemplates = {};
+    let compiledTemplates = {};
+    let templatesLoaded = 0;
     filenames.forEach(function (filename) {
-        filecount++;
-        //console.log('\tLoading ' + filename, filecount++);
         utils.readFile(filename, function (err, fileContents) {
             if (err) {
                 errbit.notify(err);
             } else {
-                x = filename.lastIndexOf('/');
-                y = filename.indexOf('.html');
-                key = filename.substring(x + 1, y);
-                compiledTemplate = hogan.compile(fileContents);
+                let x = filename.lastIndexOf('/');
+                let y = filename.indexOf('.html');
+                let key = filename.substring(x + 1, y);
+                let compiledTemplate = hogan.compile(fileContents);
                 compiledTemplates[key] = compiledTemplate;
             }
         });
+        templatesLoaded++;
     });
-
-    console.log('<== ' + filecount + ' Templates loaded');
+    console.log(`<== ${templatesLoaded} templates loaded`);
     return compiledTemplates;
 };
 
 var compiledTemplates = loadErrorTemplates();
 
 module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
+    let viewData = merge.recursive(commonViewData, metadata);
 
     var key = 'DR' + utils.pad(errorcode, 4);
     var template, ret;
@@ -44,7 +42,7 @@ module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
 
     if (template) {
         if (metadata) {
-            ret = template.render(metadata);
+            ret = template.render(viewData);
         } else {
             ret = template.render();
         }

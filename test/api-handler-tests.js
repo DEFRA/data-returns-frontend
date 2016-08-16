@@ -94,7 +94,6 @@ lab.experiment('error-handler.js library', function () {
             .catch(function (err) {
                 //console.log('Error' + JSON.stringify(err));
                 expect(err.isUserError).to.be.true;
-                expect(err.errorSummary).not.to.be.null;
                 done();
             });
     });
@@ -110,7 +109,6 @@ lab.experiment('error-handler.js library', function () {
         }).catch(function (err) {
             //console.log('Error' + JSON.stringify(err));
             expect(err.isUserError).to.be.true;
-            expect(err.errorSummary).not.to.be.null;
             done();
         });
     });

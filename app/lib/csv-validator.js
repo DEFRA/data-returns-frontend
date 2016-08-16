@@ -1,11 +1,8 @@
 'use strict';
 var avHandler = require('./antivirus-handler');
 var fs = require('fs');
-var errorHandler = require('./error-handler');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 const errbit = require("./errbit-handler");
-var helpLinks = require('../config/dep-help-links');
-var emptyFileErrorMessage = errorHandler.render(500, helpLinks.links, 'Your File is empty.');
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -24,8 +21,6 @@ var validateFile = function (filePath, fileSize) {
                 // Reject all empty files
                 reject({
                     isUserError: true,
-                    errorSummary: emptyFileErrorMessage,
-                    message: emptyFileErrorMessage,
                     errorCode: 500
                 });
             } else if (config.CSV.validate !== true) {
@@ -44,20 +39,14 @@ var validateFile = function (filePath, fileSize) {
                     resolve(true);
                 }).catch(function (result) {
                     if (result === true) {
-                        let errorMessage = errorHandler.render(600);
                         reject({
                             isUserError: true,
-                            message: errorMessage,
-                            errorSummary: errorMessage,
                             errorCode: 600
                         });
                     } else {
                         errbit.notify(new Error("ClamAV system error unable to scan files!"));
-                        let errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
                         reject({
                             isUserError: true,
-                            err: errorMessage,
-                            errorSummary: errorMessage,
                             errorCode: 3000
                         });
                     }

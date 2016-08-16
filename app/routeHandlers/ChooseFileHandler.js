@@ -2,11 +2,9 @@
 var csvValidator = require('../lib/csv-validator');
 var fs = require('fs');
 var uuidGen = require('node-uuid');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var fileUploadHandler = require('../api-handlers/file-upload-handler');
 var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
-var errorHandler = require('../lib/error-handler');
 var errorDescs = require('../lib/error-descriptions');
 var metricsHandler = require('../lib/MetricsHandler');
 const errbit = require("../lib/errbit-handler");
@@ -61,11 +59,11 @@ function getUploadFileUuid(request) {
 }
 
 function getClientFilename(request, fileUpload) {
-    let filename = null;
+    let filename = "Unknown";
     if (isFineUploaderRequest(request)) {
         // Retrieved via query parameter for fineuploader
         filename = request.query.qqfilename;
-    } else if (fileUpload !== null) {
+    } else if (fileUpload && fileUpload.filename) {
         // Retrieve through the request.payload.fileUpload path (form uploader)
         filename = fileUpload.filename;
     }
@@ -128,16 +126,9 @@ function handleUploadedFile(fileData) {
             } else {
                 console.log("ChooseFileHandler: Validation errors found in " + fileData.clientFilename);
                 // Handle expected errors...
-                var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0;
                 let errorCode = errorData.errorCode;
-
-                var metadata = {
-                    errorSummary: isLineErrors ? errorData.errorSummary : errorHandler.render(errorCode, {}, errorData.defaultErrorMessage),
-                    lineErrors: errorData.lineErrors
-                };
-
                 let processingResult = createFileDetailsJson(fileData.id, fileData.clientFilename, errorCode);
-                processingResult.correctionsData = metadata;
+                processingResult.correctionsData = errorData;
 
                 cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileData.id]), processingResult).then(function () {
                     cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
@@ -226,8 +217,7 @@ module.exports.postHandler = function (request, reply) {
         let errorData = {
             "success": false,
             "preventRetry": true,
-            "httpCode": 400,
-            "maxFileSize": (config.CSV.maxfilesize / Math.pow(2, 20))
+            "httpCode": 400
         };
 
         const fileSize = request.query.qqtotalfilesize || request.headers['content-length'];
@@ -243,8 +233,9 @@ module.exports.postHandler = function (request, reply) {
         // Set the file details on the JSON response
         errorData.details = fileDetails;
 
-        // Store the file details
-        cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(sessionID), fileDetails);
+        cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileDetails.id]), fileDetails).then(function () {
+            cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(sessionID), fileDetails);
+        });
 
         // Create the appropriate response (html for legacy uploader, json for fineuploader)
         if (usingFineUploader) {

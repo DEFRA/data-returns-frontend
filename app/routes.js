@@ -82,7 +82,7 @@ module.exports = [
         path: '/file/choose',
         config: {
             payload: {
-                maxBytes: config.CSV.maxfilesize,
+                maxBytes: config.CSV.maxFileSizeMb * Math.pow(2, 20),
                 timeout: false,
                 output: "file",
                 parse: true,

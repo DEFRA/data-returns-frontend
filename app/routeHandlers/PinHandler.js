@@ -62,7 +62,7 @@ module.exports = {
                         reply.view('data-returns/enter-your-code', {
                             errorMessage: errorMessage,
                             invalidPin: true,
-                            errorcode: 'DR' + utils.pad(errResult.code, 4),
+                            errorCode: errResult.code,
                             emailAddress: emailAddress,
                             startAgain: errResult.code === 2280
                         });

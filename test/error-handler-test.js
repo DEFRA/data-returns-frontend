@@ -3,7 +3,6 @@ var Lab = require('lab');
 var lab = exports.lab = Lab.script();
 var expect = Code.expect;
 var errorHandler = require('../app/lib/error-handler');
-var helpLinks = require('../app/config/dep-help-links');
 var utils = require('../app/lib/utils');
 var path = require('path');
 var templateDir = path.resolve(__dirname, '../app/error-templates/');
@@ -17,8 +16,6 @@ lab.experiment('error-handler.js library', function () {
 
     filenames.forEach(function (filename) {
         lab.test('Test render ' + filename, function (done) {
-            //console.log('Test that error messages can be rendered', filename);
-
             var f = filename.split('/');
             var s = f.length;
 
@@ -32,7 +29,7 @@ lab.experiment('error-handler.js library', function () {
 
             errCode = errCode.replace('.html', '');
 
-            var message = errorHandler.render(errCode, helpLinks.links, 'default error message');
+            var message = errorHandler.render(errCode, {}, 'default error message');
             if (message) {
                 expect(message).to.be.a.String;
                 done();

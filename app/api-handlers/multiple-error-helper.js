@@ -25,7 +25,7 @@ module.exports = {
         data.forEach(function (item) {
             var columnName = item.fieldName;
             var groupkey = columnName;
-            var groupID = item.errorCode;
+            var groupID = "DR" + item.errorCode;
             groupLinkID.set(groupkey, groupID);
         });
         //create grouped data for the details page

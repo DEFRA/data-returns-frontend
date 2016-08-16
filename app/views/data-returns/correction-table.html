@@ -11,7 +11,7 @@ Send your data returns online
 
     <h1 class="heading-large">You can't send this file</h1>
     <div class="error-summary" role="group" aria-labelledby="make-corrections" tabindex="-1">
-        {{{correctionsData.errorSummary}}}
+        {{{errorSummary}}}
     </div>
 
     <p class="back">
@@ -29,12 +29,12 @@ Send your data returns online
         </thead>
         <tbody>
         {{#correctionsData.lineErrors}}
-        <tr id="ERR_{{errorCode}}">
+        <tr id="ERR_DR{{errorCode}}">
             <td>
                 <abbr title="{{definition}}">{{columnName}}</abbr>
-                <hidden id="{{columnName}}_error_code" value="{{errorCode}}"></hidden>
+                <hidden id="{{columnName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
-            <td title="Error Code: {{errorCode}}">{{errorType}}</td>
+            <td title="Error Code: DR{{errorCode}}">{{errorType}}</td>
             <td>
                 {{{errorMessage}}}
                 <p>

@@ -10,7 +10,6 @@ var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'l
 var utils = require('./app/lib/utils');
 const Compressor = require('node-minify');
 var SASSHandler = require('./app/lib/SASSHandler');
-var banner = config.feedback.template;
 var server = new Hapi.Server();
 
 // Register the hapi server with the errbit handler
@@ -124,21 +123,7 @@ server.register(require('inert'), function (err) {
         throw err;
     }
 });
-// Setup context we want to pass to all views.
-var sharedViewContext = {
-    'assetPath': '/public/',
-    // Copy any required fields from the config variable, so that we don't expose this directly
-    // to the views (it contains data we don't want to accidentally expose).
-    feedbackbanner: banner.feedbackbanner,
-    analytics: {
-        useGoogleAnalytics: config.useGoogleAnalytics,
-        googleTagManagerId: config.googleTagManagerId
-    },
-    CSS: {
-        isCompressed: config.compressCSS || false
-    }
 
-};
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
     var partialsCache = {};
@@ -174,7 +159,7 @@ server.register(require('vision'), function (err) {
             './app/views/data-returns/includes',
             './govuk_modules/govuk_template/views/layouts'
         ],
-        context: sharedViewContext,
+        context: require("./app/lib/common-view-data"),
         isCached: config.html.cached
     });
 });
@@ -206,15 +191,11 @@ exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', fun
     console.log('Checking javascript files ');
     console.log(stdout);
 });
-
-var exec2 = require('child_process').exec;
-exec2('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
+exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
+    console.log('Running Unit Tests: ' + stdout);
     if (error) {
-        console.log(error);
+        console.error(error);
     }
-
-    console.log('Running Unit Tests ');
-    console.log(stdout);
 });
 
 // Start the server.

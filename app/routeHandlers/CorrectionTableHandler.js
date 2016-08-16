@@ -1,7 +1,9 @@
 "use strict";
-var cacheHandler = require('../lib/cache-handler');
-var userHandler = require('../lib/user-handler');
-var redisKeys = require('../lib/redis-keys');
+const cacheHandler = require('../lib/cache-handler');
+const userHandler = require('../lib/user-handler');
+const redisKeys = require('../lib/redis-keys');
+const merge = require('merge');
+const errorHandler = require('../lib/error-handler');
 
 module.exports = {
     /*
@@ -12,10 +14,12 @@ module.exports = {
         var fileUuid = request.query.uuid;
         console.log(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
         if (fileUuid) {
-            cacheHandler.getValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]))
-                .then(JSON.parse)
+            cacheHandler.getJsonValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]))
                 .then(function (fileData) {
-                    reply.view('data-returns/correction-table', fileData);
+                    let metadata = merge.recursive(fileData, {
+                        errorSummary: errorHandler.render(900, {filename: fileData.name})
+                    });
+                    reply.view('data-returns/correction-table', metadata);
                 });
         } else {
             reply.redirect('/file/choose');

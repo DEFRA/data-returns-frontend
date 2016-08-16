@@ -44,7 +44,8 @@ config.redis = {
 config.CSV = {
     validate: true,
     VIRUS_SCAN: true,
-    maxfilesize: 2 * Math.pow(2, 20) //2MB
+    ignoreScanFailure: false,
+    maxFileSizeMb: 2
 };
 
 // API Endpoints

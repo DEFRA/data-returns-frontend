@@ -43,15 +43,13 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
         // Make REST call into the Data Exchange service, and handle the result.
         request.post(apiData, function (err, httpResponse, body) {
             var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
-            var errorSummary, apiErrors = '';
+            var apiErrors = '';
 
             console.log("Received upload response for " + originalFileName);
             if (err) {
                 errbit.notify(err);
                 reject({
                     isUserError: true,
-                    message: errorHandler.render(3000, {mailto: config.feedback.mailto}),
-                    errorSummary: errorHandler.render(3000, {mailto: config.feedback.mailto}),
                     errorCode: 3000
                 });
             } else if (statusCode === 200) {
@@ -65,8 +63,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                 } else {
                     reject({
                         isUserError: true,
-                        message: errorHandler.render(3000, {mailto: config.feedback.mailto}),
-                        errorSummary: errorHandler.render(3000, {mailto: config.feedback.mailto}),
                         errorCode: 3000
                     });
                 }
@@ -83,12 +79,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
                     return reject({
                         isUserError: true,
-                        errorCode: 3000,
-                        message: errorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
-                        errorSummary: errorHandler.render(3000, {mailto: config.feedback.mailto}, 'System error'),
-                        lineErrors: null,
-                        lineErrorCount: 0,
-                        defaultErrorMessage: 'System error'
+                        errorCode: 3000
                     });
                 }
 
@@ -102,13 +93,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
                 switch (appStatusCode) {
                     case 900://Line errors
-
-                        errorSummary = errorHandler.render(900, {filename: originalFileName});
                         apiErrors = httpResponse.validationErrors;
                         lineErrorData = [];
                         lineErrors = apiErrors; //apiErrors.lineErrors;
-                        temp;
-                        lineError;
 
                         for (lineErrorName in lineErrors) {
                             lineError = {};
@@ -123,7 +110,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                                     CorrectionDetails: false,
                                     CorrectionMoreHelp: false
                                 }, temp.errorMessage);
-                            lineError.errorCode = 'DR' + utils.pad(temp.errorCode, 4);
+                            lineError.errorCode = temp.errorCode;
                             lineError.errorType = temp.errorType;
                             lineError.moreHelp = errorHandler.render(temp.errorCode,
                                 {
@@ -135,9 +122,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                                 }, temp.errorMessage);
                             lineError.helpReference = temp.helpReference;
                             lineError.definition = temp.definition ? temp.definition : temp.fieldName;
-                            lineError.Correction = true;
-                            lineError.CorrectionDetails = true;
-                            lineError.CorrectionMoreHelp = true;
                             lineErrorData.push(lineError);
                         }
 
@@ -147,24 +131,15 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                         reject({
                             isUserError: true,
                             errorCode: appStatusCode,
-                            errorSummary: errorSummary,
-                            lineErrors: sortedLineErrorData,
-                            lineErrorCount: sortedLineErrorData.length
+                            lineErrors: sortedLineErrorData
                         });
 
                         break;
                     default:
-                        //other errors
-                        var defaultErrorMessage = httpResponse.message;
-
                         reject({
                             isUserError: true,
                             errorCode: appStatusCode,
-                            message: errorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
-                            errorSummary: errorHandler.render(appStatusCode, {mailto: config.feedback.mailto}, defaultErrorMessage),
-                            lineErrors: sortedLineErrorData,
-                            lineErrorCount: (apiErrors && apiErrors.errorCount) ? apiErrors.errorCount : 0,
-                            defaultErrorMessage: defaultErrorMessage
+                            defaultErrorMessage: httpResponse.message
                         });
                         break;
                 }
