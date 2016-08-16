@@ -12,6 +12,8 @@ const Compressor = require('node-minify');
 var SASSHandler = require('./app/lib/SASSHandler');
 var server = new Hapi.Server();
 
+console.log("Server starting.  Environment: " + JSON.stringify(process.env));
+
 // Register the hapi server with the errbit handler
 errbit.registerHapi(server);
 

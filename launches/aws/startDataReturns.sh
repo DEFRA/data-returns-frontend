@@ -2,4 +2,6 @@
 cd /srv/data-returns
 source ~ubuntu/.data-returns/.dr_env
 npm install
-pm2 start server.js
+echo "http_proxy= node server.js" > /srv/data-returns/data-returns.sh
+chmod u+x /srv/data-returns/data-returns.sh
+pm2 start data-returns.sh
