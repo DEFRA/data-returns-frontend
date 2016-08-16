@@ -111,20 +111,16 @@ module.exports.getListProcessor = function (list, processor, search) {
                 throw "Expected: displayHeaders";
             }
             // Generate an array for the column headings...hogan cannot handle maps/objects
-            for (var key in displayHeaders) {
-                if (displayHeaders.hasOwnProperty(key)) {
-                    tableHeadings.push({name: key, description: displayHeaders[key]});
-                }
+            for (var i = 0; i < displayHeaders.length; i++) {
+                tableHeadings.push({name: displayHeaders[i].field, description: displayHeaders[i].header});
             }
             // Now the actual list data
             module.exports.getListData(list, search).then(function (listData) {
                 var rows = [];
-                for (var i = 0; i < listData.length; i++) {
+                for (var r = 0; r < listData.length; r++) {
                     var cols = [];
-                    for (var key in listData[i]) {
-                        if (listData[i].hasOwnProperty(key) && displayHeaders.hasOwnProperty(key)) {
-                            cols.push(listData[i][key]);
-                        }
+                    for (var c = 0; c < displayHeaders.length; c++) {
+                        cols.push(listData[r][displayHeaders[c].field]);
                     }
                     rows.push({row: cols});
                 }
