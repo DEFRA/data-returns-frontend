@@ -9,7 +9,6 @@ var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'l
 // Create and initialise the server.
 var utils = require('./app/lib/utils');
 const Compressor = require('node-minify');
-var ValidationErrorHandler = require('./app/lib/error-handler');
 var SASSHandler = require('./app/lib/SASSHandler');
 var banner = config.feedback.template;
 var server = new Hapi.Server();
@@ -54,41 +53,45 @@ server.connection({
         }
     }
 });
+
 // Setup logging.
 server.register({
     register: require('good'),
     options: {
-        opsInterval: 1000,
-        reporters: [
-            {
-                reporter: require('good-console'),
-                events: {
-                    log: '*',
-                    error: '*'
-                    //response: config.log.responses === true ? '*' : 'none'
-                }
-            },
-            {
-                reporter: require('good-file'),
-                events: {
-                    log: '*',
-                    //request: '*',
-                    //response: '*',
-                    error: '*'
+        ops: {
+            interval: 1000
+        },
+        reporters: {
+            console: [
+                {
+                    module: 'good-squeeze',
+                    name: 'Squeeze',
+                    args: [{ log: '*', response: '*' }]
                 },
-                config: {
-                    path: './logs',
-                    prefix: 'DataReturnsApp',
-                    format: 'DD-MMM-YYYY',
-                    rotate: 'daily',
-                    extension: '.log'
+                {
+                    module: 'good-console'
+                }, 'stdout'
+            ],
+            file: [
+                {
+                    module: 'good-squeeze',
+                    name: 'Squeeze',
+                    args: [{ ops: '*' }]
+                },
+                {
+                    module: 'good-squeeze',
+                    name: 'SafeJson'
+                },
+                {
+                    module: 'good-file',
+                    args: ['./logs/datareturns.log']
                 }
-            }
-        ]
+            ],
+        }
     }
-}, function (err) {
+}, (err) => {
     if (err) {
-        throw err;
+        throw(err);
     }
 });
 
@@ -188,28 +191,11 @@ server.ext('onPreResponse', function (request, reply) {
     // Payload content length greater than maximum allowed
     if (request.response.isBoom) {
         var err = request.response;
-        var statusCode = err.output.payload.statusCode;
         var errorMessage = err.output.payload.message;
         console.error('Boom Error', err);
-        if (statusCode === 400 && errorMessage.indexOf('Payload content length greater than maximum allowed') !== -1) {
-            // TODO: Improve handling when the upload payload is too big - need to return a 413 for the fineuploader lib to respond correctly to the error???
-            // return reply({success: false});
-            return reply(ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big')).code(413);
-            // return reply.view('data-returns/choose-your-file', {
-            //     uploadError: true,
-            //     errorSummary: ValidationErrorHandler.render(550, {maxFileSize: (config.CSV.maxfilesize / Math.pow(2, 20))}, 'Your file is too big'), //DR0550
-            //     lineErrors: null,
-            //     isLineErrors: false
-            // });
-        } else {
-            errbit.notify((errorMessage || err));
-
-            return reply(resp);
-        }
-
-    } else {
-        return reply(resp);
+        errbit.notify((errorMessage || err));
     }
+    return reply(resp);
 });
 
 

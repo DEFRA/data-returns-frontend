@@ -84,14 +84,14 @@ module.exports = [
             payload: {
                 maxBytes: config.CSV.maxfilesize,
                 timeout: false,
-                output: 'file',
+                output: "file",
                 parse: true,
-                uploads: config.upload.path
+                uploads: config.upload.path,
+                // Fail action is set to ignore so that we can handle errors inside ChooseFileHandler
+                failAction: "ignore"
             }
         },
-        handler: function (request, reply) {
-            chooseFileHandler.postHandler(request, reply);
-        }
+        handler:  chooseFileHandler.postHandler
     },
     // /file/confirm
     {

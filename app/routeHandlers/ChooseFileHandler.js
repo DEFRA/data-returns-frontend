@@ -5,11 +5,9 @@ var uuidGen = require('node-uuid');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var fileUploadHandler = require('../api-handlers/file-upload-handler');
 var cacheHandler = require('../lib/cache-handler');
-var helpLinks = require('../config/dep-help-links');
 var userHandler = require('../lib/user-handler');
 var errorHandler = require('../lib/error-handler');
 var errorDescs = require('../lib/error-descriptions');
-var utils = require('../lib/utils');
 var metricsHandler = require('../lib/MetricsHandler');
 const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
@@ -43,41 +41,80 @@ function fineUploaderHandler(request, reply) {
 }
 
 function extractUploadDetails(request, fileUpload) {
-    return {
+    let details = {
         // ID comes from the fine-uploader JS lib qquid parameter or for legacy file uploads it is generated here.
-        "id": request.payload.qquuid || uuidGen.v4(),
-        "clientFilename": fileUpload.filename,
-        "localFilename": fileUpload.path,
+        "id": getUploadFileUuid(request),
+        "clientFilename": getClientFilename(request, fileUpload),
+        "localFilename": fileUpload ? fileUpload.path : null,
         "sessionID": userHandler.getSessionID(request)
     };
+    return details;
+}
+
+function isFineUploaderRequest(request) {
+    return request.query.fineuploader === 'true';
+}
+
+function getUploadFileUuid(request) {
+    // UUID's are generated server-side for the legacy file uploader or supplied in the qquuid param for fineuploader
+    return isFineUploaderRequest(request) ? request.query.qquuid : uuidGen.v4();
+}
+
+function getClientFilename(request, fileUpload) {
+    let filename = null;
+    if (isFineUploaderRequest(request)) {
+        // Retrieved via query parameter for fineuploader
+        filename = request.query.qqfilename;
+    } else if (fileUpload !== null) {
+        // Retrieve through the request.payload.fileUpload path (form uploader)
+        filename = fileUpload.filename;
+    }
+    return filename;
+}
+
+function createFileDetailsJson(uuid, clientFilename, errorCode) {
+    let details = {
+        "id": uuid,
+        "name": clientFilename,
+        "status": {
+            "state": "ready",
+            "description": "Ready to send"
+        }
+    };
+
+    if (errorCode) {
+        // More details url
+        let urlPrefix = errorCode === 900 ?  "/correction/table?uuid=" : "/file/invalid?uuid=";
+        let moreDetailsUrl = `${urlPrefix}${uuid}`;
+        details.status = {
+            "state": "error",
+            "errorCode": errorCode,
+            "moreDetailsUrl": moreDetailsUrl,
+            "description": errorDescs.getDescription(errorCode)
+        };
+    }
+    return details;
 }
 
 /**
  * Handle uploads from the fineuploader JS client library.  Each file is uploaded individually to the service and the
  * service responds with a JSON document which is processed by the client library.
  *
- * @param reqInfo JSON structure describing the request - see extractUploadDetails
+ * @param fileData JSON structure describing the request - see extractUploadDetails
  * @returns {Promise}
  */
-function handleUploadedFile(reqInfo) {
+function handleUploadedFile(fileData) {
     return new Promise(function (resolve, reject) {
-        var fileSize = fs.statSync(reqInfo.localFilename).size;
+        var fileSize = fs.statSync(fileData.localFilename).size;
         metricsHandler.setFileSizeHighWaterMark(fileSize);
-        console.log('==> ChooseFileHandler: Processing new uploaded file: ' + reqInfo.clientFilename);
-        csvValidator.validateFile(reqInfo.localFilename, fileSize).then(function () {
-            return fileUploadHandler.uploadFileToService(reqInfo.localFilename, reqInfo.sessionID, reqInfo.id, reqInfo.clientFilename);
-        }).then(function (fileStatus) {
-            var fileData = {
-                "id": reqInfo.id,
-                "sid": fileStatus.uploadResult.fileKey,
-                "name": fileStatus.originalFileName,
-                "status": {
-                    "state": "ready",
-                    "description": "Ready to send",
-                    "server": fileStatus
-                }
-            };
-            return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+        console.log('ChooseFileHandler: Processing new uploaded file: ' + fileData.clientFilename);
+        csvValidator.validateFile(fileData.localFilename, fileSize).then(function () {
+            return fileUploadHandler.uploadFileToService(fileData.localFilename, fileData.sessionID, fileData.id, fileData.clientFilename);
+        }).then(function (backendResult) {
+            let processingResult = createFileDetailsJson(fileData.id, fileData.clientFilename);
+            processingResult.sid = backendResult.uploadResult.fileKey;
+            processingResult.status.server = backendResult;
+            return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
         }).then(function (fileData) {
             resolve({"success": true, "details": fileData});
         }).catch(function (errorData) {
@@ -86,85 +123,38 @@ function handleUploadedFile(reqInfo) {
                 reject({
                     "success": false,
                     "preventRetry": false,
-                    "errorType": "unexpected",
-                    "details": {
-                        "id": reqInfo.id,
-                        "name": reqInfo.clientFilename,
-                        "status": {
-                            "state": "error",
-                            "errorCode": 3000,
-                            "description": errorDescs.getDescription(3000)
-                        }
-                    }
+                    "details": createFileDetailsJson(fileData.id, fileData.clientFilename, 3000)
                 });
             } else {
-                console.log("Validation errors found " + reqInfo.clientFilename);
+                console.log("ChooseFileHandler: Validation errors found in " + fileData.clientFilename);
                 // Handle expected errors...
                 var isLineErrors = errorData.lineErrorCount && errorData.lineErrorCount > 0;
-                var links = helpLinks.links;
-                var errorCode = errorData.errorCode;
-
-                if (!isLineErrors) {
-                    links.errorCode = 'DR' + utils.pad(errorCode, 4);
-                }
-
-                links.mailto = config.feedback.mailto;
+                let errorCode = errorData.errorCode;
 
                 var metadata = {
-                    uploadError: true,
-                    errorSummary: isLineErrors ? errorData.errorSummary : errorHandler.render(errorCode, links, errorData.defaultErrorMessage),
-                    fileName: reqInfo.clientFilename,
-                    lineErrors: errorData.lineErrors,
-                    isLineErrors: errorData.lineErrors ? true : false,
-                    HowToFormatEnvironmentAgencyData: helpLinks.links.HowToFormatEnvironmentAgencyData,
-                    errorCode: 'DR' + utils.pad(errorCode, 4),
-                    mailto: config.feedback.mailto
+                    errorSummary: isLineErrors ? errorData.errorSummary : errorHandler.render(errorCode, {}, errorData.defaultErrorMessage),
+                    lineErrors: errorData.lineErrors
                 };
 
-                var fileData = {
-                    "id": reqInfo.id,
-                    "sid": null,
-                    "name": reqInfo.clientFilename,
-                    "status": {
-                        "state": "error",
-                        "errorCode": errorData.errorCode,
-                        "moreDetailsUrl": "data-returns/failure?uuid=" + reqInfo.id,
-                        "description": errorDescs.getDescription(errorData.errorCode)
-                    },
-                    "correctionsData": metadata
-                };
+                let processingResult = createFileDetailsJson(fileData.id, fileData.clientFilename, errorCode);
+                processingResult.correctionsData = metadata;
 
-                var errorType;
-                if (isLineErrors) {
-                    errorType = "content";
-                    fileData.status.moreDetailsUrl = "/correction/table?uuid=" + reqInfo.id;
-                } else {
-                    errorType = "file";
-                    fileData.status.moreDetailsUrl = "/file/invalid?uuid=" + reqInfo.id;
-                }
-
-                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([reqInfo.sessionID, reqInfo.id]), fileData).then(function () {
-                    console.log("Pushing status for " + reqInfo.clientFilename);
-
-                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(reqInfo.sessionID), fileData);
+                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileData.id]), processingResult).then(function () {
+                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
                     resolve({
                         "success": false,
                         "preventRetry": true,
-                        "errorType": errorType,
-                        "metadata": metadata,
-                        "details": fileData
+                        "details": processingResult
                     });
                 });
             }
         }).then(function () {
-            // Finally delete the uploaded file
-            // We can delete it here because any valid file will be stored on the backend API and we don't care about
-            // invalid files
-            console.log(`Removing uploaded file ${reqInfo.localFilename}`);
-            fs.unlink(reqInfo.localFilename, function (err) {
+            // Finally delete the uploaded file - we can delete it here because any valid file will be stored on the
+            // backend API and we don't care about invalid files
+            fs.unlink(fileData.localFilename, function (err) {
                 if (err !== null) {
                     errbit.notify(err);
-                    console.error(`Unable to delete uploaded file ${reqInfo.localFilename}, reason: ${err.message}`);
+                    console.error(`Unable to delete uploaded file ${fileData.localFilename}, reason: ${err.message}`);
                 }
             });
         });
@@ -182,7 +172,9 @@ function buildStatusJson(sessionID) {
                 "files": uploads
             };
             resolve(status);
-        }).catch(reject);
+        }).catch(function(err) {
+            reject(err);
+        });
     });
 }
 
@@ -227,16 +219,51 @@ module.exports.getHandler = function (request, reply) {
  */
 module.exports.postHandler = function (request, reply) {
     let sessionID = userHandler.getSessionID(request);
+    let usingFineUploader = request.query.fineuploader === 'true';
 
-    if (request.payload.action === "remove") {
-        removeUpload(sessionID, request.payload.uuid).then(function () {
-            reply.redirect('/file/choose').rewritable(true);
-        }).catch(function () {
-            reply.redirect('data-returns/failure');
-        });
-    } else if (request.query.fineuploader === 'true') {
-        fineUploaderHandler(request, reply);
+    if (!request.payload) {
+        // No payload - something wrong with the request (either too large or malformed)
+        let errorData = {
+            "success": false,
+            "preventRetry": true,
+            "httpCode": 400,
+            "maxFileSize": (config.CSV.maxfilesize / Math.pow(2, 20))
+        };
+
+        const fileSize = request.query.qqtotalfilesize || request.headers['content-length'];
+        const maxBytes = request.route.settings.payload.maxBytes;
+        let fileDetails = null;
+        if (maxBytes !== undefined && fileSize && parseInt(fileSize, 10) > maxBytes) {
+            errorData.httpCode = 413; // Request entity too large
+            fileDetails = createFileDetailsJson(getUploadFileUuid(request), getClientFilename(request), 550);
+        } else {
+            // Don't know what went wrong - display standard error page
+            fileDetails = createFileDetailsJson(getUploadFileUuid(request), getClientFilename(request), 3000);
+        }
+        // Set the file details on the JSON response
+        errorData.details = fileDetails;
+
+        // Store the file details
+        cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(sessionID), fileDetails);
+
+        // Create the appropriate response (html for legacy uploader, json for fineuploader)
+        if (usingFineUploader) {
+            return reply(errorData).code(errorData.httpCode);
+        } else {
+            return reply.redirect('/file/choose').rewritable(true);
+        }
     } else {
-        legacyFileUploadHandler(request, reply);
+        // Request payload present - handle normal upload request
+        if (request.payload.action === "remove") {
+            removeUpload(sessionID, request.payload.uuid).then(function () {
+                reply.redirect('/file/choose').rewritable(true);
+            }).catch(function () {
+                reply.redirect('data-returns/failure');
+            });
+        } else if (usingFineUploader) {
+            fineUploaderHandler(request, reply);
+        } else {
+            legacyFileUploadHandler(request, reply);
+        }
     }
 };

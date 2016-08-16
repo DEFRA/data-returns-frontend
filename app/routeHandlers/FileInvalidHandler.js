@@ -9,12 +9,15 @@ var redisKeys = require('../lib/redis-keys');
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    var sessionID = userHandler.getSessionID(request);
-    if (request.query.uuid) {
-        console.log(`Retrieve validation errors for session ${sessionID} with uuid ${request.query.uuid}`);
-        var key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, request.query.uuid]);
-        cacheHandler.getValue(key).then(JSON.parse).then(function (fileData) {
-            reply.view('data-returns/file-invalid', fileData.correctionsData);
+    let sessionID = userHandler.getSessionID(request);
+    let uuid = request.query.uuid || "null";
+    var key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, uuid]);
+    cacheHandler.getJsonValue(key).then(function (fileData) {
+        reply.view('data-returns/file-invalid', fileData.correctionsData);
+    }).catch(function() {
+        reply.view('data-returns/file-invalid', {
+            errorSummary: "Unknown Error",
+            errorCode: 3000
         });
-    }
+    });
 };

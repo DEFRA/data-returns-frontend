@@ -44,37 +44,35 @@
             }
         };
 
-        var dragAndDropModule = new qq.DragAndDrop({
+        new qq.DragAndDrop({
             dropZoneElements: [document.body],
             classes: {
                 dropActive: "file-drop-active"
             },
             callbacks: {
-                processingDroppedFilesComplete: function(files, dropTarget) {
-                    fileUploader.addFiles(files);
+                processingDroppedFilesComplete: function(files) {
+                    if (files && files.length > 0) {
+                        fileUploader.addFiles(files);
+                    }
                 }
             }
         });
         var fileUploader = new qq.FineUploaderBasic({
             element: document.getElementById("uploader-container"),
             button: document.getElementById("choose-file-button"),
-            debug: true,
+            debug: false,
             autoUpload: true,
             multiple: true,
             disableCancelForFormUploads: true,
             validation: {
-//                allowedExtensions: ["csv"],
-                stopOnFirstInvalidFile: false,
-                sizeLimit: 10000000 // 10 MiB
+                stopOnFirstInvalidFile: false
             },
             request: {
                 endpoint: "/file/choose?fineuploader=true",
                 inputName: "fileUpload",
-                method: "POST"
-            },
-            deleteFile: {
-                enabled: true,
-                endpoint: "/file/choose?fineuploader=true&delete=true"
+                method: "POST",
+                // Use request parameters rather than encoding data in body (allows us to handle max file size server-side)
+                paramsInBody: false
             },
             chunking: {
                 enabled: false
@@ -89,19 +87,13 @@
                 enableAuto: false
             },
             text: {
-                defaultResponseError: 'An unknown upload error occurred.'
+                defaultResponseError: "Unable to upload file"
             },
             messages: {
                 emptyError: "File is empty",
-                typeError: "Not a supported file type ({extensions})",
+                noFilesError: null
             },
             callbacks: {
-                onDelete: function(id) {
-
-                },
-                onDeleteComplete: function(id, xhr, isError) {
-
-                },
                 onError: function(id, name, errorReason, xhrOrXdr) {
                     var uuid = "Unsubmitted" + Math.random();
                     if (id != null) {
@@ -117,9 +109,11 @@
                     };
 
                     try {
-                        responseJSON = JSON.parse(xhrOrXdr.responseText);
-                        setFileStatus(responseJSON);
+                        if (xhrOrXdr) {
+                            responseJSON = JSON.parse(xhrOrXdr.responseText);
+                        }
                     } catch (e) {}
+                    setFileStatus(responseJSON);
                 },
                 onComplete: function(id, name, responseJSON, xhr) {
                     setFileStatus(responseJSON.details);
