@@ -1,9 +1,7 @@
 var userHandler = require('../lib/user-handler');
 var pinHandler = require('../lib/pin-handler');
 var messages = require('../lib/error-messages');
-var utils = require('../lib/utils');
 var errorHandler = require('../lib/error-handler');
-
 
 module.exports = {
 
