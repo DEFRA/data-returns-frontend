@@ -220,7 +220,7 @@ module.exports.postHandler = function (request, reply) {
             "httpCode": 400
         };
 
-        const fileSize = request.query.qqtotalfilesize || request.headers['content-length'];
+        const fileSize = Math.max(request.query.qqtotalfilesize || 0, request.headers['content-length'] || 0);
         const maxBytes = request.route.settings.payload.maxBytes;
         let fileDetails = null;
         if (maxBytes !== undefined && fileSize && parseInt(fileSize, 10) > maxBytes) {
