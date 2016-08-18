@@ -11,6 +11,8 @@ var utils = require('./app/lib/utils');
 const Compressor = require('node-minify');
 var SASSHandler = require('./app/lib/SASSHandler');
 var server = new Hapi.Server();
+const cacheHandler = require('./app/lib/cache-handler');
+const redisKeys = require('./app/lib/redis-keys.js');
 
 console.log("Server starting.  Environment: " + JSON.stringify(process.env));
 
@@ -199,6 +201,9 @@ exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o report
         console.error(error);
     }
 });
+
+// Remove the cached list metadata
+cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key);
 
 // Start the server.
 server.start(function (err) {
