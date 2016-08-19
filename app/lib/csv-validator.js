@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 const winston = require("winston");
 var avHandler = require('./antivirus-handler');
 var fs = require('fs');
@@ -45,7 +45,6 @@ var validateFile = function (filePath, fileSize) {
                             errorCode: 600
                         });
                     } else {
-                        winston.error(new Error("ClamAV system error unable to scan files!"));
                         reject({
                             isUserError: true,
                             errorCode: 3000
