@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-ENV_VARS_FILE="~ubuntu/.data-returns/.dr_env"
+ENV_VARS_FILE="/home/ubuntu/.data-returns/.dr_env"
 SERVICE_HOME="/srv/data-returns"
 LOG_DIR="${SERVICE_HOME}/logs"
 
+# Source environment variables
 source ${ENV_VARS_FILE}
+
+# List environment variables
+export -p
 
 cd ${SERVICE_HOME}
 
