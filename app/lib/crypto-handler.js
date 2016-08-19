@@ -1,5 +1,4 @@
 'use strict';
-
 const config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 const crypto = require('crypto');
 

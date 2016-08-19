@@ -1,7 +1,5 @@
 "use strict";
-var userHandler = require('../lib/user-handler');
-//path: '/start',
-
+const userHandler = require('../lib/user-handler');
 
 module.exports = {
     /*

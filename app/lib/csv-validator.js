@@ -1,8 +1,8 @@
 'use strict';
+const winston = require("winston");
 var avHandler = require('./antivirus-handler');
 var fs = require('fs');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-const errbit = require("./errbit-handler");
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -27,6 +27,7 @@ var validateFile = function (filePath, fileSize) {
                 // If validation disabled, go no further!
                 resolve(true);
             } else if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {
+                winston.error("Invalid file path passed to csv-validator");
                 // Test that a filePath has been specified.
                 reject({
                     isUserError: false,
@@ -44,7 +45,7 @@ var validateFile = function (filePath, fileSize) {
                             errorCode: 600
                         });
                     } else {
-                        errbit.notify(new Error("ClamAV system error unable to scan files!"));
+                        winston.error(new Error("ClamAV system error unable to scan files!"));
                         reject({
                             isUserError: true,
                             errorCode: 3000

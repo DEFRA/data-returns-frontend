@@ -3,7 +3,7 @@ var pinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
 var cacheHandler = require('../lib/cache-handler');
 var errorHandler = require('../lib/error-handler');
-const errbit = require("../lib/errbit-handler");
+const winston = require("winston");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
                         }
                     })
                     .catch(function (err) {
-                        errbit.notify(err);
+                        winston.error(err);
                     });
             })
             .catch(function () {

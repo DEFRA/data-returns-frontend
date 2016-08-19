@@ -20,6 +20,7 @@
     "govuk_template_mustache": "~0.13.0",
     "hapi": "~14.2.0",
     "hapi-auth-basic": "~4.2.0",
+    "hapi-good-winston": "~1.1.0",
     "hogan.js": "~3.0.2",
     "inert": "~4.0.1",
     "joi": "~9.0.4",
@@ -37,9 +38,9 @@
     "redis": "~2.6.2",
     "request": "~2.74.0",
     "rimraf": "~2.5.4",
-    "type-detect": "~2.0.2",
     "uglify-js": "~2.7.1",
-    "vision": "~4.1.0"
+    "vision": "~4.1.0",
+    "winston": "~2.2.0"
   },
   "devDependencies": {
     "code": "~3.0.2",

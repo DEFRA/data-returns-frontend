@@ -4,6 +4,7 @@
  *  An SMTP Helper module
  *  Note email configuration is per environment.
  */
+const winston = require("winston");
 var utils = require('./utils');
 var nodemailer = require('nodemailer');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
@@ -17,13 +18,11 @@ var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
 var compiledConfirmationEmailTextTemplate;
 var _ = require('lodash');
-const errbit = require("./errbit-handler");
-
 
 //Read the pin code template files
 utils.readFile('../config/email-pin-code-template.html', function (err, result) {
     if (err) {
-        errbit.notify(err);
+        winston.error(err);
     } else {
         compiledPinTemplate = hogan.compile(result);
     }
@@ -31,7 +30,7 @@ utils.readFile('../config/email-pin-code-template.html', function (err, result) 
 
 utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
     if (err) {
-        errbit.notify(err);
+        winston.error(err);
     } else {
         compiledPinTextTemplate = hogan.compile(result);
     }
@@ -40,7 +39,7 @@ utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
 //Read the confirmation email templates
 utils.readFile('../config/email-confirmation-template.html', function (err, result) {
     if (err) {
-        errbit.notify(err);
+        winston.error(err);
     } else {
         compiledConfirmationEmailTemplate = hogan.compile(result);
     }
@@ -48,7 +47,7 @@ utils.readFile('../config/email-confirmation-template.html', function (err, resu
 
 utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
     if (err) {
-        errbit.notify(err);
+        winston.error(err);
     } else {
         compiledConfirmationEmailTextTemplate = hogan.compile(result);
     }
@@ -145,21 +144,21 @@ var validateEmailAddress = function (emailaddress) {
             .then(function () {
                 checkEmailLimit(emailaddress)
                     .then(function () {
-                        console.log('==> validateEmailAddress');
+                        winston.info('==> validateEmailAddress');
                         var result = joi.validate({'address': emailaddress}, schema);
                         if (result.error) {
-                            console.log('\t email address is invalid: ' + JSON.stringify(result));
+                            winston.info('\t email address is invalid: ' + JSON.stringify(result));
                             reject({
                                 invalidEmailAddress: true,
                                 errorCode: 2050
                             });
                         } else {
-                            console.log('\t email address is valid');
+                            winston.info('\t email address is valid');
                             resolve(true);
                         }
                     })
                     .catch(function (err) {
-                        console.log(err);
+                        winston.info(err);
                         //too many attempts
                         reject({
                             invalidEmailAddress: true,
@@ -168,7 +167,7 @@ var validateEmailAddress = function (emailaddress) {
                     });
             })
             .catch(function (err) {
-                console.log(err);
+                winston.info(err);
                 //Locked out for an hour
                 reject({
                     invalidEmailAddress: true,
@@ -203,7 +202,7 @@ var transporter = nodemailer.createTransport({
 var sendPinEmail = function (recipient, newPin) {
 
     return new Promise(function (resolve, reject) {
-        console.log('==> sendPinEmail() ');
+        winston.info('==> sendPinEmail() ');
         var data = {
             pin: newPin,
             EnquiryEmail: config.smtp.support.email,
@@ -225,11 +224,10 @@ var sendPinEmail = function (recipient, newPin) {
             text: emailTextBody,
             html: emailBody
         };
-        console.log(__dirname);
         /* Send the email */
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
-                errbit.notify(err);
+                winston.error(err);
                 if (err.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
                     reject({
                         isUserError: false, //TODO decide what to do with smtp server errors
@@ -237,7 +235,7 @@ var sendPinEmail = function (recipient, newPin) {
                     });
                 }
             } else if (info.response === config.smtp.success) {
-                console.log('<== Pin email sent successfully to ' + recipient);
+                winston.info('<== Pin email sent successfully to ' + recipient);
                 resolve(true);
             }
         });
@@ -248,7 +246,7 @@ var sendPinEmail = function (recipient, newPin) {
 var sendConfirmationEmail = function (metadata) {
 
     return new Promise(function (resolve, reject) {
-        console.log('==> sendConfirmationEmail() ');
+        winston.info('==> sendConfirmationEmail() ');
         var date = new Date();
         var displayDate = utils.getFormattedDate(date);
         var time = utils.getFormattedTime(date);
@@ -277,7 +275,7 @@ var sendConfirmationEmail = function (metadata) {
         /* Send the email */
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
-                errbit.notify(err);
+                winston.error(err);
                 if (err.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
                     reject({
                         isUserError: false, //TODO decide what to do with smtp server errors
@@ -285,7 +283,7 @@ var sendConfirmationEmail = function (metadata) {
                     });
                 }
             } else {
-                console.log(`Confirmation Email sent successfully to ${metadata.email}`, `smtp response: ${info}`);
+                winston.info(`Confirmation Email sent successfully to ${metadata.email}`, `smtp response: ${info}`);
                 resolve(metadata.email);
             }
         });

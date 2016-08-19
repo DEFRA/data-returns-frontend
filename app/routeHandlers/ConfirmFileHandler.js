@@ -1,4 +1,5 @@
 "use strict";
+const winston = require("winston");
 var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
 var redisKeys = require('../lib/redis-keys');
@@ -16,7 +17,7 @@ module.exports = {
         cacheHandler.arrayGet(key).then(function(uploads) {
             reply.view('data-returns/confirm-your-file', { "files": uploads });
         }).catch(function() {
-            console.log("Unable to retrieve stored uploads array.");
+            winston.error("Unable to retrieve stored uploads array.");
             reply.redirect('data-returns/failure');
         });
     },

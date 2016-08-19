@@ -1,3 +1,4 @@
+const winston = require("winston");
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 /*
  * @Name: isInfected
@@ -12,7 +13,7 @@ module.exports.isInfected = function (filePath) {
     return new Promise(function (resolve, reject) {
         //set up clamav config
         if (config && config.CSV && config.CSV.VIRUS_SCAN && config.CSV.VIRUS_SCAN === true) {
-            console.log('==> av is scanning ' + filePath);
+            winston.info('==> av is scanning ' + filePath);
 
             var clam = require('clamscan')(
                 {
@@ -39,7 +40,7 @@ module.exports.isInfected = function (filePath) {
             clam.is_infected(filePath, function (err, file, is_infected) {
 
                 if (err) {
-                    console.log(err);
+                    winston.error(err);
                     if (config.CSV.ignoreScanFailure) {
                         return resolve(false);
                     } else {
@@ -47,7 +48,7 @@ module.exports.isInfected = function (filePath) {
                     }
                 }
 
-                console.log('<== av scanning complete, infected: ' + is_infected);
+                winston.info('<== av scanning complete, infected: ' + is_infected);
 
                 if (is_infected === true) {
                     return reject(true);

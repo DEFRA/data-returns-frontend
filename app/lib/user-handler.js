@@ -1,9 +1,9 @@
 "use strict";
+const winston = require("winston");
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('./cache-handler');
 const redisKeys = require('./redis-keys');
 var utils = require('./utils');
-const errbit = require("./errbit-handler");
 const DATA_RETURNS_COOKIE_ID = "data-returns-id";
 
 /*
@@ -14,14 +14,8 @@ const DATA_RETURNS_COOKIE_ID = "data-returns-id";
 var setUser = function (sessionID, user) {
     return new Promise(function (resolve, reject) {
         user.last_updated = new Date().toUTCString();
-
         cacheHandler.setValue(redisKeys.USER_DATA.compositeKey(sessionID), user)
-            .then(function (result) {
-                resolve(result);
-            })
-            .catch(function (errResult) {
-                reject(errResult);
-            });
+            .then(resolve).catch(reject);
     });
 };
 
@@ -32,11 +26,7 @@ var setUser = function (sessionID, user) {
 var getUser = function (sessionID) {
     return new Promise(function (resolve, reject) {
         cacheHandler.getJsonValue(redisKeys.USER_DATA.compositeKey(sessionID))
-            .then(resolve)
-            .catch(function (err) {
-                errbit.notify(err);
-                reject(err);
-            });
+            .then(resolve).catch(reject);
     });
 };
 
@@ -85,14 +75,12 @@ module.exports.isAuthenticated = function (sessionID) {
 
                 resolve(authenticated);
             })
-            .catch(function (err) {
-                reject(err);
-            });
+            .catch(reject);
     });
 };
 
 module.exports.setIsAuthenticated = function (sessionID, value) {
-    console.log('==> setIsAuthenticated() ', value, sessionID);
+    winston.info('==> setIsAuthenticated() ', value, sessionID);
     getUser(sessionID)
         .then(function (user) {
             user.authenticated = value;
@@ -117,7 +105,7 @@ module.exports.deleteSession = function(request, reply) {
     // Cleanup current session
     let currentSessionId = this.getSessionID(request, reply);
     let keyPattern = `${currentSessionId}*`;
-    console.log(`Removing redis keys for pattern ${keyPattern}`);
+    winston.info(`Removing redis keys for pattern ${keyPattern}`);
     cacheHandler.deleteKeys(keyPattern);
     reply.unstate(DATA_RETURNS_COOKIE_ID);
 };

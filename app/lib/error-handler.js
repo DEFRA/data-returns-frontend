@@ -1,4 +1,5 @@
 'use strict';
+const winston = require("winston");
 const hogan = require('hogan.js');
 const utils = require('../lib/utils');
 const path = require('path');
@@ -6,17 +7,16 @@ const merge = require('merge');
 const commonViewData = require("../lib/common-view-data");
 const templateDir = path.resolve(__dirname, '../error-templates/');
 const filenames = utils.getFileListInDir(templateDir);
-const errbit = require("./errbit-handler");
 
 //preload and compile error-templates
 var loadErrorTemplates = function () {
-    console.log('==> Loading Templates...');
+    winston.info('==> Loading Templates...');
     let compiledTemplates = {};
     let templatesLoaded = 0;
     filenames.forEach(function (filename) {
         utils.readFile(filename, function (err, fileContents) {
             if (err) {
-                errbit.notify(err);
+                winston.error(err);
             } else {
                 let x = filename.lastIndexOf('/');
                 let y = filename.indexOf('.html');
@@ -27,7 +27,7 @@ var loadErrorTemplates = function () {
         });
         templatesLoaded++;
     });
-    console.log(`<== ${templatesLoaded} templates loaded`);
+    winston.info(`<== ${templatesLoaded} templates loaded`);
     return compiledTemplates;
 };
 

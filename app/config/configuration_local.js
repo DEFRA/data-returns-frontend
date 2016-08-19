@@ -82,6 +82,18 @@ config.html = {
     cached: false
 };
 
+/*
+ * Application logging configuration
+ */
+config.logging = {
+    "level": "debug",
+    "errbit": {
+        "enabled": false,
+        "level": "error",
+        "apiKey": process.env.ERRBIT_API_KEY,
+        "appName": 'Data-Returns Front End (AWS LOCAL)'
+    }
+};
 
 // Publish the configuration.
 module.exports = config;

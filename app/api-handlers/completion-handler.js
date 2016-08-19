@@ -1,7 +1,7 @@
 'use strict';
+const winston = require("winston");
 var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-const errbit = require("../lib/errbit-handler");
 var crypto = require('../lib/crypto-handler');
 
 /**
@@ -34,7 +34,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                 orgFileName: originalFileName
             }
         };
-        console.log('\t calling api- apiData: ' + JSON.stringify(apiData));
+        winston.info('\t calling api- apiData: ' + JSON.stringify(apiData));
 
         // Make REST call into the Data Exchange service.
         request.post(apiData, function (err, response, body) {
@@ -47,15 +47,15 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                 case 500:
                     if (body) {
                         body = JSON.parse(body);
-                        errbit.notify(new Error(body.message));
+                        winston.error(new Error(body.message));
                         reject();
                     }
                     break;
                 default:
                     if (err) {
-                        errbit.notify(err);
+                        winston.error(err);
                     }
-                    console.log('completion-handler processResponse statuscode:', statusCode);
+                    winston.info('completion-handler processResponse statuscode:', statusCode);
                     reject();
                     break;
             }

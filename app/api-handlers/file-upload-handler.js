@@ -1,11 +1,11 @@
 "use strict";
+const winston = require("winston");
 var fs = require('fs');
 var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
-const errbit = require("../lib/errbit-handler");
 var crypto = require('../lib/crypto-handler');
 
 /**
@@ -19,7 +19,7 @@ var crypto = require('../lib/crypto-handler');
  *   'eaId', 'siteName' and 'returnType' as returned from the API.
  */
 module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, originalFileName) {
-    console.log('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
+    winston.info('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
     return new Promise(function (resolve, reject) {
         // Define data to send to the Data Exchange service.
         var apiData = {
@@ -45,9 +45,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
             var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
             var apiErrors = '';
 
-            console.log("Received upload response for " + originalFileName);
+            winston.info("Received upload response for " + originalFileName);
             if (err) {
-                errbit.notify(err);
+                winston.error(err);
                 reject({
                     isUserError: true,
                     errorCode: 3000
@@ -75,7 +75,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                         httpResponse = JSON.parse(body);
                     }
                 } catch (e) {
-                    errbit.notify(e);
+                    winston.error(e);
 
                     return reject({
                         isUserError: true,

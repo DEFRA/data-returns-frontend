@@ -1,4 +1,5 @@
 "use strict";
+const winston = require("winston");
 var userHandler = require('../lib/user-handler');
 var completionHandler = require('../api-handlers/completion-handler');
 var cacheHandler = require('../lib/cache-handler');
@@ -21,7 +22,7 @@ module.exports = {
         cacheHandler.arrayGet(key).then(function(uploads) {
             reply.view('data-returns/send-your-file', {"files":  uploads});
         }).catch(function() {
-            console.log("Unable to retrieve stored uploads array.");
+            winston.info("Unable to retrieve stored uploads array.");
             reply.redirect('data-returns/failure');
         });
     },
@@ -46,7 +47,7 @@ module.exports = {
                 let callbacks = 0;
                 var onFileSubmitted = function () {
                     if (++callbacks === uploads.length) {
-                        console.log("All uploads complete, sending confirmation emails");
+                        winston.info("All uploads complete, sending confirmation emails");
                         var metadata = {
                             "email": userMail,
                             "files": uploads

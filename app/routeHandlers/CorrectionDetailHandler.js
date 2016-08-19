@@ -1,9 +1,9 @@
 "use strict";
+const winston = require("winston");
 var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
 var detailsHandler = require('../api-handlers/multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
-const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
         let errorID = request.query.id;
 
         if (sessionID !== null && fileUuid !== null && errorID !== null) {
-            console.log(`Loading correction details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorID}`);
+            winston.info(`Loading correction details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorID}`);
             const fileDataKey = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]);
             const detailsKey = redisKeys.CORRECTION_DETAIL.compositeKey([sessionID, fileUuid, errorID]);
 
@@ -27,7 +27,7 @@ module.exports = {
                     return cacheHandler.getJsonValue(detailsKey);
                 })
                 .then(function (correctionDetail) {
-                    console.log(`Getting error details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorID}`);
+                    winston.info(`Getting error details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorID}`);
                     var errorDetails = detailsHandler.getErrorDetails(correctionDetail);
                     //get the first error and extract basic error details
                     var firstError = errorDetails[0];
@@ -53,7 +53,7 @@ module.exports = {
                         data: errorDetails
                     });
                 }).catch(function (err) {
-                    errbit.notify(err);
+                    winston.error(err);
                 });
         } else {
             reply.redirect('/file/choose');

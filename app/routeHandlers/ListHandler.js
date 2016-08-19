@@ -1,6 +1,6 @@
 'use strict';
+const winston = require("winston");
 var handler = require('../api-handlers/controlled-lists.js');
-const errbit = require("../lib/errbit-handler");
 var csv = require('../lib/csv-handler.js');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
      * @param reply
      */
     getHandler: function (request, reply) {
-        console.log('==> /controlled-lists');
+        winston.info('==> /controlled-lists');
         handler.getListMetaData().then(function (result) {
             var items = [];
             for (var key in result) {
@@ -27,7 +27,7 @@ module.exports = {
             reply.view('data-returns/controlled-lists', {
                 controlledLists: items
             });
-        }).catch(errbit.notify);
+        }).catch(winston.error);
     },
 
     /**
@@ -37,7 +37,7 @@ module.exports = {
      */
     getDisplayHandler: function (request, reply) {
         var list = request.query.list;
-        console.log('==> /display-list ' + list);
+        winston.info('==> /display-list ' + list);
         handler.getListProcessor(list, function(metadata, header, data) {
             reply.view('data-returns/display-list', {
                 listMetaData: metadata,
@@ -46,7 +46,7 @@ module.exports = {
                 clear: false,
                 back: request.info.referrer
             });
-        }).catch(errbit.notify);
+        }).catch(winston.error);
     },
 
     getDisplayHandlerWithSearch: function (request, reply) {
@@ -57,7 +57,7 @@ module.exports = {
         } else {
             handler.getListMetaData().then(function (metadata) {
                 handler.getListProcessor(list, function (metadata, header, data) {
-                    console.log(`==> /display-list-search list=${list} search=${metadata.defaultSearch} for search=${request.payload.search}`);
+                    winston.info(`==> /display-list-search list=${list} search=${metadata.defaultSearch} for search=${request.payload.search}`);
                     reply.view('data-returns/display-list', {
                         listMetaData: metadata,
                         tableHeadings: header,
@@ -68,7 +68,7 @@ module.exports = {
                 }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
                     throw err.message;
                 });
-            }).catch(errbit.notify);
+            }).catch(winston.error);
         }
     },
 
@@ -84,7 +84,7 @@ module.exports = {
         }
 
         var filename = request.params.list + '.csv';
-        console.log('==> /csv-list ' + filename);
+        winston.info('==> /csv-list ' + filename);
 
         handler.getListProcessor(request.params.list, function(metadata, header, data) {
             var result = csv.createCSV(header.map(h => h.name), data.map(r => r.row));
@@ -92,6 +92,6 @@ module.exports = {
                 .header('Content-Type', 'text/csv; charset=utf-8;')
                 .header('content-disposition', `attachment; filename=${filename};`).hold();
             response.send();
-        }).catch(errbit.notify);
+        }).catch(winston.error);
     }
 };

@@ -1,13 +1,14 @@
+"use strict";
+const winston = require("winston");
 var fs = require('fs');
 var gaze = require('gaze');
 var sass = require('node-sass');
 var path = require('path');
 var rootPath = path.resolve(__dirname, '../../');
 var compressor = require('node-minify');
-const errbit = require("./errbit-handler");
 
 var updateCSS = function (filepath) {
-    console.log('Compiling ' + filepath + ' to CSS...');
+    winston.info('Compiling ' + filepath + ' to CSS...');
     sass.render({
         file: rootPath + '/assets/sass/main.scss',
         outputStyle: 'expanded',
@@ -18,30 +19,28 @@ var updateCSS = function (filepath) {
             rootPath + 'govuk_modules/govuk_template/assets/stylesheets',
             rootPath + 'govuk_modules/govuk_frontend_toolkit/stylesheets']
     }, function (err, result) {
-        if (!err) {
-            // No errors during the compilation, write this result on the disk
-            fs.writeFile(rootPath + '/public/stylesheets/main.css', result.css, function (err) {
-                if (!err) {
-                    console.log('\t /public/stylesheets/main.css has been updated');
-                    new compressor.minify({
-                        type: 'clean-css',
-                        fileIn: 'public/stylesheets/main.css',
-                        fileOut: 'public/stylesheets/main-min.css',
-                        callback: function (err) {
-                            if (err) {
-                                errbit.notify(err);
-                            } else {
-                                console.log('\t /public/stylesheets/main-min.css has been updated');
-                                console.log('Changes ready to view');
-                            }
-                        }
-                    });
-                }
-            });
-        } else {
-            errbit.notify(err);
+        if (err) {
+            return winston.error(err);
         }
-
+        // No errors during the compilation, write this result on the disk
+        fs.writeFile(rootPath + '/public/stylesheets/main.css', result.css, function (err) {
+            if (!err) {
+                winston.info('\t /public/stylesheets/main.css has been updated');
+                new compressor.minify({
+                    type: 'clean-css',
+                    fileIn: 'public/stylesheets/main.css',
+                    fileOut: 'public/stylesheets/main-min.css',
+                    callback: function (err) {
+                        if (err) {
+                            winston.error(err);
+                        } else {
+                            winston.info('\t /public/stylesheets/main-min.css has been updated');
+                            winston.info('Changes ready to view');
+                        }
+                    }
+                });
+            }
+        });
     });
 };
 
@@ -59,9 +58,8 @@ module.exports = {
         updateCSS(rootPath + '/assets/sass/main.scss');
         //listen for subsequent changes
         gaze(dir + '/**/*', function (err) {
-
             if (err) {
-                errbit.notify(err);
+                return winston.error(err);
             }
 
             // Get all watched files
@@ -74,11 +72,11 @@ module.exports = {
                 });
                 // On file added
                 this.on('added', function (filepath) {
-                    console.log(filepath + ' was added');
+                    winston.info(filepath + ' was added');
                 });
                 // On file deleted
                 this.on('deleted', function (filepath) {
-                    console.log(filepath + ' was deleted');
+                    winston.info(filepath + ' was deleted');
                 });
             }
         });

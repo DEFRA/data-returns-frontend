@@ -1,6 +1,8 @@
 /**
  * Created by sam on 20/07/16.
  */
+const winston = require("winston");
+
 var createDescription = function (code, description) {
     return {
         "code": code,
@@ -21,12 +23,12 @@ errorCodes["3000"] = createDescription(3000, "Unexpected processing failure");
 
 module.exports = {
     getDescription: function (errorCode) {
-        console.log("Retrieving description for error code " + errorCode);
+        winston.log("debug", "Retrieving description for error code " + errorCode);
         var desc = "Unrecognised error";
         if (errorCodes[errorCode]) {
             desc = errorCodes[errorCode].description;
         }
-        console.log("Found description: (" + errorCode + ") " + desc);
+        winston.log("debug", "Found description: (" + errorCode + ") " + desc);
         return desc;
     }
 };

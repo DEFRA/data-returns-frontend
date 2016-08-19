@@ -1,9 +1,9 @@
 'use strict';
-
+const winston = require("winston");
 /*
  * Settings for the 'development' environment.
  */
-console.log('configuration_dev.js loaded');
+winston.info('configuration_dev.js loaded');
 var config = require('./configuration_global');
 // Set a meaningful name for this environment.
 config.env = 'dev';
@@ -79,19 +79,23 @@ config.compressCSS = true;
 config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
-//errbit integration config
-config.errbit = {};
-config.errbit.options = {
-    enabled: true,
-    apiKey: process.env.ERRBIT_API_KEY,
-    appName: 'Data-Returns Front End (AWS DEV)'
-};
-
 // html view cache control
 config.html = {
     cached: true
 };
 
+/*
+ * Application logging configuration
+ */
+config.logging = {
+    "level": "debug",
+    "errbit": {
+        "enabled": true,
+        "level": "error",
+        "apiKey": process.env.ERRBIT_API_KEY,
+        "appName": 'Data-Returns Front End (AWS DEV)'
+    }
+};
 
 // Publish the configuration.
 module.exports = config;

@@ -7,6 +7,7 @@
 /* global process */
 
 'use strict';
+const winston = require("winston");
 var random = require('random-js')();
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var maxdigits = config.pin.maxDigits;
@@ -14,7 +15,6 @@ var messages = require('./error-messages.js');
 var userHandler = require('./user-handler');
 var utils = require('./utils');
 var cacheHandler = require('./cache-handler');
-const errbit = require("./errbit-handler");
 
 var checkInvalidPinCount = function (sessionID) {
 
@@ -50,7 +50,7 @@ module.exports = {
      */
     newPin: function () {
         return new Promise(function (resolve, reject) {
-            console.log('==> newPin()');
+            winston.info('==> newPin()');
             var pin = '';
 
             try {
@@ -59,7 +59,7 @@ module.exports = {
                 }
                 resolve(parseInt(pin));
             } catch (err) {
-                errbit.notify(err);
+                winston.error(err);
                 reject();
             }
         });
@@ -69,7 +69,7 @@ module.exports = {
      */
     validatePin: function (sessionID, pin) {
         return new Promise(function (resolve, reject) {
-            console.log('==> validatePin()');
+            winston.info('==> validatePin()');
 
             checkInvalidPinCount(sessionID)
                 .then(function () {
@@ -84,7 +84,7 @@ module.exports = {
                             }
 
                             if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
-                                console.log('\t pin is valid');
+                                winston.info('\t pin is valid');
                                 resolve({
                                     error: false,
                                     code: messages.PIN.VALID_PIN
@@ -103,7 +103,7 @@ module.exports = {
                                     }
                                 }
 
-                                console.log('\t pin is invalid');
+                                winston.info('\t pin is invalid');
                                 reject({
                                     error: false,
                                     code: code

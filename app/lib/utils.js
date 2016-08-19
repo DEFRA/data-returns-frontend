@@ -1,10 +1,10 @@
 'use strict';
+const winston = require("winston");
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
 var path = require('path');
-const errbit = require("./errbit-handler");
 
 /* loadFilesInDir: Recursivly loads file names in to an array
  * @param dir the parent base directory to scan
@@ -98,7 +98,7 @@ module.exports = {
      * Creates the upload directory
      */
     createUploadDirectory: function () {
-        console.log('==> createUploadDirectory() ');
+        winston.info('==> createUploadDirectory() ');
         var stats;
         try {
             // Query the entry
@@ -111,13 +111,12 @@ module.exports = {
         if (stats === null || !stats.isDirectory()) {
             mkdirp(config.upload.path, function (err) {
                 if (err) {
-                    errbit.notify(err);
-                } else {
-                    console.log('<== createUploadDirectory() ' + config.upload.path + ' created.');
+                    return winston.error(err);
                 }
+                winston.info('<== createUploadDirectory() ' + config.upload.path + ' created.');
             });
         } else {
-            console.log('<== createUploadDirectory() Path already exists: ' + config.upload.path);
+            winston.info('<== createUploadDirectory() Path already exists: ' + config.upload.path);
         }
     },
     /*

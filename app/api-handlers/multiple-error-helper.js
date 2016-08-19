@@ -4,10 +4,10 @@
  * 
  * 
  */
+const winston = require("winston");
 var cacheHandler = require('../lib/cache-handler');
 var utils = require('../lib/utils');
 var _ = require('lodash');
-const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
@@ -94,7 +94,7 @@ module.exports = {
                     .then(function () {
                         return;
                     })
-                    .catch(errbit.notify);
+                    .catch(winston.error);
             })(groupID, group);
         }
         return errorPageData;

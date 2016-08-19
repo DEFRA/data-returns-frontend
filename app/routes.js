@@ -1,4 +1,5 @@
 'use strict';
+const winston = require("winston");
 var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
 var basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var startHandler = require('./routeHandlers/StartHandler');
@@ -189,6 +190,17 @@ module.exports = [
         method: 'GET',
         path: '/csv/{list*}',
         handler: listHandler.getCSVHandler
+    },
+    {
+        method: 'GET',
+        path: '/testlogging',
+        handler: function (request, reply) {
+            winston.debug("Test debug logging");
+            winston.info("Test info logging");
+            winston.warn("Test warn logging");
+            winston.error("Test error message", new Error("Test error logging"));
+            reply({status:"ok"});
+        }
     }
 ];
 

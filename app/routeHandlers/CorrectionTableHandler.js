@@ -1,4 +1,5 @@
 "use strict";
+const winston = require("winston");
 const cacheHandler = require('../lib/cache-handler');
 const userHandler = require('../lib/user-handler');
 const redisKeys = require('../lib/redis-keys');
@@ -12,7 +13,7 @@ module.exports = {
     getHandler: function (request, reply) {
         var sessionID = userHandler.getSessionID(request);
         var fileUuid = request.query.uuid;
-        console.log(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
+        winston.info(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
         if (fileUuid) {
             cacheHandler.getJsonValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]))
                 .then(function (fileData) {

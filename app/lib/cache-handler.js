@@ -3,10 +3,10 @@
  * 
  * 
  */
-'use strict';
+"use strict";
+const winston = require("winston");
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var errorMessages = require('./error-messages.js');
-const errbit = require("./errbit-handler");
 var redis = require('redis'),
     client = redis.createClient(config.redis.clientOptions);
 
@@ -40,7 +40,7 @@ module.exports = {
             if (client && client.connected) {
                 client.get(key, function (err, reply) {
                     if (err) {
-                        errbit.notify(err);
+                        winston.error(err);
                         reject({
                             error: true,
                             message: err.message
@@ -50,7 +50,7 @@ module.exports = {
                     }
                 });
             } else {
-                errbit.notify(new Error(errorMessages.REDIS.NOT_CONNECTED));
+                winston.error(new Error(errorMessages.REDIS.NOT_CONNECTED));
                 reject({
                     error: true,
                     message: errorMessages.REDIS.NOT_CONNECTED
@@ -68,7 +68,7 @@ module.exports = {
             if (value) {
                 client.set(key, JSON.stringify(value), function (err) {
                     if (err) {
-                        errbit.notify(err);
+                        winston.error(err);
                         reject(err);
                     } else {
                         setExpiry(key, expiry);
@@ -109,7 +109,7 @@ module.exports = {
             if (keys.length > 0) {
                 client.del(keys, function (err) {
                     if (err) {
-                        console.error(err);
+                        winston.error(err);
                     }
                 });
             }
@@ -192,7 +192,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             client.DEL(key, function (err) {
                 if (err) {
-                    errbit.notify(err);
+                    winston.error(err);
                     reject();
                 }
                 resolve(true);
@@ -201,4 +201,4 @@ module.exports = {
     }
 };
 
-client.on('error', errbit.notify);
+client.on('error', winston.error);

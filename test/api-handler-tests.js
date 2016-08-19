@@ -1,3 +1,4 @@
+const winston = require("winston");
 var Code = require('code');
 var Lab = require('lab');
 var lab = exports.lab = Lab.script();
@@ -26,13 +27,13 @@ lab.experiment('error-handler.js library', function () {
                         done();
                     })
                     .catch(function (err) {
-                        console.log('Error' + JSON.stringify(err));
+                        winston.error('Error' + JSON.stringify(err));
                         expect(err).to.be.an.Object;
                         done();
                     });
             })
             .catch(function (err) {
-                console.log('Error' + JSON.stringify(err));
+                winston.error('Error' + JSON.stringify(err));
                 expect(err).to.be.an.Object;
                 done();
             });

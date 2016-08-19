@@ -1,5 +1,5 @@
 var userHandler = require('../lib/user-handler');
-const errbit = require("../lib/errbit-handler");
+const winston = require("winston");
 /*
  * HTTP GET handler for gets for /file/check
  * @param {type} request
@@ -16,7 +16,7 @@ module.exports.getHandler = function (request, reply) {
             }
         })
         .catch(function (err) {
-            errbit.notify(err);
+            winston.error(err);
             reply.redirect('/email');
         });
 };

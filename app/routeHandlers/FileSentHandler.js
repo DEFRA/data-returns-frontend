@@ -1,6 +1,6 @@
 "use strict";
 var userHandler = require('../lib/user-handler');
-const errbit = require("../lib/errbit-handler");
+const winston = require("winston");
 
 /*
  * HTTP GET Handler for /file/sent
@@ -12,6 +12,6 @@ module.exports.getHandler = function (request, reply) {
         reply.view('data-returns/file-sent', { userEmail: userMail });
         userHandler.deleteSession(request, reply);
     }).catch(function (err) {
-        errbit.notify(err);
+        winston.error(err);
     });
 };

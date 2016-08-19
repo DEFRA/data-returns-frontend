@@ -1,13 +1,14 @@
 "use strict";
+const winston = require("winston");
 var csvValidator = require('../lib/csv-validator');
 var fs = require('fs');
+const lodash = require("lodash");
 var uuidGen = require('node-uuid');
 var fileUploadHandler = require('../api-handlers/file-upload-handler');
 var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
 var errorDescs = require('../lib/error-descriptions');
 var metricsHandler = require('../lib/MetricsHandler');
-const errbit = require("../lib/errbit-handler");
 var redisKeys = require('../lib/redis-keys');
 
 /**
@@ -105,7 +106,7 @@ function handleUploadedFile(fileData) {
     return new Promise(function (resolve, reject) {
         var fileSize = fs.statSync(fileData.localFilename).size;
         metricsHandler.setFileSizeHighWaterMark(fileSize);
-        console.log('ChooseFileHandler: Processing new uploaded file: ' + fileData.clientFilename);
+        winston.info('ChooseFileHandler: Processing new uploaded file: ' + fileData.clientFilename);
         csvValidator.validateFile(fileData.localFilename, fileSize).then(function () {
             return fileUploadHandler.uploadFileToService(fileData.localFilename, fileData.sessionID, fileData.id, fileData.clientFilename);
         }).then(function (backendResult) {
@@ -116,36 +117,35 @@ function handleUploadedFile(fileData) {
         }).then(function (fileData) {
             resolve({"success": true, "details": fileData});
         }).catch(function (errorData) {
-            if (errorData === null || !('isUserError' in errorData) || !errorData.isUserError) {
-                errbit.notify(errorData);
-                reject({
+            if (lodash.isError(errorData)) {
+                winston.error(errorData);
+                return reject({
                     "success": false,
                     "preventRetry": false,
                     "details": createFileDetailsJson(fileData.id, fileData.clientFilename, 3000)
                 });
-            } else {
-                console.log("ChooseFileHandler: Validation errors found in " + fileData.clientFilename);
-                // Handle expected errors...
-                let errorCode = errorData.errorCode;
-                let processingResult = createFileDetailsJson(fileData.id, fileData.clientFilename, errorCode);
-                processingResult.correctionsData = errorData;
-
-                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileData.id]), processingResult).then(function () {
-                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
-                    resolve({
-                        "success": false,
-                        "preventRetry": true,
-                        "details": processingResult
-                    });
-                });
             }
+
+            winston.info("ChooseFileHandler: Validation errors found in " + fileData.clientFilename);
+            // Handle expected errors...
+            let errorCode = errorData.errorCode;
+            let processingResult = createFileDetailsJson(fileData.id, fileData.clientFilename, errorCode);
+            processingResult.correctionsData = errorData;
+
+            cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileData.id]), processingResult).then(function () {
+                cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
+                resolve({
+                    "success": false,
+                    "preventRetry": true,
+                    "details": processingResult
+                });
+            });
         }).then(function () {
             // Finally delete the uploaded file - we can delete it here because any valid file will be stored on the
             // backend API and we don't care about invalid files
             fs.unlink(fileData.localFilename, function (err) {
                 if (err !== null) {
-                    errbit.notify(err);
-                    console.error(`Unable to delete uploaded file ${fileData.localFilename}, reason: ${err.message}`);
+                    winston.error(`Unable to delete uploaded file ${fileData.localFilename}`, err);
                 }
             });
         });

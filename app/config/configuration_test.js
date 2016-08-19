@@ -77,17 +77,22 @@ config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
 config.compressCSS = true;
 
-//errbit integration config
-config.errbit = {};
-config.errbit.options = {
-    enabled: false,
-    apiKey: process.env.ERRBIT_API_KEY,
-    appName: 'Data-Returns Front End (AWS TEST)'
-};
-
 // html view cache control
 config.html = {
     cached: true
+};
+
+/*
+ * Application logging configuration
+ */
+config.logging = {
+    "level": "info",
+    "errbit": {
+        "enabled": true,
+        "level": "error",
+        "apiKey": process.env.ERRBIT_API_KEY,
+        "appName": 'Data-Returns Front End (AWS TEST)'
+    }
 };
 
 // Publish the configuration.

@@ -1,9 +1,11 @@
 "use strict";
+const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
-const errbit = require("./app/lib/errbit-handler");
+const merge = require('merge');
+// const winston = require("winston");
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
@@ -14,27 +16,28 @@ var server = new Hapi.Server();
 const cacheHandler = require('./app/lib/cache-handler');
 const redisKeys = require('./app/lib/redis-keys.js');
 
-console.log("Server starting.  Environment: " + JSON.stringify(process.env));
+
+winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env));
 
 // Register the hapi server with the errbit handler
-errbit.registerHapi(server);
+// errbit.registerHapi(server);
 
 //listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
-console.log('Starting the Data-Returns Service');
+
 // Test for cryptography support
 try {
     require('crypto');
 } catch (err) {
-    console.log('Cryptography support is disabled!');
+    winston.info('Cryptography support is disabled!');
     throw err;
 }
 
 // Remove and recreate upload dir
-console.log(`Removing old upload folder ${config.upload.path}`);
+winston.info(`Removing old upload folder ${config.upload.path}`);
 rimraf(config.upload.path, function() {
     mkdirp(config.upload.path, function(err) {
-       console.log(err);
+       winston.info(err);
     });
 });
 
@@ -57,39 +60,29 @@ server.connection({
     }
 });
 
+const goodWinstonOptions = {
+    levels: {
+        ops: "debug",
+        response: "info",
+        log: "info",
+        error: "error",
+        request: "info"
+    }
+};
+
 // Setup logging.
 server.register({
-    register: require('good'),
+    register: require("good"),
     options: {
         ops: {
-            interval: 1000
+            interval: 60000
         },
         reporters: {
-            console: [
-                {
-                    module: 'good-squeeze',
-                    name: 'Squeeze',
-                    args: [{ log: '*', response: '*' }]
-                },
-                {
-                    module: 'good-console'
-                }, 'stdout'
-            ],
-            file: [
-                {
-                    module: 'good-squeeze',
-                    name: 'Squeeze',
-                    args: [{ ops: '*' }]
-                },
-                {
-                    module: 'good-squeeze',
-                    name: 'SafeJson'
-                },
-                {
-                    module: 'good-file',
-                    args: ['./logs/datareturns.log']
-                }
-            ],
+            winston: [{
+                module: "hapi-good-winston",
+                name: "goodWinston",
+                args: [winston, goodWinstonOptions],
+            }]
         }
     }
 }, (err) => {
@@ -102,7 +95,7 @@ server.register({
 // this site (useful when the site is hosted publicly but still in development).
 if (config.requireBasicAuth) {
     if (!config.basicAuthUsername || !config.basicAuthPassword) {
-        console.log('Basic Authentication username or password is not set; exiting.');
+        winston.info('Basic Authentication username or password is not set; exiting.');
         process.exit(1);
     }
 
@@ -177,12 +170,10 @@ server.ext('onPreResponse', function (request, reply) {
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
 
-    // Payload content length greater than maximum allowed
     if (request.response.isBoom) {
         var err = request.response;
         var errorMessage = err.output.payload.message;
-        console.error('Boom Error', err);
-        errbit.notify((errorMessage || err));
+        winston.error(`Boom error - ${errorMessage}"`, new Error(err));
     }
     return reply(resp);
 });
@@ -192,13 +183,21 @@ server.ext('onPreResponse', function (request, reply) {
 var exec = require('child_process').exec;
 
 exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
-    console.log('Checking javascript files ');
-    console.log(stdout);
+    winston.info('Checking javascript files ');
+    for (let line of stdout.split("\n")) {
+        winston.info(line);
+    }
+    if (error) {
+        winston.error(error);
+    }
 });
 exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
-    console.log('Running Unit Tests: ' + stdout);
+    winston.info('Running Unit Tests:');
+    for (let line of stdout.split("\n")) {
+        winston.info(line);
+    }
     if (error) {
-        console.error(error);
+        winston.error(error);
     }
 });
 
@@ -212,7 +211,7 @@ server.start(function (err) {
     }
 
     utils.createUploadDirectory();
-    console.log('==> Minifying and combining Javascript files');
+    winston.info('==> Minifying and combining Javascript files');
     var jsFileMapping = [
         {
             "in": "assets/javascripts/fine-uploader/fine-uploader.js",
@@ -245,5 +244,5 @@ server.start(function (err) {
             }
         });
     }
-    console.log('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
+    winston.info('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
 });
