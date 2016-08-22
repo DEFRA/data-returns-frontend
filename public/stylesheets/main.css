@@ -2122,7 +2122,7 @@ input.validation-code {
 .file-upload .uploader-container p.choose-file {
   display: inline-block;
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 8px;
   vertical-align: top;
 }
 
