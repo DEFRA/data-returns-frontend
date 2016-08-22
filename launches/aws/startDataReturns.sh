@@ -19,6 +19,6 @@ npm install
 if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi
-echo "http_proxy= https_proxy= node server.js" > /srv/data-returns/data-returns.sh
+echo "http_proxy= node server.js" > /srv/data-returns/data-returns.sh
 chmod u+x /srv/data-returns/data-returns.sh
 pm2 start data-returns.sh
