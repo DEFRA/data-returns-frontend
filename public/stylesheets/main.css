@@ -1990,6 +1990,14 @@ p + .help-notice {
   margin: 10px 0;
 }
 
+.search-list .button {
+  padding-top: 0.35em;
+}
+
+.attachment {
+  float: right;
+}
+
 .attachment .assistive-technology {
   color: #0b0c0c;
   font-family: "nta",Arial,sans-serif;
@@ -2003,24 +2011,25 @@ p + .help-notice {
 }
 
 .attachment .attachment-thumb {
-  float: left;
-  width: 124px;
   margin-top: 5px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   position: relative;
+  text-align: right;
 }
 
 .attachment .attachment-thumb img {
   background: white none repeat scroll 0 0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
   display: block;
-  height: 140px;
+  height: 100px;
   outline: 5px solid rgba(11, 12, 12, 0.1);
-  width: 99px;
+  width: 75px;
+  margin: 0 auto;
 }
 
 .attachment .attachment-thumb a {
   display: inline-block;
+  margin: 0 20px;
 }
 
 .attachment .title a {
