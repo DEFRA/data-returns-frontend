@@ -8,38 +8,60 @@ Controlled Lists
 
 <main id="content" role="main">
 
+
     <h2 class="heading-large">{{listMetaData.description}}</h2>
 
-    <p style="display: inline-block;"><a id="back.btn" href="{{back}}" class="button">Back</a></p>
 
-    <div style="float: right">
-        <p align="right"><a href="/csv/{{listMetaData.path}}">Download the list as a .csv file</a></p>
-        <form action="display-list-search?list={{listMetaData.path}}" method="post">
-            <label for="search">Search:</label> <input id="search" type="text" name="search">
-            <input class="button" type="submit" value="Go">
-            {{#clear}}
-            <a id="clear" class="button" href="/display-list?list={{listMetaData.path}}">Clear search</a>
-            {{/clear}}
-        </form>
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        <div class="form-group">
+          <p><a id="back.btn" href="{{back}}" class="button">Go back</a></p>
+        </div>
+        <div class="form-group search-list">
+          <form action="display-list-search?list={{listMetaData.path}}" method="post">
+              <label class="form-label" for="search">Filter this list:</label>
+              <input id="search" class="form-control" type="text" name="search">
+              <input class="button button-secondary" type="submit" value="Submit">
+              {{#clear}}
+                <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}">Clear filter</a>
+              {{/clear}}
+          </form>
+        </div>
+      </div>
+
+      <div class="column-one-third">
+        <div class="form-group">
+          <section id="attachment" class="attachment embedded">
+              <div class="attachment-thumb"> <a align="right" href="/csv/{{listMetaData.path}}"><img src="/public/images/pub-cover-spreadsheet.png" alt=""></a> </div>
+              <div class="attachment-details">
+                <!-- <h2 class="title">{{#tableHeadings}}{{description}}{{/tableHeadings}}.csv</h2> -->
+                <p class="metadata">
+                  <span class="download">
+      							<a align="right" href="/csv/{{listMetaData.path}}"><strong>Download  as a CSV</strong></a>
+      						</span> </p>
+              </div>
+          </section>
+        </div>
+      </div>
     </div>
 
     <table>
-        <thead>
-            <tr>
-                {{#tableHeadings}}
-                <th>{{description}}</th>
-                {{/tableHeadings}}
-            </tr>
-        </thead>
-        <tbody>
-            {{#rows}}
-            <tr>
-                {{#row}}
-                    <td>{{.}}</td>
-                {{/row}}
-            </tr>
-            {{/rows}}
-        </tbody>
+      <thead>
+        <tr>
+          {{#tableHeadings}}
+            <th>{{description}}</th>
+          {{/tableHeadings}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#rows}}
+          <tr>
+            {{#row}}
+              <td>{{.}}</td>
+            {{/row}}
+        </tr>
+        {{/rows}}
+      </tbody>
     </table>
 
  </main>
