@@ -27,12 +27,12 @@ Send your data returns online
       </tr>
     </thead>
     <tbody>
-      {{#data}}
+      {{#errorDetail.rowErrors}}
       <tr>
-        <td>{{errorValue}}</td>
-        <td>{{rowNumberText}}</td>
+        <td>{{errorText}}</td>
+        <td>{{rowText}}</td>
       </tr>
-      {{/data}}
+      {{/errorDetail.rowErrors}}
     </tbody>
   </table>
 </main>

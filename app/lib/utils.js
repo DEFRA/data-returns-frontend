@@ -27,24 +27,6 @@ var getFileListInDir = function (dir, filelist) {
 };
 
 module.exports = {
-    /**
-     * Renames a file asynchronously using a promise.
-     * @param oldPath The full path to the file to rename.
-     * @param newPath The full path to the new name of the file.
-     * @returns {Promise} A promise which is fulfilled (with the new file path)
-     *   when the file has been renamed, or is rejected upon an error.
-     */
-    renameFile: function (oldPath, newPath) {
-        return new Promise(function (resolve, reject) {
-            fs.rename(oldPath, newPath, function (err) {
-                if (err === null) {
-                    resolve(newPath);
-                } else {
-                    reject(err);
-                }
-            });
-        });
-    },
     /*
      * Calculates the number of minutes between 2 dates
      * @param {Date} startDate
@@ -78,21 +60,6 @@ module.exports = {
         var min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
         var sep = ':';
         return hr + sep + min;
-    },
-    /*
-     * Sorts an array of JSON objects based on a property in the objects
-     * @param propertyName the propert name to sort on
-     */
-    sortByProperty: function (propertyName) {
-        return function (a, b) {
-            var sortStatus = 0;
-            if (a[propertyName] < b[propertyName]) {
-                sortStatus = -1;
-            } else if (a[propertyName] > b[propertyName]) {
-                sortStatus = 1;
-            }
-            return sortStatus;
-        };
     },
     /*
      * Creates the upload directory
@@ -157,11 +124,6 @@ module.exports = {
      */
     pad: function pad(num, len) {
         return (Array(len).join('0') + num).slice(-len);
-    },
-    titleCase: function (input) {
-        input = input.toLowerCase();
-        var ret = input.charAt(0).toUpperCase() + Array.prototype.slice.call(input, 1).join('');
-        return ret;
     }
 };
 

@@ -1,172 +1,167 @@
 "use strict";
 /*
  * Helper module to help handle multiple errors returned from the backend API
- * 
- * 
  */
-const winston = require("winston");
-var cacheHandler = require('../lib/cache-handler');
-var utils = require('../lib/utils');
-var _ = require('lodash');
-var redisKeys = require('../lib/redis-keys');
+const lodash = require('lodash');
 
-module.exports = {
-    /*
-     * Groups error data by column name and error type,
-     * where error type is ether missing or incorrect
-     * caches the grouped data in Redis for use in error detail pages
-     * @param the error data returned from the API
-     */
-    groupErrorData: function (sessionID, fileUuid, data) {
-        var groupedData = {};
-        var groupLinkID = new Map();
-        var errorPageData = [];
-        //create linkid's for each group (used in html page links)
-        data.forEach(function (item) {
-            var columnName = item.fieldName;
-            var groupkey = columnName;
-            var groupID = "DR" + item.errorCode;
-            groupLinkID.set(groupkey, groupID);
-        });
-        //create grouped data for the details page
-        var lineNos = new Map();
-        data.forEach(function (item) {
-
-            var columnName = item.fieldName;
-            var errorType = item.errorValue === null ? 'Missing' : 'Incorrect';
-            var errorValue = item.errorValue === null ? 'Missing' : item.errorValue;
-            var rowNumber = item.lineNumber;
-            var errorCode = item.errorCode;
-            var errorMessage = item.errorMessage;
-            var groupkey = columnName;
-            var group = groupedData[groupkey] || [];
-            var linekey = groupkey + rowNumber;
-            var temp;
-            var Correction = true;
-            var CorrectionDetails = true;
-            var CorrectionMoreHelp = true;
-
-            var helpReference = item.helpReference;
-            var moreHelp = item.moreHelp;
-            var definition = item.definition;
-            if (!lineNos.has(linekey)) {
-                //Add a record to the group
-                lineNos.set(linekey, linekey);
-                temp = {
-                    rowNumber: rowNumber,
-                    columnName: columnName,
-                    errorValue: errorValue,
-                    errorType: utils.titleCase(errorType),
-                    errorMessage: errorMessage,
-                    errorCode: errorCode,
-                    helpReference: helpReference,
-                    definition: definition,
-                    Correction: Correction,
-                    CorrectionDetails: CorrectionDetails,
-                    CorrectionMoreHelp: CorrectionMoreHelp,
-                    moreHelp: moreHelp,
-                    groupID: groupLinkID.get(groupkey)
-                };
-                group.push(temp);
-                //update errorType in an existing record in the group
-                //if there is both missing and incorrect in the group
-                var clonedGroup = _.groupBy(group, 'errorType');
-                var groupCount = Object.keys(clonedGroup).length;
-                group.forEach(function (record) {
-                    if (record.columnName === columnName && groupCount > 1) {
-                        record.errorType = 'Missing and incorrect';
-                    }
-                });
-            }
-
-            // add this group to a container
-            groupedData[groupkey] = group;
-        });
-        //save groups to redis for use later in details page
-        for (var groupName in groupedData) {
-            var groupID = groupLinkID.get(groupName);
-            var group = groupedData[groupName];
-            var firstErrorInGroup = group[0];
-            errorPageData.push(firstErrorInGroup);
-            (function (groupID, group) {
-                var key = redisKeys.CORRECTION_DETAIL.compositeKey([sessionID, fileUuid, groupID]);
-                cacheHandler.setValue(key, group)
-                    .then(function () {
-                        return;
-                    })
-                    .catch(winston.error);
-            })(groupID, group);
-        }
-        return errorPageData;
+let errorTypeInfo = {
+    "missing": {
+        "order": 0,
+        "display": "Missing"
     },
-    getErrorDetails: function (data) {
-        var errorDetails = [];
-        var dataClone = _.cloneDeep(data);
+    "length": {
+        "order": 1,
+        "display": "Incorrect"
+    },
+    "incorrect": {
+        "order": 2,
+        "display": "Incorrect"
+    },
+    "conflict": {
+        "order": 3,
+        "display": "Conflicting"
+    }
+};
 
-        //substitute null and undefined error Values for the word 'Missing'
-        //and LENGTH for 'Incorrect'
-        dataClone.forEach(function (row) {
-            if (row.errorValue === 'undefined' || row.errorValue === null) {
-                row.errorValue = 'Missing';
-            }
-            if (row.errorValue === 'LENGTH') {
-                row.errorValue = 'Incorrect';
-            }
-        });
+let getCorrectionTableErrorText = function(errorTypesArr) {
+    let sortedTypes = lodash.sortBy(lodash.uniq(errorTypesArr), function(item) {
+        let lookup = new String(item).toLowerCase();
+        return errorTypeInfo[lookup].order;
+    });
+    let displayText = "";
+    sortedTypes.forEach((text, index) => {
+        if (index > 0) {
+            let sep = ", ";
+            if (index === sortedTypes.length - 1) sep = " and ";
+            displayText += sep;
+        }
+        displayText += text;
+    });
+    return displayText;
+};
 
-        // use lodash to group errors by errorValue
-        var groupedData = _.groupBy(dataClone, 'errorValue');
-        var groupKeys = _.keys(groupedData);
-        var group, sortedGroup, item, prevRowNumber;
-        var rowNumberText = null, detailRow;
+let getErrorMessageForKey = function (key) {
+    let lookup = new String(key).toLowerCase();
+    return errorTypeInfo[lookup].display;
+};
 
-        groupKeys.forEach(function (groupKey) {
-            group = groupedData[groupKey];
-            //sort each group by row number
-            sortedGroup = _.sortBy(group, 'rowNumber');
+let collapseRows = function (rowErrors) {
+    let errors = lodash.sortBy(rowErrors, ["errorType", "lineNumber"]);
+    let rowsNumbersByError = new Map();
+    let outputRowErrors = new Array();
 
-            //Process row numbers format for display
-            rowNumberText = null;
-            var max = sortedGroup.length;
-            var wasAdj = false;
-
-            for (var i = 0; i < max; i++) {
-                item = sortedGroup[i];
-
-                //first record
-                if (i === 0) {
-                    rowNumberText = item.rowNumber;
-                    prevRowNumber = item.rowNumber;
-                } else {
-                    //subsequent records
-                    //is the current row adjacent to previous row
-                    if ((prevRowNumber + 1) === item.rowNumber) {
-                        wasAdj = true;
-                    } else {
-                        if (wasAdj) {
-                            rowNumberText += '-' + sortedGroup[(i - 1)].rowNumber;
-                        }
-                        rowNumberText += ', ' + item.rowNumber;
-                        wasAdj = false;
-                    }
-                    prevRowNumber = item.rowNumber;
-                }
-                detailRow = item;
-            }
-
-            if (wasAdj) {
-                rowNumberText += '-' + sortedGroup[max - 1].rowNumber;
-            }
-
-            detailRow.rowNumberText = rowNumberText;
-            detailRow.errorValue = _.upperFirst(groupKey);
-            errorDetails.push(detailRow);
-
-        });
-
-        //phew! and finally sort on the error !
-        errorDetails = _.sortBy(errorDetails, 'errorValue');
-        return errorDetails;
+    for (let error of errors) {
+        let rowNumberArrayForType = rowsNumbersByError.get(error.errorText);
+        if (!Array.isArray(rowNumberArrayForType)) {
+            rowNumberArrayForType = new Array();
+        }
+        rowNumberArrayForType.push(error.lineNumber);
+        rowsNumbersByError.set(error.errorText, rowNumberArrayForType);
     }
 
+    rowsNumbersByError.forEach(function(valRowNumbers, keyErrorText) {
+        outputRowErrors.push({
+            "errorText": keyErrorText,
+            "rowText": collapseArrayRanges(valRowNumbers)
+        });
+    });
+    return outputRowErrors;
+};
+
+
+var collapseArrayRanges = function (intArray) {
+    let listing = [];
+    let start;
+    intArray.forEach((currentInt, index) => {
+        const previousFilled = intArray[index - 1] === (currentInt - 1);
+        const nextFilled = intArray[index + 1] === (currentInt + 1);
+
+        // Next item is empty, and previous was filled, so add range listing
+        if (!nextFilled && previousFilled) {
+            return listing.push(`${start}-${currentInt}`);
+        }
+
+        if (!previousFilled) {
+            // Next is empty, so this is a single listing
+            if (!nextFilled) {
+                listing.push(currentInt);
+            }
+            start = currentInt;
+        }
+    });
+    return listing.join(', ');
+};
+
+
+module.exports = {
+    /**
+     * Transform the backend error stucture into a structure we can use to display data on the corrections table
+     * and the corrections detail pages.
+     *
+     * This method processes each error returned by the backend and groups them based on the errorCode.  For each
+     * top level item an array of row errors is created to provide the information necessary for the corrections
+     * detail pages.
+     *
+     * @param data
+     * @returns {Array}
+     */
+    groupErrorData: function (data) {
+        let sortedData = lodash.sortBy(data, ["errorCode", "errorType"]);
+
+        let displayData = new Array();
+        let lastDisplayItem = null;
+        for (let item of sortedData) {
+            let displayItem = null;
+
+            if (lastDisplayItem === null || lastDisplayItem.errorCode !== item.errorCode) {
+                // Create a new display item for the current error code
+                displayItem = lodash.cloneDeep(item);
+                displayData.push(displayItem);
+            } else {
+                // Get last item encountered
+                displayItem = displayData[displayData.length - 1];
+            }
+
+            // Record of list or error types on the display item (e.g. Missing, Incorrect, Conflicting)
+            if (!Array.isArray(displayItem.errorTypesArr)) {
+                displayItem.errorTypesArr = new Array();
+            }
+            displayItem.errorTypesArr.push(item.errorType);
+
+            // Create a rowErrors object to provide information for the correction detail page
+            if (!Array.isArray(displayItem.rowErrors)) {
+                displayItem.rowErrors = new Array();
+            }
+
+            // If item was invalid then display the invalid value, otherwise display the reason the item failed validation
+            let errorText = item.errorValue;
+            if ("incorrect" !== item.errorType.toLowerCase()) {
+                errorText = getErrorMessageForKey(item.errorType);
+            }
+
+            displayItem.rowErrors.push({
+                "errorText":  errorText,
+                "rowText": item.lineNumber,
+                "errorType": item.errorType,
+                "lineNumber": item.lineNumber
+            });
+
+            // Update the reference to the last displayed item
+            lastDisplayItem = displayItem;
+        }
+
+        displayData.forEach(function(item) {
+            // Tidy up the top level details which are displayed in the corrections table
+            item.fieldName = item.fieldName || "(Multiple)";
+            item.errorType = getCorrectionTableErrorText(item.errorTypesArr);
+            item.rowErrors = collapseRows(item.rowErrors);
+
+            // These fields are no longer required on the top level objects as the detail is recorded in the rowErrors
+            // property at the lower level (to be displayed on the corrections detail page)
+            delete item.errorTypesArr;
+            delete item.lineNumber;
+
+        });
+        return displayData;
+    }
 };
