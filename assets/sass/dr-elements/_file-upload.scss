@@ -30,57 +30,65 @@
 			}
 		}
   }
+
   .upload-list {
     clear:both;
-  }
-  .statusbar.statusbar-header {
-  	font-weight:600;
-		.status, .details, .remove  {
-  		padding: 0;
-  		vertical-align: middle;
-  	}
-  }
+		table-layout:fixed;
 
-	@include media(mobile) {
-  	.statusbar.statusbar-header::after {
-			content:"Your files";
-		}
-  	.statusbar.statusbar-header {
+		/* Mobile formatting */
+		@include media(mobile) {
+			display:block;
+			.statusbar.statusbar-header::after {
+				content:"Your files";
+				font-weight: bold;
+			}
+			.statusbar.statusbar-header {
+				.filename {
+					display:none;
+				}
+			}
+			thead, tr, tbody {
+				display:block;
+			}
+			.statusbar-header {
+				.filename, .status, .details, .remove  {
+		  		display:none;
+		  	}
+			}
+			.filename, .status, .details, .remove  {
+	  		display:block;
+				width:100%;
+				padding-right: 0;
+				border-bottom:0;
+	  	}
 			.filename {
-				display:none;
+				border-top:1px solid $grey-2;
+			}
+			.details, .remove  {
+				width:50%;
+				display:inline-block;
 			}
 		}
-	}
+  }
+
   .statusbar {
   	border-top: none;
-  	border-bottom:1px solid #BFC1C3;
-  	width: auto;
-  	vertical-align: middle;
-  	font-size: 16px;
   	position: relative;
   	.filename, .status, .details, .remove  {
   		position: relative;
-  		margin: 5px 0;
-  		padding: 5px 0 3px;
-  		vertical-align: top;
   	}
 		.filename {
-			overflow:hidden;
-			text-overflow: ellipsis;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+			font-size: 16px;
 		}
-  	@include media(mobile) {
-			.details {
-				display:inline-block;
-				width:50%;
-			}
-			.remove {
-				display:inline-block;
-				width:50%;
-			}
+		.remove {
+			text-align:right;
+			padding-right: 0;
 		}
   	@include media(tablet) {
   		.filename, .status, .details, .remove  {
-  			display: inline-block;
   		}
   		.filename {
   		 width:35%;
@@ -99,9 +107,7 @@
   .status {
     .file-error, .file-ready {
       display: inline-block;
-      font-size: 14px;
       font-weight: bold;
-      max-width: 90%;
       text-transform: uppercase;
       padding: 2px 4px 0;
       @include border-radius(2px);
@@ -134,13 +140,10 @@
 	}
 	.remove {
 		text-align:right;
-		display: inline-block;
     .link {
-      font-size: 16px;
       background: transparent none repeat scroll 0 0;
       border:0;
-      padding:0;
-      line-height: 1;
+			padding-right: 0;
     }
     .link:hover {
       cursor: pointer;
