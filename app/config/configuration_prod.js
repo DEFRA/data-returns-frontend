@@ -8,11 +8,14 @@ var config = require('./configuration_global');
 // Set a meaningful name for this environment.
 config.env = 'prod';
 
+// In production we *do* want to use Google Analytics.
+config.useGoogleAnalytics = true;
+
 /* SMTP Prod Configuration */
 config.smtp = config.smtp || {};
-config.smtp.host = 'email-smtp.eu-west-1.amazonaws.com';
+config.smtp.host = 'smtp.sendgrid.net';
 config.smtp.port = 587;
-config.smtp.ignoreTLS = false;
+config.smtp.ignoreTLS = true;
 config.smtp.username = process.env.smtpuser;
 config.smtp.password = process.env.smtppw;
 config.smtp.fromEmailAddress = 'noreply@environment-agency.gov.uk';
@@ -44,9 +47,8 @@ config.CSV = {
 /* cache configuration */
 config.redis = {
     clientOptions: {
-        host: 'localhost',
-        port: 6370,
-        auth_pas: ''
+        host: '10.208.7.112',
+        port: 6379
     }
 };
 
@@ -54,14 +56,14 @@ config.redis = {
 
 var BASEURL = {
     PROTOCOL: 'http://',
-    SERVER: 'localhost:',
+    SERVER: 'internal-EADRASLB01-1716219104.eu-west-1.elb.amazonaws.com:',
     PORT: 9020
 };
 
 config.API = {};
 config.API.endpoints = {
     'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
-    'FILEUPLOADSEND': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
+    'FILEUPLOADCOMPLETE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
     'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/controlled-list'
 };
 
@@ -78,14 +80,12 @@ config.dep = {
 config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 
-
 config.compressCSS = true;
 
 // html view cache control
 config.html = {
     cached: true
 };
-
 /*
  * Application logging configuration
  */
