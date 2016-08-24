@@ -56,7 +56,7 @@ config.redis = {
 
 var BASEURL = {
     PROTOCOL: 'http://',
-    SERVER: 'internal-EADRASLB01-1716219104.eu-west-1.elb.amazonaws.com:',
+    SERVER: 'internal-EADRASLB01-1716219104.eu-west-1.elb.amazonaws.com',
     PORT: 9020
 };
 
