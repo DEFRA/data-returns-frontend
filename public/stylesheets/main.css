@@ -2143,62 +2143,64 @@ input.validation-code {
 
 .file-upload .upload-list {
   clear: both;
-}
-
-.file-upload .statusbar.statusbar-header {
-  font-weight: 600;
-}
-
-.file-upload .statusbar.statusbar-header .status, .file-upload .statusbar.statusbar-header .details, .file-upload .statusbar.statusbar-header .remove {
-  padding: 0;
-  vertical-align: middle;
+  table-layout: fixed;
+  /* Mobile formatting */
 }
 
 @media (max-width: 640px) {
-  .file-upload .statusbar.statusbar-header::after {
-    content: "Your files";
+  .file-upload .upload-list {
+    display: block;
   }
-  .file-upload .statusbar.statusbar-header .filename {
+  .file-upload .upload-list .statusbar.statusbar-header::after {
+    content: "Your files";
+    font-weight: bold;
+  }
+  .file-upload .upload-list .statusbar.statusbar-header .filename {
     display: none;
+  }
+  .file-upload .upload-list thead, .file-upload .upload-list tr, .file-upload .upload-list tbody {
+    display: block;
+  }
+  .file-upload .upload-list .statusbar-header .filename, .file-upload .upload-list .statusbar-header .status, .file-upload .upload-list .statusbar-header .details, .file-upload .upload-list .statusbar-header .remove {
+    display: none;
+  }
+  .file-upload .upload-list .filename, .file-upload .upload-list .status, .file-upload .upload-list .details, .file-upload .upload-list .remove {
+    display: block;
+    width: 100%;
+    padding-right: 0;
+    border-bottom: 0;
+  }
+  .file-upload .upload-list .filename {
+    border-top: 1px solid #bfc1c3;
+  }
+  .file-upload .upload-list .details, .file-upload .upload-list .remove {
+    width: 50%;
+    display: inline-block;
   }
 }
 
 .file-upload .statusbar {
   border-top: none;
-  border-bottom: 1px solid #BFC1C3;
-  width: auto;
-  vertical-align: middle;
-  font-size: 16px;
   position: relative;
 }
 
 .file-upload .statusbar .filename, .file-upload .statusbar .status, .file-upload .statusbar .details, .file-upload .statusbar .remove {
   position: relative;
-  margin: 5px 0;
-  padding: 5px 0 3px;
-  vertical-align: top;
 }
 
 .file-upload .statusbar .filename {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
 }
 
-@media (max-width: 640px) {
-  .file-upload .statusbar .details {
-    display: inline-block;
-    width: 50%;
-  }
-  .file-upload .statusbar .remove {
-    display: inline-block;
-    width: 50%;
-  }
+.file-upload .statusbar .remove {
+  text-align: right;
+  padding-right: 0;
 }
 
 @media (min-width: 641px) {
-  .file-upload .statusbar .filename, .file-upload .statusbar .status, .file-upload .statusbar .details, .file-upload .statusbar .remove {
-    display: inline-block;
-  }
   .file-upload .statusbar .filename {
     width: 35%;
   }
@@ -2215,9 +2217,7 @@ input.validation-code {
 
 .file-upload .status .file-error, .file-upload .status .file-ready {
   display: inline-block;
-  font-size: 14px;
   font-weight: bold;
-  max-width: 90%;
   text-transform: uppercase;
   padding: 2px 4px 0;
   -webkit-border-radius: 2px;
@@ -2248,15 +2248,12 @@ input.validation-code {
 
 .file-upload .remove {
   text-align: right;
-  display: inline-block;
 }
 
 .file-upload .remove .link {
-  font-size: 16px;
   background: transparent none repeat scroll 0 0;
   border: 0;
-  padding: 0;
-  line-height: 1;
+  padding-right: 0;
 }
 
 .file-upload .remove .link:hover {
