@@ -1,30 +1,40 @@
-@font-face {
-  font-family: GDS-Logo;
-  src: local("HelveticaNeue"), local("Helvetica Neue"), local("Arial"), local("Helvetica");
+.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
-@-ms-viewport {
-  width: device-width;
+#content {
+  max-width: 960px;
+  margin: 0 15px;
 }
 
-@-o-viewport {
-  width: device-width;
+@media (min-width: 641px) {
+  #content {
+    margin: 0 30px;
+  }
 }
 
-@-ms-viewport {
-  width: device-width;
+@media (min-width: 1020px) {
+  #content {
+    margin: 0 auto;
+  }
 }
 
-@-o-viewport {
-  width: device-width;
+.grid-row {
+  margin: 0 -15px;
 }
 
-@-ms-viewport {
-  width: device-width;
+.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
-@-o-viewport {
-  width: device-width;
+.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
 .grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
@@ -54,144 +64,10 @@
   margin: 0 -15px;
 }
 
-@font-face {
-  font-family: GDS-Logo;
-  src: local("HelveticaNeue"), local("Helvetica Neue"), local("Arial"), local("Helvetica");
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
 .grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
   content: "";
   display: block;
   clear: both;
-}
-
-@font-face {
-  font-family: GDS-Logo;
-  src: local("HelveticaNeue"), local("Helvetica Neue"), local("Arial"), local("Helvetica");
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-#content {
-  max-width: 960px;
-  margin: 0 15px;
-}
-
-@media (min-width: 641px) {
-  #content {
-    margin: 0 30px;
-  }
-}
-
-@media (min-width: 1020px) {
-  #content {
-    margin: 0 auto;
-  }
-}
-
-.grid-row {
-  margin: 0 -15px;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-.grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-@font-face {
-  font-family: GDS-Logo;
-  src: local("HelveticaNeue"), local("Helvetica Neue"), local("Arial"), local("Helvetica");
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
-}
-
-@-ms-viewport {
-  width: device-width;
-}
-
-@-o-viewport {
-  width: device-width;
 }
 
 .grid-row:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-group:after, .form-block:after, .breadcrumbs ol:after {
@@ -558,6 +434,7 @@ main {
   line-height: 1.11111;
   font-weight: 400;
   text-transform: none;
+  display: block;
   padding-top: 8px;
   padding-bottom: 7px;
   display: block;
@@ -608,6 +485,7 @@ main {
   line-height: 1.2;
   font-weight: 400;
   text-transform: none;
+  display: block;
   padding-top: 9px;
   padding-bottom: 6px;
   display: block;
@@ -825,7 +703,7 @@ hr {
   position: relative;
   display: -moz-inline-stack;
   display: inline-block;
-  padding: 0.3em 0.6em 0.2em 0.6em;
+  padding: .526315em .789473em .263157em;
   border: none;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -1860,7 +1738,7 @@ input[type=number] {
 }
 
 .phase-banner-alpha {
-  padding: 10px 0 8px 0;
+  padding: 10px 0 8px;
   border-bottom: 1px solid #bfc1c3;
 }
 
@@ -1871,6 +1749,7 @@ input[type=number] {
 }
 
 .phase-banner-alpha p {
+  display: table;
   margin: 0;
   color: #000;
   font-family: "nta", Arial, sans-serif;
@@ -1890,7 +1769,6 @@ input[type=number] {
 .phase-banner-alpha .phase-tag {
   display: -moz-inline-stack;
   display: inline-block;
-  vertical-align: top;
   margin: 0 8px 0 0;
   padding: 2px 5px 0;
   font-family: "nta", Arial, sans-serif;
@@ -1907,29 +1785,18 @@ input[type=number] {
 
 @media (min-width: 641px) {
   .phase-banner-alpha .phase-tag {
-    vertical-align: baseline;
-  }
-}
-
-@media (min-width: 641px) {
-  .phase-banner-alpha .phase-tag {
     font-size: 16px;
     line-height: 1.25;
   }
 }
 
 .phase-banner-alpha span {
-  vertical-align: top;
-}
-
-@media (min-width: 641px) {
-  .phase-banner-alpha span {
-    vertical-align: baseline;
-  }
+  display: table-cell;
+  vertical-align: baseline;
 }
 
 .phase-banner-beta {
-  padding: 10px 0 8px 0;
+  padding: 10px 0 8px;
   border-bottom: 1px solid #bfc1c3;
 }
 
@@ -1940,6 +1807,7 @@ input[type=number] {
 }
 
 .phase-banner-beta p {
+  display: table;
   margin: 0;
   color: #000;
   font-family: "nta", Arial, sans-serif;
@@ -1959,7 +1827,6 @@ input[type=number] {
 .phase-banner-beta .phase-tag {
   display: -moz-inline-stack;
   display: inline-block;
-  vertical-align: top;
   margin: 0 8px 0 0;
   padding: 2px 5px 0;
   font-family: "nta", Arial, sans-serif;
@@ -1976,25 +1843,14 @@ input[type=number] {
 
 @media (min-width: 641px) {
   .phase-banner-beta .phase-tag {
-    vertical-align: baseline;
-  }
-}
-
-@media (min-width: 641px) {
-  .phase-banner-beta .phase-tag {
     font-size: 16px;
     line-height: 1.25;
   }
 }
 
 .phase-banner-beta span {
-  vertical-align: top;
-}
-
-@media (min-width: 641px) {
-  .phase-banner-beta span {
-    vertical-align: baseline;
-  }
+  display: table-cell;
+  vertical-align: baseline;
 }
 
 .govuk-box-highlight {
@@ -2010,7 +1866,7 @@ input[type=number] {
   position: relative;
   display: -moz-inline-stack;
   display: inline-block;
-  padding: 0.3em 0.6em 0.2em 0.6em;
+  padding: .526315em .789473em .263157em;
   border: none;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2088,6 +1944,10 @@ input[type=number] {
   margin-right: 0;
 }
 
+.button-secondary:active {
+  outline: 3px solid #ffbf47;
+}
+
 .help-notice {
   background: none;
   background: url("/public/images/icons/icon-important.png") no-repeat scroll 0 0.2em;
@@ -2130,6 +1990,14 @@ p + .help-notice {
   margin: 10px 0;
 }
 
+.search-list .button {
+  padding-top: 0.35em;
+}
+
+.attachment {
+  float: right;
+}
+
 .attachment .assistive-technology {
   color: #0b0c0c;
   font-family: "nta",Arial,sans-serif;
@@ -2143,24 +2011,25 @@ p + .help-notice {
 }
 
 .attachment .attachment-thumb {
-  float: left;
-  width: 124px;
   margin-top: 5px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   position: relative;
+  text-align: right;
 }
 
 .attachment .attachment-thumb img {
   background: white none repeat scroll 0 0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
   display: block;
-  height: 140px;
+  height: 100px;
   outline: 5px solid rgba(11, 12, 12, 0.1);
-  width: 99px;
+  width: 75px;
+  margin: 0 auto;
 }
 
 .attachment .attachment-thumb a {
   display: inline-block;
+  margin: 0 20px;
 }
 
 .attachment .title a {
@@ -2262,7 +2131,7 @@ input.validation-code {
 .file-upload .uploader-container p.choose-file {
   display: inline-block;
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 8px;
   vertical-align: top;
 }
 
@@ -2451,4 +2320,14 @@ dt {
   dt {
     margin-top: 1.05263em;
   }
+}
+
+/* Top align icon in multiline notice */
+.notice {
+  margin-top: 30px;
+}
+
+.notice .icon {
+  margin-top: 5px;
+  top: 0;
 }

@@ -9,3 +9,12 @@ dt {
   }
 
 }
+
+/* Top align icon in multiline notice */
+.notice {
+  margin-top: 30px;
+  .icon {
+     margin-top: 5px;
+     top: 0;
+ }
+}
