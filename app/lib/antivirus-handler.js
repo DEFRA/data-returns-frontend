@@ -24,7 +24,7 @@ module.exports.isInfected = function (filePath) {
                     winston.error(`Virus scanning failed with error: ${err.message}`, err);
                     return reject(false);
                 }
-            }
+            };
 
             try {
                 var clam = require('clamscan')(

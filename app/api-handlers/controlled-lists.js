@@ -71,9 +71,7 @@ module.exports.getListMetaData = function () {
                 resolve(JSON.parse(val));
             } else {
                 apiCallList().then(function (result) {
-                    cacheHandler.setValue(redisKeys.LIST_METADATA.key, result).then(function () {
-                        resolve(result);
-                    }).catch(reject);
+                    cacheHandler.setValue(redisKeys.LIST_METADATA.key, result).then(resolve).catch(reject);
                 }).catch(reject);
             }
         }).catch(reject);

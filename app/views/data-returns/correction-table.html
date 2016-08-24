@@ -31,14 +31,14 @@ Send your data returns online
         {{#correctionsData.lineErrors}}
         <tr id="ERR_DR{{errorCode}}">
             <td>
-                <abbr title="{{definition}}">{{columnName}}</abbr>
-                <hidden id="{{columnName}}_error_code" value="DR{{errorCode}}"></hidden>
+                <abbr title="{{definition}}">{{fieldName}}</abbr>
+                <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
             <td title="Error Code: DR{{errorCode}}">{{errorType}}</td>
             <td>
                 {{{errorMessage}}}
                 <p>
-                    <a href="/correction/detail?uuid={{id}}&id={{groupID}}">See details of which rows to correct</a>
+                    <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">See details of which rows to correct</a>
                 </p>
             </td>
             <td>

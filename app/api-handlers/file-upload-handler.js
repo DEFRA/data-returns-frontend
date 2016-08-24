@@ -3,7 +3,6 @@ const winston = require("winston");
 var fs = require('fs');
 var request = require('request');
 var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var utils = require('../lib/utils');
 var validationErrorHelper = require('./multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
 var crypto = require('../lib/crypto-handler');
@@ -43,7 +42,6 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
         // Make REST call into the Data Exchange service, and handle the result.
         request.post(apiData, function (err, httpResponse, body) {
             var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
-            var apiErrors = '';
 
             winston.info("Received upload response for " + originalFileName);
             if (err) {
@@ -69,11 +67,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
             } else {
                 //There are validation errors
-
                 try {
-                    if (body) {
-                        httpResponse = JSON.parse(body);
-                    }
+                    httpResponse = JSON.parse(body);
                 } catch (e) {
                     winston.error(e);
 
@@ -83,65 +78,48 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                     });
                 }
 
-                var appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
-                var lineErrorData;
-                var lineErrors;
-                var temp;
-                var lineError;
-                var sortedLineErrorData;
-                var lineErrorName;
-
+                let appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
                 switch (appStatusCode) {
-                    case 900://Line errors
-                        apiErrors = httpResponse.validationErrors;
-                        lineErrorData = [];
-                        lineErrors = apiErrors; //apiErrors.lineErrors;
+                    case 900: {
+                        //Line errors
+                        let lineErrorData = new Array();
 
-                        for (lineErrorName in lineErrors) {
-                            lineError = {};
-                            temp = lineErrors[lineErrorName];
-                            lineError.lineNumber = parseInt(temp.lineNumber, 10);
-                            lineError.fieldName = temp.fieldName;
-                            lineError.errorValue = temp.errorValue;
-                            lineError.errorMessage = errorHandler.render(temp.errorCode,
+                        for (let lineError of httpResponse.validationErrors) {
+                            lineError.errorMessage = errorHandler.render(lineError.errorCode,
                                 {
                                     filename: originalFileName,
                                     Correction: true,
                                     CorrectionDetails: false,
                                     CorrectionMoreHelp: false
-                                }, temp.errorMessage);
-                            lineError.errorCode = temp.errorCode;
-                            lineError.errorType = temp.errorType;
-                            lineError.moreHelp = errorHandler.render(temp.errorCode,
+                                }, lineError.errorMessage);
+                            lineError.moreHelp = errorHandler.render(lineError.errorCode,
                                 {
                                     filename: originalFileName,
                                     Correction: false,
                                     CorrectionDetails: false,
                                     CorrectionMoreHelp: true,
-                                    MoreHelpLink: temp.helpReference
-                                }, temp.errorMessage);
-                            lineError.helpReference = temp.helpReference;
-                            lineError.definition = temp.definition ? temp.definition : temp.fieldName;
+                                    MoreHelpLink: lineError.helpReference
+                                }, lineError.errorMessage);
                             lineErrorData.push(lineError);
                         }
-
-                        sortedLineErrorData = lineErrorData.sort(utils.sortByProperty('fieldName'));
-                        sortedLineErrorData = validationErrorHelper.groupErrorData(sessionID, fileUuid, sortedLineErrorData);
+                        let groupedLineErrorData = validationErrorHelper.groupErrorData(lineErrorData);
 
                         reject({
                             isUserError: true,
                             errorCode: appStatusCode,
-                            lineErrors: sortedLineErrorData
+                            lineErrors: groupedLineErrorData
                         });
 
                         break;
-                    default:
+                    }
+                    default: {
                         reject({
                             isUserError: true,
                             errorCode: appStatusCode,
                             defaultErrorMessage: httpResponse.message
                         });
                         break;
+                    }
                 }
             }
         });
