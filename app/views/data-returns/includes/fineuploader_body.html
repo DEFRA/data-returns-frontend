@@ -34,6 +34,17 @@
                 $innerStatusDiv
                         .removeClass("file-success file-error file-pending")
                         .addClass("file-" + details.status.state);
+                if (details.status.state === "pending") {
+                  // Add aria tags
+                  $innerStatusDiv.attr("aria-live", "assertive");
+                  $innerStatusDiv.attr("aria-busy", "true");
+                  $innerStatusDiv.attr("role", "alertdialog");
+                } else {
+                  // Remove aria tags
+                  $innerStatusDiv.remmoveAttr("aria-live");
+                  $innerStatusDiv.remmoveAttr("aria-busy");
+                  $innerStatusDiv.remmoveAttr("role");
+                }
 
                 var moreDetailsHtml = "";
                 if (details.status.moreDetailsUrl != null) {
@@ -141,7 +152,7 @@
                         "name": name,
                         "status": {
                             "state": "pending",
-                            "description": "Checking ..."
+                            "description": "Checking "
                         }
                     };
                     setFileStatus(details);
