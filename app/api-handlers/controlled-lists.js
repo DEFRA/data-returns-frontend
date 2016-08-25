@@ -71,7 +71,7 @@ module.exports.getListMetaData = function () {
                 resolve(JSON.parse(val));
             } else {
                 apiCallList().then(function (result) {
-                    cacheHandler.setValue(redisKeys.LIST_METADATA.key, result).then(resolve).catch(reject);
+                    cacheHandler.setValue(redisKeys.LIST_METADATA.key, result).then(resolve(result)).catch(reject);
                 }).catch(reject);
             }
         }).catch(reject);
@@ -92,12 +92,54 @@ module.exports.getListData = function (list, search) {
 };
 
 /**
+ * This function outputs cells as arrays or objects so the generic page can process either
+ * @param listData
+ * @param displayHeaders - an array the data object names
+ * @returns {Array} The output data structure required by display-list.html
+ */
+module.exports.pageExtractor = function(listData, displayHeaders) {
+    var rows = [];
+    for (var r = 0; r < listData.length; r++) {
+        var cols = [];
+        for (var c = 0; c < displayHeaders.length; c++) {
+            cols.push({item: listData[r][displayHeaders[c].field]});
+        }
+        rows.push({row: cols});
+    }
+    return rows;
+};
+
+/**
+ * This function outputs every individual cell as an object so the CSV processor can act upon it
+ * @param listData
+ * @param displayHeaders - an array the data object names
+ * @returns {Array} The output data structure required by the CSV processor
+ */
+module.exports.csvExtractor = function(listData, displayHeaders) {
+    var rows = [];
+    for (var r = 0; r < listData.length; r++) {
+        var cols = [];
+        for (var c = 0; c < displayHeaders.length; c++) {
+            var item = [];
+            if (Array.isArray(listData[r][displayHeaders[c].field])) {
+                item = listData[r][displayHeaders[c].field].join(", ");
+            } else {
+                item = listData[r][displayHeaders[c].field];
+            }
+            cols.push(item);
+        }
+        rows.push({row: cols});
+    }
+    return rows;
+};
+
+/**
  * Process the results of the API call for controlled list data and
  * @param processor the list to processor
  * @param processor a function(metadata, header[], data[]) to act the result of the API
  * call for controlled list information. Returns via a promise
  */
-module.exports.getListProcessor = function (list, processor, search) {
+module.exports.getListProcessor = function (extractorFunction, list, processor, search) {
     return new Promise(function (resolve, reject) {
         module.exports.getListMetaData().then(function (result) {
             var listMetaData = result[list];
@@ -113,14 +155,7 @@ module.exports.getListProcessor = function (list, processor, search) {
             }
             // Now the actual list data
             module.exports.getListData(list, search).then(function (listData) {
-                var rows = [];
-                for (var r = 0; r < listData.length; r++) {
-                    var cols = [];
-                    for (var c = 0; c < displayHeaders.length; c++) {
-                        cols.push(listData[r][displayHeaders[c].field]);
-                    }
-                    rows.push({row: cols});
-                }
+                var rows = extractorFunction(listData, displayHeaders);
                 processor(listMetaData, tableHeadings, rows);
                 resolve(true);
             }).catch(reject);

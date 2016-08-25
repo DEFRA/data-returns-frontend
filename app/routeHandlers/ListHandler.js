@@ -38,7 +38,7 @@ module.exports = {
     getDisplayHandler: function (request, reply) {
         var list = request.query.list;
         winston.info('==> /display-list ' + list);
-        handler.getListProcessor(list, function(metadata, header, data) {
+        handler.getListProcessor(handler.pageExtractor, list, function(metadata, header, data) {
             reply.view('data-returns/display-list', {
                 listMetaData: metadata,
                 tableHeadings: header,
@@ -56,7 +56,7 @@ module.exports = {
             module.exports.getDisplayHandler(request, reply);
         } else {
             handler.getListMetaData().then(function (metadata) {
-                handler.getListProcessor(list, function (metadata, header, data) {
+                handler.getListProcessor(handler.pageExtractor, list, function (metadata, header, data) {
                     winston.info(`==> /display-list-search list=${list} search=${metadata.defaultSearch} for search=${request.payload.search}`);
                     reply.view('data-returns/display-list', {
                         listMetaData: metadata,
@@ -86,8 +86,8 @@ module.exports = {
         var filename = request.params.list + '.csv';
         winston.info('==> /csv-list ' + filename);
 
-        handler.getListProcessor(request.params.list, function(metadata, header, data) {
-            var result = csv.createCSV(header.map(h => h.name), data.map(r => r.row));
+        handler.getListProcessor(handler.csvExtractor, request.params.list, function(metadata, header, data) {
+            var result = csv.createCSV(header.map(h => h.description), data.map(r => r.row));
             var response = reply(result)
                 .header('Content-Type', 'text/csv; charset=utf-8;')
                 .header('content-disposition', `attachment; filename=${filename};`).hold();
