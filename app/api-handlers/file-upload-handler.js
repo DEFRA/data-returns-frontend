@@ -70,7 +70,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                 try {
                     httpResponse = JSON.parse(body);
                 } catch (e) {
-                    winston.error(e);
+                    winston.error(new Error(`Unable to parse JSON response from backend service: ${e.message}`));
 
                     return reject({
                         isUserError: true,

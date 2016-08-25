@@ -24,15 +24,16 @@ let errorTypeInfo = {
 };
 
 let getCorrectionTableErrorText = function(errorTypesArr) {
-    let sortedTypes = lodash.sortBy(lodash.uniq(errorTypesArr), function(item) {
+    let sortedUniqueTypes = lodash.uniq(lodash.sortBy(errorTypesArr, function(item) {
         let lookup = new String(item).toLowerCase();
         return errorTypeInfo[lookup].order;
-    });
+    }).map(item => getErrorMessageForKey(item)));
+
     let displayText = "";
-    sortedTypes.forEach((text, index) => {
+    sortedUniqueTypes.forEach((text, index) => {
         if (index > 0) {
             let sep = ", ";
-            if (index === sortedTypes.length - 1) sep = " and ";
+            if (index === sortedUniqueTypes.length - 1) sep = " and ";
             displayText += sep;
         }
         displayText += text;
@@ -49,6 +50,9 @@ let collapseRows = function (rowErrors) {
     let errors = lodash.sortBy(rowErrors, ["errorType", "lineNumber"]);
     let rowsNumbersByError = new Map();
     let outputRowErrors = new Array();
+
+    // Collapse multiple errors on the same row
+    errors = lodash.uniqWith(errors, (item, other) => item.rowText === other.rowText);
 
     for (let error of errors) {
         let rowNumberArrayForType = rowsNumbersByError.get(error.errorText);
@@ -68,7 +72,13 @@ let collapseRows = function (rowErrors) {
     return outputRowErrors;
 };
 
-
+/**
+ * Given an array of integers, this method returns a String representation of the array having collapsed sequences
+ * of numbers into a range.  E.g. given the array [1, 2, 3, 5, 6, 7, 10, 12] this method shall return "1-3, 5-7, 10, 12"
+ *
+ * @param intArray the array of integers to bne processed
+ * @returns {string} the string representation of the array.
+ */
 var collapseArrayRanges = function (intArray) {
     let listing = [];
     let start;
@@ -135,7 +145,7 @@ module.exports = {
 
             // If item was invalid then display the invalid value, otherwise display the reason the item failed validation
             let errorText = item.errorValue;
-            if ("incorrect" !== item.errorType.toLowerCase()) {
+            if (["incorrect", "length"].indexOf(item.errorType.toLowerCase()) < 0) {
                 errorText = getErrorMessageForKey(item.errorType);
             }
 

@@ -35,15 +35,15 @@
                         .removeClass("file-success file-error file-pending")
                         .addClass("file-" + details.status.state);
                 if (details.status.state === "pending") {
-                  // Add aria tags
-                  $innerStatusDiv.attr("aria-live", "assertive");
-                  $innerStatusDiv.attr("aria-busy", "true");
-                  $innerStatusDiv.attr("role", "alertdialog");
+                    // Add aria tags
+                    $innerStatusDiv.attr("aria-live", "assertive");
+                    $innerStatusDiv.attr("aria-busy", "true");
+                    $innerStatusDiv.attr("role", "alertdialog");
                 } else {
-                  // Remove aria tags
-                  $innerStatusDiv.remmoveAttr("aria-live");
-                  $innerStatusDiv.remmoveAttr("aria-busy");
-                  $innerStatusDiv.remmoveAttr("role");
+                    // Remove aria tags
+                    $innerStatusDiv.removeAttr("aria-live");
+                    $innerStatusDiv.removeAttr("aria-busy");
+                    $innerStatusDiv.removeAttr("role");
                 }
 
                 var moreDetailsHtml = "";
