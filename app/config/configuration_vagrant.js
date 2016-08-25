@@ -69,12 +69,17 @@ config.useGoogleAnalytics = true;
 config.googleTagManagerId = process.env.DRF_TAG_MANAGER_ID || 'GTM-TEST';
 config.compressCSS = false;
 
-//errbit integration config
-config.errbit = {};
-config.errbit.options = {
-    enabled: false,
-    apiKey: process.env.ERRBIT_API_KEY,
-    appName: 'Data-Returns Front End (AWS LOCAL)'
+/*
+ * Application logging configuration
+ */
+config.logging = {
+    "level": "debug",
+    "errbit": {
+        "enabled": true,
+        "level": "error",
+        "apiKey": process.env.ERRBIT_API_KEY,
+        "appName": 'Data-Returns Front End (AWS DEV)'
+    }
 };
 
 // html view cache control

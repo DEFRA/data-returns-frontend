@@ -7,7 +7,7 @@ module.exports = {
      * @param data - an array of arrays
      */
     createCSV: function (headers, data) {
-        var result = '';
+        var result = "\uFEFF"; // Start with BOM for Excel
         var row = '';
 
         if(!Array.isArray(headers)) {
