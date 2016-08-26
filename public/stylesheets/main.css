@@ -2128,7 +2128,7 @@ input.validation-code {
   width: 75%;
 }
 
-.file-upload .uploader-container p.choose-file {
+.file-upload .uploader-container p.drag-drop-files-message {
   display: inline-block;
   margin-left: 10px;
   margin-top: 8px;
@@ -2267,6 +2267,11 @@ input.validation-code {
 
 .file-upload .remove .link:hover {
   cursor: pointer;
+}
+
+/* Don't display the drag drop message in IE8 where it isn't supported */
+.lte-ie8 p.drag-drop-files-message {
+  display: none !important;
 }
 
 .error-summary .error-message {

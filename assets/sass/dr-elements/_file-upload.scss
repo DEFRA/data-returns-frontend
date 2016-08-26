@@ -1,152 +1,160 @@
 .drag-drop-indicator {
 	display: none;
-  height: 100%;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
 	.drag-drop-message {
-    border: 10px solid $yellow;
-    display:table-cell;
+		border: 10px solid $yellow;
+		display: table-cell;
 	}
 }
+
 .file-drop-active .drag-drop-indicator {
 	display: table;
 }
+
 .file-upload {
-  .uploader-container {
+	.uploader-container {
 		.form-control {
-			width:75%;
+			width: 75%;
 		}
-		p.choose-file {
+		p.drag-drop-files-message {
 			display: inline-block;
-	    margin-left: 10px;
-	    margin-top: 8px;
-	    vertical-align: top;
+			margin-left: 10px;
+			margin-top: 8px;
+			vertical-align: top;
 		}
-  	@include media(mobile) {
+
+		@include media(mobile) {
 			p.choose-file {
-		    display:none;
+				display: none;
 			}
 		}
-  }
+	}
 
-  .upload-list {
-    clear:both;
-		table-layout:fixed;
+	.upload-list {
+		clear: both;
+		table-layout: fixed;
 
 		/* Mobile formatting */
 		@include media(mobile) {
-			display:block;
+			display: block;
 			.statusbar.statusbar-header::after {
-				content:"Your files";
+				content: "Your files";
 				font-weight: bold;
 			}
 			.statusbar.statusbar-header {
 				.filename {
-					display:none;
+					display: none;
 				}
 			}
 			thead, tr, tbody {
-				display:block;
+				display: block;
 			}
 			.statusbar-header {
-				.filename, .status, .details, .remove  {
-		  		display:none;
-		  	}
+				.filename, .status, .details, .remove {
+					display: none;
+				}
 			}
-			.filename, .status, .details, .remove  {
-	  		display:block;
-				width:100%;
+			.filename, .status, .details, .remove {
+				display: block;
+				width: 100%;
 				padding-right: 0;
-				border-bottom:0;
-	  	}
-			.filename {
-				border-top:1px solid $grey-2;
+				border-bottom: 0;
 			}
-			.details, .remove  {
-				width:50%;
-				display:inline-block;
+			.filename {
+				border-top: 1px solid $grey-2;
+			}
+			.details, .remove {
+				width: 50%;
+				display: inline-block;
 			}
 		}
-  }
+	}
 
-  .statusbar {
-  	border-top: none;
-  	position: relative;
-  	.filename, .status, .details, .remove  {
-  		position: relative;
-  	}
+	.statusbar {
+		border-top: none;
+		position: relative;
+		.filename, .status, .details, .remove {
+			position: relative;
+		}
 		.filename {
-	    overflow: hidden;
-	    text-overflow: ellipsis;
-	    white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 			font-size: 16px;
 		}
 		.remove {
-			text-align:right;
+			text-align: right;
 			padding-right: 0;
 		}
-  	@include media(tablet) {
-  		.filename, .status, .details, .remove  {
-  		}
-  		.filename {
-  		 width:35%;
-  		}
-  		.status {
-  		 width:35%;
-  		}
-  		.details {
-  		 width:20%;
-  		}
-  		.remove {
-  			width:10%;
-  		}
-  	}
-  }
-  .status {
-    .file-error, .file-ready {
-      display: inline-block;
-      font-weight: bold;
-      text-transform: uppercase;
-      padding: 2px 4px 0;
-      @include border-radius(2px);
-    }
+		@include media(tablet) {
+			.filename, .status, .details, .remove {
+			}
+			.filename {
+				width: 35%;
+			}
+			.status {
+				width: 35%;
+			}
+			.details {
+				width: 20%;
+			}
+			.remove {
+				width: 10%;
+			}
+		}
+	}
+	.status {
+		.file-error, .file-ready {
+			display: inline-block;
+			font-weight: bold;
+			text-transform: uppercase;
+			padding: 2px 4px 0;
+			@include border-radius(2px);
+		}
 		.file-pending {
 			background-image: url("/public/images/icons/loading.gif");
-	    background-position: right center;
-	    background-repeat: no-repeat;
+			background-position: right center;
+			background-repeat: no-repeat;
 			background-size: 16px 16px;
-	    display: inline-block;
-	    padding-right: 20px;
+			display: inline-block;
+			padding-right: 20px;
 		}
-    .file-ready {
-      color: $green;
-      border:1px solid $green;
-    }
-    .file-error {
-      color: $red;
-      border:1px solid $red;
-    }
-  }
+		.file-ready {
+			color: $green;
+			border: 1px solid $green;
+		}
+		.file-error {
+			color: $red;
+			border: 1px solid $red;
+		}
+	}
 	@include media(mobile) {
 		.statusbar {
-			padding:10px 0;
+			padding: 10px 0;
 		}
 	}
 	.action {
-	 width:60%;
-	 display: inline-block;
+		width: 60%;
+		display: inline-block;
 	}
 	.remove {
-		text-align:right;
-    .link {
-      background: transparent none repeat scroll 0 0;
-      border:0;
+		text-align: right;
+		.link {
+			background: transparent none repeat scroll 0 0;
+			border: 0;
 			padding-right: 0;
-    }
-    .link:hover {
-      cursor: pointer;
-    }
-  }
+		}
+		.link:hover {
+			cursor: pointer;
+		}
+	}
+}
+
+/* Don't display the drag drop message in IE8 where it isn't supported */
+.lte-ie8 p.drag-drop-files-message {
+	display: none !important;
 }
