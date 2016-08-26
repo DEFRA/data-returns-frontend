@@ -32,13 +32,12 @@ let getCorrectionTableErrorText = function(errorTypesArr) {
     let displayText = "";
     sortedUniqueTypes.forEach((text, index) => {
         if (index > 0) {
-            let sep = ", ";
-            if (index === sortedUniqueTypes.length - 1) sep = " and ";
+            let sep = (index === sortedUniqueTypes.length - 1) ? " and " : ", ";
             displayText += sep;
         }
         displayText += text;
     });
-    return displayText;
+    return lodash.capitalize(displayText);
 };
 
 let getErrorMessageForKey = function (key) {
