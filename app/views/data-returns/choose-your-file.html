@@ -56,8 +56,7 @@ Send your data returns online
                     {{#status.moreDetailsUrl}}
                     <a href="{{{status.moreDetailsUrl}}}"><span>More details</span></a>
                     {{/status.moreDetailsUrl}}
-                </td>
-                <td class="remove">
+                </td><td class="remove">
                     <form method="post" action="/file/choose" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="remove"></input>
                         <input type="hidden" name="uuid" class="file-uuid" value="{{{id}}}"></input>
