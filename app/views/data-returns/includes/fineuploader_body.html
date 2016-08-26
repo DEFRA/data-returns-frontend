@@ -10,7 +10,7 @@
         /*
          * Update the file status list.
          */
-        var setFileStatus = function(details) {
+        var setFileStatus = function (details) {
             if (details && details.id) {
                 console.log("Updating details for " + details.id + " (" + details.name + ")");
                 $(".upload-list-no-files").hide();
@@ -61,7 +61,7 @@
                 dropActive: "file-drop-active"
             },
             callbacks: {
-                processingDroppedFilesComplete: function(files) {
+                processingDroppedFilesComplete: function (files) {
                     if (files && files.length > 0) {
                         fileUploader.addFiles(files);
                     }
@@ -105,12 +105,12 @@
                 noFilesError: null
             },
             callbacks: {
-                onError: function(id, name, errorReason, xhrOrXdr) {
+                onError: function (id, name, errorReason, xhrOrXdr) {
                     var uuid = "Unsubmitted" + Math.random();
                     if (id != null) {
                         uuid = fileUploader.getUuid(id);
                     }
-                    var responseJSON  = {
+                    var responseJSON = {
                         "id": uuid,
                         "name": name,
                         "status": {
@@ -123,14 +123,15 @@
                         if (xhrOrXdr) {
                             responseJSON = JSON.parse(xhrOrXdr.responseText);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     setFileStatus(responseJSON);
                 },
-                onComplete: function(id, name, responseJSON, xhr) {
+                onComplete: function (id, name, responseJSON, xhr) {
                     setFileStatus(responseJSON.details);
                 },
-                onAllComplete: function(succeeded, failed) {
-                    $.getJSON( "/file/choose?status=true", function(status) {
+                onAllComplete: function (succeeded, failed) {
+                    $.getJSON("/file/choose?status=true", function (status) {
                         var $continue = $("#continue-btn");
                         if (status.canContinue) {
                             $continue.removeAttr("disabled");
@@ -146,7 +147,7 @@
                         $invalidMsg.toggle(status.hasInvalidUploads);
                     });
                 },
-                onSubmit: function(id, name) {
+                onSubmit: function (id, name) {
                     var details = {
                         "id": fileUploader.getUuid(id),
                         "name": name,
@@ -157,7 +158,7 @@
                     };
                     setFileStatus(details);
                 }
-              }
+            }
         });
     }())
 </script>

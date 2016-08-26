@@ -2128,7 +2128,7 @@ input.validation-code {
   width: 75%;
 }
 
-.file-upload .uploader-container p.drag-drop-files-message {
+.file-upload .uploader-container p.choose-file {
   display: inline-block;
   margin-left: 10px;
   margin-top: 8px;
@@ -2223,15 +2223,6 @@ input.validation-code {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
-}
-
-.file-upload .status .file-pending {
-  background-image: url("/public/images/icons/loading.gif");
-  background-position: right center;
-  background-repeat: no-repeat;
-  background-size: 16px 16px;
-  display: inline-block;
-  padding-right: 20px;
 }
 
 .file-upload .status .file-ready {
