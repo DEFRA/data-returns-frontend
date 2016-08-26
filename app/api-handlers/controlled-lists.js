@@ -13,7 +13,7 @@ function apiCallList(list, search) {
     var apiData = null;
     if (list)  {
         if (search) {
-            apiData = { url: config.API.endpoints.CONTROLLEDLISTS + '/' + list + '?field=' + search.field + '&contains=' + search.contains };
+            apiData = { url: encodeURI(config.API.endpoints.CONTROLLEDLISTS + '/' + list + '?field=' + search.field + '&contains=' + search.contains) };
         } else {
             apiData = { url: config.API.endpoints.CONTROLLEDLISTS + '/' + list };
         }
