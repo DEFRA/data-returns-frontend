@@ -8,13 +8,16 @@
 </script>
 
 <script type="text/template" id="fur-template">
-    <div class="statusbar">
-        <div class="filename"></div><div class="status"></div><div class="details"></div><div class="remove">
+    <tr class="statusbar">
+        <td class="filename"></td>
+        <td class="status"></td>
+        <td class="details"></td>
+        <td class="remove">
             <form method="post" action="/file/choose" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="remove"></input>
                 <input type="hidden" name="uuid" class="file-uuid"></input>
                 <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
             </form>
-        </div>
-    </div>
+        </td>
+    </tr>
 </script>

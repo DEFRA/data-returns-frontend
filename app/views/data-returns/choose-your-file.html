@@ -1,8 +1,8 @@
 {{<layout}}
 {{$head}}
 {{>head}}
-    {{>scripts}}
-    {{>fineuploader_head}}
+{{>scripts}}
+{{>fineuploader_head}}
 {{/head}}
 {{$pageTitle}}
 Send your data returns online
@@ -12,81 +12,83 @@ Send your data returns online
 
 <main id="content" role="main">
     {{{feedbackbanner}}}
-  <div id="Validation-Summary-header">
-      <h1 class="heading-large">
-          <span id="title">Check your files</span>
-      </h1>
-  </div>
-  <p class="lede">Make sure you've formatted your data using the rules and saved your files as <abbr title="Comma-separated values">CSV</abbr>.</p>
-
-  <div class="file-upload">
-    <div id="uploader-container" class="uploader-container">
-        <form id="uploadForm" enctype="multipart/form-data" method="post" action="/file/choose">
-          <div class="form-group">
-            <div class="form-control">
-              <input type="file" name="fileUpload" multiple="multiple"></input>
-            </div>
-          </div>
-          <div class="form-group">
-              <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload Files" name="submit"></input>
-          </div>
-        </form>
-      </div>
-      <!-- /.form-group -->
-
-      <table id="upload-list" class="upload-list">
-        <thead>
-          <tr class="statusbar statusbar-header">
-            <th class="filename">File name</th>
-            <th class="status">Status</th>
-            <th class="details"><span class="visually-hidden">Action</span></th>
-            <th class="remove"><span class="visually-hidden">Remove</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#files}}
-          <tr id="summary-{{{id}}}" class="statusbar">
-            <td class="filename">{{{name}}}</td>
-            <td class="status">
-              <div class="file-{{{status.state}}}">{{{status.description}}}</div>
-            </td>
-            <td class="details">
-              {{#status.moreDetailsUrl}}
-                <a href="{{{status.moreDetailsUrl}}}"><span>More details</span></a>
-              {{/status.moreDetailsUrl}}
-            </td><td class="remove">
-              <form method="post" action="/file/choose" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="remove"></input>
-                <input type="hidden" name="uuid" class="file-uuid" value="{{{id}}}"></input>
-                <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
-              </form>
-            </td>
-          </tr>
-          {{/files}}
-        {{^files}}
-          <tr class="upload-list-no-files statusbar">
-            <td colspan="3" class="filename">No files uploaded</td>
-          </tr>
-        {{/files}}
-        </tbody>
-      </table>
-
-    <div class="drag-drop-indicator">
-        <div class="drag-drop-message">Drop your files here</div>
+    <div id="Validation-Summary-header">
+        <h1 class="heading-large">
+            <span id="title">Check your files</span>
+        </h1>
     </div>
-    <p>
-        <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;"{{/hasInvalidUploads}}>
-            You must correct any errors before your files can be sent to the Environment Agency.
+    <p class="lede">Make sure you've formatted your data using the rules and saved your files as <abbr
+            title="Comma-separated values">CSV</abbr>.</p>
+
+    <div class="file-upload">
+        <div id="uploader-container" class="uploader-container">
+            <form id="uploadForm" enctype="multipart/form-data" method="post" action="/file/choose">
+                <div class="form-group">
+                    <div class="form-control">
+                        <input type="file" name="fileUpload" multiple="multiple"></input>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload Files"
+                           name="submit"></input>
+                </div>
+            </form>
+        </div>
+        <!-- /.form-group -->
+
+        <table id="upload-list" class="upload-list">
+            <thead>
+            <tr class="statusbar statusbar-header">
+                <th class="filename">File name</th>
+                <th class="status">Status</th>
+                <th class="details"><span class="visually-hidden">Action</span></th>
+                <th class="remove"><span class="visually-hidden">Remove</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#files}}
+            <tr id="summary-{{{id}}}" class="statusbar">
+                <td class="filename">{{{name}}}</td>
+                <td class="status">
+                    <div class="file-{{{status.state}}}">{{{status.description}}}</div>
+                </td>
+                <td class="details">
+                    {{#status.moreDetailsUrl}}
+                    <a href="{{{status.moreDetailsUrl}}}"><span>More details</span></a>
+                    {{/status.moreDetailsUrl}}
+                </td>
+                <td class="remove">
+                    <form method="post" action="/file/choose" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="remove"></input>
+                        <input type="hidden" name="uuid" class="file-uuid" value="{{{id}}}"></input>
+                        <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
+                    </form>
+                </td>
+            </tr>
+            {{/files}}
+            {{^files}}
+            <tr class="upload-list-no-files statusbar">
+                <td colspan="3" class="filename">No files uploaded</td>
+            </tr>
+            {{/files}}
+            </tbody>
+        </table>
+
+        <div class="drag-drop-indicator">
+            <div class="drag-drop-message">Drop your files here</div>
+        </div>
+        <p>
+        <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;" {{/hasInvalidUploads}}>
+        You must correct any errors before your files can be sent to the Environment Agency.
         </p>
-        <a id="continue-btn"
-           class="button"
+        <a id="continue-btn" class="button"
            {{#canContinue}}href="/file/confirm" {{/canContinue}}
            {{^canContinue}}disabled="disabled" {{/canContinue}}
         >Continue</a>
-    </p>
+        </p>
 
-    {{>fineuploader_body}}
-  </div><!-- /file-upload -->
+        {{>fineuploader_body}}
+    </div><!-- /file-upload -->
 </main>
 {{/content}}
 {{/layout}}
