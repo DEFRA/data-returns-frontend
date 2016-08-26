@@ -3,6 +3,7 @@ var cacheHandler = require('../lib/cache-handler');
 var userHandler = require('../lib/user-handler');
 var redisKeys = require('../lib/redis-keys');
 var errorHandler = require('../lib/error-handler');
+const utils = require('../lib/utils');
 
 /*
  *  HTTP GET handler for /file/error
@@ -15,7 +16,7 @@ module.exports.getHandler = function (request, reply) {
     var key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, uuid]);
     cacheHandler.getJsonValue(key).then(function (fileData) {
         reply.view('data-returns/file-invalid', {
-            errorCode: fileData.status.errorCode,
+            errorCode: "DR" + utils.pad(fileData.status.errorCode, 4),
             errorSummary: errorHandler.render(fileData.status.errorCode, {}, "Unrecognised error")
         });
     }).catch(function() {
