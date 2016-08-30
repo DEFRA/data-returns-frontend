@@ -29,8 +29,10 @@ module.exports = {
             }
 
             for (i = 0; i < line.length; i++) {
-                if (line[i]) {
+                if (line[i] && line[i] !== '"') {
                     row += isNaN(line[i]) ? '"' + line[i] + '"' : line[i];
+                } else if (line[i] && line[i] === '"') {
+                    row += '""""';
                 } else {
                     row += '';
                 }
