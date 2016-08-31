@@ -26,7 +26,7 @@
                     // Append to the list in an ordered position
                     var added = false;
                     $uploadList.children().not(".upload-list-no-files").each(function() {
-                        if ($(this).find("td.filename").text() > details.name) {
+                        if ($(this).find("td.filename").text().toUpperCase() > details.name.toUpperCase()) {
                             $uploadRow.insertBefore($(this));
                             added = true;
                             return false;
