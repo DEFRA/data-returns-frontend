@@ -22,7 +22,20 @@
                     // No existing row for this file.  Create a new row
                     $uploadRow = $($resultTemplate.html());
                     $uploadRow.attr("id", rowId);
-                    $uploadList.append($uploadRow);
+
+                    // Append to the list in an ordered position
+                    var added = false;
+                    $uploadList.children().not(".upload-list-no-files").each(function() {
+                        if ($(this).find("td.filename").text() > details.name) {
+                            $uploadRow.insertBefore($(this));
+                            added = true;
+                            return false;
+                        }
+                    });
+
+                    if(!added) {
+                        $uploadList.append($uploadRow);
+                    }
                 }
 
                 $uploadRow.find(".filename").html(details.name);
