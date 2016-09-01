@@ -56,7 +56,6 @@ config.smtp.email_address_white_list = ['hkjtest@gmail.com', 'hkjtest2@gmail.com
 //Pin configuration
 config.pin = {
     maxDigits: 4,
-    defaultPin: 1960,
     MaxUploadsPerPin: 10,
     ValidTimePeriodMinutes: 60 * 24,
     TTL: 1000,

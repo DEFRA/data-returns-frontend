@@ -95,5 +95,8 @@ config.logging = {
     }
 };
 
+// Default pin used for dev/test
+config.pin.defaultPin = 1960;
+
 // Publish the configuration.
 module.exports = config;
