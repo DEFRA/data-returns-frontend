@@ -2147,6 +2147,14 @@ input.validation-code {
   /* Mobile formatting */
 }
 
+.file-upload .upload-list .file-pending {
+  display: inline-block;
+  padding-right: 24px;
+  background-image: url(/public/images/icons/loading.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
 @media (max-width: 640px) {
   .file-upload .upload-list {
     display: block;
