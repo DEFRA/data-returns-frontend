@@ -142,7 +142,8 @@ module.exports.csvExtractor = function(listData, displayHeaders) {
 module.exports.getListProcessor = function (extractorFunction, list, processor, search) {
     return new Promise(function (resolve, reject) {
         module.exports.getListMetaData().then(function (result) {
-            var listMetaData = result[list];
+            var listMetaData = { displayHeaders : undefined };
+            listMetaData = result[list];
             var tableHeadings = [];
             if (listMetaData.displayHeaders) {
                 var displayHeaders = listMetaData.displayHeaders;
