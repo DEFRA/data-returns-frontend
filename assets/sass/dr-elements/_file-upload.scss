@@ -8,11 +8,16 @@
 	.drag-drop-message {
 		border: 10px solid $yellow;
 		display: table-cell;
+		text-align: center;
+		vertical-align: middle;
+		@include core-48;
+		font-weight: bold;
 	}
 }
 
 .file-drop-active .drag-drop-indicator {
 	display: table;
+	background: rgba(255,255,255,0.8)
 }
 
 .file-upload {

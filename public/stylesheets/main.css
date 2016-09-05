@@ -2118,10 +2118,26 @@ input.validation-code {
 .drag-drop-indicator .drag-drop-message {
   border: 10px solid #ffbf47;
   display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  font-family: "nta", Arial, sans-serif;
+  font-size: 32px;
+  line-height: 1.09375;
+  font-weight: 400;
+  text-transform: none;
+  font-weight: bold;
+}
+
+@media (min-width: 641px) {
+  .drag-drop-indicator .drag-drop-message {
+    font-size: 48px;
+    line-height: 1.04167;
+  }
 }
 
 .file-drop-active .drag-drop-indicator {
   display: table;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .file-upload .uploader-container .form-control {
