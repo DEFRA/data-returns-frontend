@@ -157,6 +157,10 @@ function buildStatusJson(sessionID) {
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
         cacheHandler.arrayGet(key).then(function (uploads) {
             var hasInvalidUploads = uploads.filter(u => u.status.state !== "ready").length > 0;
+            // Sort by filename
+            uploads.sort((a, b) => {
+                return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
+            });
             var status = {
                 "canContinue": uploads.length > 0 && !hasInvalidUploads,
                 "hasInvalidUploads": hasInvalidUploads,
