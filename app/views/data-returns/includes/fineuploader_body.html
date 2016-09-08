@@ -4,70 +4,6 @@
         var $template = $("#fu-template");
         $uploader.html($template.html());
 
-        var $uploadList = $("#upload-list tbody");
-        var $resultTemplate = $("#fur-template");
-
-        /*
-         * Update the file status list.
-         */
-        var setFileStatus = function (details) {
-            if (details && details.id) {
-                console.log("Updating details for " + details.id + " (" + details.name + ")");
-                $(".upload-list-no-files").hide();
-
-                var rowId = "summary-" + details.id;
-                var $uploadRow = $uploadList.children("#" + rowId);
-
-                if (!$uploadRow.length) {
-                    // No existing row for this file.  Create a new row
-                    $uploadRow = $($resultTemplate.html());
-                    $uploadRow.attr("id", rowId);
-
-                    // Append to the list in an ordered position
-                    var added = false;
-                    $uploadList.children().not(".upload-list-no-files").each(function() {
-                        if ($(this).find("td.filename").text().toUpperCase() > details.name.toUpperCase()) {
-                            $uploadRow.insertBefore($(this));
-                            added = true;
-                            return false;
-                        }
-                    });
-
-                    if(!added) {
-                        $uploadList.append($uploadRow);
-                    }
-                }
-
-                $uploadRow.find(".filename").html(details.name);
-                var $statusCell = $uploadRow.find(".status");
-                $statusCell.empty();
-                var $statusDiv = $("<div>");
-                $statusCell.append($statusDiv);
-                $statusDiv.html(details.status.description);
-                $statusDiv
-                        .removeClass("file-success file-error file-pending")
-                        .addClass("file-" + details.status.state);
-                if (details.status.state === "pending") {
-                    // Add aria tags
-                    $statusDiv.attr("aria-live", "assertive");
-                    $statusDiv.attr("aria-busy", "true");
-                    $statusDiv.attr("role", "alertdialog");
-                } else {
-                    // Remove aria tags
-                    $statusDiv.removeAttr("aria-live");
-                    $statusDiv.removeAttr("aria-busy");
-                    $statusDiv.removeAttr("role");
-                }
-
-                var moreDetailsHtml = "";
-                if (details.status.moreDetailsUrl != null) {
-                    moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">More details</a>";
-                }
-                $uploadRow.find(".details").html(moreDetailsHtml);
-                $uploadRow.find(".file-uuid").val(details.id);
-            }
-        };
-
         new qq.DragAndDrop({
             dropZoneElements: [document.body],
             classes: {
@@ -143,23 +79,7 @@
                 onComplete: function (id, name, responseJSON, xhr) {
                     setFileStatus(responseJSON.details);
                 },
-                onAllComplete: function (succeeded, failed) {
-                    $.getJSON("/file/choose?status=true", function (status) {
-                        var $continue = $("#continue-btn");
-                        if (status.canContinue) {
-                            $continue.removeAttr("disabled");
-                            $continue.attr("href", "/file/confirm");
-                            $continue.removeAttr("aria-disabled");
-                        } else {
-                            $continue.attr("disabled", "disabled");
-                            $continue.removeAttr("href");
-                            $continue.attr("aria-disabled", "true");
-                        }
-
-                        var $invalidMsg = $("#invalid-upload-msg");
-                        $invalidMsg.toggle(status.hasInvalidUploads);
-                    });
-                },
+                onAllComplete: updateContinueStatus,
                 onSubmit: function (id, name) {
                     var details = {
                         "id": fileUploader.getUuid(id),
