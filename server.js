@@ -3,9 +3,9 @@ const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
+const fs = require('fs');
 const mkdirp = require('mkdirp');
 const merge = require('merge');
-// const winston = require("winston");
 // Grab our environment-specific configuration; by default we assume a local dev environment.
 var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
 // Create and initialise the server.
@@ -16,11 +16,9 @@ var server = new Hapi.Server();
 const cacheHandler = require('./app/lib/cache-handler');
 const redisKeys = require('./app/lib/redis-keys.js');
 
-
+// Display banner and startup information
+winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
 winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env));
-
-// Register the hapi server with the errbit handler
-// errbit.registerHapi(server);
 
 //listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
@@ -91,28 +89,6 @@ server.register({
     }
 });
 
-// If configured, require the user to provide Basic Authentication details to view
-// this site (useful when the site is hosted publicly but still in development).
-if (config.requireBasicAuth) {
-    if (!config.basicAuthUsername || !config.basicAuthPassword) {
-        winston.info('Basic Authentication username or password is not set; exiting.');
-        process.exit(1);
-    }
-
-// TODO: Implement a basic user database, so we can grant temporary access
-// to individual testers.
-    server.register(require('hapi-auth-basic'), function (err) {
-        if (err) {
-            throw err;
-        }
-        server.auth.strategy('simple', 'basic', 'required', {
-            validateFunc: function (request, username, password, callback) {
-                callback(null, (username === config.basicAuthUsername) && (password === config.basicAuthPassword));
-            }
-        });
-    });
-}
-
 // Setup serving of static assets.
 server.register(require('inert'), function (err) {
     if (err) {
@@ -160,6 +136,7 @@ server.register(require('vision'), function (err) {
         isCached: config.html.cached
     });
 });
+
 // Configure server routes.
 server.route(require('./app/routes'));
 // add security headers
@@ -169,12 +146,6 @@ server.ext('onPreResponse', function (request, reply) {
         resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
-
-    if (request.response.isBoom) {
-        var err = request.response;
-        var errorMessage = err.output.payload.message;
-        winston.error(`Boom error - ${errorMessage}"`, new Error(err));
-    }
     return reply(resp);
 });
 
@@ -182,24 +153,29 @@ server.ext('onPreResponse', function (request, reply) {
 //lint js files
 var exec = require('child_process').exec;
 
-exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
-    winston.info('Checking javascript files ');
-    for (let line of stdout.split("\n")) {
-        winston.info(line);
-    }
-    if (error) {
-        winston.error(error);
-    }
-});
-exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
-    winston.info('Running Unit Tests:');
-    for (let line of stdout.split("\n")) {
-        winston.info(line);
-    }
-    if (error) {
-        winston.error(error);
-    }
-});
+if (config.startup.runLinter) {
+    exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
+        winston.info('Checking javascript files ');
+        for (let line of stdout.split("\n")) {
+            winston.info(line);
+        }
+        if (error) {
+            winston.error(error);
+        }
+    });
+}
+
+if (config.startup.runUnitTests) {
+    exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
+        winston.info('Running Unit Tests:');
+        for (let line of stdout.split("\n")) {
+            winston.info(line);
+        }
+        if (error) {
+            winston.error(error);
+        }
+    });
+}
 
 // Remove the cached list metadata
 cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key);

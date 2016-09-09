@@ -19,7 +19,6 @@
     "govuk_frontend_toolkit": "~4.0.1",
     "govuk_template_mustache": "~0.13.0",
     "hapi": "~14.2.0",
-    "hapi-auth-basic": "~4.2.0",
     "hapi-good-winston": "~1.1.0",
     "hogan.js": "~3.0.2",
     "inert": "~4.0.1",

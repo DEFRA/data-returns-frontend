@@ -98,5 +98,11 @@ config.logging = {
 // Default pin used for dev/test
 config.pin.defaultPin = 1960;
 
+// Run the unit tests and linter when running locally (overrides global)
+config.startup = {
+    "runUnitTests": true,
+    "runLinter": true
+};
+
 // Publish the configuration.
 module.exports = config;
