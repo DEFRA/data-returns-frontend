@@ -37,7 +37,7 @@ AirbrakeTransport.prototype.log = function(level, msg, meta, callback) {
             if (err) {
                 console.error(`Airbrake notification failure: ${err.message}`, err);
             }
-            callback(err);
+            callback(err, url);
         });
     } catch (e) {
         console.error(`Airbrake notification failure: ${e.message}`, e);

@@ -22,12 +22,7 @@ config.env = 'default';
 // The port this service will run on.
 config.http = {};
 config.http.port = process.env.PORT || 3000;
-// Should we require user authentication to view the pages?
-// We would normally only require this when the service is hosted on a publicly-accessible
-// location but is only intended to be accessed by the development team.
-config.requireBasicAuth = false;
-config.basicAuthUsername = process.env.DRF_BA_USERNAME;
-config.basicAuthPassword = process.env.DRF_BA_PASSWORD;
+
 // Parameters controlling session storage method.
 // 'mode' can be 'default' or 'redis'.
 // A good secret key should be used in public-facing environments.
@@ -85,5 +80,10 @@ config.crypto = {};
 config.crypto.sha_function = 'sha256';
 //config.crypto.secret_key = 'failYRand0mizedk3Y';
 config.crypto.secret_key = process.env.DR_API_KEY;
+
+config.startup = {
+    "runUnitTests": false,
+    "runLinter": false
+};
 // Publish the configuration
 module.exports = config;
