@@ -6,6 +6,7 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
 var validationErrorHelper = require('./multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
 var crypto = require('../lib/crypto-handler');
+const moreHelp = require('../config/field-help-links');
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -98,7 +99,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                                     Correction: false,
                                     CorrectionDetails: false,
                                     CorrectionMoreHelp: true,
-                                    MoreHelpLink: lineError.helpReference
+                                    MoreHelpLink: moreHelp.fields[lineError.fieldName]
                                 }, lineError.errorMessage);
                             lineErrorData.push(lineError);
                         }
