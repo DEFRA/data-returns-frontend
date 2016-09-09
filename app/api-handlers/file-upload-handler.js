@@ -71,7 +71,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                 try {
                     httpResponse = JSON.parse(body);
                 } catch (e) {
-                    winston.error(new Error(`Unable to parse JSON response from backend service: ${e.message}`));
+                    winston.error(new Error(`Unable to parse JSON response from backend service: ${e.message}\n\rFull response:\n\r${body}`));
 
                     return reject({
                         isUserError: true,
