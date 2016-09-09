@@ -33,7 +33,7 @@ AirbrakeTransport.prototype.log = function(level, msg, meta, callback) {
     }
     // TODO: Log notification errors to the file appender rather than using console.
     try {
-        this.airbrake.notify(airbrakeData, function(err, url) {
+        this.airbrake.notify(airbrakeData, function(err) {
             if (err) {
                 console.error(`Airbrake notification failure: ${err.message}`, err);
             }
