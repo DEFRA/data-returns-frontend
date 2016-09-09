@@ -190,17 +190,5 @@ module.exports = [
         method: 'GET',
         path: '/csv/{list*}',
         handler: listHandler.getCSVHandler
-    },
-    {
-        method: 'GET',
-        path: '/testlogging',
-        handler: function (request, reply) {
-            winston.debug("Test debug logging");
-            winston.info("Test info logging");
-            winston.warn("Test warn logging");
-            winston.error("Test error message", new Error("Test error logging"));
-            reply({status:"ok"});
-        }
     }
 ];
-
