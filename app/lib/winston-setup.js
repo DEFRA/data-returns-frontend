@@ -19,6 +19,8 @@ let AirbrakeTransport = function(options) {
     this.airbrake = airbrake.createClient(config.logging.errbit.appName, config.logging.errbit.apiKey);
     this.airbrake.appVersion = config.appversion;
     this.airbrake.protocol = "https";
+    // Environments which shall never log to airbrake. (overridden here as by default includes 'development' and 'test')
+    this.airbrake.developmentEnvironments = ['local'];
     return this;
 };
 // Set AirbrakeTransport to inherit from winston.Transport
@@ -29,8 +31,14 @@ AirbrakeTransport.prototype.log = function(level, msg, meta, callback) {
     if (!lodash.isError(meta)) {
         airbrakeData = new Error(msg, meta);
     }
+    // TODO: Log notification errors to the file appender rather than using console.
     try {
-        this.airbrake.notify(airbrakeData, callback);
+        this.airbrake.notify(airbrakeData, function(err, url) {
+            if (err) {
+                console.error(`Airbrake notification failure: ${err.message}`, err);
+            }
+            callback(err);
+        });
     } catch (e) {
         console.error(`Airbrake notification failure: ${e.message}`, e);
     }
@@ -48,7 +56,7 @@ let commonLoggingOpts = {
 };
 let fileLoggingOpts = {
     "filename": "logs/datareturns.log",
-    "maxsize": 1 * Math.pow(2, 20),
+    "maxsize": 2 * Math.pow(2, 20),
     "maxFiles": 10,
     "tailable": true
 };

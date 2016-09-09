@@ -86,7 +86,7 @@ config.html = {
  * Application logging configuration
  */
 config.logging = {
-    "level": "info",
+    "level": "debug",
     "errbit": {
         "enabled": true,
         "level": "error",
