@@ -54,10 +54,10 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
             } else if (statusCode === 200) {
                 //File sent, received and processed successfully
                 if (body) {
-                    httpResponse = JSON.parse(body);
-                    if (httpResponse) {
-                        httpResponse.originalFileName = originalFileName;
-                        resolve(httpResponse);
+                    let bodyData = JSON.parse(body);
+                    if (bodyData) {
+                        bodyData.originalFileName = originalFileName;
+                        resolve(bodyData);
                     }
                 } else {
                     reject({
@@ -68,10 +68,14 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
             } else {
                 //There are validation errors
+                let bodyData = {};
                 try {
-                    httpResponse = JSON.parse(body);
+                    bodyData = JSON.parse(body);
                 } catch (e) {
-                    winston.error(new Error(`Unable to parse JSON response from backend service: ${e.message}\n\rFull response:\n\r${body}`));
+                    let responseText = `Failed to parse JSON response from backend (${e.message})`;
+                    responseText += `\n\rBody:\n\r${body}`;
+                    responseText += `\n\rHTTP response:\n\r${JSON.stringify(httpResponse)}`;
+                    winston.error(new Error(responseText));
 
                     return reject({
                         isUserError: true,
@@ -79,13 +83,13 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                     });
                 }
 
-                let appStatusCode = (httpResponse && httpResponse.appStatusCode) ? httpResponse.appStatusCode : 3000;
+                let appStatusCode = (bodyData && bodyData.appStatusCode) ? bodyData.appStatusCode : 3000;
                 switch (appStatusCode) {
                     case 900: {
                         //Line errors
                         let lineErrorData = new Array();
 
-                        for (let lineError of httpResponse.validationErrors) {
+                        for (let lineError of bodyData.validationErrors) {
                             lineError.errorMessage = errorHandler.render(lineError.errorCode,
                                 {
                                     filename: originalFileName,
@@ -117,7 +121,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                         reject({
                             isUserError: true,
                             errorCode: appStatusCode,
-                            defaultErrorMessage: httpResponse.message
+                            defaultErrorMessage: bodyData.message
                         });
                         break;
                     }
