@@ -64,7 +64,8 @@ config.API = {};
 config.API.endpoints = {
     'FILEUPLOAD': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/upload',
     'FILEUPLOADCOMPLETE': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/complete',
-    'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/data-exchange/controlled-list'
+    'CONTROLLEDLISTS': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/controlled-list',
+    'TESTLOGGING': BASEURL.PROTOCOL + BASEURL.SERVER + BASEURL.PORT + '/logging/test'
 };
 
 config.API.STATUS_CODES = {

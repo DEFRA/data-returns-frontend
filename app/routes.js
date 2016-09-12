@@ -193,13 +193,22 @@ module.exports = [
     },
     {
         method: 'GET',
-        path: '/testlogging',
+        path: '/logging/test',
         handler: function (request, reply) {
             winston.debug("Test debug logging");
             winston.info("Test info logging");
             winston.warn("Test warn logging");
             winston.error("Test error message", new Error("Test error logging"));
-            reply({status: "ok"});
+
+            let Request = require('request');
+            let apiData = { url: config.API.endpoints.TESTLOGGING };
+            Request.get(apiData, function (err, httpResponse) {
+                if (err) {
+                    reply({status: "failed", "backend": err});
+                } else {
+                    reply({status: "ok", "backend" : httpResponse});
+                }
+            });
         }
     }
 ];
