@@ -13,7 +13,6 @@ module.exports.links = {
     CreateAndSaveCSVFile: 'http://data-returns-help.herokuapp.com/help/detailed-guides/create-and-save-a-csv-file',
     ScottishLink: 'http://www.sepa.org.uk/',
     WelshLink: 'http://naturalresources.wales/splash?orig=/',
-    NorthernIrelandLink: 'https://www.doeni.gov.uk/'
+    NorthernIrelandLink: 'https://www.doeni.gov.uk/',
+    Help_SpecialCases: 'https://data-returns-help.herokuapp.com/#exceptions'
 };
-
-

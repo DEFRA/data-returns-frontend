@@ -1,13 +1,17 @@
-{{#Correction}}
-  <p>If you send data in this field you can only use letters, spaces and numbers. Remove any commas to save as a CSV. Keep your site name to a maximum of 255 characters.</p>
-{{/Correction}}
+{{#CorrectionMissing}}
+<p>You must send data in this field.</p>
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Site_Name</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>If you send data in this field you can only use letters, spaces and numbers. Remove any commas to save as a CSV. Keep your site name to a maximum of 255 characters.</p>
-{{/CorrectionDetails}}
+<p>Use only letters, spaces and numbers. Remove any commas to save as a CSV. Keep your site name to a maximum of 255 characters.</p>
+{{/CorrectionMissing}}
+
+{{#CorrectionIncorrect}}
+<p>You can only use letters, spaces and numbers in this field. Remove any commas to save as a CSV.</p>
+{{/CorrectionIncorrect}}
+
+{{#CorrectionLength}}
+<p>Site name must be no longer than 255 characters.</p>
+{{/CorrectionLength}}
 
 {{#CorrectionMoreHelp}}
-  <p>Read the full <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">rules for EPR data compliance monitoring</a>.</p>
+  <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
 {{/CorrectionMoreHelp}}

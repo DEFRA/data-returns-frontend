@@ -1,15 +1,17 @@
-{{#Correction}}
-  <p>You must refer to the sampling or emission point described in your licence or permit (eg Boreholes 1).</p>
-  <p>Make sure your reference only contains letters, spaces and numbers. Remove any symbols. You can only include a reference of up to 30 characters.</p>
-{{/Correction}}
+{{#CorrectionIncorrect}}
+<p>You must refer to the sampling or emission point described in your permit or licence (eg Boreholes 1) to complete this field.</p>
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Mon_Point</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>You must refer to the sampling or emission point described in your licence or permit (eg Boreholes 1).</p>
-  <p>Make sure your reference only contains letters, spaces and numbers. Remove any symbols. You can only include a reference of up to 30 characters.</p>
-{{/CorrectionDetails}}
+<p>Make sure your reference only contains letters, spaces and numbers. Remove any symbols and unnecessary commas.</p>
+{{/CorrectionIncorrect}
+
+{{#CorrectionMissing}}
+<p>You cannot leave this field blank. You must refer to the sampling or emission point described in your permit or licence (eg Boreholes 1) to complete this field.</p>
+{{/CorrectionMissing}
+
+{{#CorrectionLength}}
+<p>Mon_Point reference is too long. Limit your reference to a maximum of 30 characters.</p>
+{{/CorrectionLength}
 
 {{#CorrectionMoreHelp}}
-  <p>For certain return types monitoring point is the same as the site name. Read the full <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">rules for landfill data compliance monitoring</a>.</p>
+<p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
 {{/CorrectionMoreHelp}}

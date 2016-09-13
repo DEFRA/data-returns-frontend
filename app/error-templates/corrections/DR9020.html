@@ -1,17 +1,13 @@
-{{#Correction}}
+{{#CorrectionIncorrect}}
   <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time.</p>
   <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only use dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY).</p>
-  <p>Format time as hh:mm:ss using the 24 hour clock. Seconds are optional.</p>
-{{/Correction}}
+  <p>Format time as hh:mm:ss using the 24 hour clock.</p>
+{{/CorrectionIncorrect}}
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Mon_Date</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time.</p>
-  <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only use dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY).</p>
-  <p>Format time as hh:mm:ss using the 24 hour clock. Seconds are optional.</p>
-{{/CorrectionDetails}}
+{{#CorrectionMissing}}
+  <p>You cannot leave this field blank. You must give a date in this field.</p>
+{{/CorrectionMissing}}
 
 {{#CorrectionMoreHelp}}
-  <p>Read the full <a target="DRHELPPAGE" href="{{MoreHelpLink}}">rules for EPR data compliance monitoring</a>.</p>
+  <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
 {{/CorrectionMoreHelp}}
