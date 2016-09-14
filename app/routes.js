@@ -1,6 +1,7 @@
 'use strict';
 const winston = require("winston");
-var config = require('./config/configuration_' + (process.env.NODE_ENV || 'local'));
+const config = require('./lib/configuration-handler.js').Configuration;
+
 var basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var startHandler = require('./routeHandlers/StartHandler');
 var chooseFileHandler = require('./routeHandlers/ChooseFileHandler');
@@ -83,11 +84,11 @@ module.exports = [
         path: '/file/choose',
         config: {
             payload: {
-                maxBytes: config.CSV.maxFileSizeMb * Math.pow(2, 20),
+                maxBytes: config.get('csv.maxFileSizeMb') * Math.pow(2, 20),
                 timeout: false,
                 output: "file",
                 parse: true,
-                uploads: config.upload.path,
+                uploads: config.get('upload.path'),
                 // Fail action is set to ignore so that we can handle errors inside ChooseFileHandler
                 failAction: "ignore"
             }

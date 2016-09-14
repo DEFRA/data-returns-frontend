@@ -5,19 +5,21 @@
  *  Note email configuration is per environment.
  */
 const winston = require("winston");
+const config = require('../lib/configuration-handler.js').Configuration;
+const smtp = config.get('smtp');
+
 var utils = require('./utils');
 var nodemailer = require('nodemailer');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var joi = require('joi');
 var errorMsgs = require('./error-messages.js');
-var sender = config.smtp.fromEmailAddress;
 var hogan = require('hogan.js');
 var cacheHandler = require('./cache-handler');
 var compiledPinTemplate;
 var compiledConfirmationEmailTemplate;
 var compiledPinTextTemplate;
 var compiledConfirmationEmailTextTemplate;
-var _ = require('lodash');
+var sender = smtp.fromEmailAddress;
+const path = require('path');
 
 //Read the pin code template files
 utils.readFile('../config/email-pin-code-template.html', function (err, result) {
@@ -64,9 +66,7 @@ var schema = {
  * and rejects if the user is locked out
  */
 var checkLockOut = function (recipient) {
-
     return new Promise(function (resolve, reject) {
-
         var key = recipient + '-lockedout';
         cacheHandler.getValue(key)
             .then(function (result) {
@@ -80,7 +80,6 @@ var checkLockOut = function (recipient) {
     });
 };
 
-
 /*
  * checkEmailLimit checks the number of times an email address has been used
  * @param recipient the emails address
@@ -88,24 +87,14 @@ var checkLockOut = function (recipient) {
  * 
  */
 var checkEmailLimit = function (recipient) {
-
     return new Promise(function (resolve, reject) {
 
         var key = recipient + '-count';
 
-        //Check if email address is white listed for test purposes
-        // Do not lock out if whitelisted
-        var whitelist = config.smtp.email_address_white_list;
-        var index = _.indexOf(whitelist, recipient);
-
-        if (index !== -1) {
-            return resolve();
-        }
-
         cacheHandler.getValue(key)
             .then(function (result) {
 
-                var expiry = config.smtp.max_time_minutes ? (60 * config.smtp.max_time_minutes) : 600;// default to 10 minutes
+                var expiry = utils.isInt(smtp.max_time_minutes) ? smtp.max_time_minutes * 60 : 600;
 
                 if (result) {
                     result = parseInt(result);
@@ -114,7 +103,7 @@ var checkEmailLimit = function (recipient) {
                     cacheHandler.setValue(key, result, expiry);
                     if (result >= 10) {
                         key = recipient + '-lockedout';
-                        expiry = config.smtp.lockout_time_seconds;
+                        expiry = smtp.lockout_time_seconds;
                         cacheHandler.setValue(key, true, expiry);
                         reject({attempts: result});
                     } else {
@@ -139,7 +128,6 @@ var checkEmailLimit = function (recipient) {
  *    */
 var validateEmailAddress = function (emailaddress) {
     return new Promise(function (resolve, reject) {
-
         checkLockOut(emailaddress)
             .then(function () {
                 checkEmailLimit(emailaddress)
@@ -176,20 +164,19 @@ var validateEmailAddress = function (emailaddress) {
             });
     });
 };
-/* Default Transport (SMTP Connection) */
 
-var isUseCatcher = config.smtp.useMailCatcher === true ? true : false;
+/* Default Transport (SMTP Connection) */
 var transporter = nodemailer.createTransport({
-    host: isUseCatcher ? config.smtp.mailcatcher.host : config.smtp.host,
-    port: isUseCatcher ? config.smtp.mailcatcher.port : config.smtp.port,
-    ignoreTLS: isUseCatcher ? config.smtp.mailcatcher.ignoreTLS : config.smtp.ignoreTLS,
+    host: smtp.useMailCatcher ? smtp.mailcatcher.host : config.get('DR_SMTP_HOST'),
+    port: smtp.useMailCatcher ? smtp.mailcatcher.port : config.get('DR_SMTP_PORT'),
+    ignoreTLS: smtp.useMailCatcher ? smtp.mailcatcher.ignoreTLS : smtp.ignoreTLS,
     auth: {
-        user: config.smtp.username,
-        pass: config.smtp.password
+        user: smtp.username,
+        pass: smtp.password
     }
 }, {
     // default values for sendMail method
-    from: isUseCatcher ? sender : 'datareturns@envage.co.uk'
+    from: smtp.useMailCatcher ? sender : 'datareturns@envage.co.uk'
 });
 
 /* emails a recipient
@@ -200,30 +187,35 @@ var transporter = nodemailer.createTransport({
  * Rejects return an object with an error message
  * */
 var sendPinEmail = function (recipient, newPin) {
-
     return new Promise(function (resolve, reject) {
         winston.info('==> sendPinEmail() ');
+
+        console.log('path: ' + path.join(__dirname, '../../assets/images/' + smtp.govuklogo));
+
         var data = {
             pin: newPin,
-            EnquiryEmail: config.smtp.support.email,
-            UKPhone: config.smtp.support.UKPhone,
-            PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
-            MiniCommNumber: config.smtp.support.MiniCommNumber,
-            govuklogo: config.smtp.govuklogo, //'http://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png',
-            ealogo: config.smtp.ealogo, //'http://dr-dev.envage.co.uk/public/images/EAlogo.png',
-            crownLogo: config.smtp.crownLogo,
-            useFooter: config.smtp.useFooter
+            EnquiryEmail: smtp.support.email,
+            UKPhone: smtp.support.UKPhone,
+            PhoneFromAbroad: smtp.support.PhoneFromAbroad,
+            MiniCommNumber: smtp.support.MiniCommNumber,
+            govuklogo: smtp.govuklogo,
+            ealogo: smtp.ealogo,
+            crownLogo: smtp.crownLogo,
+            useFooter: smtp.useFooter
         };
+
         var emailBody = compiledPinTemplate.render(data);
         var emailTextBody = compiledPinTextTemplate.render(data);
+
         /* Set per email options */
         var mailOptions = {
             from: sender,
             to: recipient,
-            subject: newPin + ' ' + config.smtp.pinsubject,
+            subject: newPin + ' ' + smtp.pinsubject,
             text: emailTextBody,
             html: emailBody
         };
+        
         /* Send the email */
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
@@ -234,7 +226,7 @@ var sendPinEmail = function (recipient, newPin) {
                         message: errorMsgs.SMTP.CONNECTION_REFUSED.message
                     });
                 }
-            } else if (info.response === config.smtp.success) {
+            } else if (info.response === smtp.success) {
                 winston.info('<== Pin email sent successfully to ' + recipient);
                 resolve(true);
             }
@@ -242,9 +234,7 @@ var sendPinEmail = function (recipient, newPin) {
     });
 };
 
-
 var sendConfirmationEmail = function (metadata) {
-
     return new Promise(function (resolve, reject) {
         winston.info('==> sendConfirmationEmail() ');
         var date = new Date();
@@ -254,21 +244,21 @@ var sendConfirmationEmail = function (metadata) {
             DATE: displayDate,
             TIME: time,
             files: metadata.files,
-            EnquiryEmail: config.smtp.support.email,
-            UKPhone: config.smtp.support.UKPhone,
-            PhoneFromAbroad: config.smtp.support.PhoneFromAbroad,
-            MiniCommNumber: config.smtp.support.MiniCommNumber,
-            govuklogo: config.smtp.govuklogo,
-            ealogo: config.smtp.ealogo,
-            crownLogo: config.smtp.crownLogo,
-            useFooter: config.smtp.useFooter
+            EnquiryEmail: smtp.support.email,
+            UKPhone: smtp.support.UKPhone,
+            PhoneFromAbroad: smtp.support.PhoneFromAbroad,
+            MiniCommNumber: smtp.support.MiniCommNumber,
+            govuklogo: smtp.govuklogo,
+            ealogo: smtp.ealogo,
+            crownLogo: smtp.crownLogo,
+            useFooter: smtp.useFooter
         };
         var emailBody = compiledConfirmationEmailTemplate.render(templatedata);
         var emailTextBody = compiledConfirmationEmailTextTemplate.render(templatedata);
         var mailOptions = {
             from: sender,
             to: metadata.email,
-            subject: config.smtp.confirmsubject,
+            subject: smtp.confirmsubject,
             text: emailTextBody,
             html: emailBody
         };
@@ -289,6 +279,7 @@ var sendConfirmationEmail = function (metadata) {
         });
     });
 };
+
 module.exports.validateEmailAddress = validateEmailAddress;
 module.exports.sendPinEmail = sendPinEmail;
 module.exports.sendConfirmationEmail = sendConfirmationEmail;

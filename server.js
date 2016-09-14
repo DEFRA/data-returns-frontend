@@ -1,4 +1,6 @@
 "use strict";
+
+const config = require('./app/lib/configuration-handler.js').Configuration;
 const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
@@ -6,9 +8,6 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const merge = require('merge');
-// Grab our environment-specific configuration; by default we assume a local dev environment.
-var config = require('./app/config/configuration_' + (process.env.NODE_ENV || 'local'));
-// Create and initialise the server.
 var utils = require('./app/lib/utils');
 const Compressor = require('node-minify');
 var SASSHandler = require('./app/lib/SASSHandler');
@@ -18,7 +17,6 @@ const redisKeys = require('./app/lib/redis-keys.js');
 
 // Display banner and startup information
 winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
-winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env));
 
 //listen to SASS changes !
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
@@ -32,16 +30,16 @@ try {
 }
 
 // Remove and recreate upload dir
-winston.info(`Removing old upload folder ${config.upload.path}`);
-rimraf(config.upload.path, function() {
-    mkdirp(config.upload.path, function(err) {
+winston.info(`Removing old upload folder ${config.get('upload.path')}`);
+rimraf(config.get('upload.path'), function() {
+    mkdirp(config.get('upload.path'), function(err) {
        winston.info(err);
     });
 });
 
 server.connection({
     "host": '0.0.0.0',
-    "port": config.http.port,
+    "port": config.get('client.port'),
     "routes": {
         "cors": true,
         "security": {
@@ -133,7 +131,7 @@ server.register(require('vision'), function (err) {
             './govuk_modules/govuk_template/views/layouts'
         ],
         context: require("./app/lib/common-view-data"),
-        isCached: config.html.cached
+        isCached: config.get('html.cached')
     });
 });
 
@@ -153,7 +151,7 @@ server.ext('onPreResponse', function (request, reply) {
 //lint js files
 var exec = require('child_process').exec;
 
-if (config.startup.runLinter) {
+if (config.get('startup.runLinter')) {
     exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
         winston.info('Checking javascript files ');
         for (let line of stdout.split("\n")) {
@@ -165,7 +163,7 @@ if (config.startup.runLinter) {
     });
 }
 
-if (config.startup.runUnitTests) {
+if (config.get('startup.runUnitTests')) {
     exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
         winston.info('Running Unit Tests:');
         for (let line of stdout.split("\n")) {
@@ -220,5 +218,5 @@ server.start(function (err) {
             }
         });
     }
-    winston.info('Data-Returns Service: listening on port ' + config.http.port.toString() + ' , NODE_ENV: ' + process.env.NODE_ENV);
+    winston.info(`Data-Returns Service: listening on port ${config.get('http.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
 });

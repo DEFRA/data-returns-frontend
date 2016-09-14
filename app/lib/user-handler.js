@@ -1,6 +1,8 @@
 "use strict";
+
 const winston = require("winston");
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+const config = require('../lib/configuration-handler.js').Configuration;
+
 var cacheHandler = require('./cache-handler');
 const redisKeys = require('./redis-keys');
 var utils = require('./utils');
@@ -58,7 +60,7 @@ module.exports.isAuthenticated = function (sessionID) {
                     authenticated = user.authenticated === true;
 
                     // Max no of uses per pin
-                    if (user.uploadCount >= config.pin.MaxUploadsPerPin) {
+                    if (user.uploadCount >= config.get('pin.MaxUploadsPerPin')) {
                         authenticated = false;
                     }
                     // Is the pin in date
@@ -67,7 +69,7 @@ module.exports.isAuthenticated = function (sessionID) {
                         var dateNow = new Date();
                         var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
-                        if (mins > config.pin.ValidTimePeriodMinutes) {
+                        if (mins > config.get('pin.ValidTimePeriodMinutes')) {
                             authenticated = false;
                         }
                     }

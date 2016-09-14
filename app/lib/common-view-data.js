@@ -1,18 +1,20 @@
-const config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+"use strict";
+
+const config = require('../lib/configuration-handler.js').Configuration;
 const helpLinks = require('../config/dep-help-links');
 
 module.exports = {
     'assetPath': '/public/',
     // Copy any required fields from the config variable, so that we don't expose this directly
     // to the views (it contains data we don't want to accidentally expose).
-    "feedbackbanner": config.feedback.template.feedbackbanner,
+    "feedbackbanner": config.get('feedback.template.feedbackbanner'),
     "analytics": {
-        useGoogleAnalytics: config.useGoogleAnalytics,
-        googleTagManagerId: config.googleTagManagerId
+        useGoogleAnalytics: config.get('googleAnalytics.use'),
+        googleTagManagerId: config.get('googleAnalytics.tagManagerId')
     },
     "CSS": {
-        "isCompressed": config.compressCSS || false
+        "isCompressed": config.get('css.compress') || false
     },
     "links": helpLinks.links,
-    "config": config
+    "config": config.getConfigObject()
 };

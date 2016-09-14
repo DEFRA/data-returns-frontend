@@ -8,12 +8,12 @@
 
 'use strict';
 const winston = require("winston");
+const config = require('../lib/configuration-handler.js').Configuration;
+const utils = require('../lib/utils.js');
+
 var random = require('random-js')();
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var maxdigits = config.pin.maxDigits;
 var messages = require('./error-messages.js');
 var userHandler = require('./user-handler');
-var utils = require('./utils');
 var cacheHandler = require('./cache-handler');
 
 var checkInvalidPinCount = function (sessionID) {
@@ -25,7 +25,9 @@ var checkInvalidPinCount = function (sessionID) {
             .then(function (result) {
                 if (result) {
                     result = parseInt(result);
-                    var maxretries = config.pin.maxretries ? parseInt(config.pin.maxretries) : 10;
+
+                    var maxretries = utils.isInt(config.get('pin.maxretries')) ? config.get('pin.maxretries') : 10;
+
                     if (result > maxretries) {
                         //reset the count
                         cacheHandler.setValue(key, 1);
@@ -51,6 +53,7 @@ module.exports = {
     newPin: function () {
         return new Promise(function (resolve, reject) {
             winston.info('==> newPin()');
+            var maxdigits = utils.isInt(config.get('pin.maxDigits')) ? config.get('pin.maxDigits') : 4;
             var pin = '';
 
             try {
@@ -83,7 +86,7 @@ module.exports = {
                                 });
                             }
 
-                            if (pin === config.pin.defaultPin || user.pin === parseInt(pin)) {
+                            if (pin === config.get('pin.defaultPin') || user.pin === parseInt(pin)) {
                                 winston.info('\t pin is valid');
                                 resolve({
                                     error: false,
@@ -98,7 +101,7 @@ module.exports = {
                                     var dateNow = new Date();
                                     var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
 
-                                    if (mins > config.pin.ValidTimePeriodMinutes) {
+                                    if (mins > config.get('pin.ValidTimePeriodMinutes')) {
                                         code = 2275; //Expired
                                     }
                                 }
