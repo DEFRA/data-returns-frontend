@@ -1,7 +1,8 @@
 'use strict';
 const winston = require("winston");
+const config = require('../lib/configuration-handler.js').Configuration;
+
 var request = require('request');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var crypto = require('../lib/crypto-handler');
 
 /**
@@ -19,10 +20,12 @@ var crypto = require('../lib/crypto-handler');
  */
 module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
 
+    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUploadComplete');
+    
     return new Promise(function (resolve, reject) {
         // Define data to send to the Data Exchange service.
         var apiData = {
-            url: config.API.endpoints.FILEUPLOADCOMPLETE,
+            url: endPoint,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': crypto.calculateAuthorizationHeader(originalFileName + userEmail),
@@ -34,6 +37,8 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                 orgFileName: originalFileName
             }
         };
+        
+        winston.info('==> confirmFileSubmission() url: ' + endPoint);
         winston.info('\t calling api- apiData: ' + JSON.stringify(apiData));
 
         // Make REST call into the Data Exchange service.

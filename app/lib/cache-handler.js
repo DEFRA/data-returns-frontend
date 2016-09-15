@@ -4,12 +4,14 @@
  * 
  */
 "use strict";
-const winston = require("winston");
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
-var errorMessages = require('./error-messages.js');
-var redis = require('redis'),
-    client = redis.createClient(config.redis.clientOptions);
 
+const config = require('../lib/configuration-handler.js').Configuration;
+const winston = require("winston");
+
+var errorMessages = require('./error-messages.js');
+
+var redis = require('redis');
+var client = redis.createClient(config.get('redis'));
 
 /**
  * Set a key to expire.

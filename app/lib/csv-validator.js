@@ -1,8 +1,9 @@
 "use strict";
+
+const config = require('../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
 var avHandler = require('./antivirus-handler');
 var fs = require('fs');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -23,7 +24,7 @@ var validateFile = function (filePath, fileSize) {
                     isUserError: true,
                     errorCode: 500
                 });
-            } else if (config.CSV.validate !== true) {
+            } else if (!config.get('csv.validate')) {
                 // If validation disabled, go no further!
                 resolve(true);
             } else if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {

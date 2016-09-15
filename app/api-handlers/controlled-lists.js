@@ -1,6 +1,9 @@
 'use strict';
+
+const winston = require("winston");
+const config = require('../lib/configuration-handler.js').Configuration;
+
 var Request = require('request');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var cacheHandler = require('../lib/cache-handler');
 var redisKeys = require('../lib/redis-keys.js');
 
@@ -10,15 +13,19 @@ var redisKeys = require('../lib/redis-keys.js');
  * @returns {Promise}
  */
 function apiCallList(list, search) {
+
+    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.controlledLists');
+    winston.info('==> apiCallList() url: ' + endPoint);
+
     var apiData = null;
     if (list)  {
         if (search) {
-            apiData = { url: encodeURI(config.API.endpoints.CONTROLLEDLISTS + '/' + list + '?field=' + search.field + '&contains=' + search.contains) };
+            apiData = { url: encodeURI(endPoint + '/' + list + '?field=' + search.field + '&contains=' + search.contains) };
         } else {
-            apiData = { url: config.API.endpoints.CONTROLLEDLISTS + '/' + list };
+            apiData = { url: endPoint + '/' + list };
         }
     } else {
-        apiData = { url: config.API.endpoints.CONTROLLEDLISTS };
+        apiData = { url: endPoint };
     }
 
     return new Promise(function (resolve, reject) {

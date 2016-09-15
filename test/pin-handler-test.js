@@ -1,10 +1,10 @@
 var pinhandler = require('../app/lib/pin-handler');
-var config = require('../app/config/configuration_' + (process.env.NODE_ENV || 'local'));
+const config = require('../app/lib/configuration-handler.js').Configuration;
 var Code = require('code');
 var Lab = require('lab');
 var lab = exports.lab = Lab.script();
 var expect = Code.expect;
-var maxdigits = config.pin.maxDigits;
+var maxdigits = config.get('pin.maxDigits');
 
 /* Work out the maximum value expected for the number of digits required */
 var maxvalue = '';
@@ -17,7 +17,6 @@ do {
 maxvalue = parseInt(maxvalue);
 
 lab.test('Pin Generation Test', function (done) {
-
     pinhandler.newPin()
         .then(function (pin) {
             expect(pin).to.be.a.number();
