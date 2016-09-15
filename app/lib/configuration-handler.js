@@ -74,13 +74,12 @@ function Configuration() {
      * Get the node environment
      */
     try {
-        var mode = process.env.NODE_ENV;
-        winston.info('Setting up system configuration for environment: ' + mode);
+        winston.info('Setting up system configuration for environment: ' + process.env.NODE_ENV);
         var environmentVariables = getRequiredEnvironmentVariables();
-        var yMLFileConfiguration = getYMLFileConfiguration(mode);
+        var yMLFileConfiguration = getYMLFileConfiguration(process.env.NODE_ENV);
         this._configurationObject = object.merge(environmentVariables, yMLFileConfiguration);
         traverseObject(this._configurationObject, envVarSubstitution);
-        winston.info(`Configuration for ${mode} environment: \n` + require('util').inspect(this._configurationObject));
+        winston.info(`Configuration for ${process.env.NODE_ENV} environment: \n` + require('util').inspect(this._configurationObject));
     } catch (err) {
         winston.error(err);
         throw 'Cannot load configuration...halting';
