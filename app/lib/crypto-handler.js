@@ -1,9 +1,10 @@
 'use strict';
-const config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+
+const config = require('../lib/configuration-handler.js').Configuration;
 const crypto = require('crypto');
 
 function encodeHmac(key, data) {
-    const func = crypto.createHmac(config.crypto.sha_function, key);
+    const func = crypto.createHmac(config.get('crypto.sha_function'), key);
     const encoded = func.update(data);
     return encoded.digest('hex');
 }
@@ -19,9 +20,9 @@ function encodeHmac(key, data) {
  */
 module.exports.calculateAuthorizationHeader = function (dataToSign) {
     var signedData = '';
-    if (config.crypto.secret_key) {
+    if (config.get('DR_API_KEY')) {
         const today = new Date().toISOString().substr(0, 10).replace('-', '').replace('-', '');
-        const dateKey = encodeHmac(config.crypto.secret_key, today);
+        const dateKey = encodeHmac(config.get('DR_API_KEY'), today);
         signedData = encodeHmac(dateKey, dataToSign);
     }
     return signedData;

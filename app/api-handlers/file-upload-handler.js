@@ -1,8 +1,9 @@
 "use strict";
 const winston = require("winston");
+const config = require('../lib/configuration-handler.js').Configuration;
+
 var fs = require('fs');
 var request = require('request');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var validationErrorHelper = require('./multiple-error-helper');
 var errorHandler = require('../lib/error-handler');
 var crypto = require('../lib/crypto-handler');
@@ -19,11 +20,13 @@ const moreHelp = require('../config/field-help-links');
  *   'eaId', 'siteName' and 'returnType' as returned from the API.
  */
 module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, originalFileName) {
-    winston.info('==> uploadFileToService() url: ' + config.API.endpoints.FILEUPLOAD);
+    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUpload');
+
+    winston.info('==> uploadFileToService() url: ' + endPoint);
     return new Promise(function (resolve, reject) {
         // Define data to send to the Data Exchange service.
         var apiData = {
-            url: config.API.endpoints.FILEUPLOAD,
+            url: endPoint,
             gzip: true,
             timeout: 60000, //ms 60 seconds
             headers: {

@@ -1,13 +1,13 @@
 "use strict";
+
+const config = require('../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
 var userHandler = require('../lib/user-handler');
 var completionHandler = require('../api-handlers/completion-handler');
 var cacheHandler = require('../lib/cache-handler');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var redisKeys = require('../lib/redis-keys');
 var smtpHandler = require('../lib/smtp-handler');
 var errorHandler = require('../lib/error-handler');
-
 
 module.exports = {
     /*
@@ -38,7 +38,7 @@ module.exports = {
         var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
         var exceptionHandler = function() {
-            var errorMessage = errorHandler.render(3000, {mailto: config.feedback.mailto});
+            var errorMessage = errorHandler.render(3000, {mailto: config.get('feedback.mailto')});
             reply.view('data-returns/failure', {'errorMessage': errorMessage});
         };
 

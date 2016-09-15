@@ -1,0 +1,265 @@
+###############################################################################
+#
+# Data Reurns Front End Configuration Settings
+#
+# This file is split into different sections, the first provides defaults
+# for all environments.  Subsequent sections provide profile-specific
+# configurations which may be enabled to override the default values.
+#
+###############################################################################
+appversion: 1.0.17
+
+# Simple Mail Transfer Protocol (SMTP) settings
+smtp:
+  pinsubject: ' is your data returns online confirmation code'
+  confirmsubject: Send data returns online - your receipt
+  success: 250 Message accepted
+  max_limit: 10
+  max_time_minutes: 10
+  lockout_time_seconds: 3600
+  useMailCatcher: false
+  support:
+    email: enquiries@environment-agency.gov.uk
+    UKPhone: 03708 506 506
+    PhoneFromAbroad: 00 44 1709 389 201
+    MiniCommNumber: 03702 422 549
+
+# The pin configuration
+pin:
+  maxDigits: 4
+  MaxUploadsPerPin: 10
+  ValidTimePeriodMinutes: 1440
+  TTL: 1000
+  useTTL: false
+  alwaysGenerate: true
+  maxretries: 10
+
+redis:
+  host: ${DR_REDIS_HOST}
+  port: ${DR_REDIS_PORT}
+
+# Initial File upload directory where virus checker can find the files
+upload:
+  path: /tmp/data-returns/uploads
+
+# logging configuration
+log:
+  responses: true
+
+# Feedback
+feedback:
+  emailaddress: Data_Returns@environment-agency.gov.uk
+  subject: Feedback from Data Returns (default)
+  mailto: >-
+    Data_Returns@environment-agency.gov.uk?Subject=Feedback from Data Returns
+    (default)
+  template:
+    feedbackbanner: >-
+      <div class="phase-banner-beta"><p><strong
+      class="phase-tag">BETA</strong><span>This is a new service – your <a
+      href="http://www.smartsurvey.co.uk/s/DRFeedback/">feedback</a> will help
+      us to improve it.</span></p></div>
+
+# Cryptographic scheme used for the API keys - seceret key held in DR_API_KEY
+crypto:
+  sha_function: sha256
+
+csv:
+  validate: true
+  virus_scan: true
+  ignoreScanFailure: false
+  maxFileSizeMb: 2
+
+client:
+  port: ${DR_CLIENT_PORT}
+
+# Endpoints for REST calls to the API
+api:
+  base: ${DR_API_BASE}
+  endpoints:
+    fileUpload: 'data-exchange/upload'
+    fileUploadComplete: 'data-exchange/complete'
+    controlledLists: 'controlled-list/lists'
+    testLogging: '/logging/test'
+  status_codes:
+    OK: 200
+
+# Compress the CSV data used in the views
+css:
+  compress: true
+
+# Html caching
+html:
+  cached: true
+
+# For Google analytics
+googleAnalytics:
+  use: false
+  tagManagerId: GTM-TEST
+
+# Unit tests and linter on startup
+startup:
+    runUnitTests: false
+    runLinter: false
+
+###############################################################################
+#
+# Profile: Local
+#
+###############################################################################
+---
+env: local
+
+# Virus scanner configurable by environment
+csv:
+  virus_scan: false
+
+# SMTP specializations
+smtp:
+  fromEmailAddress: noreply-local@environment-agency.gov.uk
+  useMailCatcher: true # set to false on AWS servers
+  mailcatcher:
+    host: localhost
+    port: 1025
+    ignoreTLS: true
+
+  # Static images are used in the HTML emails
+  ealogo: http://localhost:3000/public/images/EAlogo.png
+  govuklogo: http://localhost:3000/public/images/govuk_logotype_email.png
+  crownLogo: http://localhost:3000/public/images/gov.uk_logotype_crown.png
+
+api:
+  base: http://localhost:9020
+
+client:
+  port: 3000
+
+# Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
+logging:
+  level: debug
+  errbit:
+    enabled: false
+    level: error
+    appName: Data-Returns Front End (AWS LOCAL)
+
+pin:
+  defaultPin: 1960
+
+redis:
+  host: localhost
+  port: 6379
+
+# Compress the CSV data used in the views - false locally
+css:
+  compress: false
+
+# HTML caching switched off locally
+html:
+  cached: false
+
+startup:
+    runUnitTests: true
+    runLinter: true
+
+###############################################################################
+#
+# Profile: Development
+#
+###############################################################################
+---
+env: development
+
+# SMTP specializations
+smtp:
+  ealogo: https://dr-dev.envage.co.uk/public/images/EAlogo.png
+  govuklogo: https://dr-dev.envage.co.uk/images/public/images/govuk_logotype_email.png
+  crownLogo: https://dr-dev.envage.co.uk/images/public/images/gov.uk_logotype_crown.png
+  fromEmailAddress: noreply-dev@environment-agency.gov.uk
+
+# Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
+logging:
+  level: debug
+  errbit:
+    enabled: true
+    level: debug
+    appName: Data-Returns Front End (AWS DEV)
+
+pin:
+  defaultPin: 1960
+
+###############################################################################
+#
+# Profile: Test
+#
+###############################################################################
+---
+env: test
+
+# SMTP specializations
+smtp:
+  fromEmailAddress: noreply-test@environment-agency.gov.uk
+  ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
+  govuklogo: https://dr-test.envage.co.uk/public/images/govuk_logotype_email.png
+  crownLogo: https://dr-test.envage.co.uk/public/images/gov.uk_logotype_crown.png
+
+# Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
+logging:
+  level: info
+  errbit:
+    enabled: true
+    level: error
+    appName: Data-Returns Front End (AWS TEST)
+
+pin:
+  defaultPin: 1960
+
+###############################################################################
+#
+# Profile: Pre-production
+#
+###############################################################################
+---
+env: preprod
+
+# SMTP specializations
+smtp:
+  fromEmailAddress: noreply@environment-agency.gov.uk
+  ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
+  govuklogo: https://data-returns-preprod/public/images/govuk_logotype_email.png
+  crownLogo: https://data-returns-preprod/public/images/gov.uk_logotype_crown.png
+
+googleAnalytics:
+  use: true
+
+logging:
+  level: warn
+  errbit:
+    enabled: true
+    level: error
+    appName: Data-Returns Front End (AWS PRE-PROD)
+
+###############################################################################
+#
+# Profile: Production
+#
+###############################################################################
+---
+env: production
+
+# SMTP specializations
+smtp:
+  fromEmailAddress: noreply@environment-agency.gov.uk
+  ealogo: https://dr-prod.envage.co.uk/public/images/public/images/EAlogo.png
+  govuklogo: https://dr-prod.envage.co.uk/public/images/govuk_logotype_email.png
+  crownLogo: https://dr-prod.envage.co.uk/public/images/gov.uk_logotype_crown.png
+
+googleAnalytics:
+  use: true
+
+logging:
+  level: warn
+  errbit:
+    enabled: true
+    level: error
+    appName: Data-Returns Front End (AWS PROD)
+

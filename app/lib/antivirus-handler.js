@@ -1,6 +1,8 @@
 "use strict";
+
+const config = require('../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
+
 /*
  * @Name: isInfected
  * Scans a single file for viruses using http://www.clamav.net/
@@ -12,12 +14,11 @@ var config = require('../config/configuration_' + (process.env.NODE_ENV || 'loca
  */
 module.exports.isInfected = function (filePath) {
     return new Promise(function (resolve, reject) {
-        //set up clamav config
-        if (config && config.CSV && config.CSV.VIRUS_SCAN && config.CSV.VIRUS_SCAN === true) {
+        if (config.get('csv.virus_scan')) {
             winston.info('==> av is scanning ' + filePath);
 
             let handleError = function(err) {
-                if (config.CSV.ignoreScanFailure) {
+                if (config.get('csv.ignoreScanFailure')) {
                     winston.warn(`Virus scanning failed but set to ignore failures.`);
                     return resolve(false);
                 } else {
@@ -47,7 +48,6 @@ module.exports.isInfected = function (filePath) {
                         preference: 'clamdscan'//'clamscan'
                     }
                 );
-
 
                 // Do the av scan
                 clam.is_infected(filePath, function (err, file, is_infected) {

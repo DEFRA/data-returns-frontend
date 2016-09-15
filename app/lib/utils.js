@@ -1,8 +1,10 @@
 'use strict';
+
 const winston = require("winston");
+const config = require('./configuration-handler.js').Configuration;
+
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-var config = require('../config/configuration_' + (process.env.NODE_ENV || 'local'));
 var uuid = require('node-uuid');
 var path = require('path');
 
@@ -69,21 +71,21 @@ module.exports = {
         var stats;
         try {
             // Query the entry
-            stats = fs.lstatSync(config.upload.path);
+            stats = fs.lstatSync(config.get('upload.path'));
         } catch (err) {
             stats = null;
         }
 
         // Is it a directory already?
         if (stats === null || !stats.isDirectory()) {
-            mkdirp(config.upload.path, function (err) {
+            mkdirp(config.get('upload.path'), function (err) {
                 if (err) {
                     return winston.error(err);
                 }
-                winston.info('<== createUploadDirectory() ' + config.upload.path + ' created.');
+                winston.info('<== createUploadDirectory() ' + config.get('upload.path') + ' created.');
             });
         } else {
-            winston.info('<== createUploadDirectory() Path already exists: ' + config.upload.path);
+            winston.info('<== createUploadDirectory() Path already exists: ' + config.get('upload.path'));
         }
     },
     /*
@@ -124,6 +126,13 @@ module.exports = {
      */
     pad: function pad(num, len) {
         return (Array(len).join('0') + num).slice(-len);
+    },
+
+    isInt: function (value) {
+        return !isNaN(value) &&
+            parseInt(Number(value)) === value &&
+            !isNaN(parseInt(value, 10));
     }
+
 };
 
