@@ -24,6 +24,7 @@
     "inert": "~4.0.1",
     "joi": "~9.0.4",
     "lodash": "~4.15.0",
+    "lodash.merge": "~4.6.0",
     "merge": "~1.2.0",
     "minimist": "~1.2.0",
     "mkdirp": "~0.5.1",
