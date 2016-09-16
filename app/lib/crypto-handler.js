@@ -15,14 +15,14 @@ function encodeHmac(key, data) {
  *
  * DateKey = HMAC-SHA256(secret access key, yyyymmdd)
  * SigningKey = HMAC-SHA256('DATARETURNS', DateKey)
- * Signiture = Hex(HMAC-SHA256(SigningKey, DataToSign))
+ * Signature = Hex(HMAC-SHA256(SigningKey, DataToSign))
  *
  */
 module.exports.calculateAuthorizationHeader = function (dataToSign) {
     var signedData = '';
-    if (config.get('DR_API_KEY')) {
+    if (config.get('api.key')) {
         const today = new Date().toISOString().substr(0, 10).replace('-', '').replace('-', '');
-        const dateKey = encodeHmac(config.get('DR_API_KEY'), today);
+        const dateKey = encodeHmac(config.get('api.key'), today);
         signedData = encodeHmac(dateKey, dataToSign);
     }
     return signedData;

@@ -76,6 +76,7 @@ client:
 # Endpoints for REST calls to the API
 api:
   base: ${DR_API_BASE}
+  key: ${DR_API_KEY}
   endpoints:
     fileUpload: 'data-exchange/upload'
     fileUploadComplete: 'data-exchange/complete'
@@ -129,6 +130,7 @@ smtp:
   crownLogo: http://localhost:3000/public/images/gov.uk_logotype_crown.png
 
 api:
+  key:
   base: http://localhost:9020
 
 client:
