@@ -167,7 +167,7 @@ startup:
 #
 ###############################################################################
 ---
-env: development
+env: dev
 
 # SMTP specializations
 smtp:
@@ -244,7 +244,7 @@ logging:
 #
 ###############################################################################
 ---
-env: production
+env: prod
 
 # SMTP specializations
 smtp:
