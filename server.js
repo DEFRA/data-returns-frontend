@@ -220,5 +220,5 @@ server.start(function (err) {
             }
         });
     }
-    winston.info(`Data-Returns Service: listening on port ${config.get('http.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
+    winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
 });
