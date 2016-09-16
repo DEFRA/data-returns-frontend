@@ -105,6 +105,11 @@ startup:
     runUnitTests: false
     runLinter: false
 
+logging:
+  errbit:
+    apikey: ${ERRBIT_API_KEY}
+
+
 ###############################################################################
 #
 # Profile: Local
@@ -144,6 +149,7 @@ client:
 logging:
   level: debug
   errbit:
+    apikey:
     enabled: false
     level: error
     appName: Data-Returns Front End (AWS LOCAL)
@@ -186,6 +192,7 @@ smtp:
 logging:
   level: debug
   errbit:
+    apikey: ${ERRBIT_API_KEY}
     enabled: true
     level: debug
     appName: Data-Returns Front End (AWS DEV)
