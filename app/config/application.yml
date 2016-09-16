@@ -192,7 +192,6 @@ smtp:
 logging:
   level: debug
   errbit:
-    apikey: ${ERRBIT_API_KEY}
     enabled: true
     level: debug
     appName: Data-Returns Front End (AWS DEV)
