@@ -18,7 +18,7 @@ const lodash = require("lodash");
 let AirbrakeTransport = function(options) {
     this.name = 'airbrake';
     this.level = options.level || "error";
-    this.airbrake = airbrake.createClient(logging.errbit.appName, config.get('ERRBIT_API_KEY'));
+    this.airbrake = airbrake.createClient(logging.errbit.appName, config.get('logging.errbit.apikey'));
     this.airbrake.appVersion = config.get('appversion');
     this.airbrake.protocol = "https";
     // Environments which shall never log to airbrake. (overridden here as by default includes 'development' and 'test')
