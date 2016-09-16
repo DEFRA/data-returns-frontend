@@ -7,7 +7,6 @@ const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const merge = require('merge');
 var utils = require('./app/lib/utils');
 const Compressor = require('node-minify');
 var SASSHandler = require('./app/lib/SASSHandler');
@@ -20,7 +19,6 @@ winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
 winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env, null, 4));
 
 //listen to SASS changes !
-
 SASSHandler.startSASSWatch(__dirname + '/assets/sass');
 
 // Test for cryptography support
@@ -101,20 +99,31 @@ server.register(require('inert'), function (err) {
 server.register(require('vision'), function (err) {
     var partialsCache = {};
     if (err) {
-        console.error('Failed to initialise views component.');
         throw err;
     }
     server.views({
         engines: {
             html: {
-                compile: function (template) {
-                    var compiledTemplate = Hogan.compile(template);
-                    return function (context) {
-                        return compiledTemplate.render(context, partialsCache);
-                    };
+                compile: function (template, info) {
+                    winston.info(`Compiling template ${info.filename}`);
+                    try {
+                        var compiledTemplate = Hogan.compile(template);
+                        return function (context) {
+                            try {
+                                return compiledTemplate.render(context, partialsCache);
+                            } catch (e) {
+                                winston.error(`Failed to render template for ${info.filename}: ${e.message}`, e);
+                                throw e;
+                            }
+                        };
+                    } catch (e) {
+                        winston.error(`Failed to compile template for ${info.filename}: ${e.message}`, e);
+                        throw e;
+                    }
+
                 },
                 registerPartial: function (name, template) {
-                    // There is a bug in Hogan.js that causes compiled partials to cache
+                    // There is a bug in Hogan.js that caus es compiled partials to cache
                     // rendered versions of their children.  See:
                     // https://github.com/twitter/hogan.js/issues/206
                     // For this reason, we currently cache only the source of each
@@ -152,15 +161,18 @@ server.ext('onPreResponse', function (request, reply) {
 
 //lint js files
 var exec = require('child_process').exec;
+function forEachLine(content, lineCallback) {
+    for (let line of content.split("\n")) {
+        lineCallback(line);
+    }
+}
 
 if (config.get('startup.runLinter')) {
     exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
         winston.info('Checking javascript files ');
-        for (let line of stdout.split("\n")) {
-            winston.info(line);
-        }
+        forEachLine(stdout, winston.info);
         if (error) {
-            winston.error(error);
+            forEachLine(error.message, winston.warn)
         }
     });
 }
@@ -168,11 +180,9 @@ if (config.get('startup.runLinter')) {
 if (config.get('startup.runUnitTests')) {
     exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
         winston.info('Running Unit Tests:');
-        for (let line of stdout.split("\n")) {
-            winston.info(line);
-        }
+        forEachLine(stdout, winston.info);
         if (error) {
-            winston.error(error);
+            forEachLine(error.message, winston.warn);
         }
     });
 }

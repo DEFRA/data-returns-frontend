@@ -3,7 +3,7 @@ const winston = require("winston");
 const cacheHandler = require('../lib/cache-handler');
 const userHandler = require('../lib/user-handler');
 const redisKeys = require('../lib/redis-keys');
-const merge = require('merge');
+const lodash = require("lodash");
 const errorHandler = require('../lib/error-handler');
 
 module.exports = {
@@ -15,13 +15,16 @@ module.exports = {
         var fileUuid = request.query.uuid;
         winston.info(`Loading correction table. Session: ${sessionID}, File: ${fileUuid}`);
         if (fileUuid) {
-            cacheHandler.getJsonValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]))
-                .then(function (fileData) {
-                    let metadata = merge.recursive(fileData, {
-                        errorSummary: errorHandler.render(900, {filename: fileData.name})
-                    });
-                    reply.view('data-returns/correction-table', metadata);
+            let key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]);
+            cacheHandler.getJsonValue(key).then(function (fileData) {
+                let metadata = lodash.merge({}, fileData, {
+                    errorSummary: errorHandler.render(900, {filename: fileData.name})
                 });
+                reply.view('data-returns/correction-table', metadata);
+            }).catch(function(err) {
+                winston.error(`Failed to load correction table for file ${fileUuid}`, err);
+                reply.redirect('/file/choose');
+            });
         } else {
             reply.redirect('/file/choose');
         }

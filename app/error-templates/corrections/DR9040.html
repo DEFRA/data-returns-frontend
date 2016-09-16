@@ -1,13 +1,26 @@
 {{#CorrectionIncorrect}}
-<p>You must give an allowable value for your data. As well as numbers you can include the symbols < or >. You can also include 0 (zeros). Don’t include any other text characters.</p>
+<div class="CorrectionIncorrect">
+    <p>You must give an allowable value for your data. As well as numbers you can include the symbols < or >.
+        You can also include 0 (zeros). Don’t include any other text characters.</p>
 
-<p>If you need to give a non-numerical reading use ‘See comment’ in Txt_Value and add an entry in the Comments field.</p>
+    <p>If you need to give a non-numerical reading use ‘See comment’ in the Txt_Value field and add an entry in the
+        Comments field.</p>
+</div>
 {{/CorrectionIncorrect}}
 
 {{#CorrectionMissing}}
-<p>This field cannot be left blank unless you’re giving a non-numerical reading: to do this use ‘See comment’ in Txt_Value and add an entry in the Comments field. Find out more about <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a> that might apply to your data.</p>
+<div class="CorrectionMissing">
+    <p>This field cannot be left blank unless you’re giving a non-numerical reading: to do this use ‘See comment’ in
+        Txt_Value and add an entry in the Comments field.
+        Find out more about
+        <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a>
+        that might apply to your data.</p>
+</div>
 {{/CorrectionMissing}}
 
 {{#CorrectionMoreHelp}}
-<p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.
+    </p>
+</div>
 {{/CorrectionMoreHelp}}

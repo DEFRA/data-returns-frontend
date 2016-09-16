@@ -15,16 +15,15 @@ Send your data returns online
     </div>
 
     <p class="back">
-      <a id="back.btn" href="/file/choose" class="button">Back to file list</a>
+      <a id="back.btn" onclick="history.back(); return false;" href="/file/choose" class="button">Back to file list</a>
     </p>
 
     <table id="errorTableHeader" class="error-table">
         <thead>
         <tr>
-            <th width="12%">Column</th>
-            <th width="13%">Error</th>
-            <th width="40%">Correction</th>
-            <th width="35%">More help</th>
+            <th style="width: 7em;">Field heading</th>
+            <th style="width: 7em;">Errors</th>
+            <th>Correction</th>
         </tr>
         </thead>
         <tbody>
@@ -34,15 +33,11 @@ Send your data returns online
                 <abbr title="{{definition}}">{{fieldName}}</abbr>
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
-            <td title="Error Code: DR{{errorCode}}">{{errorType}}</td>
-            <td>
-                {{{errorMessage}}}
-                <p>
-                    <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">See details of which rows to correct</a>
-                </p>
+            <td title="Error Code: DR{{errorCode}}">
+                <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">View {{violationCount}} error{{#multipleViolations}}s{{/multipleViolations}}</a>
             </td>
             <td>
-                {{{moreHelp}}}
+                {{{correction}}}
             </td>
         </tr>
         {{/correctionsData.lineErrors}}

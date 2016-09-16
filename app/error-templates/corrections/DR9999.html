@@ -1,21 +1,30 @@
 {{#CorrectionMissing}}
-<p>You haven’t entered data in the Value or Txt_Value fields.</p>
+<div class="CorrectionMissing">
+    <p>You haven’t entered data in the Value or Txt_Value fields.</p>
 
-<p>You must enter numerical results in the Value field.</p>
+    <p>You must enter numerical results in the Value field.</p>
 
-<p>For non-numerical results you must supply data in the Txt_Value field using a standard term from the controlled list.</p>
+    <p>For non-numerical results you must supply data in the Txt_Value field using a standard term from the controlled
+        list.</p>
+</div>
 {{/CorrectionMissing}}
 
-{{#CorrectionConflict}}
-<p>You’ve submitted data in both the Value and Txt_Value fields.</p>
+{{#CorrectionConflicting}}
+<div class="CorrectionConflicting">
+    <p>You’ve submitted data in both the Value and Txt_Value fields.</p>
 
-<p>You can only enter numerical results in the Value field, leaving the Txt_Value field blank.</p>
+    <p>You can only enter numerical results in the Value field, leaving the Txt_Value field blank.</p>
 
-<p>For non-numerical results you must use the Txt_Value field, using a standard term from the controlled list, and leave the Value field blank.</p>
-{{/CorrectionConflict}}
+    <p>For non-numerical results you must use the Txt_Value field, using a standard term from the controlled list, and
+        leave the Value field blank.</p>
+</div>
+{{/CorrectionConflicting}}
 
 {{#CorrectionMoreHelp}}
-<p>Find out more about <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a> that might apply to your data.</p>
+<div class="CorrectionMoreHelp">
+    <p>Find out more about <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and
+        special cases</a> that might apply to your data.</p>
 
-<p>Download the EA <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">text value controlled list</a>.</p>
+    <p>Download the EA <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">text value controlled list</a>.</p>
+</div>
 {{/CorrectionMoreHelp}}

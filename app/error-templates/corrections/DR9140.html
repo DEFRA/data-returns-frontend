@@ -1,11 +1,20 @@
 {{#CorrectionLength}}
-<p>Use this optional field for free-text comments about a row of data. Avoid unnecessary commas and symbols. Enter a maximum of 255 characters.</p>
+<div class="CorrectionLength">
+    <p>You can only enter a maximum of 255 characters in this field.</p>
+</div>
 {{/CorrectionLength}}
 
-{{#CorrectionConflict}}
-<p>You must add a comment if you’ve selected "See comment" in the Txt_Value field. Find out more about <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a> that might apply to your data.</p>
-{{/CorrectionConflict}}
+{{#CorrectionConflicting}}
+<div class="CorrectionConflicting">
+    <p>You must add a comment if you’ve selected "See comment" in the Txt_Value field. Find out more about <a
+            href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a> that
+        might apply to your data.</p>
+</div>
+{{/CorrectionConflicting}}
 
 {{#CorrectionMoreHelp}}
-<p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.
+    </p>
+</div>
 {{/CorrectionMoreHelp}}

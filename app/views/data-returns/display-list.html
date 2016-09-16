@@ -15,7 +15,7 @@ Controlled Lists
     <div class="grid-row">
         <div class="column-two-thirds">
             <div class="form-group">
-                <p><a id="back.btn" href="{{back}}" class="button">Go back</a></p>
+                <p><a id="back.btn" onclick="history.back(); return false;" href="{{back}}" class="button">Go back</a></p>
             </div>
             <div class="form-group search-list">
                 <form action="display-list-search?list={{listMetaData.path}}" method="post">

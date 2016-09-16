@@ -12,7 +12,7 @@ module.exports.fields = {
     Smpl_By: "http://data-returns-help.herokuapp.com",
     Parameter: "/display-list?list=parameters",
     Value: "http://data-returns-help.herokuapp.com",
-    Txt_Value: "http://data-returns-help.herokuapp.com/help/detailed-guides/qualifiers",
+    Txt_Value: "/display-list?list=txt_value",
     Unit: "/display-list?list=units",
     Ref_Period: "/display-list?list=ref_period",
     Meth_Stand: "/display-list?list=method",

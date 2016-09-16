@@ -1,17 +1,24 @@
 {{#CorrectionMissing}}
-<p>You must send data in this field.</p>
-
-<p>Use only letters, spaces and numbers. Remove any commas to save as a CSV. Keep your site name to a maximum of 255 characters.</p>
+<div class="CorrectionMissing">
+    <p>You must send data in this field.</p>
+</div>
 {{/CorrectionMissing}}
 
 {{#CorrectionIncorrect}}
-<p>You can only use letters, spaces and numbers in this field. Remove any commas to save as a CSV.</p>
+<div class="CorrectionIncorrect">
+    <p>You must enter your site name exactly as it appears in your permit or licence.</p>
+</div>
 {{/CorrectionIncorrect}}
 
 {{#CorrectionLength}}
-<p>Site name must be no longer than 255 characters.</p>
+<div class="CorrectionLength">
+    <p>Site_Name reference must be no longer than 255 characters.</p>
+</div>
 {{/CorrectionLength}}
 
 {{#CorrectionMoreHelp}}
-  <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>See the <a href="{{MoreHelpLink}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.
+    </p>
+</div>
 {{/CorrectionMoreHelp}}

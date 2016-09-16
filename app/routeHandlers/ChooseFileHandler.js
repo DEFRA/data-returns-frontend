@@ -77,7 +77,8 @@ function createFileDetailsJson(uuid, clientFilename, errorCode) {
         "name": clientFilename,
         "status": {
             "state": "ready",
-            "description": "Ready to send"
+            "description": "Ready to send",
+            "explanation": "Your file has been checked and is ready to send"
         }
     };
 
@@ -85,12 +86,12 @@ function createFileDetailsJson(uuid, clientFilename, errorCode) {
         // More details url
         let urlPrefix = errorCode === 900 ?  "/correction/table?uuid=" : "/file/invalid?uuid=";
         let moreDetailsUrl = `${urlPrefix}${uuid}`;
-        details.status = {
+        details.status = lodash.merge({
             "state": "error",
             "errorCode": errorCode,
             "moreDetailsUrl": moreDetailsUrl,
-            "description": errorDescs.getDescription(errorCode)
-        };
+            "moreDetailsTitle": errorCode === 900 ? "Show corrections" : "More details"
+        }, errorDescs.getDefinition(errorCode));
     }
     return details;
 }
