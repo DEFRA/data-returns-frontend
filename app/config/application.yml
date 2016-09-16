@@ -11,6 +11,8 @@ appversion: 1.0.17
 
 # Simple Mail Transfer Protocol (SMTP) settings
 smtp:
+  host: ${DR_SMTP_HOST}
+  port: ${DR_SMTP_PORT}
   pinsubject: ' is your data returns online confirmation code'
   confirmsubject: Send data returns online - your receipt
   success: 250 Message accepted
@@ -117,6 +119,8 @@ csv:
 
 # SMTP specializations
 smtp:
+  host:
+  port:
   fromEmailAddress: noreply-local@environment-agency.gov.uk
   useMailCatcher: true # set to false on AWS servers
   mailcatcher:

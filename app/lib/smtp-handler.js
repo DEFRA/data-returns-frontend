@@ -167,8 +167,8 @@ var validateEmailAddress = function (emailaddress) {
 
 /* Default Transport (SMTP Connection) */
 var transporter = nodemailer.createTransport({
-    host: smtp.useMailCatcher ? smtp.mailcatcher.host : config.get('DR_SMTP_HOST'),
-    port: smtp.useMailCatcher ? smtp.mailcatcher.port : config.get('DR_SMTP_PORT'),
+    host: smtp.useMailCatcher ? smtp.mailcatcher.host : smtp.host,
+    port: smtp.useMailCatcher ? smtp.mailcatcher.port : smtp.port,
     ignoreTLS: smtp.useMailCatcher ? smtp.mailcatcher.ignoreTLS : smtp.ignoreTLS,
     auth: {
         user: smtp.username,
