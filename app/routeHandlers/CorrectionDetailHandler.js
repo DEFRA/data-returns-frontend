@@ -40,8 +40,7 @@ module.exports = {
                     CorrectionMoreHelp: true,
                     fieldName: errorDetail.fieldName,
                     fieldHeadingText: errorDetail.fieldHeadingText,
-                    errorCode: errorDetail.errorCode,
-                    MoreHelpLink: errorDetail.helpReference
+                    errorCode: errorDetail.errorCode
                 };
                 // Set up flags for each type of error (Create flag such as "CorrectionIncorrect" for each error type)
                 for (let type of errorDetail.errorTypes) {

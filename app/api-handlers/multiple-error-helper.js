@@ -3,7 +3,6 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
-const moreHelp = require('../config/field-help-links');
 var errorHandler = require('../lib/error-handler');
 
 let errorTypeInfo = {
@@ -151,7 +150,6 @@ module.exports = {
             item.violations = collapseRows(item.violations);
 
             let metadata = {
-                MoreHelpLink: moreHelp.fields[item.fieldName],
                 CorrectionMoreHelp: true
             };
             // Set up flags for each type of error (Create flag such as "CorrectionIncorrect" for each error type)
