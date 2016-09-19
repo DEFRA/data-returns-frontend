@@ -44,7 +44,7 @@ module.exports = {
                 tableHeadings: header,
                 rows: data,
                 clear: false,
-                back: request.info.referrer
+                back: request.info.referrer || "/controlled-lists"
             });
         }).catch(winston.error);
     },
@@ -63,7 +63,7 @@ module.exports = {
                         tableHeadings: header,
                         rows: data,
                         clear: true,
-                        back: request.info.referrer
+                        back: request.info.referrer || "/controlled-lists"
                     });
                 }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
                     throw err.message;

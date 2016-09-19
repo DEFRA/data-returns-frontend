@@ -1,13 +1,19 @@
-{{#Correction}}
-  <p>You must give a valid return type name - eg Air point source emissions return - exactly as given in the EA controlled list of return types. Check your permit or licence for details of return types you must cover.</p>
-{{/Correction}}
+{{#CorrectionIncorrect}}
+<div class="CorrectionIncorrect">
+    <p>You must give a valid return type name exactly as given in the EA controlled list of return types. Check your
+        permit or licence for details of return types you must cover.</p>
+</div>
+{{/CorrectionIncorrect}}
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Rtn_Type</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>You must give a valid return type name - eg Air point source emissions return - exactly as given in the EA controlled list of return types. Check your permit or licence for details of return types you must cover.</p>
-{{/CorrectionDetails}}
+{{#CorrectionMissing}}
+<div class="CorrectionMissing">
+    <p>You cannot leave this field blank. You must give a valid return type name exactly as given in the EA controlled
+        list of return types.</p>
+</div>
+{{/CorrectionMissing}}
 
 {{#CorrectionMoreHelp}}
-  <p>Download the full EA <a href="{{MoreHelpLink}}">return type controlled list</a>. See specific data formatting <a href="{{MoreHelpLink}}">rules for return type</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>Download the full EA <a href="{{links.fields.Rtn_Type}}">return type controlled list</a>.</p>
+</div>
 {{/CorrectionMoreHelp}}

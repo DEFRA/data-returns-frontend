@@ -5,9 +5,7 @@ const config = require('../lib/configuration-handler.js').Configuration;
 var fs = require('fs');
 var request = require('request');
 var validationErrorHelper = require('./multiple-error-helper');
-var errorHandler = require('../lib/error-handler');
 var crypto = require('../lib/crypto-handler');
-const moreHelp = require('../config/field-help-links');
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -90,27 +88,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                 switch (appStatusCode) {
                     case 900: {
                         //Line errors
-                        let lineErrorData = new Array();
-
-                        for (let lineError of bodyData.validationErrors) {
-                            lineError.errorMessage = errorHandler.render(lineError.errorCode,
-                                {
-                                    filename: originalFileName,
-                                    Correction: true,
-                                    CorrectionDetails: false,
-                                    CorrectionMoreHelp: false
-                                }, lineError.errorMessage);
-                            lineError.moreHelp = errorHandler.render(lineError.errorCode,
-                                {
-                                    filename: originalFileName,
-                                    Correction: false,
-                                    CorrectionDetails: false,
-                                    CorrectionMoreHelp: true,
-                                    MoreHelpLink: moreHelp.fields[lineError.fieldName]
-                                }, lineError.errorMessage);
-                            lineErrorData.push(lineError);
-                        }
-                        let groupedLineErrorData = validationErrorHelper.groupErrorData(lineErrorData);
+                        let groupedLineErrorData = validationErrorHelper.groupErrorData(bodyData.validationErrors);
 
                         reject({
                             isUserError: true,

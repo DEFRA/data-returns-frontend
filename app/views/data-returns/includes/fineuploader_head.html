@@ -61,6 +61,7 @@
             var $statusDiv = $("<div>");
             $statusCell.append($statusDiv);
             $statusDiv.html(details.status.description);
+            $statusDiv.attr("title", details.status.explanation);
             $statusDiv
                     .removeClass("file-success file-error file-pending")
                     .addClass("file-" + details.status.state);
@@ -78,7 +79,8 @@
 
             var moreDetailsHtml = "";
             if (details.status.moreDetailsUrl != null) {
-                moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">More details</a>";
+                moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">";
+                moreDetailsHtml += details.status.moreDetailsTitle + "</a>";
             }
             $uploadRow.find(".details").html(moreDetailsHtml);
             $uploadRow.find(".file-uuid").val(details.id);

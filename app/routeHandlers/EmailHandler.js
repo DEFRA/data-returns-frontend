@@ -1,10 +1,9 @@
+"use strict";
 var smtpHandler = require('../lib/smtp-handler');
 var pinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
-var cacheHandler = require('../lib/cache-handler');
 var errorHandler = require('../lib/error-handler');
 const winston = require("winston");
-var redisKeys = require('../lib/redis-keys');
 
 module.exports = {
     /*
@@ -15,37 +14,25 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         var sessionID = userHandler.getSessionID(request);
-
-        userHandler.isAuthenticated(sessionID)
-            .then(function (result) {
-                cacheHandler.getValue(redisKeys.CLIENT_FILENAME.compositeKey(sessionID))
-                    .then(function (fileName) {
-                        fileName = fileName ? fileName.replace(/"/g, '') : '';
-
-                        if (result === true) {
-                            reply.view('data-returns/send-your-file', {
-                                fileName: fileName
-                            });
-                        } else {
-                            reply.view('data-returns/confirm-your-email-address', {
-                                fileName: fileName,
-                                invalidEmailAddress: false,
-                                showStartAgainButton: false,
-                                showSendMailButton: true,
-                                showInput: 'true'
-                            });
-                        }
-                    })
-                    .catch(function (err) {
-                        winston.error(err);
-                    });
-            })
-            .catch(function () {
-                reply.view('data-returns/confirm-your-email-address', {
-                    returnMetaData: request.session.get('returnMetaData')
-                });
+        let viewConfirmEmail = function () {
+            reply.view('data-returns/confirm-your-email-address', {
+                invalidEmailAddress: false,
+                showStartAgainButton: false,
+                showSendMailButton: true,
+                showInput: 'true'
             });
+        };
 
+        userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
+            if (isAuthenticated === true) {
+                reply.redirect("/file/send").rewritable(true);
+            } else {
+                viewConfirmEmail();
+            }
+        }).catch(function (err) {
+            winston.error(err);
+            viewConfirmEmail();
+        });
     },
     /*
      * HTTP Post Handler for /email
@@ -59,46 +46,38 @@ module.exports = {
         var sessionID = userHandler.getSessionID(request);
         usermail = usermail.trim();
         /* Validate the email address */
-        smtpHandler.validateEmailAddress(usermail)
-            .then(function (result) {
-                if (result === true) {
-                    /* Get a new pin code */
-                    pinHandler.newPin()
-                        .then(function (newpin) {
-                            /* Store in REDIS */
-                            var datenow = new Date();
+        smtpHandler.validateEmailAddress(usermail).then(function (isValid) {
+            if (isValid === true) {
+                /* Get a new pin code */
+                pinHandler.newPin().then(function (newpin) {
+                    /* Store in REDIS */
+                    var datenow = new Date();
 
-                            var user = {
-                                authenticated: false,
-                                email: usermail,
-                                pin: newpin,
-                                pinCreationTime: datenow.toUTCString(),
-                                uploadCount: 0
-                            };
+                    var user = {
+                        authenticated: false,
+                        email: usermail,
+                        pin: newpin,
+                        pinCreationTime: datenow.toUTCString(),
+                        uploadCount: 0
+                    };
 
-                            userHandler.setUser(sessionID, user)
-                                .then(function () {
-                                    smtpHandler.sendPinEmail(usermail, newpin);
-                                })
-                                .then(function () {
-                                    reply.redirect('/pin',
-                                        {
-                                            emailAddress: usermail
-                                        });
-                                });
-                        });
-                }
-
-            })
-            .catch(function (errResult) {
-                reply.view('data-returns/confirm-your-email-address', {
-                    invalidEmailAddress: true,
-                    showStartAgainButton: errResult.errorCode === 2055 ? true : false,
-                    showInput: errResult.errorCode === 2055 ? false : true,
-                    showSendMailButton: errResult.errorCode === 2055 ? false : true,
-                    invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
-                    errorcode: 'DR' + errResult.errorCode
+                    userHandler.setUser(sessionID, user).then(function () {
+                        smtpHandler.sendPinEmail(usermail, newpin);
+                    }).then(function () {
+                        reply.redirect('/pin', {emailAddress: usermail});
+                    });
                 });
+            }
+
+        }).catch(function (errResult) {
+            reply.view('data-returns/confirm-your-email-address', {
+                invalidEmailAddress: true,
+                showStartAgainButton: errResult.errorCode === 2055 ? true : false,
+                showInput: errResult.errorCode === 2055 ? false : true,
+                showSendMailButton: errResult.errorCode === 2055 ? false : true,
+                invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
+                errorcode: 'DR' + errResult.errorCode
             });
+        });
     }
 };

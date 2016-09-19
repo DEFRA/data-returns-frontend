@@ -1,5 +1,37 @@
 {{<layout}}
 
+{{$head}}
+{{>head}}
+{{>scripts}}
+<style>
+    div.CorrectionIncorrect:before {
+        content: "Your data is incorrect";
+        color: #b10e1e;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    div.CorrectionMissing:before {
+        content: "Your data is missing";
+        color: #b10e1e;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    div.CorrectionConflicting:before {
+        content: "Your data is conflicting";
+        color: #b10e1e;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    div.CorrectionLength:before {
+        content: "Your data is too long";
+        color: #b10e1e;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+</style>
+{{/head}}
+
+
 {{$pageTitle}}
 Send your data returns online
 {{/pageTitle}}
@@ -7,36 +39,39 @@ Send your data returns online
 {{$content}}
 
 <main id="content" role="main">
+    {{{feedbackbanner}}}
 
-  {{{feedbackbanner}}}
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading">Correct {{fieldHeadingText}} errors</h1>
+        {{{errorSummary}}}
+        <hidden id="error_code" value="DR{{errorCode}}"></hidden>
+    </div>
 
-  <h1 class="heading-large">Details of errors</h1>
-  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-    {{{errorSummary}}}
-    <hidden id="error_code" value="DR{{errorCode}}"></hidden>
-  </div>
-
-  <p class="back">
-    <a id="back.btn" class="button" href="/correction/table?uuid={{uuid}}">Back to corrections table</a>
-  </p>
-  <table id="errorTableHeader" class="error-table">
-    <thead>
-      <tr>
-        <th width="50%">Error</th>
-        <th width="50%">Row(s)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#errorDetail.rowErrors}}
-      <tr>
-        <td>{{errorText}}</td>
-        <td>{{rowText}}</td>
-      </tr>
-      {{/errorDetail.rowErrors}}
-    </tbody>
-  </table>
+    <p class="back">
+        <a id="back.btn" class="button" onclick="history.back(); return false;" href="/correction/table?uuid={{uuid}}">Back to corrections table</a>
+    </p>
+    <div class="filename">
+        <span class="label">File:</span>
+        <span class="name">{{name}}</span>
+    </div>
+    <table id="errorTableHeader" class="error-table">
+        <thead>
+        <tr>
+            <th style="width: 30%;">Row number(s)</th>
+            <th style="width: 6em;">Error</th>
+            <th>Your data</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#errorDetail.violations}}
+        <tr>
+            <td>{{rows}}</td>
+            <td>{{errorTypeText}}</td>
+            <td>{{errorValue}}</td>
+        </tr>
+        {{/errorDetail.violations}}
+        </tbody>
+    </table>
 </main>
-
 {{/content}}
-
 {{/layout}}

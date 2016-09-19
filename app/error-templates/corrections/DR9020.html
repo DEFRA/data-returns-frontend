@@ -1,17 +1,23 @@
-{{#Correction}}
-  <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time.</p>
-  <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only use dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY).</p>
-  <p>Format time as hh:mm:ss using the 24 hour clock. Seconds are optional.</p>
-{{/Correction}}
+{{#CorrectionIncorrect}}
+<div class="CorrectionIncorrect">
+    <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space
+        between date and time.</p>
+    <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only use dashes. You can also
+        use DD-MM-YYYY (or DD/MM/YYYY).</p>
+    <p>Format time as hh:mm:ss using the 24 hour clock.</p>
+    <p>You cannot give a date in the future. Check that you’ve submitted the correct data.</p>
+</div>
+{{/CorrectionIncorrect}}
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Mon_Date</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>You must give a date in this field, but time is optional. If you're giving time then you can use a T or a space between date and time.</p>
-  <p>You must use dashes or slashes between numbers. Format the date as YYYY-MM-DD but only use dashes. You can also use DD-MM-YYYY (or DD/MM/YYYY).</p>
-  <p>Format time as hh:mm:ss using the 24 hour clock. Seconds are optional.</p>
-{{/CorrectionDetails}}
+{{#CorrectionMissing}}
+<div class="CorrectionMissing">
+    <p>You cannot leave this field blank. You must give a date in this field.</p>
+</div>
+{{/CorrectionMissing}}
 
 {{#CorrectionMoreHelp}}
-  <p>Read the full <a target="DRHELPPAGE" href="{{MoreHelpLink}}">rules for EPR data compliance monitoring</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>See the <a href="{{links.HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.
+    </p>
+</div>
 {{/CorrectionMoreHelp}}

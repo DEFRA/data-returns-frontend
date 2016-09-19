@@ -1,14 +1,20 @@
-{{#Correction}}
-  <p>Use this optional field for free-text comments about a row of data. Avoid unnecessary commas and symbols. Enter a maximum of 255 characters.</p>
-  <p>If the Txt_Value field is set to &quot;See comment&quot; then comments must be present in the Comments field.</p>
-{{/Correction}}
+{{#CorrectionLength}}
+<div class="CorrectionLength">
+    <p>You can only enter a maximum of 255 characters in this field.</p>
+</div>
+{{/CorrectionLength}}
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Comments</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>Use this optional field for free-text comments about a row of data. Avoid unnecessary commas and symbols. Enter a maximum of 255 characters.</p>
-{{/CorrectionDetails}}
+{{#CorrectionConflicting}}
+<div class="CorrectionConflicting">
+    <p>You must add a comment if you’ve selected "See comment" in the Txt_Value field. Find out more about <a
+            href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and special cases</a> that
+        might apply to your data.</p>
+</div>
+{{/CorrectionConflicting}}
 
 {{#CorrectionMoreHelp}}
-  <p>Read the full <a rel="external" target="DRHELPPAGE" href="{{MoreHelpLink}}">rules for landfill data compliance monitoring</a>.</p>
+<div class="CorrectionMoreHelp">
+    <p>See the <a href="{{links.HowToFormatEnvironmentAgencyData}}" rel="external" target="DRHELPPAGE">Environment Agency formatting rules</a>.
+    </p>
+</div>
 {{/CorrectionMoreHelp}}

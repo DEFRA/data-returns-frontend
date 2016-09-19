@@ -1,34 +1,28 @@
-/**
- * Created by sam on 20/07/16.
- */
+"use strict";
 const winston = require("winston");
 
-var createDescription = function (code, description) {
+var createDescription = function (code, description, explanation) {
     return {
         "code": code,
-        "description": description
+        "description": description,
+        "explanation": explanation
     };
 };
 
-var errorCodes = [];
-errorCodes["400"] = createDescription(400, "Your file isn’t saved as CSV");
-errorCodes["450"] = createDescription(450, "There’s a problem with your CSV file");
-errorCodes["500"] = createDescription(500, "Your file is empty");
-errorCodes["550"] = createDescription(550, "Your file is too large");
-errorCodes["600"] = createDescription(600, "Your file is unsafe");
-errorCodes["820"] = createDescription(820, "Your data return is incomplete (missing fields)");
-errorCodes["840"] = createDescription(840, "Your file contains unrecognisable field headings");
-errorCodes["900"] = createDescription(900, "Multiple validation errors");
-errorCodes["3000"] = createDescription(3000, "Unexpected processing failure");
+let errorCodes = [];
+const UNKNOWN = createDescription(null, "Unrecognised error", "");
+errorCodes["400"] = createDescription(400, "File error", "Your file isn’t saved as CSV");
+errorCodes["450"] = createDescription(450, "File error", "There’s a problem with your CSV file");
+errorCodes["500"] = createDescription(500, "File error", "Your file is empty");
+errorCodes["550"] = createDescription(550, "File error", "Your file is too large");
+errorCodes["600"] = createDescription(600, "File error", "Your file is unsafe");
+errorCodes["820"] = createDescription(820, "File error", "Your data return is incomplete (missing fields)");
+errorCodes["840"] = createDescription(840, "File error", "Your file contains unrecognisable field headings");
+errorCodes["900"] = createDescription(900, "Data error", "Your data return contains errors that must be corrected");
+errorCodes["3000"] = createDescription(3000, "Unexpected failure", "There was a problem with the service. Details of the problem have been recorded. This problem may be temporary.");
 
 module.exports = {
-    getDescription: function (errorCode) {
-        winston.log("debug", "Retrieving description for error code " + errorCode);
-        var desc = "Unrecognised error";
-        if (errorCodes[errorCode]) {
-            desc = errorCodes[errorCode].description;
-        }
-        winston.log("debug", "Found description: (" + errorCode + ") " + desc);
-        return desc;
+    getDefinition: function (errorCode) {
+        return errorCodes[errorCode] || UNKNOWN;
     }
 };

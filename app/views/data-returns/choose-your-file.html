@@ -48,13 +48,13 @@ Send your data returns online
             <tbody>
             {{#files}}
             <tr id="summary-{{{id}}}" class="statusbar">
-                <td class="filename">{{{name}}}</td>
+                <td class="filename">{{name}}</td>
                 <td class="status">
-                    <div class="file-{{{status.state}}}">{{{status.description}}}</div>
+                    <div class="file-{{{status.state}}}" title="{{status.explanation}}">{{status.description}}</div>
                 </td>
                 <td class="details">
                     {{#status.moreDetailsUrl}}
-                    <a href="{{{status.moreDetailsUrl}}}"><span>More details</span></a>
+                    <a href="{{{status.moreDetailsUrl}}}"><span>{{status.moreDetailsTitle}}</span></a>
                     {{/status.moreDetailsUrl}}
                 </td><td class="remove">
                     <form method="post" action="/file/choose" enctype="multipart/form-data">

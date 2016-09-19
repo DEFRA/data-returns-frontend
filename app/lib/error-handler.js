@@ -3,7 +3,7 @@ const winston = require("winston");
 const hogan = require('hogan.js');
 const utils = require('../lib/utils');
 const path = require('path');
-const merge = require('merge');
+const lodash = require('lodash');
 const commonViewData = require("../lib/common-view-data");
 const templateDir = path.resolve(__dirname, '../error-templates/');
 const filenames = utils.getFileListInDir(templateDir);
@@ -21,8 +21,12 @@ var loadErrorTemplates = function () {
                 let x = filename.lastIndexOf('/');
                 let y = filename.indexOf('.html');
                 let key = filename.substring(x + 1, y);
-                let compiledTemplate = hogan.compile(fileContents);
-                compiledTemplates[key] = compiledTemplate;
+                try {
+                    let compiledTemplate = hogan.compile(fileContents);
+                    compiledTemplates[key] = compiledTemplate;
+                } catch (e) {
+                    winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
+                }
             }
         });
         templatesLoaded++;
@@ -34,7 +38,7 @@ var loadErrorTemplates = function () {
 var compiledTemplates = loadErrorTemplates();
 
 module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
-    let viewData = merge.recursive(commonViewData, metadata);
+    let viewData = lodash.merge({}, commonViewData, metadata);
 
     var key = 'DR' + utils.pad(errorcode, 4);
     var template, ret;

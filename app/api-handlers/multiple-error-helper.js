@@ -3,6 +3,7 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
+var errorHandler = require('../lib/error-handler');
 
 let errorTypeInfo = {
     "missing": {
@@ -11,7 +12,7 @@ let errorTypeInfo = {
     },
     "length": {
         "order": 1,
-        "display": "Incorrect"
+        "display": "Length"
     },
     "incorrect": {
         "order": 2,
@@ -23,50 +24,34 @@ let errorTypeInfo = {
     }
 };
 
-let getCorrectionTableErrorText = function(errorTypesArr) {
-    let sortedUniqueTypes = lodash.uniq(lodash.sortBy(errorTypesArr, function(item) {
-        let lookup = new String(item).toLowerCase();
-        return errorTypeInfo[lookup].order;
-    }).map(item => getErrorMessageForKey(item)));
-
-    let displayText = "";
-    sortedUniqueTypes.forEach((text, index) => {
-        if (index > 0) {
-            let sep = (index === sortedUniqueTypes.length - 1) ? " and " : ", ";
-            displayText += sep;
-        }
-        displayText += text;
-    });
-    return lodash.capitalize(displayText);
-};
-
 let getErrorMessageForKey = function (key) {
     let lookup = new String(key).toLowerCase();
     return errorTypeInfo[lookup].display;
 };
 
-let collapseRows = function (rowErrors) {
-    let errors = lodash.sortBy(rowErrors, ["errorType", "lineNumber"]);
-    let rowsNumbersByError = new Map();
-    let outputRowErrors = new Array();
-
-    // Collapse multiple errors on the same row
-    errors = lodash.uniqWith(errors, (item, other) => item.rowText === other.rowText);
+let collapseRows = function (violations) {
+    let errors = lodash.sortBy(violations, ["errorType", "rowNumber"]);
+    let rowsNumbersByErrorMap = new Map();
 
     for (let error of errors) {
-        let rowNumberArrayForType = rowsNumbersByError.get(error.errorText);
-        if (!Array.isArray(rowNumberArrayForType)) {
-            rowNumberArrayForType = new Array();
-        }
-        rowNumberArrayForType.push(error.lineNumber);
-        rowsNumbersByError.set(error.errorText, rowNumberArrayForType);
+        // The map key is the error type appended with the error value.  This way we only collapse rows which have the
+        // same error value occurring more than once
+        let mapKey = `${error.errorType}_${error.errorValue}`;
+
+        let errorData = rowsNumbersByErrorMap.get(mapKey) || {
+            "errorType": error.errorType,
+            "errorTypeText": error.errorTypeText,
+            "errorValue": error.errorValue,
+            "rows": new Array()
+        };
+        errorData.rows.push(error.rowNumber);
+        rowsNumbersByErrorMap.set(mapKey, errorData);
     }
 
-    rowsNumbersByError.forEach(function(valRowNumbers, keyErrorText) {
-        outputRowErrors.push({
-            "errorText": keyErrorText,
-            "rowText": collapseArrayRanges(valRowNumbers)
-        });
+    let outputRowErrors = new Array();
+    rowsNumbersByErrorMap.forEach(function(errorData) {
+        errorData.rows = collapseArrayRanges(errorData.rows);
+        outputRowErrors.push(errorData);
     });
     return outputRowErrors;
 };
@@ -104,7 +89,7 @@ var collapseArrayRanges = function (intArray) {
 
 module.exports = {
     /**
-     * Transform the backend error stucture into a structure we can use to display data on the corrections table
+     * Transform the backend error structure into a structure we can use to display data on the corrections table
      * and the corrections detail pages.
      *
      * This method processes each error returned by the backend and groups them based on the errorCode.  For each
@@ -117,60 +102,62 @@ module.exports = {
     groupErrorData: function (data) {
         let sortedData = lodash.sortBy(data, ["errorCode", "errorType"]);
 
-        let displayData = new Array();
-        let lastDisplayItem = null;
+        let correctionTableData = new Array();
+        let lastTableItem = null;
         for (let item of sortedData) {
-            let displayItem = null;
+            let tableItem = null;
 
-            if (lastDisplayItem === null || lastDisplayItem.errorCode !== item.errorCode) {
+            if (lastTableItem === null || lastTableItem.errorCode !== item.errorCode) {
                 // Create a new display item for the current error code
-                displayItem = lodash.cloneDeep(item);
-                displayData.push(displayItem);
+                tableItem = {
+                    "fieldName": item.fieldName || "Multiple",
+                    "fieldHeadingText": item.fieldName || "multiple",
+                    "errorCode": item.errorCode,
+                    "definition": item.definition
+                };
+                correctionTableData.push(tableItem);
             } else {
                 // Get last item encountered
-                displayItem = displayData[displayData.length - 1];
+                tableItem = correctionTableData[correctionTableData.length - 1];
             }
 
             // Record of list or error types on the display item (e.g. Missing, Incorrect, Conflicting)
-            if (!Array.isArray(displayItem.errorTypesArr)) {
-                displayItem.errorTypesArr = new Array();
+            if (!Array.isArray(tableItem.errorTypes)) {
+                tableItem.errorTypes = new Array();
             }
-            displayItem.errorTypesArr.push(item.errorType);
+            tableItem.errorTypes.push(getErrorMessageForKey(item.errorType));
 
-            // Create a rowErrors object to provide information for the correction detail page
-            if (!Array.isArray(displayItem.rowErrors)) {
-                displayItem.rowErrors = new Array();
-            }
-
-            // If item was invalid then display the invalid value, otherwise display the reason the item failed validation
-            let errorText = item.errorValue;
-            if (["incorrect", "length"].indexOf(item.errorType.toLowerCase()) < 0) {
-                errorText = getErrorMessageForKey(item.errorType);
+            // Create a violations object to provide information for the correction detail page
+            if (!Array.isArray(tableItem.violations)) {
+                tableItem.violations = new Array();
             }
 
-            displayItem.rowErrors.push({
-                "errorText":  errorText,
-                "rowText": item.lineNumber,
+            tableItem.violations.push({
                 "errorType": item.errorType,
-                "lineNumber": item.lineNumber
+                "errorTypeText": getErrorMessageForKey(item.errorType),
+                "rowNumber": item.lineNumber,
+                "errorValue": item.errorValue
             });
 
             // Update the reference to the last displayed item
-            lastDisplayItem = displayItem;
+            lastTableItem = tableItem;
         }
 
-        displayData.forEach(function(item) {
-            // Tidy up the top level details which are displayed in the corrections table
-            item.fieldName = item.fieldName || "(Multiple)";
-            item.errorType = getCorrectionTableErrorText(item.errorTypesArr);
-            item.rowErrors = collapseRows(item.rowErrors);
+        for (let item of correctionTableData) {
+            // Add details of violations to the to level correct table items
+            item.violationCount = item.violations.length;
+            item.multipleViolations = item.violations.length > 1;
+            item.violations = collapseRows(item.violations);
 
-            // These fields are no longer required on the top level objects as the detail is recorded in the rowErrors
-            // property at the lower level (to be displayed on the corrections detail page)
-            delete item.errorTypesArr;
-            delete item.lineNumber;
-
-        });
-        return displayData;
+            let metadata = {
+                CorrectionMoreHelp: true
+            };
+            // Set up flags for each type of error (Create flag such as "CorrectionIncorrect" for each error type)
+            for (let type of item.errorTypes) {
+                metadata[`Correction${type}`] = true;
+            }
+            item.correction = errorHandler.render(item.errorCode, metadata, item.errorMessage);
+        }
+        return correctionTableData;
     }
 };

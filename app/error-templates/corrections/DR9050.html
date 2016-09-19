@@ -1,15 +1,27 @@
-{{#Correction}}
-  <p>When providing a numeric measurement in the Value field, you <u>must</u> give a unit of measurement for your returns - exactly as given in the EA controlled list.</p>
-  <p>When providing a textual value in the Txt_Value field, you <u>must not</u> give a unit of measurement for your returns.</p>
-  <p>Give emissions readings in %v/v or mg/mg3. Give temperature in DegC. Give pressure in KPa or mBar. Use 'pH' or 'meteorological' where appropriate.</p>
-{{/Correction}}
+{{#CorrectionIncorrect}}
+<div class="CorrectionIncorrect">
+    <p>You must give a unit or measure for your returns exactly as given in the EA controlled list.</p>
+</div>
+{{/CorrectionIncorrect}}
 
-{{#CorrectionDetails}}
-  <h1 class="heading-medium error-summary-heading">Make corrections to Units</h1>
-  <p>Before you can send {{filename}} you need to make corrections.</p>
-  <p>You must give a unit or measure for your returns - exactly as given in the EA controlled list. You cannot leave this field blank.</p>
-{{/CorrectionDetails}}
+{{#CorrectionMissing}}
+<div class="CorrectionMissing">
+    <p>You must enter data in this field because you’ve submitted data in Value field. Select a unit from the EA
+        controlled list.</p>
+</div>
+{{/CorrectionMissing}}
+
+{{#CorrectionConflicting}}
+<div class="CorrectionConflicting">
+    <p>You must leave the Unit field blank because you’ve submitted data in the Txt_Value field.
+        Find out more about <a href="{{links.Help_SpecialCases}}" rel="external" target="DRHELPPAGE">exceptions and
+            special cases</a>
+        that might apply to your data.</p>
+</div>
+{{/CorrectionConflicting}}
 
 {{#CorrectionMoreHelp}}
-  <p>Download the full EA <a href="{{MoreHelpLink}}">unit or measure controlled list.</a></p>
+<div class="CorrectionMoreHelp">
+    <p>Download the full EA <a href="{{links.fields.Unit}}">unit or measure controlled list.</a></p>
+</div>
 {{/CorrectionMoreHelp}}

@@ -1,13 +1,12 @@
 "use strict";
-
 const winston = require("winston");
 const config = require('../lib/configuration-handler.js').Configuration;
 const logging = config.get('logging');
 
 const airbrake = require("airbrake");
-const merge = require('merge');
 const util = require('util');
 const lodash = require("lodash");
+
 /**
  * Airbrake transport class
  *
@@ -25,7 +24,6 @@ let AirbrakeTransport = function(options) {
     this.airbrake.developmentEnvironments = ['local'];
     return this;
 };
-
 // Set AirbrakeTransport to inherit from winston.Transport
 util.inherits(AirbrakeTransport, winston.Transport);
 // Override the transport log method to pass data through to airbrake
@@ -51,7 +49,7 @@ let commonLoggingOpts = {
     "level": logging.level || "info",
     "colorize": true,
     "silent": false,
-    "timetamp": true,
+    "timestamp": true,
     "json": false,
     "showLevel": true,
     "handleExceptions": true,
@@ -68,12 +66,12 @@ winston.exitOnError = false;
 
 // Configure logging
 winston.clear();
-winston.add(winston.transports.File, merge(commonLoggingOpts, fileLoggingOpts));
+winston.add(winston.transports.File, lodash.merge({}, commonLoggingOpts, fileLoggingOpts));
 winston.add(winston.transports.Console, commonLoggingOpts);
 
 if (logging.errbit.enabled) {
     winston.info("Enabling errbit integration.");
-    winston.add(AirbrakeTransport, merge(commonLoggingOpts, { level: logging.errbit.level }));
+    winston.add(AirbrakeTransport, lodash.merge({}, commonLoggingOpts, { level: logging.errbit.level }));
 }
 
 // Rexport winston shared logger from this module
