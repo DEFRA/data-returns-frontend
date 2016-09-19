@@ -13,6 +13,8 @@ appversion: 1.0.17
 smtp:
   host: ${DR_SMTP_HOST}
   port: ${DR_SMTP_PORT}
+  username: ${DR_SMTP_USER}
+  password: ${DR_SMTP_PASS}
   pinsubject: ' is your data returns online confirmation code'
   confirmsubject: Send data returns online - your receipt
   success: 250 Message accepted
@@ -126,6 +128,8 @@ csv:
 smtp:
   host:
   port:
+  username:
+  password:
   fromEmailAddress: noreply-local@environment-agency.gov.uk
   useMailCatcher: true # set to false on AWS servers
   mailcatcher:
@@ -144,7 +148,7 @@ api:
 
 client:
   port: 3000
-
+$
 # Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
 logging:
   level: debug
