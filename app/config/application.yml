@@ -196,7 +196,7 @@ smtp:
 logging:
   level: debug
   errbit:
-    enabled: true
+    enabled: false
     level: debug
     appName: Data-Returns Front End (AWS DEV)
 
