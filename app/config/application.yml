@@ -148,7 +148,7 @@ api:
 
 client:
   port: 3000
-$
+
 # Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
 logging:
   level: debug
