@@ -29,7 +29,7 @@
     "minimist": "~1.2.0",
     "mkdirp": "~0.5.1",
     "node-minify": "~1.3.7",
-    "node-sass": "~3.8.0",
+    "node-sass": "~3.10.0",
     "node-sass-loader": "~0.1.7",
     "node-uuid": "~1.4.7",
     "nodemailer": "~2.5.0",
