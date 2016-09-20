@@ -1,10 +1,25 @@
-.error-table {
+.corrections-table {
 	margin-bottom:30px;
+	.th-field-heading {
+		width:percentage(1/6);
+	}
+	.th-errors {
+		width:percentage(1/6);
+	}
+	.th-correction {
+		width:percentage(2/3);
+	}
+	.th-row {
+		width:percentage(2/6);
+	}
+	.th-error {
+		width:percentage(1/6);
+	}
+	.th-data {
+		width:percentage(3/6);
+	}
 	td {
 		vertical-align:top;
-		max-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
 		p:first-child {
 			margin-top:0;
 		}
@@ -12,7 +27,55 @@
 			margin-bottom:0;
 		}
 	}
-	a[rel="external"]::after {
-    background-position: right 4px;
+}
+
+
+/* Mobile formatting */
+@include media(mobile) {
+	.corrections-table {
+		display: block;
+		margin-top: 0px;
+		thead, tr, tbody, td {
+			display: block;
+		}
+		.th-field-heading, .th-errors, .th-correction, .th-row, .th-error, .th-data {
+			display: none;
+		}
+		tr {
+			border-bottom: 1px solid $grey-2;
+			padding: 0.5em 0;
+		}
+		.td-row, .td-error, .td-data {
+			margin-left:percentage(1/3);
+			width:percentage(2/3);
+			display: inline-block;
+			padding: 0.3em 0;
+			border-bottom: 0;
+			&:before {
+				width:50%;
+				display: inline-block;
+				margin-left: -50%;
+				font-weight: bold;
+			}
+		}
+		.td-row {
+			&:before {
+				content:"Row number(s): ";
+			}
+		}
+		.td-error {
+			&:before {
+				content:"Error: ";
+			}
+		}
+		.td-data {
+			&:before {
+				content:"Your data: ";
+			}
+		}
+		.details, .remove {
+			width: 50%;
+			display: inline-block;
+		}
 	}
 }
