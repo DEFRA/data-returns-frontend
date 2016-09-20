@@ -2358,18 +2358,33 @@ input.validation-code {
     border-bottom: 1px solid #bfc1c3;
     padding: 0.5em 0;
   }
-  .corrections-table .td-row, .corrections-table .td-error, .corrections-table .td-data {
+  .corrections-table .td-field-heading, .corrections-table .td-errors, .corrections-table .td-correction, .corrections-table .td-row, .corrections-table .td-error, .corrections-table .td-data {
     margin-left: 33.33333%;
     width: 66.66667%;
     display: inline-block;
     padding: 0.3em 0;
     border-bottom: 0;
   }
-  .corrections-table .td-row:before, .corrections-table .td-error:before, .corrections-table .td-data:before {
+  .corrections-table .td-field-heading:before, .corrections-table .td-errors:before, .corrections-table .td-correction:before, .corrections-table .td-row:before, .corrections-table .td-error:before, .corrections-table .td-data:before {
     width: 50%;
     display: inline-block;
     margin-left: -50%;
     font-weight: bold;
+  }
+  .corrections-table .td-field-heading:before {
+    content: "Field heading: ";
+  }
+  .corrections-table .td-errors:before {
+    content: "Errors: ";
+  }
+  .corrections-table .td-correction div:first-child p {
+    margin-top: -16px;
+  }
+  .corrections-table .td-correction p:last-child {
+    margin-bottom: 1em;
+  }
+  .corrections-table .td-correction:before {
+    content: "Correction: ";
   }
   .corrections-table .td-row:before {
     content: "Row number(s): ";
@@ -2379,10 +2394,6 @@ input.validation-code {
   }
   .corrections-table .td-data:before {
     content: "Your data: ";
-  }
-  .corrections-table .details, .corrections-table .remove {
-    width: 50%;
-    display: inline-block;
   }
 }
 
