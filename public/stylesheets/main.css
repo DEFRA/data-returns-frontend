@@ -2338,10 +2338,6 @@ input.validation-code {
   margin-top: 0;
 }
 
-.corrections-table td p:last-child {
-  margin-bottom: 0;
-}
-
 /* Mobile formatting */
 @media (max-width: 640px) {
   .corrections-table {
@@ -2377,7 +2373,7 @@ input.validation-code {
   .corrections-table .td-errors:before {
     content: "Errors: ";
   }
-  .corrections-table .td-correction div:first-child p {
+  .corrections-table .td-correction div:first-child p:first-child {
     margin-top: -16px;
   }
   .corrections-table .td-correction p:last-child {
