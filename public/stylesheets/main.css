@@ -2308,42 +2308,6 @@ input.validation-code {
 
 .corrections-table .th-field-heading {
   width: 16.66667%;
-<<<<<<< HEAD
-}
-
-.corrections-table .th-errors {
-  width: 16.66667%;
-}
-
-.corrections-table .th-correction {
-  width: 66.66667%;
-}
-
-.corrections-table .th-row {
-  width: 16.66667%;
-}
-
-.corrections-table .th-error {
-  width: 16.66667%;
-}
-
-.corrections-table .th-data {
-  width: 66.66667%;
-}
-
-.corrections-table td {
-  vertical-align: top;
-}
-
-.corrections-table td p:first-child {
-  margin-top: 0;
-}
-
-.corrections-table td p:last-child {
-  margin-bottom: 0;
-}
-
-=======
 }
 
 .corrections-table .th-errors {
@@ -2368,6 +2332,9 @@ input.validation-code {
 
 .corrections-table td {
   vertical-align: top;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .corrections-table td p:first-child {
@@ -2429,7 +2396,6 @@ input.validation-code {
   }
 }
 
->>>>>>> cd761f3b1e9a98b5c227c117496f62407f4a8f23
 dt {
   font-family: "nta", Arial, sans-serif;
   font-size: 16px;
