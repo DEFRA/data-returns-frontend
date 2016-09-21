@@ -29,14 +29,14 @@ Send your data returns online
         <tbody>
         {{#correctionsData.lineErrors}}
         <tr id="ERR_DR{{errorCode}}">
-            <td>
+            <td class="td-field-heading">
                 <abbr title="{{definition}}">{{fieldName}}</abbr>
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
-            <td title="Error Code: DR{{errorCode}}">
+            <td class="td-errors" title="Error Code: DR{{errorCode}}">
                 <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">View {{violationCount}} error{{#multipleViolations}}s{{/multipleViolations}}</a>
             </td>
-            <td>
+            <td class="td-correction">
                 {{{correction}}}
             </td>
         </tr>
