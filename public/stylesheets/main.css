@@ -2302,27 +2302,44 @@ input.validation-code {
   margin-bottom: 0;
 }
 
-.error-table {
+.corrections-table {
   margin-bottom: 30px;
 }
 
-.error-table td {
-  vertical-align: top;
-  max-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.corrections-table .th-field-heading {
+  width: 16.66667%;
 }
 
-.error-table td p:first-child {
+.corrections-table .th-errors {
+  width: 16.66667%;
+}
+
+.corrections-table .th-correction {
+  width: 66.66667%;
+}
+
+.corrections-table .th-row {
+  width: 16.66667%;
+}
+
+.corrections-table .th-error {
+  width: 16.66667%;
+}
+
+.corrections-table .th-data {
+  width: 66.66667%;
+}
+
+.corrections-table td {
+  vertical-align: top;
+}
+
+.corrections-table td p:first-child {
   margin-top: 0;
 }
 
-.error-table td p:last-child {
+.corrections-table td p:last-child {
   margin-bottom: 0;
-}
-
-.error-table a[rel="external"]::after {
-  background-position: right 4px;
 }
 
 dt {

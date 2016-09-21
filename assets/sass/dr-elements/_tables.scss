@@ -1,18 +1,30 @@
-.error-table {
+.corrections-table {
 	margin-bottom:30px;
+	.th-field-heading {
+		width:percentage(1/6);
+	}
+	.th-errors {
+		width:percentage(1/6);
+	}
+	.th-correction {
+		width:percentage(2/3);
+	}
+	.th-row {
+		width:percentage(1/6);
+	}
+	.th-error {
+		width:percentage(1/6);
+	}
+	.th-data {
+		width:percentage(2/3);
+	}
 	td {
 		vertical-align:top;
-		max-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
 		p:first-child {
 			margin-top:0;
 		}
 		p:last-child {
 			margin-bottom:0;
 		}
-	}
-	a[rel="external"]::after {
-    background-position: right 4px;
 	}
 }
