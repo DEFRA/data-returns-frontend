@@ -8,8 +8,7 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 var utils = require('./app/lib/utils');
-const Compressor = require('node-minify');
-var SASSHandler = require('./app/lib/SASSHandler');
+const AssetManager = require('./app/lib/AssetManager');
 var server = new Hapi.Server();
 const cacheHandler = require('./app/lib/cache-handler');
 const redisKeys = require('./app/lib/redis-keys.js');
@@ -18,8 +17,8 @@ const redisKeys = require('./app/lib/redis-keys.js');
 winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
 winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env, null, 4));
 
-//listen to SASS changes !
-SASSHandler.startSASSWatch(__dirname + '/assets/sass');
+// Start the asset manager
+AssetManager.start();
 
 // Test for cryptography support
 try {
@@ -195,40 +194,6 @@ server.start(function (err) {
     if (err) {
         throw err;
     }
-
     utils.createUploadDirectory();
-    winston.info('==> Minifying and combining Javascript files');
-    var jsFileMapping = [
-        {
-            "in": "assets/javascripts/fine-uploader/fine-uploader.js",
-            "out": "public/javascripts/fine-uploader/fine-uploader.js"
-        },
-        {
-            "in": "assets/javascripts/jquery-1.12.4.js",
-            "out": "public/javascripts/jquery-1.12.4.js"
-        },
-        {
-            "in": "assets/javascripts/google-analytics.js",
-            "out": "public/javascripts/google-analytics.js"
-        },
-        {
-            "in": "assets/javascripts/details.polyfill.js",
-            "out": "public/javascripts/details.polyfill.js"
-        },
-    ];
-
-    for (let mapping of jsFileMapping) {
-        // Using UglifyJS for JS
-        new Compressor.minify({
-            type: 'uglifyjs',
-            fileIn: mapping.in,
-            fileOut: mapping.out,
-            callback: function (err, min) {
-                if (err) {
-                    throw err;
-                }
-            }
-        });
-    }
     winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
 });
