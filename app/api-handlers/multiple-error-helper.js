@@ -100,7 +100,11 @@ module.exports = {
      * @returns {Array}
      */
     groupErrorData: function (data) {
-        let sortedData = lodash.sortBy(data, ["errorCode", "errorType"]);
+        // The backend may return multiple violations for a single field (e.g. permit format invalid and also
+        // not a controlled list item) so collapse these down so as not to confuse the output in the table
+        let uniqueErrors = lodash.uniqWith(data, lodash.isEqual);
+        // Sort by error code (field) and error type (invalid, missing, etc)
+        let sortedData = lodash.sortBy(uniqueErrors, ["errorCode", "errorType"]);
 
         let correctionTableData = new Array();
         let lastTableItem = null;
