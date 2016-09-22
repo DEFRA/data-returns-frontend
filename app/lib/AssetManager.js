@@ -13,8 +13,42 @@ const minifyTypes = {
     ".css": "clean-css"
 };
 
-const fsOps = {
-    "empty": function (targetDir, onComplete) {
+/**
+ * AssetManager base class
+ */
+class AssetManager {
+    constructor(config) {
+        this.config = config;
+
+        winston.info(`Registering asset directory ${config.sourceDir} for changes.`);
+        let match = config.pattern || "**/*";
+
+        let watcher = this;
+        // listen for subsequent changes
+        gaze(match, {"cwd": config.sourceDir}, function (err) {
+            if (err) {
+                return winston.error(`AssetManager: Failed to gaze at asset directory ${config.sourceDir}, reason ${err.message}`, err);
+            }
+            // On changed/added/deleted
+            this.on('all', function (event, absolutePath) {
+                try {
+                    let relPath = path.relative(config.sourceDir, absolutePath);
+                    winston.info(`AssetManager: Detected a change to ${relPath} inside ${config.sourceDir} (${event})`);
+                    this.onChange(event, absolutePath, relPath);
+                } catch (e) {
+                    winston.error(`AssetManager: Change handler reported an error: ${e.message}`, e);
+                }
+            }.bind(watcher));
+        });
+    }
+
+    /**
+     * Empty the specified directory (recursively delete all contents)
+     *
+     * @param targetDir the directory to empty
+     * @param onComplete optional completion callback
+     */
+    static empty(targetDir, onComplete) {
         fs.emptyDir(targetDir, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Unable to empty target directory ${targetDir}, reason ${err.message}`, err);
@@ -23,8 +57,16 @@ const fsOps = {
             winston.info(`AssetManager: Emptied ${targetDir}`);
             if (onComplete) onComplete();
         });
-    },
-    "copy": function (sourcePath, targetPath, onComplete) {
+    }
+
+    /**
+     * Copy a resource from sourcePath to targetPath
+     *
+     * @param sourcePath the source file/directory for the copy operation
+     * @param targetPath the target file/directory for the copy operation
+     * @param onComplete optional completion callback
+     */
+    static copy(sourcePath, targetPath, onComplete) {
         fs.copy(sourcePath, targetPath, {"clobber": true}, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Failed to copy ${sourcePath} to ${targetPath}, reason ${err.message}`, err);
@@ -32,8 +74,16 @@ const fsOps = {
             winston.info(`AssetManager: Copied ${sourcePath} to ${targetPath}`);
             if (onComplete) onComplete();
         });
-    },
-    "minify": function (sourcePath, targetPath, onComplete) {
+    }
+
+    /**
+     * Minify the sourcePath resource and output the minified content to targetPath
+     *
+     * @param sourcePath the source file/directory for the minify operation
+     * @param targetPath the target file/directory for the minify operation
+     * @param onComplete optional completion callback
+     */
+    static minify(sourcePath, targetPath, onComplete) {
         let ext = path.extname(sourcePath).toLowerCase();
         let minifyType = minifyTypes[ext] || null;
 
@@ -53,8 +103,15 @@ const fsOps = {
         } else {
             winston.error(`AssetManager: Could not minify file with type ${ext} for path ${sourcePath}`);
         }
-    },
-    "delete": function (targetPath, onComplete) {
+    }
+
+    /**
+     * Delete the file/directory specified by targetPath
+     *
+     * @param targetPath the file/directory to be deleted
+     * @param onComplete optional completion callback
+     */
+    static delete(targetPath, onComplete) {
         fs.unlink(targetPath, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Failed to delete ${targetPath}, reason ${err.message}`, err);
@@ -63,32 +120,11 @@ const fsOps = {
             if (onComplete) onComplete();
         });
     }
-};
 
-class AssetWatcher {
-    constructor(pattern, sourceDir) {
-        winston.info(`Registering asset directory ${sourceDir} for changes.`);
-        let match = pattern || "**/*";
-
-        // listen for subsequent changes
-        gaze(match, {"cwd": sourceDir}, function (err) {
-            if (err) {
-                return winston.error(`AssetManager: Failed to gaze at asset directory ${sourceDir}, reason ${err.message}`, err);
-            }
-            // On changed/added/deleted
-            this.on('all', function (event, absolutePath) {
-                try {
-                    let relPath = path.relative(sourceDir, absolutePath);
-                    winston.info(`AssetManager: Detected a change to ${relPath} inside ${sourceDir} (${event})`);
-                    this.onChange(event, absolutePath, relPath);
-                } catch (e) {
-                    winston.error(`AssetManager: Change handler reported an error: ${e.message}`, e);
-                }
-            }.bind(this));
-        });
-    }
 
     /**
+     * The onChange method is an override point.  This method is called whenever the AssetManager detects a change
+     * in one of the watched asset directories.
      *
      * @param event the type of change (added, changed, deleted)
      * @param absolutePath the absolute path to the file that was changed
@@ -99,33 +135,31 @@ class AssetWatcher {
     }
 }
 
-class SassHandler extends AssetWatcher {
-    /**
-     *
-     * @param pattern
-     * @param sourceDir
-     * @param mainFile
-     * @param targetFile
-     * @constructor
-     */
+/**
+ * SassHandler implementation of the AssetManager
+ */
+class SassHandler extends AssetManager {
     constructor(config) {
-        super(config.pattern, config.sourceDir);
-        this.config = config;
+        super(config);
         this.mainFile = path.join(this.config.sourceDir, this.config.mainFile);
         this.outFile = path.join(this.config.targetDir, this.config.outFile);
         this.minifiedFile = path.join(this.config.targetDir, this.config.minifiedFile);
         this.onChange();
     }
 
-
+    /**
+     * Fired when a change to any SASS asset occurs
+     */
     onChange() {
-        winston.info(`AssetManager: Compiling SASS from ${this.config.mainFile} to ${this.config.outFile}`);
-        let compile = this.compileSass.bind(this);
-        fsOps.empty(this.config.targetDir, compile);
+        // When a change to a SASS asset occurs we need to delete the last output and recompile all SASS
+        AssetManager.empty(this.config.targetDir, this.compileSass.bind(this));
     }
 
+    /**
+     * Recompile the output CSS from the SASS source.
+     */
     compileSass() {
-        let onCompiled = function(err, result) {
+        let onCompiled = function (err, result) {
             if (err) {
                 return winston.error(`AssetManager: Failed to compile SASS from ${this.mainFile}, reason: ${err.message}`, err);
             }
@@ -135,7 +169,8 @@ class SassHandler extends AssetWatcher {
                     return winston.error(`AssetManager: Failed to write compiled SASS to ${this.outFile}, reason: ${fsErr.message}`, fsErr);
                 }
                 winston.info(`AssetManager: Compiled SASS from ${this.mainFile} to ${this.outFile}`);
-                fsOps.minify(this.outFile, this.minifiedFile);
+                // Create a minified version of the CSS output
+                AssetManager.minify(this.outFile, this.minifiedFile);
             }.bind(this));
         }.bind(this);
 
@@ -149,38 +184,59 @@ class SassHandler extends AssetWatcher {
     }
 }
 
-class PassthroughHandler extends AssetWatcher {
+/**
+ * PassthroughHandler implementation of the AssetManagfer
+ *
+ * This implementation passes resources through from the source asset folder to the public folder, optionally
+ * running minification on the assets as they are passed through
+ */
+class PassthroughHandler extends AssetManager {
     constructor(config) {
-        super(config.pattern, config.sourceDir);
-        this.config = config;
+        super(config);
         this.synchroniseAll();
     }
 
+    /**
+     * Synchronise all assets between the source and target folders
+     */
     synchroniseAll() {
-        let syncOp = this.config.minify ? fsOps.minify : fsOps.copy;
         // Synchronise directories on startup
-        fsOps.empty(this.config.targetDir, function () {
+        AssetManager.empty(this.config.targetDir, function () {
             fs.walk(this.config.sourceDir).on('data', function (item) {
                 if (item.stats.isFile() && minimatch(item.path, this.config.pattern)) {
                     let relPath = path.relative(this.config.sourceDir, item.path);
                     let targetPath = path.join(this.config.targetDir, relPath);
-                    syncOp(item.path, targetPath);
+                    this.synchroniseFile(item.path, targetPath);
                 }
             }.bind(this));
         }.bind(this));
     }
 
+    /**
+     * Fired when a change to a source asset is detected
+     */
     onChange(event, absolutePath, relPath) {
         // Something changed in the source directory
         let targetPath = path.join(this.config.targetDir, relPath);
         if (event === "deleted") {
-            fsOps.delete(targetPath);
+            AssetManager.delete(targetPath);
         } else {
-            let syncOp = this.config.minify ? fsOps.minify : fsOps.copy;
-            syncOp(absolutePath, targetPath);
+            this.synchroniseFile(absolutePath, targetPath);
         }
     }
+
+    /**
+     * Synchronise a file between the source and target folders
+     *
+     * Determines whether to use a minify or copy operation.
+     */
+    synchroniseFile(source, target) {
+        let syncOp = this.config.minify ? AssetManager.minify : AssetManager.copy;
+        return syncOp(source, target);
+    }
 }
+
+
 
 module.exports = {
     start: function () {
