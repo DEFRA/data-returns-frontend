@@ -16,6 +16,7 @@ errorCodes["550"] = createDescription(550, "File error", "Your file is too large
 errorCodes["600"] = createDescription(600, "File error", "Your file is unsafe");
 errorCodes["820"] = createDescription(820, "File error", "Your data return is incomplete (missing fields)");
 errorCodes["840"] = createDescription(840, "File error", "Your file contains unrecognisable field headings");
+errorCodes["860"] = createDescription(840, "File error", "Your file contains duplicate field headings");
 errorCodes["900"] = createDescription(900, "Data error", "Your data return contains errors that must be corrected");
 errorCodes["3000"] = createDescription(3000, "Unexpected failure", "There was a problem with the service. Details of the problem have been recorded. This problem may be temporary.");
 
