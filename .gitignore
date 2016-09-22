@@ -2,7 +2,7 @@
 /govuk_modules/
 /logs/
 /node_modules/
-/public/
 /reports/
 /uploads/
 /.start.pid
+/public/

@@ -1,6 +1,4 @@
 "use strict";
-const winston = require("winston");
-
 var createDescription = function (code, description, explanation) {
     return {
         "code": code,
