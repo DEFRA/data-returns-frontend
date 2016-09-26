@@ -111,6 +111,13 @@ module.exports.deleteSession = function(request, reply) {
     cacheHandler.deleteKeys(keyPattern);
     reply.unstate(DATA_RETURNS_COOKIE_ID);
 };
+module.exports.emptyUploadList = function(request, reply) {
+    // Cleanup current session
+    let currentSessionId = this.getSessionID(request, reply);
+    let keyPattern = `${redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)}*`;
+    winston.info(`Removing upload list keys for pattern ${keyPattern}`);
+    cacheHandler.deleteKeys(keyPattern);
+};
 
 module.exports.newUserSession = function(request, reply) {
     // Cleanup current session

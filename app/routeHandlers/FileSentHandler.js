@@ -10,7 +10,7 @@ module.exports.getHandler = function (request, reply) {
     userHandler.getUserMail(sessionID).then(function (userMail) {
         //get the original file name the user uploaded from the cache
         reply.view('data-returns/file-sent', { userEmail: userMail });
-        userHandler.deleteSession(request, reply);
+        userHandler.emptyUploadList(request, reply);
     }).catch(function (err) {
         winston.error(err);
     });

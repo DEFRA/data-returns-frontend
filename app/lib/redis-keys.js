@@ -25,7 +25,6 @@ function newKey(keyId) {
 module.exports = {
     UPLOADED_FILES: newKey('Files'),
     USER_DATA: newKey('UserData'),
-    CLIENT_FILENAME: newKey('SourceName'),
     ERROR_PAGE_METADATA: newKey('error-page-metadata'),
     LIST_METADATA: newKey('list-meta-data')
 };
