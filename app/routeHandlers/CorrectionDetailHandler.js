@@ -19,7 +19,7 @@ module.exports = {
             winston.info(`Loading correction details. Session: ${sessionID}, File: ${fileUuid}, ErrorId: ${errorId}`);
             const fileDataKey = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]);
 
-            cacheHandler.getJsonValue(fileDataKey).then(function(fileData) {
+            cacheHandler.getJsonValue(fileDataKey).then(function (fileData) {
                 if (fileData === null) {
                     winston.warn(`Unable to retrieve valid file data for session: ${sessionID}, file: ${fileUuid}, redirecting to chooser`);
                     return reply.redirect("/file/choose");
@@ -37,18 +37,19 @@ module.exports = {
                 var errorSummaryData = {
                     uuid: fileUuid,
                     filename: fileData.name,
-                    CorrectionMoreHelp: true,
                     fieldName: errorDetail.fieldName,
                     fieldHeadingText: errorDetail.fieldHeadingText,
                     errorCode: errorDetail.errorCode
                 };
-                // Set up flags for each type of error (Create flag such as "CorrectionIncorrect" for each error type)
-                for (let type of errorDetail.errorTypes) {
-                    errorSummaryData[`Correction${type}`] = true;
-                }
 
                 // Render the error summary displayed at the top of the correction details page
-                let errorSummary = errorHandler.render(errorDetail.errorCode, errorSummaryData, errorDetail.errorMessage);
+                let errorSummary = "";
+                for (let type of errorDetail.errorTypes) {
+                    errorSummary += errorHandler.renderCorrectionMessage(errorDetail.errorCode, type.name, errorSummaryData, type.message);
+                }
+                // Render more help for use in the correction table
+                errorSummary += errorHandler.renderCorrectionMessage(errorDetail.errorCode, "MoreHelp", errorSummaryData);
+
                 reply.view('data-returns/correction-detail', lodash.merge({}, fileData, errorSummaryData, {
                     errorSummary: errorSummary,
                     errorDetail: errorDetail

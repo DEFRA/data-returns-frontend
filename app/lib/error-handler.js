@@ -37,21 +37,50 @@ var loadErrorTemplates = function () {
 
 var compiledTemplates = loadErrorTemplates();
 
-module.exports.render = function (errorcode, metadata, defaultErrorMessage) {
+/**
+ * Render an error snippet for the given errorCode
+ *
+ *
+ * @param errorCode the numeric error code (e.g. 860)
+ * @param metadata metadata to supply to the view
+ * @param defaultErrorMessage the default error message to render if an appropriate template cannot be found
+ * @returns the result of rendering the mustache template
+ */
+module.exports.render = function (errorCode, metadata, defaultErrorMessage) {
     let viewData = lodash.merge({}, commonViewData, metadata);
-
-    var key = 'DR' + utils.pad(errorcode, 4);
-    var template, ret;
-    template = compiledTemplates[key];
-
+    let key = 'DR' + utils.pad(errorCode, 4);
+    let template = compiledTemplates[key];
     if (template) {
-        if (metadata) {
-            ret = template.render(viewData);
-        } else {
-            ret = template.render();
-        }
+        return template.render(viewData);
     } else {
-        ret = defaultErrorMessage;
+        return defaultErrorMessage;
     }
-    return ret;
+};
+
+/**
+ * Render a correction message for the given arguments.
+ *
+ * This method attempts to find the appropriate html snippet for the errorCode and violation type.  If the specific
+ * snippet
+ *
+ *
+ * @param errorCode the numeric error code (e.g. 9140)
+ * @param violationType the violation type text (e.g. Missing, Incorrect, Length)
+ * @param metadata metadata to supply to the view
+ * @param defaultErrorMessage the default error message to render if an appropriate template cannot be found
+ * @returns the result of rendering the mustache template
+ */
+module.exports.renderCorrectionMessage = function (errorCode, violationType, metadata, defaultErrorMessage) {
+    let viewData = lodash.merge({}, commonViewData, metadata);
+    let snippetCode = `DR${utils.pad(errorCode, 4)}`;
+    let key =  `${snippetCode}-${violationType}`;
+    let template = compiledTemplates[key];
+    let defaultTemplate = compiledTemplates[`Default-${violationType}`];
+    if (template) {
+        return template.render(viewData);
+    } else if (defaultTemplate) {
+        return defaultTemplate.render(viewData);
+    } else {
+        return defaultErrorMessage;
+    }
 };

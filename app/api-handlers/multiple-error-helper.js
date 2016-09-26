@@ -129,7 +129,11 @@ module.exports = {
             if (!Array.isArray(tableItem.errorTypes)) {
                 tableItem.errorTypes = new Array();
             }
-            tableItem.errorTypes.push(getErrorMessageForKey(item.errorType));
+            tableItem.errorTypes.push({
+                name: getErrorMessageForKey(item.errorType),
+                key: item.errorType,
+                message: item.errorMessage
+            });
 
             // Create a violations object to provide information for the correction detail page
             if (!Array.isArray(tableItem.violations)) {
@@ -152,15 +156,13 @@ module.exports = {
             item.violationCount = item.violations.length;
             item.multipleViolations = item.violations.length > 1;
             item.violations = collapseRows(item.violations);
-
-            let metadata = {
-                CorrectionMoreHelp: true
-            };
-            // Set up flags for each type of error (Create flag such as "CorrectionIncorrect" for each error type)
+            item.correction = "";
+            // Render correction message for each type of violation reported by the backend.
             for (let type of item.errorTypes) {
-                metadata[`Correction${type}`] = true;
+                item.correction += errorHandler.renderCorrectionMessage(item.errorCode, type.name, {}, type.message);
             }
-            item.correction = errorHandler.render(item.errorCode, metadata, item.errorMessage);
+            // Render more help for use in the correction table
+            item.correction += errorHandler.renderCorrectionMessage(item.errorCode, "MoreHelp", {});
         }
         return correctionTableData;
     }
