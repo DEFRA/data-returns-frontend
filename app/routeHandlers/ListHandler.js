@@ -1,7 +1,7 @@
 'use strict';
 const winston = require("winston");
+const stringify = require('csv').stringify;
 var handler = require('../api-handlers/controlled-lists.js');
-var csv = require('../lib/csv-handler.js');
 
 module.exports = {
     /*
@@ -87,11 +87,22 @@ module.exports = {
         winston.info('==> /csv-list ' + filename);
 
         handler.getListProcessor(handler.csvExtractor, request.params.list, function(metadata, header, data) {
-            var result = csv.createCSV(header.map(h => h.description), data.map(r => r.row));
-            var response = reply(result)
-                .header('Content-Type', 'text/csv; charset=utf-8;')
-                .header('content-disposition', `attachment; filename=${filename};`).hold();
-            response.send();
+            let columns = header.map(h => h.description);
+            let rows = data.map(r => r.row);
+            stringify(rows, { header: true, columns: columns, quoted: true }, function(err, output) {
+                if (err) {
+                    winston.error("Failed to write downloadable CSV for controlled lists.", err);
+                    reply.redirect('data-returns/failure');
+                } else {
+                    // UTF8 BOM is required so as not to corrupt special UTF8 characters in Excel.
+                    const UTF8_BOM = "\uFEFF";
+                    var response = reply(UTF8_BOM + output)
+                        .header('Content-Type', 'text/csv; charset=utf-8;')
+                        .header('content-disposition', `attachment; filename=${filename};`)
+                        .hold();
+                    response.send();
+                }
+            });
         }).catch(winston.error);
     }
 };
