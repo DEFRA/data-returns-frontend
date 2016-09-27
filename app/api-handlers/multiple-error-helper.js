@@ -156,6 +156,7 @@ module.exports = {
             item.violationCount = item.violations.length;
             item.multipleViolations = item.violations.length > 1;
             item.violations = collapseRows(item.violations);
+            item.errorTypes = lodash.uniqWith(item.errorTypes, lodash.isEqual);
             item.correction = "";
             // Render correction message for each type of violation reported by the backend.
             for (let type of item.errorTypes) {
