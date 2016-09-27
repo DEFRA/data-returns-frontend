@@ -179,6 +179,72 @@ startup:
 
 ###############################################################################
 #
+# Profile: Vagrant
+#
+###############################################################################
+---
+env: vagrant
+
+# Virus scanner configurable by environment
+csv:
+  virus_scan: false
+
+# SMTP specializations
+smtp:
+  host:
+  port:
+  username:
+  password:
+  fromEmailAddress: noreply-local@environment-agency.gov.uk
+  useMailCatcher: true # set to false on AWS servers
+  mailcatcher:
+    host: localhost
+    port: 1025
+    ignoreTLS: true
+
+  # Static images are used in the HTML emails
+  ealogo: http://localhost:3000/public/images/EAlogo.png
+  govuklogo: http://localhost:3000/public/images/govuk_logotype_email.png
+  crownLogo: http://localhost:3000/public/images/gov.uk_logotype_crown.png
+
+api:
+  key:
+  base: http://192.168.33.11:9020
+
+client:
+  port: 3000
+
+# Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
+logging:
+  level: debug
+  errbit:
+    apikey:
+    enabled: false
+    level: error
+    appName: Data-Returns Front End (AWS Vagrant)
+
+pin:
+  defaultPin: 1960
+
+redis:
+  host: localhost
+  port: 6379
+
+# Compress the CSV data used in the views - false locally
+css:
+  compress: false
+
+# HTML caching switched off locally
+html:
+  cached: false
+
+startup:
+    runUnitTests: true
+    runLinter: true
+
+
+###############################################################################
+#
 # Profile: Development
 #
 ###############################################################################
