@@ -42,11 +42,12 @@
 		clear: both;
 		table-layout: fixed;
 		.file-pending {
-			display:inline-block;
-			padding-right:24px;
-			background-image: url(/public/images/icons/loading.gif);
-			background-repeat: no-repeat;
-			background-position: center right;
+			background-image: url("/public/images/icons/loading.gif");
+		    background-position: right center;
+		    background-repeat: no-repeat;
+		    background-size: 32px auto;
+		    display: inline-block;
+		    padding-right: 30px;
 		}
 		/* Mobile formatting */
 		@include media(mobile) {
