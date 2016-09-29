@@ -16,11 +16,12 @@ File: {{name}}
 {{/files}}
 _______________________________________
 
+By sending this data returns file, you agree that you acted on behalf of the permit holder and - to the best of your knowledge and belief  - the data is true, not false or misleading.
 
 What happens next?
 
-Now you’ve sent your data returns file your compliance officer can check your data for 
-quality and regulatory compliance. We may need to contact you using the email address 
+Now you’ve sent your data returns file your compliance officer can check your data for
+quality and regulatory compliance. We may need to contact you using the email address
 you gave to discuss compliance.
 
 You can use the service to send another data returns file online.
