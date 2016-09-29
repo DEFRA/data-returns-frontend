@@ -1,37 +1,4 @@
 {{<layout}}
-
-{{$head}}
-{{>head}}
-{{>scripts}}
-<style>
-    div.CorrectionIncorrect:before {
-        content: "Your data is incorrect";
-        color: #b10e1e;
-        text-decoration: underline;
-        font-weight: bold;
-    }
-    div.CorrectionMissing:before {
-        content: "Your data is missing";
-        color: #b10e1e;
-        text-decoration: underline;
-        font-weight: bold;
-    }
-    div.CorrectionConflicting:before {
-        content: "Your data is conflicting";
-        color: #b10e1e;
-        text-decoration: underline;
-        font-weight: bold;
-    }
-    div.CorrectionLength:before {
-        content: "Your data is too long";
-        color: #b10e1e;
-        text-decoration: underline;
-        font-weight: bold;
-    }
-</style>
-{{/head}}
-
-
 {{$pageTitle}}
 Send your data returns online
 {{/pageTitle}}
@@ -41,9 +8,20 @@ Send your data returns online
 <main id="content" role="main">
     {{{feedbackbanner}}}
 
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    <div class="error-summary" role="group" aria-labelledby="data-error-table" tabindex="-1">
         <h1 class="heading-medium error-summary-heading">Correct {{fieldHeadingText}} errors</h1>
-        {{{errorSummary}}}
+
+        <ul class="error-summary-list">
+            {{#summaries}}
+            <li>
+                <a onclick="location.replace('{{link}}'); return false;" href="{{link}}">{{errorType.message}}</a>
+                {{{guidance}}}
+            </li>
+            {{/summaries}}
+        </ul>
+
+        {{{moreHelp}}}
+
         <hidden id="error_code" value="DR{{errorCode}}"></hidden>
     </div>
 
@@ -53,10 +31,8 @@ Send your data returns online
         </p>
     </div>
 
-    <div class="filename">
-        <p><span class="label">File: </span><span class="name">{{name}}</span></p>
-    </div>
-    <table id="errorTableHeader" class="corrections-table">
+    <table id="data-error-table" class="corrections-table">
+        <caption>{{fieldName}} corrections for {{name}}</caption>
         <thead>
         <tr>
             <th class="th-row">Row number(s)</th>
@@ -66,9 +42,9 @@ Send your data returns online
         </thead>
         <tbody>
         {{#errorDetail.violations}}
-        <tr>
+        <tr{{#anchor}} id="{{anchor}}"{{/anchor}}>
             <td class="td-row">{{rows}}</td>
-            <td class="td-error">{{errorTypeText}}</td>
+            <td class="td-error">{{errorTypeInfo.name}}</td>
             <td class="td-data">{{errorValue}}</td>
         </tr>
         {{/errorDetail.violations}}

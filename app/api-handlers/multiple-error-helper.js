@@ -8,25 +8,29 @@ var errorHandler = require('../lib/error-handler');
 let errorTypeInfo = {
     "missing": {
         "order": 0,
-        "display": "Missing"
+        "name": "Missing",
+        "message": "Your data is missing"
     },
     "length": {
         "order": 1,
-        "display": "Length"
+        "name": "Length",
+        "message": "Your data is too long"
     },
     "incorrect": {
         "order": 2,
-        "display": "Incorrect"
+        "name": "Incorrect",
+        "message": "Your data is incorrect"
     },
     "conflict": {
         "order": 3,
-        "display": "Conflicting"
+        "name": "Conflicting",
+        "message": "Your data is conflicting"
     }
 };
 
-let getErrorMessageForKey = function (key) {
+let getErrorTypeInfo = function(key) {
     let lookup = new String(key).toLowerCase();
-    return errorTypeInfo[lookup].display;
+    return errorTypeInfo[lookup];
 };
 
 let collapseRows = function (violations) {
@@ -40,7 +44,7 @@ let collapseRows = function (violations) {
 
         let errorData = rowsNumbersByErrorMap.get(mapKey) || {
             "errorType": error.errorType,
-            "errorTypeText": error.errorTypeText,
+            "errorTypeInfo": getErrorTypeInfo(error.errorType),
             "errorValue": error.errorValue,
             "rows": new Array()
         };
@@ -49,8 +53,14 @@ let collapseRows = function (violations) {
     }
 
     let outputRowErrors = new Array();
+    let lastErrorType = null;
     rowsNumbersByErrorMap.forEach(function(errorData) {
         errorData.rows = collapseArrayRanges(errorData.rows);
+        if (lastErrorType !== errorData.errorType)  {
+            // If this is the first instance of a new error type we need to insert an anchor for linking
+            errorData.anchor = errorData.errorType;
+            lastErrorType = errorData.errorType;
+        }
         outputRowErrors.push(errorData);
     });
     return outputRowErrors;
@@ -129,23 +139,25 @@ module.exports = {
             if (!Array.isArray(tableItem.errorTypes)) {
                 tableItem.errorTypes = new Array();
             }
-            tableItem.errorTypes.push({
-                name: getErrorMessageForKey(item.errorType),
+            tableItem.errorTypes.push(lodash.merge({
                 key: item.errorType,
                 message: item.errorMessage
-            });
+            }, getErrorTypeInfo(item.errorType)));
 
             // Create a violations object to provide information for the correction detail page
             if (!Array.isArray(tableItem.violations)) {
                 tableItem.violations = new Array();
             }
 
-            tableItem.violations.push({
+
+            // Violation information for the lower level corrections detail
+            let violation = {
                 "errorType": item.errorType,
-                "errorTypeText": getErrorMessageForKey(item.errorType),
+                "errorTypeInfo": getErrorTypeInfo(item.errorType),
                 "rowNumber": item.lineNumber,
                 "errorValue": item.errorValue
-            });
+            };
+            tableItem.violations.push(violation);
 
             // Update the reference to the last displayed item
             lastTableItem = tableItem;

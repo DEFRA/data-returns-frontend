@@ -43,16 +43,22 @@ module.exports = {
                 };
 
                 // Render the error summary displayed at the top of the correction details page
-                let errorSummary = "";
+                let summaries = new Array();
                 for (let type of errorDetail.errorTypes) {
-                    errorSummary += errorHandler.renderCorrectionMessage(errorDetail.errorCode, type.name, errorSummaryData, type.message);
+                    let summary = {
+                        errorType: type,
+                        link: "#" + type.name,
+                        guidance: errorHandler.renderCorrectionMessage(errorDetail.errorCode, type.name, errorSummaryData, type.message)
+                    };
+                    summaries.push(summary);
                 }
-                // Render more help for use in the correction table
-                errorSummary += errorHandler.renderCorrectionMessage(errorDetail.errorCode, "MoreHelp", errorSummaryData);
+                // Render more help for use in the correction details
+                let moreHelp = errorHandler.renderCorrectionMessage(errorDetail.errorCode, "MoreHelp", errorSummaryData);
 
                 reply.view('data-returns/correction-detail', lodash.merge({}, fileData, errorSummaryData, {
-                    errorSummary: errorSummary,
-                    errorDetail: errorDetail
+                    summaries: summaries,
+                    errorDetail: errorDetail,
+                    moreHelp: moreHelp
                 }));
             }).catch(function (err) {
                 winston.error(err);
