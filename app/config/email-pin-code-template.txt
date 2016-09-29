@@ -1,12 +1,12 @@
-Use this code from the Environment Agency to confirm your details and send data returns online:
+Your confirmation code
 
 {{pin}}
-		  
-Go to your browser to enter this code. Then you can send your data returns file saved as CSV.
+
+Go to your browser to enter this code from the Environment Agency to confirm your details. Then you can send your data returns saved as CSV.
 
 We’ll send a receipt to this email address.
 
-Your site officer will get a notification about this data return file and may need to get in touch with you directly. 
+Your site officer will get a notification about this data return file and may need to get in touch with you directly.
 
 Ignore this email if you didn’t ask for a code.
 
