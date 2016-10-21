@@ -28,16 +28,15 @@ let errorTypeInfo = {
     }
 };
 
-let getErrorTypeInfo = function(key) {
+let getErrorTypeInfo = function (key) {
     let lookup = new String(key).toLowerCase();
     return errorTypeInfo[lookup];
 };
 
 let collapseRows = function (violations) {
-    let errors = lodash.sortBy(violations, ["errorType", "rowNumber"]);
     let rowsNumbersByErrorMap = new Map();
 
-    for (let error of errors) {
+    for (let error of violations) {
         // The map key is the error type appended with the error value.  This way we only collapse rows which have the
         // same error value occurring more than once
         let mapKey = `${error.errorType}_${error.errorValue}`;
@@ -54,9 +53,9 @@ let collapseRows = function (violations) {
 
     let outputRowErrors = new Array();
     let lastErrorType = null;
-    rowsNumbersByErrorMap.forEach(function(errorData) {
+    rowsNumbersByErrorMap.forEach(function (errorData) {
         errorData.rows = collapseArrayRanges(errorData.rows);
-        if (lastErrorType !== errorData.errorType)  {
+        if (lastErrorType !== errorData.errorType) {
             // If this is the first instance of a new error type we need to insert an anchor for linking
             errorData.anchor = errorData.errorType;
             lastErrorType = errorData.errorType;
@@ -112,13 +111,16 @@ module.exports = {
     groupErrorData: function (data) {
         // The backend may return multiple violations for a single field (e.g. permit format invalid and also
         // not a controlled list item) so collapse these down so as not to confuse the output in the table
-        let uniqueErrors = lodash.uniqWith(data, lodash.isEqual);
-        // Sort by error code (field) and error type (invalid, missing, etc)
-        let sortedData = lodash.sortBy(uniqueErrors, ["errorCode", "errorType"]);
+        let sortedData = lodash.sortBy(data, ["errorCode", "errorType", "lineNumber"]);
+
+        // Sort by error code (field) and error type (invalid, missing, etc) and the line number the error occurred on
+        let uniqueData = lodash.sortedUniqBy(sortedData, function (item) {
+            return item.errorCode + item.errorType + item.lineNumber;
+        });
 
         let correctionTableData = new Array();
         let lastTableItem = null;
-        for (let item of sortedData) {
+        for (let item of uniqueData) {
             let tableItem = null;
 
             if (lastTableItem === null || lastTableItem.errorCode !== item.errorCode) {
@@ -168,7 +170,7 @@ module.exports = {
             item.violationCount = item.violations.length;
             item.multipleViolations = item.violations.length > 1;
             item.violations = collapseRows(item.violations);
-            item.errorTypes = lodash.uniqWith(item.errorTypes, lodash.isEqual);
+            item.errorTypes = lodash.uniqBy(item.errorTypes, 'key');
             item.correction = "";
             // Render correction message for each type of violation reported by the backend.
             for (let type of item.errorTypes) {
