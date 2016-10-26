@@ -1,8 +1,6 @@
 "use strict";
 const winston = require("winston");
-var cacheHandler = require('../lib/cache-handler');
-var userHandler = require('../lib/user-handler');
-var redisKeys = require('../lib/redis-keys');
+let userHandler = require('../lib/user-handler');
 
 module.exports = {
     /*
@@ -11,23 +9,18 @@ module.exports = {
      * @param reply
      */
     getHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
-        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
+        let sessionID = userHandler.getSessionID(request);
 
-        cacheHandler.arrayGet(key).then(function(uploads) {
-            reply.view('data-returns/confirm-your-file', { "files": uploads });
+        userHandler.getUploads(sessionID).then(function(uploads) {
+            if (uploads && uploads.length > 0) {
+                reply.view('data-returns/confirm-your-file', { "files": uploads });
+            } else {
+                // Show file-unavailable page if the file uploads array is empty
+                reply.view('data-returns/file-unavailable');
+            }
         }).catch(function() {
             winston.error("Unable to retrieve stored uploads array.");
             reply.redirect('data-returns/failure');
         });
-    },
-    /*
-     * HTTP POST Handler for the /file/confirm route
-     * @Param request
-     * @param reply
-     * Redirects the current page
-     */
-    postHandler: function (request, reply) {
-        reply.redirect('data-returns/failure');
     }
 };

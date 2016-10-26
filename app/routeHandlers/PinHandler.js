@@ -1,7 +1,8 @@
-var userHandler = require('../lib/user-handler');
-var pinHandler = require('../lib/pin-handler');
-var messages = require('../lib/error-messages');
-var errorHandler = require('../lib/error-handler');
+"use strict";
+let userHandler = require('../lib/user-handler');
+let pinHandler = require('../lib/pin-handler');
+let messages = require('../lib/error-messages');
+let errorHandler = require('../lib/error-handler');
 
 module.exports = {
 
@@ -12,11 +13,9 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
-
-        userHandler.getUserMail(sessionID)
-            .then(function (emailAddress) {
-
+        let sessionID = userHandler.getSessionID(request);
+        userHandler.hasUploads(sessionID).then(function() {
+            userHandler.getUserMail(sessionID).then(function (emailAddress) {
                 reply.view('data-returns/enter-your-code', {
                     errorMessage: null,
                     invalidPin: false,
@@ -24,10 +23,14 @@ module.exports = {
                     emailAddress: emailAddress,
                     startAgain: false
                 });
-
-
             });
+        }).catch(function() {
+            // Show file-unavailable page if the user hasn't uploaded any files
+            reply.view('data-returns/file-unavailable');
+        });
     },
+
+
     /*
      * HTTP POST handler for /pin
      * @param {type} request
@@ -35,8 +38,8 @@ module.exports = {
      * @returns {undefined}
      */
     postHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
-        var userPin = request.payload['validation_code'].toString().trim();
+        let sessionID = userHandler.getSessionID(request);
+        let userPin = request.payload['validation_code'].toString().trim();
         userPin = userPin ? parseInt(userPin) : 0;
         pinHandler.validatePin(sessionID, userPin)
             .then(function (result) {
@@ -50,11 +53,11 @@ module.exports = {
                 userHandler.getUserMail(sessionID)
                     .then(function (emailAddress) {
 
-                        var metadata = {
+                        let metadata = {
                             emailAddress: emailAddress
                         };
 
-                        var errorMessage = errorHandler.render(errResult.code, metadata);
+                        let errorMessage = errorHandler.render(errResult.code, metadata);
 
                         userHandler.setIsAuthenticated(sessionID, false);
                         reply.view('data-returns/enter-your-code', {

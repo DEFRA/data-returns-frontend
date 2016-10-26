@@ -4,8 +4,6 @@ const config = require('../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
 var userHandler = require('../lib/user-handler');
 var completionHandler = require('../api-handlers/completion-handler');
-var cacheHandler = require('../lib/cache-handler');
-var redisKeys = require('../lib/redis-keys');
 var smtpHandler = require('../lib/smtp-handler');
 var errorHandler = require('../lib/error-handler');
 
@@ -18,9 +16,13 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         var sessionID = userHandler.getSessionID(request);
-        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-        cacheHandler.arrayGet(key).then(function(uploads) {
-            reply.view('data-returns/send-your-file', {"files":  uploads});
+        userHandler.getUploads(sessionID).then(function(uploads) {
+            if (uploads && uploads.length > 0) {
+                reply.view('data-returns/send-your-file', {"files":  uploads});
+            } else {
+                // Show file-unavailable page if the file uploads array is empty
+                reply.view('data-returns/file-unavailable');
+            }
         }).catch(function() {
             winston.info("Unable to retrieve stored uploads array.");
             reply.redirect('data-returns/failure');
@@ -35,7 +37,6 @@ module.exports = {
      */
     postHandler: function (request, reply) {
         var sessionID = userHandler.getSessionID(request);
-        var key = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
 
         var exceptionHandler = function() {
             var errorMessage = errorHandler.render(3000, {mailto: config.get('feedback.mailto')});
@@ -43,7 +44,7 @@ module.exports = {
         };
 
         userHandler.getUserMail(sessionID).then(function (userMail) {
-            cacheHandler.arrayGet(key).then(function(uploads) {
+            userHandler.getUploads(sessionID).then(function(uploads) {
                 let callbacks = 0;
                 var onFileSubmitted = function () {
                     if (++callbacks === uploads.length) {
