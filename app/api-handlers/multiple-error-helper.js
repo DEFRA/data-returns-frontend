@@ -126,8 +126,8 @@ module.exports = {
             if (lastTableItem === null || lastTableItem.errorCode !== item.errorCode) {
                 // Create a new display item for the current error code
                 tableItem = {
-                    "fieldName": item.fieldName || "Multiple",
-                    "fieldHeadingText": item.fieldName || "multiple",
+                    "fieldName": item.errorData[0] ? item.errorData[0].fieldName : "Multiple",
+                    "fieldHeadingText": item.errorData[0] ? item.errorData[0].fieldName : "multiple",
                     "errorCode": item.errorCode,
                     "definition": item.definition
                 };
@@ -157,7 +157,7 @@ module.exports = {
                 "errorType": item.errorType,
                 "errorTypeInfo": getErrorTypeInfo(item.errorType),
                 "rowNumber": item.lineNumber,
-                "errorValue": item.errorValue
+                "errorValue": item.errorData[0] ? item.errorData[0].errorValue : ""
             };
             tableItem.violations.push(violation);
 
