@@ -99,11 +99,32 @@ module.exports.incrementUploadCount = function (sessionID) {
             }
         });
 };
+/**
+ *
+ * Determine if the user has uploaded files in this session.
+ *
+ * @param sessionID the user's session ID
+ * @returns {*|Promise} resolved with the number of uploads if there are any, rejected otherwise
+ */
+module.exports.hasUploads = function (sessionID) {
+    let uploadsKey = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
+    return cacheHandler.arrayNotEmpty(uploadsKey);
+};
+/**
+ * Retrieve an array of files that the user has uploaded
+ *
+ * @param sessionID the user's session ID
+ * @returns {*|Promise} resolved with an array of uploaded file information if present, rejected otherwise
+ */
+module.exports.getUploads = function (sessionID) {
+    let uploadsKey = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
+    return cacheHandler.arrayGet(uploadsKey);
+};
 
-module.exports.getSessionID = function(request) {
+module.exports.getSessionID = function (request) {
     return request.state[DATA_RETURNS_COOKIE_ID];
 };
-module.exports.deleteSession = function(request, reply) {
+module.exports.deleteSession = function (request, reply) {
     // Cleanup current session
     let currentSessionId = this.getSessionID(request, reply);
     let keyPattern = `${currentSessionId}*`;
@@ -111,7 +132,7 @@ module.exports.deleteSession = function(request, reply) {
     cacheHandler.deleteKeys(keyPattern);
     reply.unstate(DATA_RETURNS_COOKIE_ID);
 };
-module.exports.emptyUploadList = function(request, reply) {
+module.exports.emptyUploadList = function (request, reply) {
     // Cleanup current session
     let currentSessionId = this.getSessionID(request, reply);
     let keyPattern = `${redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)}*`;
@@ -119,7 +140,7 @@ module.exports.emptyUploadList = function(request, reply) {
     cacheHandler.deleteKeys(keyPattern);
 };
 
-module.exports.newUserSession = function(request, reply) {
+module.exports.newUserSession = function (request, reply) {
     // Cleanup current session
     this.deleteSession(request, reply);
 

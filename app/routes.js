@@ -10,7 +10,6 @@ var confirmFileHandler = require('./routeHandlers/ConfirmFileHandler');
 var emailHandler = require('./routeHandlers/EmailHandler');
 var pinHandler = require('./routeHandlers/PinHandler');
 var fileSendHandler = require('./routeHandlers/FileSendHandler');
-var fileCheckHandler = require('./routeHandlers/FileCheckHandler');
 var fileSentHandler = require('./routeHandlers/FileSentHandler');
 var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
 var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
@@ -67,7 +66,7 @@ module.exports = [
         path: '/start',
         handler: startHandler.postHandler
     },
-    // /file/error
+    // /file/invalid
     {
         method: 'GET',
         path: '/file/invalid',
@@ -101,19 +100,6 @@ module.exports = [
         path: '/file/confirm',
         handler: confirmFileHandler.getHandler
     },
-    {
-        method: 'POST',
-        path: '/file/confirm',
-        handler: confirmFileHandler.postHandler
-    },
-    /*
-     * /file/check
-     */
-    {
-        method: 'GET',
-        path: '/file/check',
-        handler: fileCheckHandler.getHandler
-    },
     // /email
     {
         method: 'GET',
@@ -146,12 +132,6 @@ module.exports = [
         method: 'POST',
         path: '/file/send',
         handler: fileSendHandler.postHandler
-    },
-    // /failure
-    {
-        method: 'GET',
-        path: '/failure',
-        handler: basicTemplateHandler.getHandler
     },
     // /file/sent
     {
@@ -191,6 +171,12 @@ module.exports = [
         method: 'GET',
         path: '/csv/{list*}',
         handler: listHandler.getCSVHandler
+    },
+    // /failure
+    {
+        method: 'GET',
+        path: '/failure',
+        handler: basicTemplateHandler.getHandler
     },
     {
         method: 'GET',

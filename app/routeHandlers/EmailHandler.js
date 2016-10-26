@@ -1,9 +1,9 @@
 "use strict";
+const winston = require("winston");
 var smtpHandler = require('../lib/smtp-handler');
 var pinHandler = require('../lib/pin-handler');
 var userHandler = require('../lib/user-handler');
 var errorHandler = require('../lib/error-handler');
-const winston = require("winston");
 
 module.exports = {
     /*
@@ -13,7 +13,8 @@ module.exports = {
      * @returns {undefined}
      */
     getHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
+        let sessionID = userHandler.getSessionID(request);
+
         let viewConfirmEmail = function () {
             reply.view('data-returns/confirm-your-email-address', {
                 invalidEmailAddress: false,
@@ -23,15 +24,20 @@ module.exports = {
             });
         };
 
-        userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
-            if (isAuthenticated === true) {
-                reply.redirect("/file/send").rewritable(true);
-            } else {
+        userHandler.hasUploads(sessionID).then(function() {
+            userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
+                if (isAuthenticated === true) {
+                    reply.redirect("/file/send").rewritable(true);
+                } else {
+                    viewConfirmEmail();
+                }
+            }).catch(function (err) {
+                winston.error(err);
                 viewConfirmEmail();
-            }
-        }).catch(function (err) {
-            winston.error(err);
-            viewConfirmEmail();
+            });
+        }).catch(function() {
+            // Show file-unavailable page if the file uploads array is empty
+            reply.view('data-returns/file-unavailable');
         });
     },
     /*

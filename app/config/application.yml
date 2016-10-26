@@ -122,7 +122,9 @@ env: local
 
 # Virus scanner configurable by environment
 csv:
-  virus_scan: false
+  # Attempt to use virus scanner but ignore problems in the local environment
+  virus_scan: true
+  ignoreScanFailure: true
 
 # SMTP specializations
 smtp:

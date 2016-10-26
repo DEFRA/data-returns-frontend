@@ -158,6 +158,23 @@ module.exports = {
         });
     },
     /**
+     * Ensures that an array is not empty
+     *
+     * @param key the key used to lookup the array
+     * @returns {Promise} resolved with the array length if the array is not empty, rejected if the array is empty
+     */
+    arrayNotEmpty: function (key) {
+        return new Promise(function (resolve, reject) {
+            client.llen(key, function(error, len) {
+                if (error || !(len > 0)) {
+                    reject();
+                } else {
+                    resolve(len);
+                }
+            });
+        });
+    },
+    /**
      * Push an item onto an array for the given key.
      * The item is right-pushed onto the end of the array for the given key.  If no array exists for the given key
      * then it will be created.
