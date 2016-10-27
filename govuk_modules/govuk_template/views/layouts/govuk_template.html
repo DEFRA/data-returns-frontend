@@ -3,6 +3,8 @@
 <!--[if lt IE 9]><html class="lte-ie8" lang=""><![endif]-->
 <!--[if gt IE 8]><!--><html lang=""><!--<![endif]-->
   <head>
+    {{>ga-head}}
+
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
     <title>{{$pageTitle}}GOV.UK - The best place to find government services and information{{/pageTitle}}</title>
@@ -57,9 +59,8 @@
   </head>
 
   <body class="{{$bodyClasses}}{{/bodyClasses}}">
+    {{>ga-body}}
     <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
-    
 
     <div id="skiplink-container">
       <div>
