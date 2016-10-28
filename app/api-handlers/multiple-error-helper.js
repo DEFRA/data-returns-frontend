@@ -4,6 +4,7 @@
  */
 const lodash = require('lodash');
 var errorHandler = require('../lib/error-handler');
+const winston = require("winston");
 
 let errorTypeInfo = {
     "missing": {
@@ -95,6 +96,25 @@ var collapseArrayRanges = function (intArray) {
     return listing.join(', ');
 };
 
+/**
+ * Helper function - currently the front-end does not support multi-object validation messages
+ * @param errorData
+ * @returns Object The display field and value
+ */
+var errorDataHelper = function(errorData) {
+    if (errorData && Array.isArray(errorData)) {
+        if (errorData.length === 0) {
+            return { fieldName: null, fieldNameLower: null, errorValue: null };
+        } else if (errorData.length > 1) {
+            return { fieldName: "Multiple", fieldNameLower: "multiple", errorValue: null };
+        } else if(errorData[0].fieldName) {
+            return { fieldName: errorData[0].fieldName, fieldNameLower: errorData[0].fieldName, errorValue: errorData[0].errorValue };
+        }
+    } else {
+        winston.error("Unable to process API message: are you running the correct API version?");
+        return { fieldName: null, fieldNameLower: null, errorValue: null };
+    }
+};
 
 module.exports = {
     /**
@@ -126,8 +146,8 @@ module.exports = {
             if (lastTableItem === null || lastTableItem.errorCode !== item.errorCode) {
                 // Create a new display item for the current error code
                 tableItem = {
-                    "fieldName": item.fieldName || "Multiple",
-                    "fieldHeadingText": item.fieldName || "multiple",
+                    "fieldName": errorDataHelper(item.errorData).fieldName,
+                    "fieldHeadingText": errorDataHelper(item.errorData).fieldNameLower,
                     "errorCode": item.errorCode,
                     "definition": item.definition
                 };
@@ -157,7 +177,7 @@ module.exports = {
                 "errorType": item.errorType,
                 "errorTypeInfo": getErrorTypeInfo(item.errorType),
                 "rowNumber": item.lineNumber,
-                "errorValue": item.errorValue
+                "errorValue": errorDataHelper(item.errorData).errorValue
             };
             tableItem.violations.push(violation);
 
