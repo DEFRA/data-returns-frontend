@@ -9,9 +9,9 @@ const templateDir = path.resolve(__dirname, '../error-templates/');
 const filenames = utils.getFileListInDir(templateDir);
 
 //preload and compile error-templates
-var loadErrorTemplates = function () {
+let compiledTemplates = new Map();
+(function () {
     winston.info('==> Loading Templates...');
-    let compiledTemplates = {};
     let templatesLoaded = 0;
     filenames.forEach(function (filename) {
         utils.readFile(filename, function (err, fileContents) {
@@ -22,8 +22,24 @@ var loadErrorTemplates = function () {
                 let y = filename.indexOf('.html');
                 let key = filename.substring(x + 1, y);
                 try {
-                    let compiledTemplate = hogan.compile(fileContents);
-                    compiledTemplates[key] = compiledTemplate;
+                    let errorCodeText = key;
+                    let violationType = null;
+                    if (key.includes('-')) {
+                        let keyParts = key.split('-');
+                        errorCodeText = keyParts[0];
+                        violationType = keyParts[1];
+                    }
+                    errorCodeText = errorCodeText.replace(/\D+/g, '');
+
+                    let templateData = {
+                        errorCode: parseInt(errorCodeText),
+                        violationType: violationType,
+                        key: key,
+                        filename: filename,
+                        template: hogan.compile(fileContents)
+                    };
+                    winston.info("Added template for key " + key);
+                    compiledTemplates.set(key, templateData);
                 } catch (e) {
                     winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
                 }
@@ -32,10 +48,7 @@ var loadErrorTemplates = function () {
         templatesLoaded++;
     });
     winston.info(`<== ${templatesLoaded} templates loaded`);
-    return compiledTemplates;
-};
-
-var compiledTemplates = loadErrorTemplates();
+})();
 
 /**
  * Render an error snippet for the given errorCode
@@ -49,13 +62,15 @@ var compiledTemplates = loadErrorTemplates();
 module.exports.render = function (errorCode, metadata, defaultErrorMessage) {
     let viewData = lodash.merge({}, commonViewData, metadata);
     let key = 'DR' + utils.pad(errorCode, 4);
-    let template = compiledTemplates[key];
-    if (template) {
-        return template.render(viewData);
+    let templateData = compiledTemplates.get(key);
+    if (templateData) {
+        return templateData.template.render(viewData);
     } else {
         return defaultErrorMessage;
     }
 };
+
+module.exports.compiledTemplates = compiledTemplates;
 
 /**
  * Render a correction message for the given arguments.
@@ -73,13 +88,17 @@ module.exports.render = function (errorCode, metadata, defaultErrorMessage) {
 module.exports.renderCorrectionMessage = function (errorCode, violationType, metadata, defaultErrorMessage) {
     let viewData = lodash.merge({}, commonViewData, metadata);
     let snippetCode = `DR${utils.pad(errorCode, 4)}`;
-    let key =  `${snippetCode}-${violationType}`;
-    let template = compiledTemplates[key];
-    let defaultTemplate = compiledTemplates[`Default-${violationType}`];
-    if (template) {
-        return template.render(viewData);
-    } else if (defaultTemplate) {
-        return defaultTemplate.render(viewData);
+    let key = `${snippetCode}`;
+    if (violationType) {
+        key += `-${violationType}`;
+    }
+
+    let templateData = compiledTemplates.get(key);
+    let defaultTemplateData = compiledTemplates.get(`Default-${violationType}`);
+    if (templateData) {
+        return templateData.template.render(viewData);
+    } else if (defaultTemplateData) {
+        return defaultTemplateData.template.render(viewData);
     } else {
         return defaultErrorMessage;
     }

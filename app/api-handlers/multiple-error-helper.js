@@ -3,7 +3,7 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
-var errorHandler = require('../lib/error-handler');
+const errorHandler = require('../lib/error-handler');
 const winston = require("winston");
 
 let errorTypeInfo = {
