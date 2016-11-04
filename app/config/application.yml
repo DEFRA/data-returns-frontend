@@ -84,6 +84,7 @@ api:
   endpoints:
     fileUpload: 'data-exchange/upload'
     fileUploadComplete: 'data-exchange/complete'
+    eaIdLookup: 'eaid/lookup'
     controlledLists: 'controlled-list/lists'
     testLogging: '/logging/test'
   status_codes:

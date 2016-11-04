@@ -1,9 +1,9 @@
 "use strict";
 const winston = require("winston");
-var cacheHandler = require('../lib/cache-handler');
-var userHandler = require('../lib/user-handler');
-var errorHandler = require('../lib/error-handler');
-var redisKeys = require('../lib/redis-keys');
+var cacheHandler = require('../../lib/cache-handler');
+var userHandler = require('../../lib/user-handler');
+var errorHandler = require('../../lib/error-handler');
+var redisKeys = require('../../lib/redis-keys');
 const lodash = require("lodash");
 
 module.exports = {

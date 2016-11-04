@@ -4,16 +4,23 @@ const config = require('./lib/configuration-handler.js').Configuration;
 
 var basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 var startHandler = require('./routeHandlers/StartHandler');
-var chooseFileHandler = require('./routeHandlers/ChooseFileHandler');
-var fileInvalidHandler = require('./routeHandlers/FileInvalidHandler');
-var confirmFileHandler = require('./routeHandlers/ConfirmFileHandler');
-var emailHandler = require('./routeHandlers/EmailHandler');
-var pinHandler = require('./routeHandlers/PinHandler');
-var fileSendHandler = require('./routeHandlers/FileSendHandler');
-var fileSentHandler = require('./routeHandlers/FileSentHandler');
-var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
-var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
-var listHandler = require('./routeHandlers/ListHandler');
+
+// Submission route handlers
+var chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
+var confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
+var emailHandler = require('./routeHandlers/submissions/EmailHandler');
+var pinHandler = require('./routeHandlers/submissions/PinHandler');
+var fileSendHandler = require('./routeHandlers/submissions/FileSendHandler');
+var fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
+var correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
+var correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
+var fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
+
+// Reference material lookup handlers
+var listHandler = require('./routeHandlers/lookup/ListHandler');
+var eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
+
+
 var contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
 
 let handlers = [
@@ -153,6 +160,8 @@ let handlers = [
         path: '/correction/detail',
         handler: correctionDetailHandler.getHandler
     },
+
+    // Controlled list handlers
     {
         method: 'GET',
         path: '/controlled-lists',
@@ -173,6 +182,15 @@ let handlers = [
         path: '/csv/{list*}',
         handler: listHandler.getCSVHandler
     },
+
+    // EA_ID lookup tool#
+    {
+        method: 'GET',
+        path: '/lookup',
+        handler: eaIdLookupHandler.routeHandler
+    },
+
+
     // /failure
     {
         method: 'GET',

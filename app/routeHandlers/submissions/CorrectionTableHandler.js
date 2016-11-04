@@ -1,10 +1,10 @@
 "use strict";
 const winston = require("winston");
-const cacheHandler = require('../lib/cache-handler');
-const userHandler = require('../lib/user-handler');
-const redisKeys = require('../lib/redis-keys');
+const cacheHandler = require('../../lib/cache-handler');
+const userHandler = require('../../lib/user-handler');
+const redisKeys = require('../../lib/redis-keys');
 const lodash = require("lodash");
-const errorHandler = require('../lib/error-handler');
+const errorHandler = require('../../lib/error-handler');
 
 module.exports = {
     /*

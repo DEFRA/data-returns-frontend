@@ -1,9 +1,9 @@
 "use strict";
 const winston = require("winston");
-var smtpHandler = require('../lib/smtp-handler');
-var pinHandler = require('../lib/pin-handler');
-var userHandler = require('../lib/user-handler');
-var errorHandler = require('../lib/error-handler');
+var smtpHandler = require('../../lib/smtp-handler');
+var pinHandler = require('../../lib/pin-handler');
+var userHandler = require('../../lib/user-handler');
+var errorHandler = require('../../lib/error-handler');
 
 module.exports = {
     /*

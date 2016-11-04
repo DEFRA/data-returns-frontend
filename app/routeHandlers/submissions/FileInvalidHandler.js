@@ -1,9 +1,9 @@
 "use strict";
-var cacheHandler = require('../lib/cache-handler');
-var userHandler = require('../lib/user-handler');
-var redisKeys = require('../lib/redis-keys');
-var errorHandler = require('../lib/error-handler');
-const utils = require('../lib/utils');
+var cacheHandler = require('../../lib/cache-handler');
+var userHandler = require('../../lib/user-handler');
+var redisKeys = require('../../lib/redis-keys');
+var errorHandler = require('../../lib/error-handler');
+const utils = require('../../lib/utils');
 
 /*
  *  HTTP GET handler for /file/error
