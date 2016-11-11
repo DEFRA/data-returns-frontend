@@ -60,26 +60,21 @@ Find your EA ID
                 <th style="width: 6em">EA_ID</th>
                 <th>Site_Name</th>
                 <th style="width: 8em">Alternative IDs</th>
-                <th style="width: 2em"></th>
             </tr>
             </thead>
             {{#results}}
             <tbody>
                 <tr style="border-bottom: none;">
-                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{eaId}}</td>
-                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{siteName}}</td>
+                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{uniqueIdentifier.name}}</td>
+                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{uniqueIdentifier.site.name}}</td>
                     <td class="search-result-entry" style="border-bottom: 1px solid #bfc1c3; vertical-align: top;" rowspan="2">
-                        {{#altIds}}
+                        {{#alternatives}}
                         <div>{{.}}</div>
-                        {{/altIds}}
-                    </td>
-                    <td style="border-bottom: 1px solid #bfc1c3; vertical-align: top;" rowspan="2">
-                        {{#gridRef}}
-                        <a href="http://gridreferencefinder.com/index.php?gr={{gridRef}}" target="_blank">Map</a>
-                        {{/gridRef}}
+                        {{/alternatives}}
                     </td>
                 </tr>
                 <tr style="border-top: none; border-bottom: 1px solid #bfc1c3;">
+                    <td></td>
                     <td class="search-result-entry" colspan="2" style="border-top: none; font-size: 80%; vertical-align: top;" valign="top">
                         {{#addresses}}
                         <div>{{.}}</div>

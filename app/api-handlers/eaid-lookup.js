@@ -1,59 +1,37 @@
 'use strict';
-const winston = require("winston");
 const config = require('../lib/configuration-handler.js').Configuration;
+const Request = require('request');
 
-var Request = require('request');
-var cacheHandler = require('../lib/cache-handler');
-var redisKeys = require('../lib/redis-keys.js');
-
-function lookup(termsArr) {
+module.exports.lookup = function (queryString) {
     let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.eaIdLookup');
-    let requestData = null;
-
-    if (list)  {
-        if (search) {
-            requestData = { url: encodeURI(endPoint + '/' + list + '?field=' + search.field + '&contains=' + search.contains) };
-        } else {
-            requestData = { url: endPoint + '/' + list };
+    let requestOptions = {
+        "uri": endPoint,
+        "gzip": true,
+        "timeout": 60000, //ms 60 seconds
+        "qs": {
+            "term": queryString
         }
-    } else {
-        requestData = { url: endPoint };
-    }
+    };
 
     return new Promise(function (resolve, reject) {
-        Request.get(requestData, function (err, httpResponse) {
-            if (!httpResponse) {
-                reject({
-                    isUserError: true,
-                    message: 'No response'
-                });
-            } else if (err) {
-                reject({
-                    isUserError: true,
-                    message: 'Request Error',
-                    messageDetail: err.message
-                });
+        Request.get(requestOptions, function (err, response) {
+            if (err) {
+                reject(err);
+            } else if (!response) {
+                reject(new Error("API request failed to provide response"));
             } else {
-                if (httpResponse.statusCode !== 200) {
-                    reject({
-                        isUserError: true,
-                        message: 'Request Error: ' + httpResponse.statusCode,
-                        messageDetail: httpResponse.statusMessage
-                    });
+                if (response.statusCode !== 200) {
+                    reject(new Error("Unexpected response status code " + response.statusCode));
                 } else {
                     try {
-                        var parsedJson = JSON.parse(httpResponse.body);
-                        // Return the result as an array
+                        let parsedJson = JSON.parse(response.body);
+                        // Return the JSON response to the consumer
                         resolve(parsedJson);
                     } catch (err) {
-                        reject({
-                            isUserError: true,
-                            message: 'Invalid JSON Response: ',
-                            messageDetail: err.message
-                        });
+                        reject(new Error("Unable to parse API response."));
                     }
                 }
             }
         });
     });
-}
+};
