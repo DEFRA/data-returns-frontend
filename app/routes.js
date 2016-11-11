@@ -14,8 +14,9 @@ var fileSentHandler = require('./routeHandlers/FileSentHandler');
 var correctionTableHandler = require('./routeHandlers/CorrectionTableHandler');
 var correctionDetailHandler = require('./routeHandlers/CorrectionDetailHandler');
 var listHandler = require('./routeHandlers/ListHandler');
+var contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
 
-module.exports = [
+let handlers = [
     // Static assets.
     {
         method: 'GET',
@@ -177,8 +178,19 @@ module.exports = [
         method: 'GET',
         path: '/failure',
         handler: basicTemplateHandler.getHandler
-    },
-    {
+    }
+];
+
+if (process.env.NODE_ENV !== "production") {
+    // Add handler for content review
+    handlers.push({
+        method: 'GET',
+        path: '/content/review',
+        handler: contentReviewHandler.getHandler
+    });
+
+    // Add handler for logger capability test
+    handlers.push({
         method: 'GET',
         path: '/logging/test',
         handler: function (request, reply) {
@@ -188,14 +200,16 @@ module.exports = [
             winston.error("Test error message", new Error("Test error logging"));
 
             let Request = require('request');
-            let apiData = { url: config.get('api.endpoints.testLogging') };
+            let apiData = {url: config.get('api.endpoints.testLogging')};
             Request.get(apiData, function (err, httpResponse) {
                 if (err) {
                     reply({status: "failed", "backend": err});
                 } else {
-                    reply({status: "ok", "backend" : httpResponse});
+                    reply({status: "ok", "backend": httpResponse});
                 }
             });
         }
-    }
-];
+    });
+}
+
+module.exports = handlers;

@@ -3,7 +3,7 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
-var errorHandler = require('../lib/error-handler');
+const errorHandler = require('../lib/error-handler');
 const winston = require("winston");
 
 let errorTypeInfo = {
@@ -103,16 +103,16 @@ var collapseArrayRanges = function (intArray) {
  */
 var errorDataHelper = function(errorData) {
     if (errorData && Array.isArray(errorData)) {
-        if (errorData.length == 0) {
-            return { fieldName: null, errorValue: null };
+        if (errorData.length === 0) {
+            return { fieldName: null, fieldNameLower: null, errorValue: null };
         } else if (errorData.length > 1) {
-            return { fieldName: "Multiple", errorValue: null };
+            return { fieldName: "Multiple", fieldNameLower: "multiple", errorValue: null };
         } else if(errorData[0].fieldName) {
-            return { fieldName: errorData[0].fieldName, errorValue: errorData[0].errorValue };
+            return { fieldName: errorData[0].fieldName, fieldNameLower: errorData[0].fieldName, errorValue: errorData[0].errorValue };
         }
     } else {
         winston.error("Unable to process API message: are you running the correct API version?");
-        return { fieldName: null, errorValue: null };
+        return { fieldName: null, fieldNameLower: null, errorValue: null };
     }
 };
 
@@ -147,7 +147,7 @@ module.exports = {
                 // Create a new display item for the current error code
                 tableItem = {
                     "fieldName": errorDataHelper(item.errorData).fieldName,
-                    "fieldHeadingText": errorDataHelper(item.errorData).fieldName,
+                    "fieldHeadingText": errorDataHelper(item.errorData).fieldNameLower,
                     "errorCode": item.errorCode,
                     "definition": item.definition
                 };

@@ -24,11 +24,11 @@ Send your data returns online
             <form id="uploadForm" enctype="multipart/form-data" method="post" action="/file/choose">
                 <div class="form-group">
                     <div class="form-control">
-                        <input type="file" name="fileUpload" multiple="multiple"></input>
+                        <input type="file" name="fileUpload" multiple="multiple" accesskey="U"></input>
                     </div>
                 </div>
                 <div class="form-group">
-                    <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload files"
+                    <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload files"  accesskey="S"
                            name="submit"></input>
                 </div>
             </form>
@@ -79,7 +79,7 @@ Send your data returns online
         <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;" {{/hasInvalidUploads}}>
         You must correct any errors before your files can be sent to the Environment Agency.
         </p>
-        <a id="continue-btn" class="button"
+        <a id="continue-btn" class="button" accesskey="C"
            {{#canContinue}}href="/file/confirm" {{/canContinue}}
            {{^canContinue}}disabled="disabled" {{/canContinue}}
         >Continue</a>

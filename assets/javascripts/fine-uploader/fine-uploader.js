@@ -1230,6 +1230,9 @@ qq.UploadButton = function(o) {
             // Called when the browser invokes the onchange handler on the `<input type="file">`
             onChange: function(input) {},
 
+            // Keyboard shortcut access key to choose files
+            accessKey: "U",
+
             title: null
         },
         input, buttonId;
@@ -1259,6 +1262,7 @@ qq.UploadButton = function(o) {
 
         input.setAttribute("type", "file");
         input.setAttribute("name", options.name);
+        input.setAttribute("accesskey", options.accessKey);
 
         qq(input).css({
             position: "absolute",
