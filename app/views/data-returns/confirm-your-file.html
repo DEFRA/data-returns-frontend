@@ -25,7 +25,12 @@ Send your data returns online
                     {{/site}}
                 </li>
                 {{#identifiers}}
-                <li class="ea-id">{{identifier}}</li>
+                <li class="ea-id">
+                    <span class="submittedUniqueIdentifier">{{submittedUniqueIdentifier}}</span>
+                    {{#substituted}}
+                        was replaced with
+                        <span class="resolvedUniqueIdentifier">{{resolvedUniqueIdentifier}}</span>
+                    {{/substituted}}</li>
                 {{/identifiers}}
             {{/status.server.parseResult.mappings}}
         </ul>

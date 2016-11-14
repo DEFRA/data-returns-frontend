@@ -13,6 +13,7 @@ module.exports.links = {
     WelshLink: 'http://naturalresources.wales/splash?orig=/',
     NorthernIrelandLink: 'https://www.doeni.gov.uk/',
     Help_SpecialCases: 'https://data-returns-help.herokuapp.com/#exceptions',
+    Help_Operator_Lookup: '/lookup',
     fields: {
         Rtn_Type: "/display-list?list=rtn_type",
         Rtn_Period: "/display-list?list=rtn_period",
