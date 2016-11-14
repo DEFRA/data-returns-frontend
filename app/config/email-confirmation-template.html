@@ -163,7 +163,12 @@
 
 				{{#identifiers}}
       	<li style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin:0; padding:0; vertical-align:top;">
-            {{submittedUniqueIdentifier}}{{#substituted}} was replaced with {{resolvedUniqueIdentifier}}{{/substituted}}
+            {{#substituted}}
+                We replaced
+                <span class="submittedUniqueIdentifier">{{submittedUniqueIdentifier}}</span>
+                with
+            {{/substituted}}
+            <span class="resolvedUniqueIdentifier">{{resolvedUniqueIdentifier}}</span>
 				</li>
 				{{/identifiers}}
 
