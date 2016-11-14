@@ -1,0 +1,100 @@
+{{<layout}}
+{{$head}}
+{{>head}}
+{{>scripts}}
+<script src="/public/javascripts/jquery.mark.js" type="text/javascript"></script>
+{{/head}}
+{{$pageTitle}}
+Find your EA ID
+{{/pageTitle}}
+{{$content}}
+
+<main id="content" role="main">
+    {{{feedbackbanner}}}
+    <h1 class="heading-large">Find your EA ID</h1>
+
+
+    {{#errors.length}}
+    <div class="error-summary" role="group" aria-labelledby="search-results" tabindex="-1">
+        {{#errors}}
+        <ul class="error-summary-list">
+            <li>
+                {{{message}}}
+            </li>
+        </ul>
+        {{/errors}}
+    </div>
+    {{/errors.length}}
+
+
+        <p class="lede">Use this tool to ensure your data is ready to send to the Environment Agency with the correct EA ID and site name.</p>
+        <details>
+            <summary><span class="summary">What's an EA ID?</span></summary>
+            <div class="panel panel-border-narrow">
+                <p>Your EA unique identifier. It's usually your permit number.</p>
+            </div>
+        </details>
+
+        <div class="form-group">
+            <form method="get" action="/lookup">
+                <p class="form-hint">Start typing your permit number or site name</p>
+                <input id="q" name="q" type="search" class="form-control" placeholder="Permit number or site name"
+                       aria-controls="search-results" value="{{query.string}}"/>
+                <input type="submit" class="button" value="Find"/>
+            </form>
+        </div>
+
+    {{#messages.length}}
+        {{#messages}}
+        <div class="panel panel-border-wide">
+            <p>{{.}}</p>
+        </div>
+        {{/messages}}
+    {{/messages.length}}
+
+    {{#results.length}}
+    <div class="form-group">
+        <table id="search-results" class="eaid-search-results" style="">
+            <thead>
+            <tr>
+                <th style="width: 6em">EA_ID</th>
+                <th>Site_Name</th>
+                <th style="width: 8em">Alternative IDs</th>
+            </tr>
+            </thead>
+            {{#results}}
+            <tbody>
+                <tr style="border-bottom: none;">
+                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{uniqueIdentifier.name}}</td>
+                    <td class="search-result-entry" style="border-bottom: none; vertical-align: top;">{{uniqueIdentifier.site.name}}</td>
+                    <td class="search-result-entry" style="border-bottom: 1px solid #bfc1c3; vertical-align: top;" rowspan="2">
+                        {{#alternatives}}
+                        <div>{{.}}</div>
+                        {{/alternatives}}
+                    </td>
+                </tr>
+                <tr style="border-top: none; border-bottom: 1px solid #bfc1c3;">
+                    <td></td>
+                    <td class="search-result-entry" colspan="2" style="border-top: none; font-size: 80%; vertical-align: top;" valign="top">
+                        {{#addresses}}
+                        <div>{{.}}</div>
+                        {{/addresses}}
+                    </td>
+                </tr>
+            </tbody>
+            {{/results}}
+
+        </table>
+    </div>
+
+
+    {{#query.terms}}
+    <script type="text/javascript">
+        $(".search-result-entry").mark("{{.}}".split(","));
+    </script>
+    {{/query.terms}}
+
+    {{/results.length}}
+</main>
+{{/content}}
+{{/layout}}
