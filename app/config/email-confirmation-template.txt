@@ -10,7 +10,7 @@ _______________________________________
 File: {{name}}
 {{#status.server.parseResult.mappings}}
 {{#site}}  {{site}}{{/site}}{{^site}}  Not given{{/site}}
-{{#identifiers}}  {{identifier}}
+{{#identifiers}}  {{submittedUniqueIdentifier}}{{#substituted}} was replaced with {{resolvedUniqueIdentifier}}{{/substituted}}
 {{/identifiers}}
 {{/status.server.parseResult.mappings}}
 {{/files}}
