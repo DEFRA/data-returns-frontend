@@ -49,8 +49,16 @@ function searchHandler(request, reply) {
             reply.view('data-returns/eaid-lookup', data);
         }).catch(function (error) {
             winston.error(error);
-            reply.redirect('data-returns/failure');
+            reply.view('data-returns/eaid-lookup', {
+                errors: [
+                    {
+                        message: "We’re experiencing problems with the service, please try again later."
+                    }
+                ]
+            });
         });
+    } else {
+        reply.view('data-returns/eaid-lookup', data);
     }
 }
 
