@@ -1,5 +1,5 @@
 "use strict";
-let userHandler = require('../lib/user-handler');
+let userHandler = require('../../lib/user-handler');
 
 /*
  * HTTP GET Handler for /file/sent

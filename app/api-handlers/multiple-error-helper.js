@@ -46,6 +46,7 @@ let collapseRows = function (violations) {
             "errorType": error.errorType,
             "errorTypeInfo": getErrorTypeInfo(error.errorType),
             "errorValue": error.errorValue,
+            "errorData": error.errorData,
             "rows": new Array()
         };
         errorData.rows.push(error.rowNumber);
@@ -106,13 +107,27 @@ var errorDataHelper = function(errorData) {
         if (errorData.length === 0) {
             return { fieldName: null, fieldNameLower: null, errorValue: null };
         } else if (errorData.length > 1) {
-            return { fieldName: "Multiple", fieldNameLower: "multiple", errorValue: null };
+            let fieldNameArr = errorData.map(i => i.fieldName);
+            // fieldName will be a comma separated list of field headings
+            let fieldName  = fieldNameArr.join(", ");
+            // fieldHeadingText will be a natural language "Field1, Field2 and Field3" string for use in sentences
+            let fieldHeadingText = "";
+            for (let i = 0; i < fieldNameArr.length; i++) {
+                fieldHeadingText += fieldNameArr[i];
+                if (i < fieldNameArr.length - 1) {
+                    fieldHeadingText += i < fieldNameArr.length - 2 ? ", " : " and ";
+                }
+            }
+
+            let values = errorData.map(i => `${i.fieldName}: ${i.errorValue}`).join(", ");
+
+            return { fieldName: fieldName, fieldHeadingText: fieldHeadingText, errorValue: values };
         } else if(errorData[0].fieldName) {
-            return { fieldName: errorData[0].fieldName, fieldNameLower: errorData[0].fieldName, errorValue: errorData[0].errorValue };
+            return { fieldName: errorData[0].fieldName, fieldHeadingText: errorData[0].fieldName, errorValue: errorData[0].errorValue };
         }
     } else {
         winston.error("Unable to process API message: are you running the correct API version?");
-        return { fieldName: null, fieldNameLower: null, errorValue: null };
+        return { fieldName: null, fieldHeadingText: null, errorValue: null };
     }
 };
 
@@ -144,10 +159,10 @@ module.exports = {
             let tableItem = null;
 
             if (lastTableItem === null || lastTableItem.errorCode !== item.errorCode) {
-                // Create a new display item for the current error code
+                // Create a new display item for the current error
                 tableItem = {
                     "fieldName": errorDataHelper(item.errorData).fieldName,
-                    "fieldHeadingText": errorDataHelper(item.errorData).fieldNameLower,
+                    "fieldHeadingText": errorDataHelper(item.errorData).fieldHeadingText,
                     "errorCode": item.errorCode,
                     "definition": item.definition
                 };
@@ -177,7 +192,8 @@ module.exports = {
                 "errorType": item.errorType,
                 "errorTypeInfo": getErrorTypeInfo(item.errorType),
                 "rowNumber": item.lineNumber,
-                "errorValue": errorDataHelper(item.errorData).errorValue
+                "errorValue": errorDataHelper(item.errorData).errorValue,
+                "errorData": item.errorData
             };
             tableItem.violations.push(violation);
 

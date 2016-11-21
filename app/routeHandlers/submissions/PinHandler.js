@@ -1,8 +1,8 @@
 "use strict";
-let userHandler = require('../lib/user-handler');
-let pinHandler = require('../lib/pin-handler');
-let messages = require('../lib/error-messages');
-let errorHandler = require('../lib/error-handler');
+let userHandler = require('../../lib/user-handler');
+let pinHandler = require('../../lib/pin-handler');
+let messages = require('../../lib/error-messages');
+let errorHandler = require('../../lib/error-handler');
 
 module.exports = {
 

@@ -9,6 +9,12 @@ Send your data returns online
     {{{feedbackbanner}}}
     <h1 class="heading-large">Confirm details</h1>
 
+    {{#displayEaIdSubstitutionsMsg}}
+        <div id="eaid-substitutions-message" class="panel panel-border-wide">
+            You’ve put your permit or licence number in the EA_ID field. We’ve replaced it with the correct EA_ID to match the one we use to identify your data. Please use the replacement EA_ID in future return files. Your permit number is valid for other uses.
+        </div>
+    {{/displayEaIdSubstitutionsMsg}}
+
     <p class="lede">The data return you’re going to send is about:</p>
 
     <div class="text panel panel-border-wide file-summary">
@@ -25,7 +31,14 @@ Send your data returns online
                     {{/site}}
                 </li>
                 {{#identifiers}}
-                <li class="ea-id">{{identifier}}</li>
+                <li class="ea-id">
+                    {{#substituted}}
+                        We replaced
+                        <span class="submittedUniqueIdentifier">{{submittedUniqueIdentifier}}</span>
+                        with
+                    {{/substituted}}
+                    <span class="resolvedUniqueIdentifier">{{resolvedUniqueIdentifier}}</span>
+                </li>
                 {{/identifiers}}
             {{/status.server.parseResult.mappings}}
         </ul>

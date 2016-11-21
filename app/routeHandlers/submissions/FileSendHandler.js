@@ -1,11 +1,11 @@
 "use strict";
 
-const config = require('../lib/configuration-handler.js').Configuration;
+const config = require('../../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
-var userHandler = require('../lib/user-handler');
-var completionHandler = require('../api-handlers/completion-handler');
-var smtpHandler = require('../lib/smtp-handler');
-var errorHandler = require('../lib/error-handler');
+var userHandler = require('../../lib/user-handler');
+var completionHandler = require('../../api-handlers/completion-handler');
+var smtpHandler = require('../../lib/smtp-handler');
+var errorHandler = require('../../lib/error-handler');
 
 module.exports = {
     /*

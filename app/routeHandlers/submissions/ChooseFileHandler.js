@@ -1,15 +1,15 @@
 "use strict";
 const winston = require("winston");
-var csvValidator = require('../lib/csv-validator');
+var csvValidator = require('../../lib/csv-validator');
 var fs = require('fs');
 const lodash = require("lodash");
 var uuidGen = require('node-uuid');
-var fileUploadHandler = require('../api-handlers/file-upload-handler');
-var cacheHandler = require('../lib/cache-handler');
-var userHandler = require('../lib/user-handler');
-var errorDescs = require('../lib/error-descriptions');
-var metricsHandler = require('../lib/MetricsHandler');
-var redisKeys = require('../lib/redis-keys');
+var fileUploadHandler = require('../../api-handlers/file-upload-handler');
+var cacheHandler = require('../../lib/cache-handler');
+var userHandler = require('../../lib/user-handler');
+var errorDescs = require('../../lib/error-descriptions');
+var metricsHandler = require('../../lib/MetricsHandler');
+var redisKeys = require('../../lib/redis-keys');
 
 /**
  * Handler for traditional form based file uploads.  This method is only used if JavaScript is disabled in the client's browser and

@@ -1,7 +1,7 @@
 'use strict';
 const winston = require("winston");
 const stringify = require('csv').stringify;
-var handler = require('../api-handlers/controlled-lists.js');
+var handler = require('../../api-handlers/controlled-lists.js');
 
 module.exports = {
     /*
