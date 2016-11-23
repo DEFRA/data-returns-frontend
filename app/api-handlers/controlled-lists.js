@@ -93,7 +93,7 @@ module.exports.getListMetaData = function () {
 module.exports.getListData = function (list, search) {
     return new Promise(function (resolve, reject) {
         apiCallList(list, search).then(function (result) {
-            resolve(result);
+            resolve(result[list]);
         }).catch(reject);
     });
 };
