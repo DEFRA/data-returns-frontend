@@ -89,7 +89,7 @@
 
     function updateContinueStatus() {
         $.getJSON("/file/choose?status=true", function (status) {
-            var $continue = $("#continue-btn");
+            var $continue = $("#continueBtn");
             if (status.canContinue) {
                 $continue.removeAttr("disabled");
                 $continue.attr("href", "/file/confirm");
