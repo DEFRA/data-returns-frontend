@@ -40,7 +40,7 @@ server.connection({
     "host": '0.0.0.0',
     "port": config.get('client.port'),
     "routes": {
-        "cors": true,
+        "cors": false, // Disallow CORS - There is no requirement for it in data returns.
         "security": {
             // Set the 'Strict-Transport-Security' header
             "hsts": true,
@@ -157,6 +157,34 @@ server.ext('onPreResponse', function (request, reply) {
     return reply(resp);
 });
 
+// Verifying Same Origin with Standard Headers
+server.ext('onRequest', function (request, reply) {
+    var url = require('url');
+    if (request.headers) {
+        var x_host = request.headers['x-forwarded-host'];
+        var first_xhost = x_host ? x_host.split(",")[0] : undefined;
+        var host = first_xhost || request.headers['host'];
+        var origin = request.headers['origin'] || request.headers['referer'];
+        if (!origin) {
+            // In the cases where the browser does not set either we disallow
+            // as recommended by OWASP
+            request.setUrl('/start');
+        } else {
+            if (host) {
+                var p_host = host.split(":");
+                var p_origin = url.parse(origin);
+                if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
+                    winston.error('Possible CSRF attack from: ' + p_origin.hostname + ":" + p_origin.port);
+                    request.setUrl('/start');
+                    reply.redirect();
+                }
+            }
+        }
+    }
+
+    return reply.continue();
+
+});
 
 //lint js files
 var exec = require('child_process').exec;
