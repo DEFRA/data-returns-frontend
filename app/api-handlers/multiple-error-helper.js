@@ -119,7 +119,7 @@ var errorDataHelper = function(errorData) {
                 }
             }
 
-            let values = errorData.map(i => `${i.fieldName}: ${i.errorValue}`).join(", ");
+            let values = errorData.map(i => `${i.fieldName}: ${i.errorValue != null ? i.errorValue : ''}`).join(", ");
 
             return { fieldName: fieldName, fieldHeadingText: fieldHeadingText, errorValue: values };
         } else if(errorData[0].fieldName) {
