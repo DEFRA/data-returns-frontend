@@ -3,6 +3,7 @@
 const config = require('./app/lib/configuration-handler.js').Configuration;
 const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
+const Crumb = require('crumb');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -40,7 +41,8 @@ server.connection({
     "host": '0.0.0.0',
     "port": config.get('client.port'),
     "routes": {
-        "cors": false, // Disallow CORS - There is no requirement for it in data returns.
+        "cors": false,  // Disallow CORS - There is no requirement for it in data returns.
+                        // Google analytics does not require it as it works but inserting image tags
         "security": {
             // Set the 'Strict-Transport-Security' header
             "hsts": true,
@@ -145,6 +147,24 @@ server.register(require('vision'), function (err) {
     });
 });
 
+// Setup Crumb - CSRF token checking for all post requests
+// We cannot use the check with the fine uploader because the
+// XMLHttpRequest leaks the tokens. This implementation
+// or the fine uploaded forces the use of parameters to
+// enable the max-file size to be handled on the server
+var csrf_check_skip = ['/file/choose'];
+server.register({
+    register: Crumb,
+    options: { skip:
+        function (request, reply) {
+            if (csrf_check_skip.find(route => route === request.route.path)) {
+                return true;
+            }
+            return false;
+        }
+    }
+});
+
 // Configure server routes.
 server.route(require('./app/routes'));
 // add security headers
@@ -157,27 +177,43 @@ server.ext('onPreResponse', function (request, reply) {
     return reply(resp);
 });
 
-// Verifying Same Origin with Standard Headers
+
+// Verifying Same-origin with standard Headers
+// See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
 server.ext('onRequest', function (request, reply) {
+
+    // Turn off. Because CORS is OFF
+    // No need - the crumb
+    return reply.continue();
+
     var url = require('url');
     if (request.headers) {
+        // x-forwarded-host should be set by proxies to
+        // preserve the original host where 'host' is
+        // populated with the IP of the proxy. It should be in the
+        // form hostname:port
         var x_host = request.headers['x-forwarded-host'];
         var first_xhost = x_host ? x_host.split(",")[0] : undefined;
         var host = first_xhost || request.headers['host'];
         var origin = request.headers['origin'] || request.headers['referer'];
         if (!origin) {
-            // In the cases where the browser does not set either we disallow
-            // as recommended by OWASP
-            request.setUrl('/start');
+            // In the cases such as using setting window.location in Javascript
+            // certain the browsers do not set the referrer. In this
+            // case we have no option but to pass-through and rely on the CSRF
+            // token checking.
         } else {
             if (host) {
                 var p_host = host.split(":");
                 var p_origin = url.parse(origin);
                 if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
-                    winston.error('Possible CSRF attack from: ' + p_origin.hostname + ":" + p_origin.port);
+                    winston.error('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
                     request.setUrl('/start');
                     reply.redirect();
                 }
+            } else {
+                winston.error('Illegal no host header found');
+                request.setUrl('/start');
+                reply.redirect();
             }
         }
     }

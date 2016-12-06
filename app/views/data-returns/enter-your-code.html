@@ -9,6 +9,7 @@ Send your data returns online
 <main id="content" role="main">
   {{{feedbackbanner}}}
   <form method="post" class="form">
+    <input type="hidden" name="crumb" value="{{crumb}}"/>
     <h1 class="heading-large">Enter your code</h1>
 
     {{#invalidPin}}
