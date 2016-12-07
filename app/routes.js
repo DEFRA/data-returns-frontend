@@ -7,6 +7,7 @@ var startHandler = require('./routeHandlers/StartHandler');
 
 // Submission route handlers
 var chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
+var preloadHandler = require('./routeHandlers/submissions/PreloadHandler');
 var confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
 var emailHandler = require('./routeHandlers/submissions/EmailHandler');
 var pinHandler = require('./routeHandlers/submissions/PinHandler');
@@ -22,6 +23,19 @@ var eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
 
 
 var contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
+
+let fileUploadConfig = {
+    payload: {
+        maxBytes: config.get('csv.maxFileSizeMb') * Math.pow(2, 20),
+        timeout: false,
+        output: "file",
+        parse: true,
+        uploads: config.get('upload.path'),
+        // Fail action is set to ignore so that we can handle errors inside the handler
+        failAction: "ignore"
+    }
+};
+
 
 let handlers = [
     // Static assets.
@@ -89,18 +103,20 @@ let handlers = [
     {
         method: 'POST',
         path: '/file/choose',
-        config: {
-            payload: {
-                maxBytes: config.get('csv.maxFileSizeMb') * Math.pow(2, 20),
-                timeout: false,
-                output: "file",
-                parse: true,
-                uploads: config.get('upload.path'),
-                // Fail action is set to ignore so that we can handle errors inside ChooseFileHandler
-                failAction: "ignore"
-            }
-        },
-        handler:  chooseFileHandler.postHandler
+        config: fileUploadConfig,
+        handler: chooseFileHandler.postHandler
+    },
+    // /file/preload
+    {
+        method: 'GET',
+        path: '/file/preload',
+        handler: preloadHandler.getHandler
+    },
+    {
+        method: 'POST',
+        path: '/file/preload',
+        config: fileUploadConfig,
+        handler: preloadHandler.postHandler
     },
     // /file/confirm
     {

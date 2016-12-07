@@ -46,7 +46,7 @@ Send your data returns online
             </thead>
             <tbody>
             {{#files}}
-            <tr id="summary-{{{id}}}" class="statusbar">
+            <tr id="summary-{{{id}}}" filename="{{name}}" class="statusbar">
                 <td class="filename">{{name}}</td>
                 <td class="status">
                     <div class="file-{{{status.state}}}" title="{{status.explanation}}">{{status.description}}</div>
