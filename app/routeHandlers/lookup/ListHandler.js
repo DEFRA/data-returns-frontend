@@ -51,7 +51,7 @@ module.exports = {
 
     getDisplayHandlerWithSearch: function (request, reply) {
         var list = request.query.list;
-        // if no search term pass control back to teh full list handler
+        // if no search term pass control back to the full list handler
         if (request.payload.search === '') {
             module.exports.getDisplayHandler(request, reply);
         } else {

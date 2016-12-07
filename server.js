@@ -152,12 +152,20 @@ server.register(require('vision'), function (err) {
 // XMLHttpRequest leaks the tokens. This implementation
 // or the fine uploaded forces the use of parameters to
 // enable the max-file size to be handled on the server
-var csrf_check_skip = ['/file/choose'];
+var csrf_check_skip = [
+    new RegExp('/file/choose'),
+    new RegExp('/public/.*')
+];
+
+// Register the crumb plugin which creates a csrf token
+// which is used to validate POST returns are not from domains
+// other than the primary domain
 server.register({
     register: Crumb,
     options: { skip:
         function (request, reply) {
-            if (csrf_check_skip.find(route => route === request.route.path)) {
+            if (csrf_check_skip.find(route => route.test(request.route.path))) {
+                winston.debug('No crumb on: ' + request.route.path);
                 return true;
             }
             return false;
@@ -175,17 +183,13 @@ server.ext('onPreResponse', function (request, reply) {
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
     return reply(resp);
-});
+});         
 
 
 // Verifying Same-origin with standard Headers
 // See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
+// Which suggests origin checking in addition to the CSRF token pattern
 server.ext('onRequest', function (request, reply) {
-
-    // Turn off. Because CORS is OFF
-    // No need - the crumb
-    return reply.continue();
-
     var url = require('url');
     if (request.headers) {
         // x-forwarded-host should be set by proxies to
