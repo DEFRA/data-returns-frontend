@@ -109,7 +109,11 @@ module.exports.pageExtractor = function(listData, displayHeaders) {
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
         for (var c = 0; c < displayHeaders.length; c++) {
-            cols.push({item: listData[r][displayHeaders[c].field]});
+            cols.push({
+                item: listData[r][displayHeaders[c].field],
+                cellCls: displayHeaders[c].field
+
+            });
         }
         rows.push({row: cols});
     }

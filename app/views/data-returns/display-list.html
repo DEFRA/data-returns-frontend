@@ -45,7 +45,7 @@ Controlled Lists
         </div>
     </div>
 
-    <table>
+    <table id="controlled-list-table">
         <thead>
         <tr>
             {{#tableHeadings}}
@@ -57,7 +57,7 @@ Controlled Lists
         {{#rows}}
         <tr>
             {{#row}}
-            <td>
+            <td class="{{cellCls}}">
                 {{#item.length}}
                 <ul style="white-space: nowrap;">
                     {{#item}}<li>{{.}}</li>{{/item}}
