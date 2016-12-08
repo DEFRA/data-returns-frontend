@@ -42,7 +42,6 @@ server.connection({
     "port": config.get('client.port'),
     "routes": {
         "cors": false,  // Disallow CORS - There is no requirement for it in data returns.
-                        // Google analytics does not require it as it works but inserting image tags
         "security": {
             // Set the 'Strict-Transport-Security' header
             "hsts": true,
@@ -185,10 +184,9 @@ server.ext('onPreResponse', function (request, reply) {
     return reply(resp);
 });         
 
-
 // Verifying Same-origin with standard Headers
 // See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
-// Which suggests origin checking in addition to the CSRF token pattern
+// Which suggests origin checking in addition to the Double Submit Cookie pattern
 server.ext('onRequest', function (request, reply) {
     var url = require('url');
     if (request.headers) {
@@ -203,8 +201,8 @@ server.ext('onRequest', function (request, reply) {
         if (!origin) {
             // In the cases such as using setting window.location in Javascript
             // certain the browsers do not set the referrer. In this
-            // case we have no option but to pass-through and rely on the CSRF
-            // token checking.
+            // case we have no option but to pass-through and rely on the double
+            // submit cookie pattern
         } else {
             if (host) {
                 var p_host = host.split(":");
@@ -221,9 +219,7 @@ server.ext('onRequest', function (request, reply) {
             }
         }
     }
-
     return reply.continue();
-
 });
 
 //lint js files
