@@ -163,7 +163,6 @@ server.register({
     options: { skip:
         function (request) {
             if (csrf_check_skip.find(route => route.test(request.path))) {
-                winston.debug('No crumb on: ' + request.path);
                 return true;
             }
             return false;
@@ -204,25 +203,28 @@ server.ext('onRequest', function (request, reply) {
         var host = first_xhost || request.headers['host'];
         var origin = request.headers['origin'] || request.headers['referer'];
 
-        winston.debug('onRequest[path]: ' + request.path);
-        winston.debug('onRequest[method]: ' + request.method);
-        winston.debug('Header[x-forwarded-host]: ' + x_host);
-        winston.debug('Header[host]: ' + host);
-        winston.debug('Header[x-forwarded-host]: ' + x_host);
-        winston.debug('Header[origin]: ' + request.headers['origin']);
-        winston.debug('Header[referer]: ' + request.headers['referer']);
-
         if (!origin) {
             // OWASP recommends blocking requests for which neither
             // an origin or a referer is set. However there are a set
-            // of scenarios set out in the acceptance test - unexpected navigation -
-            // which do cause this so ignore.
+            // of scenarios in which this system; unexpected navigations
+            // start page handlers etc do not set either so we have to ignore
         } else {
             if (host) {
                 var p_host = host.split(":");
                 var p_origin = url.parse(origin);
                 if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
+
+                    var errmsg = 'onRequest[path]: ' + request.path + '\n' +
+                        'onRequest[method]: ' + request.method + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[host]: ' + host + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[origin]: ' + request.headers['origin'] + '\n' +
+                        'Header[referer]: ' + request.headers['referer'];
+
                     winston.error('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
+                    winston.error('Cross origin request details: ' + errmsg);
+
                     request.setUrl('/start');
                     reply.redirect();
                 }
