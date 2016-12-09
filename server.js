@@ -3,6 +3,7 @@
 const config = require('./app/lib/configuration-handler.js').Configuration;
 const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
+const Crumb = require('crumb');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -42,7 +43,7 @@ server.connection({
     "host": '0.0.0.0',
     "port": config.get('client.port'),
     "routes": {
-        "cors": true,
+        "cors": false,  // Disallow CORS - There is no requirement to allow cross origin requests in data returns.
         "security": {
             // Set the 'Strict-Transport-Security' header
             "hsts": true,
@@ -147,6 +148,33 @@ server.register(require('vision'), function (err) {
     });
 });
 
+// Setup Crumb - double submit cookie for all post requests
+// below is an array of regular expressions containing the exclusions as
+// We cannot use the check with the fine uploader because the
+// XMLHttpRequest leaks the tokens.
+var csrf_check_skip = [
+    new RegExp('/file/choose'),
+    new RegExp('/public/.*')
+];
+
+// Register the crumb plugin which creates a csrf token
+// which is used to validate POST returns are not from domains
+// other than the primary domain
+server.register({
+    register: Crumb,
+    options: {
+        skip: function (request) {
+            if (csrf_check_skip.find(route => route.test(request.path))) {
+                return true;
+            }
+            return false;
+        },
+        cookieOptions: {
+            ttl: 1000 * 60 * 60 * 24 // The crumb cookie life is 24 hours after which a new one is automatically generated.
+        },
+    }
+});
+
 // Configure server routes.
 server.route(require('./app/routes'));
 // add security headers
@@ -159,6 +187,61 @@ server.ext('onPreResponse', function (request, reply) {
     return reply(resp);
 });
 
+// Verifying Same-origin with standard Headers
+// See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
+// Which suggests origin checking in addition to the Double Submit Cookie pattern
+// Exclude the start page which can land
+var same_origin_ignore = [
+    new RegExp('^/$'),
+    new RegExp('^/start$')
+];
+// Register the event handler
+server.ext('onRequest', function (request, reply) {
+    var url = require('url');
+    if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
+        // x-forwarded-host should be set by proxies to
+        // preserve the original host where 'host' is
+        // populated with the IP of the proxy. It should be in the
+        // form hostname:port
+        var x_host = request.headers['x-forwarded-host'];
+        var first_xhost = x_host ? x_host.split(",")[0] : undefined;
+        var host = first_xhost || request.headers['host'];
+        var origin = request.headers['origin'] || request.headers['referer'];
+
+        if (!origin) {
+            // OWASP recommends blocking requests for which neither
+            // an origin or a referer is set. However there are a set
+            // of scenarios in which this system; unexpected navigations
+            // start page handlers etc do not set either so we have to ignore
+        } else {
+            if (host) {
+                var p_host = host.split(":");
+                var p_origin = url.parse(origin);
+                if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
+
+                    var errmsg = 'onRequest[path]: ' + request.path + '\n' +
+                        'onRequest[method]: ' + request.method + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[host]: ' + host + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[origin]: ' + request.headers['origin'] + '\n' +
+                        'Header[referer]: ' + request.headers['referer'];
+
+                    winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
+                    winston.info('Cross origin request details: ' + errmsg);
+
+                    request.setUrl('/start');
+                    reply.redirect();
+                }
+            } else {
+                winston.info('Illegal: no host header found');
+                request.setUrl('/start');
+                reply.redirect();
+            }
+        }
+    }
+    return reply.continue();
+});
 
 //lint js files
 var exec = require('child_process').exec;

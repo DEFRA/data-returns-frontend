@@ -14,7 +14,6 @@ module.exports = {
      * get handler for '/start' route
      */
     getHandler: function (request, reply) {
-        // Generate a new session
         userHandler.newUserSession(request, reply);
         reply.view('data-returns/start');
     }
