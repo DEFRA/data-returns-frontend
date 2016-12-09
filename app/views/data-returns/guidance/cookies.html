@@ -9,15 +9,7 @@
 
     <div class="grid-row">
         <div class="column-two-thirds">
-            <!--
-            /* Add CSS style: */
-            table.cookies-table{
-              margin:$gutter-half 0;
-              td{
-              vertical-align:top;
-              }
-            }
-            -->
+
             <header class="text">
                 <h1 class="form-title heading-large">
                     <span id="title">{{$title}}{{/title}}</span>
@@ -71,7 +63,7 @@
                     <td>2 years</td>
                 </tr>
                 <tr>
-                    <td>_gat_UA-18431968-12</td>
+                    <td>_gat_UA- followed by a number</td>
                     <td>Used to identify unique users and inform referring sites, visitor and session counts</td>
                     <td>When you close your browser</td>
                 </tr>
@@ -81,31 +73,7 @@
             <p>Google isn't allowed to use or share our analytics data with anyone.</p>
 
 
-            <h2 class="heading-medium">Load balancer cookie</h2>
-
-            <p>The load balancer cookie helps us to route your data to the correct web server.</p>
-
-            <table class="cookies-table" role="presentation">
-                <caption class="visually-hidden">
-                    Load balancer cookie
-                </caption>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Purpose</th>
-                    <th>Expires</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>AWSELB</td>
-                    <td>Used for load balancer management</td>
-                    <td>1 day</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <h2 class="heading-medium">Session cookie</h2>
+            <h2 class="heading-medium">Session cookies</h2>
 
             <p>We store session cookies on your computer to help keep your information secure while you use the
                 service.</p>
@@ -125,6 +93,11 @@
                 <tr>
                     <td>data-returns-id</td>
                     <td>Used for session management and authentication</td>
+                    <td>1 day</td>
+                </tr>
+                <tr>
+                    <td>crumb</td>
+                    <td>Used to improve security against cross-site request forgery</td>
                     <td>1 day</td>
                 </tr>
                 </tbody>
