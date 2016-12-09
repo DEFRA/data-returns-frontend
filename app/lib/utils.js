@@ -5,7 +5,7 @@ const config = require('./configuration-handler.js').Configuration;
 
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var path = require('path');
 
 /* loadFilesInDir: Recursivly loads file names in to an array
