@@ -1,28 +1,26 @@
 'use strict';
 const winston = require("winston");
 const config = require('./lib/configuration-handler.js').Configuration;
-
-var basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
-var startHandler = require('./routeHandlers/StartHandler');
+let basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
+let startHandler = require('./routeHandlers/StartHandler');
 
 // Submission route handlers
-var chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
-var preloadHandler = require('./routeHandlers/submissions/PreloadHandler');
-var confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
-var emailHandler = require('./routeHandlers/submissions/EmailHandler');
-var pinHandler = require('./routeHandlers/submissions/PinHandler');
-var fileSendHandler = require('./routeHandlers/submissions/FileSendHandler');
-var fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
-var correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
-var correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
-var fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
+let chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
+let preloadHandler = require('./routeHandlers/submissions/PreloadHandler');
+let confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
+let emailHandler = require('./routeHandlers/submissions/EmailHandler');
+let pinHandler = require('./routeHandlers/submissions/PinHandler');
+let fileSendHandler = require('./routeHandlers/submissions/FileSendHandler');
+let fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
+let correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
+let correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
+let fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
 
 // Reference material lookup handlers
-var listHandler = require('./routeHandlers/lookup/ListHandler');
-var eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
+let listHandler = require('./routeHandlers/lookup/ListHandler');
+let eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
 
-
-var contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
+let contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
 
 let fileUploadConfig = {
     payload: {
@@ -36,23 +34,40 @@ let fileUploadConfig = {
     }
 };
 
-
-let handlers = [
-    // Static assets.
-    {
+let staticAssetDir = function (type, paths) {
+    return {
         method: 'GET',
-        path: '/public/{param*}',
+        path: `/public/${type}/{param*}`,
         handler: {
             directory: {
-                path: [
-                    'public/',
-                    'node_modules/govuk_template_mustache/assets',
-                    'node_modules/govuk_frontend_toolkit'
-                ],
+                path: paths,
                 etagMethod: 'hash' // Allows assets to be cached by the client.
             }
         }
-    },
+    };
+};
+
+
+let handlers = [
+    // Static assets.
+    staticAssetDir('images', [
+        'public/images',
+        'node_modules/govuk_template_mustache/assets/images',
+        'node_modules/govuk_frontend_toolkit/images',
+
+    ]),
+    staticAssetDir('javascripts', [
+        'public/javascripts',
+        'node_modules/govuk_template_mustache/assets/javascripts',
+        'node_modules/govuk_frontend_toolkit/javascripts',
+
+    ]),
+    staticAssetDir('stylesheets', [
+        'public/stylesheets',
+        'node_modules/govuk_template_mustache/assets/stylesheets'
+
+    ]),
+    // Serve html files from guidance
     {
         method: 'GET',
         path: '/guidance/{page*}',

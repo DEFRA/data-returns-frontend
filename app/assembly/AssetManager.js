@@ -249,22 +249,6 @@ module.exports = {
         });
 
         new PassthroughHandler({
-            "pattern": "**/*",
-            "sourceDir": `${rootPath}/node_modules/govuk_frontend_toolkit/images`,
-            "targetDir": `${rootPath}/public/stylesheets`,
-            "assetType": "image",
-            "minify": false
-        });
-
-        new PassthroughHandler({
-            "pattern": "**/*",
-            "sourceDir": `${rootPath}/assets/resources`,
-            "targetDir": `${rootPath}/public/resources`,
-            "assetType": "resource",
-            "minify": false
-        });
-
-        new PassthroughHandler({
             "pattern": "**/*.js",
             "sourceDir": `${rootPath}/assets/javascripts`,
             "targetDir": `${rootPath}/public/javascripts`,
@@ -280,10 +264,9 @@ module.exports = {
             "outFile": "main.css",
             "minifiedFile": "main-min.css",
             "includePaths": [
-                `${rootPath}/node_modules/govuk_frontend_toolkit/stylesheets/`,
                 `${rootPath}/assets/sass/dr-elements`,
-                `${rootPath}/node_modules/govuk-elements-sass/public/sass/govuk-elements`,
-                `${rootPath}/node_modules/govuk_template_mustache/assets/stylesheets`
+                `${rootPath}/node_modules/govuk-elements-sass/public/sass`,
+                `${rootPath}/node_modules/govuk_frontend_toolkit/stylesheets`
             ]
         });
     }

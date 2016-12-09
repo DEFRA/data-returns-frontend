@@ -61,10 +61,10 @@ server.connection({
 const goodWinstonOptions = {
     levels: {
         ops: "debug",
-        response: "info",
+        response: "debug",
         log: "info",
         error: "error",
-        request: "info"
+        request: "debug"
     }
 };
 
@@ -181,7 +181,9 @@ server.route(require('./app/routes'));
 server.ext('onPreResponse', function (request, reply) {
     var resp = request.response;
     if (resp && resp.header) {
-        resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
+        if (!request.path || !request.path.startsWith('/public')) {
+            resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
+        }
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
     return reply(resp);
