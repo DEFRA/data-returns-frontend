@@ -168,7 +168,7 @@ server.register({
             return false;
         },
         cookieOptions: {
-            ttl: 1000 * 60 * 10 // The crumb cookie life is 10 minutes after which a new one is automatically generated.
+            ttl: 1000 * 60 * 60 * 24 // The crumb cookie life is 24 hours after which a new one is automatically generated.
         },
     }
 });
