@@ -160,13 +160,16 @@ var csrf_check_skip = [
 // other than the primary domain
 server.register({
     register: Crumb,
-    options: { skip:
-        function (request) {
+    options: {
+        skip: function (request) {
             if (csrf_check_skip.find(route => route.test(request.path))) {
                 return true;
             }
             return false;
-        }
+        },
+        cookieOptions: {
+            ttl: 1000 * 60 * 10 // The crumb cookie life is 10 minutes after which a new one is automatically generated.
+        },
     }
 });
 
@@ -222,14 +225,14 @@ server.ext('onRequest', function (request, reply) {
                         'Header[origin]: ' + request.headers['origin'] + '\n' +
                         'Header[referer]: ' + request.headers['referer'];
 
-                    winston.error('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
-                    winston.error('Cross origin request details: ' + errmsg);
+                    winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
+                    winston.info('Cross origin request details: ' + errmsg);
 
                     request.setUrl('/start');
                     reply.redirect();
                 }
             } else {
-                winston.error('Illegal no host header found');
+                winston.info('Illegal: no host header found');
                 request.setUrl('/start');
                 reply.redirect();
             }
