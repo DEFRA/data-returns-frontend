@@ -1,6 +1,5 @@
 "use strict";
 const winston = require("winston");
-const Boom = require("boom");
 let cacheHandler = require('../../lib/cache-handler');
 let userHandler = require('../../lib/user-handler');
 let redisKeys = require('../../lib/redis-keys');
@@ -81,7 +80,7 @@ module.exports.postHandler = function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
         let fileData = fileUploadProcessor.getFileData(request, sessionID);
 
-        let legacyUploaderOnComplete = function(processorResponse) {
+        let legacyUploaderOnComplete = function() {
             reply.redirect('/file/choose').rewritable(true);
         };
         let fineUploaderOnComplete = function(processorResponse) {

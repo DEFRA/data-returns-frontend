@@ -46,11 +46,18 @@ let handlers = [
             directory: {
                 path: [
                     'public/',
-                    'govuk_modules/govuk_template/assets',
-                    'govuk_modules/govuk_frontend_toolkit'
+                    'node_modules/govuk_template_mustache/assets',
+                    'node_modules/govuk_frontend_toolkit'
                 ],
                 etagMethod: 'hash' // Allows assets to be cached by the client.
             }
+        }
+    },
+    {
+        method: 'GET',
+        path: '/guidance/{page*}',
+        handler: function (request, reply) {
+            reply.view(`data-returns/guidance/${request.params.page}`);
         }
     },
     /*

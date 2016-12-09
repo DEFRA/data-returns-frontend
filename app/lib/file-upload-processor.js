@@ -74,7 +74,7 @@ module.exports = {
     },
 
     getClientFilename: function (request, fileUpload) {
-        let path = request.query.filename || fileUpload.filename || "Unknown";
+        let path = request.query.filename || fileUpload && fileUpload.filename ? fileUpload.filename : "Unknown";
         path = path.replace(/\\/g, '/');
         let parts = path.split('/');
         return parts[parts.length - 1];

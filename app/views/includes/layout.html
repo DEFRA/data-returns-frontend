@@ -1,9 +1,27 @@
 {{<govuk_template}}
 
+<!-- Common <head> content expected on every page, defined separately so that pages can customise head content -->
+{{$commonHead}}
+    {{>commonHead}}
+    {{>ga-head}}
+    {{>scripts}}
+{{/commonHead}}
+
+<!-- Default definition for a page <head> -->
 {{$head}}
     {{>head}}
-    {{>scripts}}
+    {{$commonHead}}{{/commonHead}}
 {{/head}}
+
+<!-- The title of the service -->
+{{$serviceTitle}}Send your data returns online{{/serviceTitle}}
+{{$fullServiceTitle}}GOV.UK - {{$serviceTitle}}{{/serviceTitle}}{{/fullServiceTitle}}
+
+<!-- Page title -->
+{{$pageTitle}}
+    {{>pageTitle}}
+    {{$title}}{{/title}} - {{$fullServiceTitle}}{{/fullServiceTitle}}
+{{/pageTitle}}
 
 {{$propositionHeader}}
     {{>propositional_navigation}}
@@ -11,7 +29,46 @@
 
 {{$headerClass}}with-proposition{{/headerClass}}
 
+{{$cookieMessage}}
+<div class="cookie-message full-width">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <p>
+                    {{$fullServiceTitle}}{{/fullServiceTitle}} use cookies to make the site simpler.
+                    <a href="/guidance/cookies.html" target="_blank">
+                        Find out more about cookies
+                        <span class="visually-hidden">opens in a new window</span>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{{/cookieMessage}}
+
+<!-- Content displayed below the GOV.UK logo -->
+{{$insideHeader}}{{/insideHeader}}
+
+<!-- Body content -->
+{{$bodyStart}}
+    {{>ga-body}}
+{{/bodyStart}}
+
 {{$bodyEnd}}
 {{/bodyEnd}}
+
+
+<!-- License message and crown copyright reference for page footer -->
+{{$licenceMessage}}
+<p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+<p>
+    <a href="/guidance/privacy.html" target="_blank">Privacy <span class="visually-hidden">opens in a new window</span></a>
+    &#160;&#160;
+    <a href="/guidance/cookies.html" target="_blank">Cookies <span class="visually-hidden">opens in a new window</span></a>
+</p>
+{{/licenceMessage}}
+
+{{$crownCopyrightMessage}}&copy; Crown copyright{{/crownCopyrightMessage}}
 
 {{/govuk_template}}

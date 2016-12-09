@@ -1,13 +1,11 @@
 {{<layout}}
 
-{{$pageTitle}}
-Send your data returns online
-{{/pageTitle}}
+{{$title}}Confirm details{{/title}}
 
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
-    <h1 class="heading-large">Confirm details</h1>
+    <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
     {{#displayEaIdSubstitutionsMsg}}
         <div id="eaid-substitutions-message" class="panel panel-border-wide">

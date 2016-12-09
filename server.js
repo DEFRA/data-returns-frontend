@@ -8,7 +8,8 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 var utils = require('./app/lib/utils');
-const AssetManager = require('./app/lib/AssetManager');
+const AssetManager = require('./app/assembly/AssetManager');
+const TemplateBuilder = require('./app/assembly/TemplateBuilder');
 var server = new Hapi.Server();
 const cacheHandler = require('./app/lib/cache-handler');
 const redisKeys = require('./app/lib/redis-keys.js');
@@ -17,7 +18,8 @@ const redisKeys = require('./app/lib/redis-keys.js');
 winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
 winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env, null, 4));
 
-// Start the asset manager
+// Build gov.uk templates and start the asset manager
+TemplateBuilder.build();
 AssetManager.start();
 
 // Test for cryptography support
@@ -138,7 +140,7 @@ server.register(require('vision'), function (err) {
         partialsPath: [
             './app/views/includes',
             './app/views/data-returns/includes',
-            './govuk_modules/govuk_template/views/layouts'
+            TemplateBuilder.GOV_UK_TEMPLATE_PATH
         ],
         context: require("./app/lib/common-view-data"),
         isCached: config.get('html.cached')

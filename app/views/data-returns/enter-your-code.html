@@ -1,54 +1,50 @@
 {{<layout}}
 
-{{$pageTitle}}
-Send your data returns online
-{{/pageTitle}}
+{{$title}}Enter your code{{/title}}
 
 {{$content}}
-
 <main id="content" role="main">
-  {{{feedbackbanner}}}
-  <form method="post" class="form">
-    <h1 class="heading-large">Enter your code</h1>
+    {{{feedbackbanner}}}
+    <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
-    {{#invalidPin}}
-    <div class="error-summary">
-      {{{errorMessage}}}
-      <hidden id="error_code" value="DR{{errorCode}}" ></hidden>
-    </div>
-    {{/invalidPin}}
+    <form method="post" class="form">
+        {{#invalidPin}}
+        <div class="error-summary">
+            {{{errorMessage}}}
+            <hidden id="error_code" value="DR{{errorCode}}"></hidden>
+        </div>
+        {{/invalidPin}}
 
-    {{^startAgain}}
-    <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
-    <div class="form-group">
-      <label class="form-label" for="validation-code">
-        <span class="form-hint">eg, 1234</span>
-      </label>
-      <input class="form-control validation-code" id="validation-code" name="validation_code" type="text" autocomplete="off" autofocus maxlength="4" >
-    </div>
+        {{^startAgain}}
+        <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
+        <div class="form-group">
+            <label class="form-label" for="validation-code">
+                <span class="form-hint">eg, 1234</span>
+            </label>
+            <input class="form-control validation-code" id="validation-code" name="validation_code" type="text"
+                   autocomplete="off" autofocus maxlength="4">
+        </div>
 
-    <p>If you haven’t received an email with a code to enter here you may need to:</p>
-    <ul class="list list-bullet">
-      <li>check your junk or spam folder in your inbox</li>
-      <li>check you’ve given a valid email address</li>
-    </ul>
+        <p>If you haven’t received an email with a code to enter here you may need to:</p>
+        <ul class="list list-bullet">
+            <li>check your junk or spam folder in your inbox</li>
+            <li>check you’ve given a valid email address</li>
+        </ul>
 
-    <p>Wrong email address? <a href="/email">Go back</a> to enter a valid email address and get a new code.</p>
+        <p>Wrong email address? <a href="/email">Go back</a> to enter a valid email address and get a new code.</p>
 
-    <div class="form-group">
-      <a id="nextHref">
-        <input type="submit" id="continueBtn" class="button" value="Send code" accesskey="C">
-      </a>
-    </div>
-    {{/startAgain}}
-    {{#startAgain}}
-    <div class="form-group">
-      <a id="returnToStartBtn" href="/start" class="button">Start again</a>
-    </div>
-    {{/startAgain}}
-  </form>
+        <div class="form-group">
+            <a id="nextHref">
+                <input type="submit" id="continueBtn" class="button" value="Send code" accesskey="C">
+            </a>
+        </div>
+        {{/startAgain}}
+        {{#startAgain}}
+        <div class="form-group">
+            <a id="returnToStartBtn" href="/start" class="button">Start again</a>
+        </div>
+        {{/startAgain}}
+    </form>
 </main>
-
 {{/content}}
-
 {{/layout}}

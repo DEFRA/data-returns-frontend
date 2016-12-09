@@ -1,16 +1,11 @@
 {{<layout}}
 
-{{$pageTitle}}
-Controlled Lists
-{{/pageTitle}}
+{{$title}}{{listMetaData.description}}{{/title}}
 
 {{$content}}
-
 <main id="content" role="main">
-
-
-    <h2 class="heading-large">{{listMetaData.description}}</h2>
-
+    {{{feedbackbanner}}}
+    <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
     <div class="grid-row">
         <div class="column-two-thirds">
@@ -75,7 +70,5 @@ Controlled Lists
     </table>
 
 </main>
-
 {{/content}}
-
 {{/layout}}

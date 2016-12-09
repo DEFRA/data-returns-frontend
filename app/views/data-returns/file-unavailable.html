@@ -1,14 +1,13 @@
 {{<layout}}
-{{$pageTitle}}
-Send your data returns online
-{{/pageTitle}}
+
+{{$title}}Do you want to send files?{{/title}}
 
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
 
     <div id="Validation-Summary">
-        <h1 class="heading-large">Do you want to send files?</h1>
+        <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
         <p>
             <a id="choose-files" href="/file/choose">Choose files and send</a>
         </p>

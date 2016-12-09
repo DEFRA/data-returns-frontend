@@ -1,15 +1,13 @@
 {{<layout}}
-{{$pageTitle}}
-Send your data returns online
-{{/pageTitle}}
+
+{{$title}}Correct {{fieldHeadingText}} errors{{/title}}
 
 {{$content}}
-
 <main id="content" role="main">
     {{{feedbackbanner}}}
 
     <div class="error-summary" role="group" aria-labelledby="data-error-table" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading">Correct {{fieldHeadingText}} errors</h1>
+        <h1 class="heading-medium error-summary-heading"><span id="title">{{$title}}{{/title}}</span></h1>
 
         <ul class="error-summary-list">
             {{#summaries}}

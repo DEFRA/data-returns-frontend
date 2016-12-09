@@ -1,18 +1,13 @@
 {{<layout}}
 
-{{$pageTitle}}
-Send your data returns online
-{{/pageTitle}}
+{{$title}}Confirm your email address{{/title}}
 
 {{$content}}
-
 <main id="content" role="main">
-
   {{{feedbackbanner}}}
+  <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
   <form method="post" class="form">
-
-    <h1 class="heading-large">Confirm your email address</h1>
 
     {{#invalidEmailAddress}}
     <div class="error-summary">
@@ -60,7 +55,5 @@ Send your data returns online
     <!-- /text -->
   </form>
 </main>
-
 {{/content}}
-
 {{/layout}}
