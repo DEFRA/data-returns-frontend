@@ -93,7 +93,7 @@ module.exports.getListMetaData = function () {
 module.exports.getListData = function (list, search) {
     return new Promise(function (resolve, reject) {
         apiCallList(list, search).then(function (result) {
-            resolve(result);
+            resolve(result[list]);
         }).catch(reject);
     });
 };
@@ -109,7 +109,11 @@ module.exports.pageExtractor = function(listData, displayHeaders) {
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
         for (var c = 0; c < displayHeaders.length; c++) {
-            cols.push({item: listData[r][displayHeaders[c].field]});
+            cols.push({
+                item: listData[r][displayHeaders[c].field],
+                cellCls: displayHeaders[c].field
+
+            });
         }
         rows.push({row: cols});
     }

@@ -39,6 +39,7 @@
                 // No existing row for this file.  Create a new row
                 $uploadRow = $($resultTemplate.html());
                 $uploadRow.attr("id", rowId);
+                $uploadRow.attr("filename", details.name);
 
                 // Append to the list in an ordered position
                 var added = false;

@@ -32,7 +32,10 @@
                 inputName: "fileUpload",
                 method: "POST",
                 // Use request parameters rather than encoding data in body (allows us to handle max file size server-side)
-                paramsInBody: false
+                paramsInBody: false,
+                filenameParam: 'filename',
+                totalFileSizeName: 'filesize',
+                uuidName: 'uuid'
             },
             chunking: {
                 enabled: false

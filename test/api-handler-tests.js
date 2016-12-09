@@ -4,7 +4,7 @@ var Lab = require('lab');
 var lab = exports.lab = Lab.script();
 var expect = Code.expect;
 
-var fileUploadHandler = require('../app/api-handlers/file-upload-handler');
+var fileUploadHandler = require('../app/api-handlers/api-upload-handler');
 var fileName = 'success.csv';
 var filePath = __dirname + '/data/' + fileName;
 var sessionID = 'testsession';

@@ -127,11 +127,14 @@ module.exports.getSessionID = function (request) {
 module.exports.deleteSession = function (request, reply) {
     // Cleanup current session
     let currentSessionId = this.getSessionID(request, reply);
-    let keyPattern = `${currentSessionId}*`;
-    winston.info(`Removing redis keys for pattern ${keyPattern}`);
-    cacheHandler.deleteKeys(keyPattern);
-    reply.unstate(DATA_RETURNS_COOKIE_ID);
+    if (currentSessionId) {
+        let keyPattern = `${currentSessionId}*`;
+        winston.info(`Removing redis keys for pattern ${keyPattern}`);
+        cacheHandler.deleteKeys(keyPattern);
+        reply.unstate(DATA_RETURNS_COOKIE_ID);
+    }
 };
+
 module.exports.emptyUploadList = function (request, reply) {
     // Cleanup current session
     let currentSessionId = this.getSessionID(request, reply);
@@ -140,12 +143,12 @@ module.exports.emptyUploadList = function (request, reply) {
     cacheHandler.deleteKeys(keyPattern);
 };
 
-module.exports.newUserSession = function (request, reply) {
+module.exports.newUserSession = function (request, reply, sessionKey) {
     // Cleanup current session
     this.deleteSession(request, reply);
 
     // Generate new session
-    let newSessionId = utils.getNewUUID();
+    let newSessionId = sessionKey || utils.getNewUUID();
     var cookieOptions = {
         "path": '/',
         "ttl": 24 * 60 * 60 * 1000,

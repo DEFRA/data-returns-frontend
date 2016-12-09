@@ -11,6 +11,7 @@ const ymal = require('yamljs');
 const lodash = require('lodash');
 const merge = require('lodash.merge');
 const get = lodash.get;
+const util = require('util');
 
 /*
  * Hardcoded application characteristics
@@ -80,7 +81,7 @@ function Configuration() {
         var yMLFileConfiguration = getYMLFileConfiguration(process.env.NODE_ENV);
         this._configurationObject = merge(environmentVariables, yMLFileConfiguration);
         traverseObject(this._configurationObject, envVarSubstitution);
-        winston.info(`Configuration for ${process.env.NODE_ENV} environment: \n` + require('util').inspect(this._configurationObject));
+        winston.info(`Configuration for ${process.env.NODE_ENV} environment: \n` + util.inspect(this._configurationObject, {depth: null, colors: true}));
     } catch (err) {
         winston.error(err);
         throw 'Cannot load configuration...halting';

@@ -15,13 +15,14 @@ module.exports.links = {
     Help_SpecialCases: 'https://data-returns-help.herokuapp.com/#exceptions',
     Help_Operator_Lookup: '/lookup',
     fields: {
-        Rtn_Type: "/display-list?list=rtn_type",
-        Rtn_Period: "/display-list?list=rtn_period",
-        Parameter: "/display-list?list=parameters",
-        Txt_Value: "/display-list?list=txt_value",
-        Unit: "/display-list?list=units",
-        Ref_Period: "/display-list?list=ref_period",
-        Meth_Stand: "/display-list?list=method",
-        Qualifier: "/display-list?list=qualifier"
+        Rtn_Type: "/display-list?list=Rtn_Type",
+        Rtn_Period: "/display-list?list=Rtn_Period",
+        Parameter: "/display-list?list=Parameter",
+        Txt_Value: "/display-list?list=Txt_Value",
+        Unit: "/display-list?list=Unit",
+        Ref_Period: "/display-list?list=Ref_Period",
+        Meth_Stand: "/display-list?list=Meth_Stand",
+        Qualifier: "/display-list?list=Qualifier",
+        Rel_Trans: "/display-list?list=Rel_Trans"
     }
 };
