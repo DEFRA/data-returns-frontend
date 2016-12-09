@@ -19,6 +19,7 @@ Controlled Lists
             </div>
             <div class="form-group search-list">
                 <form action="display-list-search?list={{listMetaData.path}}" method="post">
+                    <input type="hidden" name="crumb" value="{{crumb}}"/>
                     <label class="form-label" for="search">Filter this list:</label>
                     <input id="search" class="form-control" type="text" name="search">
                     <input class="button button-secondary" type="submit" value="Submit">
