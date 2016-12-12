@@ -224,8 +224,9 @@ server.ext('onRequest', function (request, reply) {
             if (host) {
                 var p_host = host.split(":");
                 var p_origin = url.parse(origin);
-                if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
-
+                // Ignore for localhost because using mailcatcher in the same browser
+                // as the service resets the origin
+                if (p_host[0] !== 'localhost' && (p_origin.hostname !== p_host[0] || p_origin.port !== p_host[1])) {
                     var errmsg = 'onRequest[path]: ' + request.path + '\n' +
                         'onRequest[method]: ' + request.method + '\n' +
                         'Header[x-forwarded-host]: ' + x_host + '\n' +
