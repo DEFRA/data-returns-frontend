@@ -190,6 +190,7 @@ server.ext('onPreResponse', function (request, reply) {
         }
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
+    winston.info('onPreResponse' + JSON.stringify(resp.headers, null, 4));
     return reply(resp);
 });
 
@@ -203,53 +204,56 @@ var same_origin_ignore = [
 ];
 
 // Register the event handler
-// server.ext('onRequest', function (request, reply) {
-//     var url = require('url');
-//     if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
-//         // x-forwarded-host should be set by proxies to
-//         // preserve the original host where 'host' is
-//         // populated with the IP of the proxy. It should be in the
-//         // form hostname:port
-//         var x_host = request.headers['x-forwarded-host'];
-//         var first_xhost = x_host ? x_host.split(",")[0] : undefined;
-//         var host = first_xhost || request.headers['host'];
-//         var origin = request.headers['origin'] || request.headers['referer'];
-//
-//         if (!origin) {
-//             // OWASP recommends blocking requests for which neither
-//             // an origin or a referer is set. However there are a set
-//             // of scenarios in which this system; unexpected navigations
-//             // start page handlers etc do not set either so we have to ignore
-//         } else {
-//             if (host) {
-//                 var p_host = host.split(":");
-//                 var p_origin = url.parse(origin);
-//                 // Ignore for localhost because using mailcatcher in the same browser
-//                 // as the service resets the origin
-//                 if (p_host[0] !== 'localhost' && (p_origin.hostname !== p_host[0] || p_origin.port !== p_host[1])) {
-//                     var errmsg = 'onRequest[path]: ' + request.path + '\n' +
-//                         'onRequest[method]: ' + request.method + '\n' +
-//                         'Header[x-forwarded-host]: ' + x_host + '\n' +
-//                         'Header[host]: ' + host + '\n' +
-//                         'Header[x-forwarded-host]: ' + x_host + '\n' +
-//                         'Header[origin]: ' + request.headers['origin'] + '\n' +
-//                         'Header[referer]: ' + request.headers['referer'];
-//
-//                     winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
-//                     winston.info('Cross origin request details: ' + errmsg);
-//
-//                     request.setUrl('/start');
-//                     reply.redirect();
-//                 }
-//             } else {
-//                 winston.info('Illegal: no host header found');
-//                 request.setUrl('/start');
-//                 reply.redirect();
-//             }
-//         }
-//     }
-//     return reply.continue();
-// });
+server.ext('onRequest', function (request, reply) {
+    var url = require('url');
+    if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
+        winston.info('Origin check->' + request.path);
+        // x-forwarded-host should be set by proxies to
+        // preserve the original host where 'host' is
+        // populated with the IP of the proxy. It should be in the
+        // form hostname:port
+        var x_host = request.headers['x-forwarded-host'];
+        var first_xhost = x_host ? x_host.split(",")[0] : undefined;
+        var host = first_xhost || request.headers['host'];
+        var origin = request.headers['origin'] || request.headers['referer'];
+
+        if (!origin) {
+            // OWASP recommends blocking requests for which neither
+            // an origin or a referer is set. However there are a set
+            // of scenarios in which this system; unexpected navigations
+            // start page handlers etc do not set either so we have to ignore
+            winston.info('Origin check-> No origin');
+        } else {
+            if (host) {
+                var p_host = host.split(":");
+                var p_origin = url.parse(origin);
+                // Ignore for localhost because using mailcatcher in the same browser
+                // as the service resets the origin
+                if (p_origin.hostname !== p_host[0] || p_origin.port !== p_host[1]) {
+                    var errmsg = 'onRequest[path]: ' + request.path + '\n' +
+                        'onRequest[method]: ' + request.method + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[host]: ' + host + '\n' +
+                        'Header[x-forwarded-host]: ' + x_host + '\n' +
+                        'Header[origin]: ' + request.headers['origin'] + '\n' +
+                        'Header[referer]: ' + request.headers['referer'];
+
+                    winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
+                    winston.info('Cross origin request details: ' + errmsg);
+
+                    request.setUrl('/start');
+                    reply.redirect();
+                }
+            } else {
+                winston.info('Illegal: no host header found');
+                request.setUrl('/start');
+                reply.redirect();
+            }
+        }
+    }
+    winston.info('onRequest' + JSON.stringify(request.headers, null, 4));
+    return reply.continue();
+});
 
 //lint js files
 var exec = require('child_process').exec;
