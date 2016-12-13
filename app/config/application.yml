@@ -60,8 +60,8 @@ feedback:
   template:
     feedbackbanner: >-
       <div class="phase-banner-beta"><p><strong
-      class="phase-tag">BETA</strong><span>This is a new service – your <a
-      href="http://www.smartsurvey.co.uk/s/DRFeedback/">feedback</a> will help
+      class="phase-tag">BETA</strong><span>This is a new service – <a
+      href="http://www.smartsurvey.co.uk/s/DRFeedback/">give feedback<span class="visually-hidden"> on this service</span></a> to help
       us to improve it.</span></p></div>
 
 # Cryptographic scheme used for the API keys - seceret key held in DR_API_KEY
@@ -350,4 +350,3 @@ logging:
     enabled: true
     level: error
     appName: Data-Returns Front End (AWS PROD)
-
