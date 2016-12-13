@@ -237,12 +237,12 @@ server.ext('onRequest', function (request, reply) {
                 var p_origin = url.parse(origin);
                 // Ignore for localhost because using mailcatcher in the same browser
                 // as the service resets the origin
-                winston.debug(p_origin.hostname.toString());
-                winston.debug(p_origin.port.toString());
-                winston.debug(p_host[0].toString());
-                winston.debug(p_host[1].toString());
+                winston.debug(p_origin.hostname);
+                winston.debug(p_origin.port);
+                winston.debug(p_host[0]);
+                winston.debug(p_host[1]);
 
-                if (p_origin.hostname.toString() !== p_host[0].toString() || p_origin.port.toString() !== p_host[1].toString()) {
+                if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
                     var errmsg = 'onRequest[path]: ' + request.path + '\n' +
                         'onRequest[method]: ' + request.method + '\n' +
                         'Header[x-forwarded-host]: ' + x_host + '\n' +
