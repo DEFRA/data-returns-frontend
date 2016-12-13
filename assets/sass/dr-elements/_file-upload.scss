@@ -76,7 +76,6 @@
 				border-bottom: 0;
 			}
 			.filename {
-				border-top: 1px solid $grey-2;
 			}
 			.details, .remove {
 				width: 50%;
@@ -95,7 +94,6 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-size: 16px;
 		}
 		.remove {
 			text-align: right;
@@ -124,6 +122,7 @@
 			font-weight: bold;
 			text-transform: uppercase;
 			padding: 2px 4px 0;
+			line-height: 1.1em;
 			@include border-radius(2px);
 		}
 		.file-ready {
