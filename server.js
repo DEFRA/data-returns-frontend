@@ -190,7 +190,6 @@ server.ext('onPreResponse', function (request, reply) {
         }
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
     }
-    winston.info('onPreResponse' + JSON.stringify(resp.headers, null, 4));
     return reply(resp);
 });
 
@@ -213,7 +212,7 @@ var localhosts = [
 server.ext('onRequest', function (request, reply) {
     var url = require('url');
     if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
-        winston.debug('Origin check------->' + request.path);
+        winston.debug('Origin check: ' + request.path);
         // x-forwarded-host should be set by proxies to
         // preserve the original host where 'host' is
         // populated with the IP of the proxy. It should be in the
@@ -224,49 +223,34 @@ server.ext('onRequest', function (request, reply) {
         var origin = request.headers['origin'] || request.headers['referer'];
 
         if (localhosts.find(hst => hst.test(host))) {
-            winston.debug('Ignore host: ' + host);
+            winston.debug('Ignore local host: ' + host);
         } else if (!origin) {
             // OWASP recommends blocking requests for which neither
             // an origin or a referer is set. However there are a set
             // of scenarios in which this system; unexpected navigations
             // start page handlers etc do not set either so we have to ignore
-            winston.debug('Origin check-> No origin');
+            winston.debug('Origin check: No origin');
+            winston.debug('Headers: ' + JSON.stringify(request.headers, null, 4));
         } else {
             if (host) {
                 var p_host = host.split(":");
                 var p_origin = url.parse(origin);
                 // Ignore for localhost because using mailcatcher in the same browser
                 // as the service resets the origin
-                winston.debug(p_origin.hostname);
-                winston.debug(p_origin.port);
-                winston.debug(p_host[0]);
-                winston.debug(p_host[1]);
-
                 if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
-                    var errmsg = 'onRequest[path]: ' + request.path + '\n' +
-                        'onRequest[method]: ' + request.method + '\n' +
-                        'Header[x-forwarded-host]: ' + x_host + '\n' +
-                        'Header[host]: ' + host + '\n' +
-                        'Header[x-forwarded-host]: ' + x_host + '\n' +
-                        'Header[origin]: ' + request.headers['origin'] + '\n' +
-                        'Header[referer]: ' + request.headers['referer'];
-
                     winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
-                    winston.info('Cross origin request details: ' + errmsg);
-
+                    winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
                     request.setUrl('/start');
                     reply.redirect();
                 }
             } else {
-                winston.debug('Illegal: no host header found');
+                winston.info('Illegal: no host header found');
+                winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
                 request.setUrl('/start');
                 reply.redirect();
             }
         }
     }
-    winston.debug('onRequest' + JSON.stringify(request.headers, null, 4));
-    winston.debug('-----------------------');
-    winston.debug('-----------------------');
     return reply.continue();
 });
 
