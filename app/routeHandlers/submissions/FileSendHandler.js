@@ -24,8 +24,8 @@ module.exports = {
                 reply.view('data-returns/file-unavailable');
             }
         }).catch(function() {
-            winston.info("Unable to retrieve stored uploads array.");
-            reply.redirect('data-returns/failure');
+            // Show file-unavailable page if the user hasn't uploaded any files
+            reply.view('data-returns/file-unavailable');
         });
     },
 

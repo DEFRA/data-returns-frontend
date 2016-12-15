@@ -20,6 +20,7 @@ module.exports.getHandler = function (request, reply) {
             errorSummary: errorHandler.render(fileData.status.errorCode, {}, "Unrecognised error")
         });
     }).catch(function() {
-        reply.view("data-returns/failure");
+        // Show file-unavailable page if the user hasn't uploaded any files
+        reply.view('data-returns/file-unavailable');
     });
 };

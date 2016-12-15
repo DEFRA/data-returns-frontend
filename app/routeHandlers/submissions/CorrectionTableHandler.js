@@ -17,12 +17,15 @@ module.exports = {
         if (fileUuid) {
             let key = redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionID, fileUuid]);
             cacheHandler.getJsonValue(key).then(function (fileData) {
-                let metadata = lodash.merge({}, fileData, {
-                    errorSummary: errorHandler.render(900, {filename: fileData.name})
-                });
-                reply.view('data-returns/correction-table', metadata);
-            }).catch(function(err) {
-                winston.error(`Failed to load correction table for file ${fileUuid}`, err);
+                if (fileData && fileData.name) {
+                    let metadata = lodash.merge({}, fileData, {
+                        errorSummary: errorHandler.render(900, {filename: fileData.name})
+                    });
+                    reply.view('data-returns/correction-table', metadata);
+                } else {
+                    reply.redirect('/file/choose');
+                }
+            }).catch(function() {
                 reply.redirect('/file/choose');
             });
         } else {

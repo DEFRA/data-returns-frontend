@@ -1,5 +1,4 @@
 "use strict";
-const winston = require("winston");
 let userHandler = require('../../lib/user-handler');
 
 function testForEaIdSubstitution(uploads) {
@@ -14,8 +13,6 @@ function testForEaIdSubstitution(uploads) {
     }
     return false;
 }
-
-
 
 module.exports = {
     /*
@@ -38,8 +35,7 @@ module.exports = {
                 reply.view('data-returns/file-unavailable');
             }
         }).catch(function() {
-            winston.error("Unable to retrieve stored uploads array.");
-            reply.redirect('data-returns/failure');
+            reply.view('data-returns/file-unavailable');
         });
     }
 };
