@@ -9,7 +9,6 @@ const winston = require("winston");
 const fs = require('fs');
 const ymal = require('yamljs');
 const lodash = require('lodash');
-const merge = require('lodash.merge');
 const get = lodash.get;
 const util = require('util');
 
@@ -68,7 +67,7 @@ function getYMLFileConfiguration(mode) {
         throw `Cannot find either global or environment section specified by: ${mode} in the configuration file: ${applicationFileName}`;
     }
 
-    return merge(config.global, config[mode]);
+    return lodash.merge(config.global, config[mode]);
 }
 
 function Configuration() {
@@ -79,7 +78,7 @@ function Configuration() {
         winston.info('Setting up system configuration for environment: ' + process.env.NODE_ENV);
         var environmentVariables = getRequiredEnvironmentVariables();
         var yMLFileConfiguration = getYMLFileConfiguration(process.env.NODE_ENV);
-        this._configurationObject = merge(environmentVariables, yMLFileConfiguration);
+        this._configurationObject = lodash.merge(environmentVariables, yMLFileConfiguration);
         traverseObject(this._configurationObject, envVarSubstitution);
         winston.info(`Configuration for ${process.env.NODE_ENV} environment: \n` + util.inspect(this._configurationObject, {depth: null, colors: true}));
     } catch (err) {

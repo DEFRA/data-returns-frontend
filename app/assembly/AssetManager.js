@@ -9,8 +9,20 @@ const compressor = require('node-minify');
 const rootPath = path.resolve(__dirname, '../../');
 
 const minifyTypes = {
-    ".js": "uglifyjs",
-    ".css": "clean-css"
+    ".js": {
+        compressor: "uglifyjs",
+        options: {
+            // Mangling causes problems for IE8
+            mangle: false,
+            compress: true
+        }
+    },
+    ".css": {
+        compressor: "clean-css",
+        options: {
+            compatibility: "ie8"
+        }
+    }
 };
 
 const minifyIgnorePatterns = [
@@ -95,9 +107,10 @@ class AssetManager {
 
         if (minifyType !== null) {
             compressor.minify({
-                compressor: minifyType,
+                compressor: minifyType.compressor,
                 input: sourcePath,
                 output: targetPath,
+                options: minifyType.options,
                 callback: function (err) {
                     if (err) {
                         return winston.error(`AssetManager: Minification failed for ${sourcePath}, reason: ${err.message}`, err);
@@ -243,7 +256,6 @@ class PassthroughHandler extends AssetManager {
         return syncOp(source, target);
     }
 }
-
 
 
 module.exports = {
