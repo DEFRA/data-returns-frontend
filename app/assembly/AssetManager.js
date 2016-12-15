@@ -13,6 +13,12 @@ const minifyTypes = {
     ".css": "clean-css"
 };
 
+const minifyIgnorePatterns = [
+    // Pre-minified versions of these libraries already provided
+    /^jquery-1\.12\.4.*/,
+    /^jquery\.mark.*/
+];
+
 /**
  * AssetManager base class
  */
@@ -231,7 +237,9 @@ class PassthroughHandler extends AssetManager {
      * Determines whether to use a minify or copy operation.
      */
     synchroniseFile(source, target) {
-        let syncOp = this.config.minify ? AssetManager.minify : AssetManager.copy;
+        let filename = path.basename(source);
+        let minifyIgnore = minifyIgnorePatterns.find(ptn => filename.match(ptn)) ? true : false;
+        let syncOp = this.config.minify && !minifyIgnore ? AssetManager.minify : AssetManager.copy;
         return syncOp(source, target);
     }
 }
