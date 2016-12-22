@@ -1,6 +1,6 @@
 {{<layout}}
 
-{{$title}}Enter your code{{/title}}
+{{$title}}Enter the code we sent to {{emailAddress}}{{/title}}
 
 {{$content}}
 <main id="content" role="main">
@@ -17,12 +17,12 @@
         {{/invalidPin}}
 
         {{^startAgain}}
-        <p class="lede">Enter the confirmation code we sent to {{emailAddress}}.</p>
 
         {{^invalidPin}}
         <div class="form-group">
             <label class="form-label" for="validation-code">
-                <span class="form-hint">eg, 1234</span>
+                Confirmation code
+                <span class="form-hint">For example, 1234</span>
             </label>
             <input class="form-control validation-code" id="validation-code" name="validation_code" type="text"
                    autocomplete="off" autofocus maxlength="4">
@@ -31,21 +31,24 @@
         {{#invalidPin}}
         <div class="form-group error">
             <label class="form-label" for="validation-code">
-                <span class="form-hint">eg, 1234</span>
+                Confirmation code
+                <span class="form-hint">For example, 1234</span>
             </label>
             <span class="error-message" id="error-message-full-name">Enter a valid confirmation code</span>
             <input class="form-control validation-code" id="validation-code_e" name="validation_code" type="text"
                    autocomplete="off" autofocus maxlength="4">
         </div>
         {{/invalidPin}}
-
-        <p>If you haven’t received an email with a code to enter here you may need to:</p>
+        <p>
+            It can sometimes take a while for the email to arrive.<br>
+            Keep this page open while you are waiting.
+        </p>
+        <p>If you haven’t received the email you may need to:</p>
         <ul class="list list-bullet">
-            <li>check your junk or spam folder in your inbox</li>
+            <li>check your junk or spam folder</li>
             <li>check you’ve given a valid email address</li>
         </ul>
-
-        <p>Wrong email address? <a href="/email">Go back</a> to enter a valid email address and get a new code.</p>
+        <p><a href="/email">Get a new code</a> using a valid email address.</p>
 
         <div class="form-group">
             <a id="nextHref">
