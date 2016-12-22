@@ -3,7 +3,6 @@
 const config = require('./app/lib/configuration-handler.js').Configuration;
 const winston = require("./app/lib/winston-setup");
 const Hapi = require('hapi');
-const Crumb = require('crumb');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -12,8 +11,11 @@ var utils = require('./app/lib/utils');
 const AssetManager = require('./app/assembly/AssetManager');
 const TemplateBuilder = require('./app/assembly/TemplateBuilder');
 var server = new Hapi.Server();
+const Cookies = require('cookies');
+
 const cacheHandler = require('./app/lib/cache-handler');
 const redisKeys = require('./app/lib/redis-keys.js');
+const userHandler = require('./app/lib/user-handler.js');
 
 // Display banner and startup information
 winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
@@ -57,37 +59,6 @@ server.connection({
         }
     }
 });
-
-// Crumb breaks with Hapi 16.0.1 so have to disable it at this
-// point in time.
-
-// Setup Crumb - double submit cookie for all post requests
-// below is an array of regular expressions containing the exclusions as
-// We cannot use the check with the fine uploader because the
-// XMLHttpRequest leaks the tokens.
-
-// var csrf_check_skip = [
-//     new RegExp('/file/choose'),
-//     new RegExp('/public/.*')
-// ];
-
-// Register the crumb plugin which creates a csrf token
-// which is used to validate POST returns are not from domains
-// other than the primary domain
-// server.register({
-//     register: Crumb,
-//     options: {
-//         skip: function (request) {
-//             if (csrf_check_skip.find(route => route.test(request.path))) {
-//                 return true;
-//             }
-//             return false;
-//         },
-//         cookieOptions: {
-//              ttl: 1000 * 60 * 60 * 24 // The crumb cookie life is 24 hours after which a new one is automatically generated.
-//         }
-//     }
-// });
 
 const goodWinstonOptions = {
     levels: {
@@ -181,38 +152,127 @@ server.register(require('vision'), function (err) {
 
 // Configure server routes.
 server.route(require('./app/routes'));
-// add security headers
+
+// Implement the pre-response
+// Add security headers and CSRF token to be available in any view
 server.ext('onPreResponse', function (request, reply) {
-    var resp = request.response;
+
+    let resp = request.response;
+
     if (resp && resp.header) {
+
         if (!request.path || !request.path.startsWith('/public')) {
             resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
         }
-        resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; base-uri 'self'; connect-src 'self' localhost www.google-analytics.com www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+
+        resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; " +
+            "base-uri 'self'; connect-src 'self' localhost www.google-analytics.com " +
+            "www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+
+        // Get the session
+        let cookies = new Cookies(request, reply);
+
+        // If we have a new sessionId in this request we cannot get it from the cookie header yet
+        let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
+
+        // Ignore resource requests - we only need to set the CSRF token on the views
+        if (sessionID && resp.source && !request.path.startsWith('/public')) {
+
+            // Get the csrf token from the session
+            cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+
+                if (!val) {
+                    winston.error(`No CSRF token found in session ${sessionID}`);
+                    return reply(resp);
+                }
+
+                winston.debug(`For ${request.path} added CSRF token to session ${sessionID}`);
+
+                // Make sure the source context is defined and set the csrf token on it
+                // so it becomes available in  the views as {{csrf}}
+                resp.source.context = resp.source.context || {};
+                resp.source.context['csrf'] = val;
+
+                return reply(resp);
+
+            }).catch(function (err) {
+
+                // Log the error and continue
+                winston.error(err);
+                return reply(resp);
+            });
+
+        } else {
+            return reply(resp);
+        }
+    } else {
+        return reply(resp);
     }
-    return reply(resp);
 });
+
+//
+// The CSRF token is checked for state changing requests
+// These are listed in the token_check array
+// The token check is performed before the route handler
+// We redirect to the start page failing a token check
+// or resume to the route handler for normal route processing
+//
+var csrf_check_function = function (request, next) {
+    var token_check = [
+        new RegExp('/email'), new RegExp('/pin')
+    ];
+    // Token checker
+    if (request.headers && token_check.find(path => path.test(request.path)) && request.method === 'post') {
+        // Get the CSRF token from the session
+        // Note that the response state is null as the request payload has not yet been parsed
+        // - we therefore need to lift the sessionId directly from the request header
+        winston.debug('csrf_check_function:' + request.path);
+        let cookies = new Cookies(request);
+        let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
+        if (sessionID) {
+            cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+                if (request.payload.csrf !== val) {
+                    winston.info(`CSRF: token check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
+                    return next.redirect('/start');
+                } else {
+                    return next.continue();
+                }
+            }).catch(function (err) {
+                winston.error(err);
+                next.redirect('/start');
+            });
+        }
+    } else {
+        //
+        // Resume
+        //
+        return next.continue();
+    }
+};
 
 // Verifying Same-origin with standard Headers
 // See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
-// Which suggests origin checking in addition to the Double Submit Cookie pattern
-// Exclude the start page which can land
-var same_origin_ignore = [
-    new RegExp('^/$'),
-    new RegExp('^/start$')
-];
+var same_origin_check_function = function (request, next) {
 
-var localhosts = [
-    new RegExp('.*localhost.*'),
-    new RegExp('.*0\.0\.0\.0.*'),
-    new RegExp('.*127\.0\.0\.1.*')
-];
+    // List exclusions by wildcard in this array
+    let same_origin_ignore = [
+        new RegExp('^/$'),
+        new RegExp('^/start$')
+    ];
 
-// Register the event handler
-server.ext('onRequest', function (request, reply) {
-    var url = require('url');
+    // List exclusions by hostname or IP address in this array
+    let localhosts = [
+        new RegExp('.*localhost.*'),
+        new RegExp('.*0\.0\.0\.0.*'),
+        new RegExp('.*127\.0\.0\.1.*')
+    ];
+
+    let url = require('url');
+
+    //
+    // Same origin check
+    //
     if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
-        winston.debug('Origin check: ' + request.path);
         // x-forwarded-host should be set by proxies to
         // preserve the original host where 'host' is
         // populated with the IP of the proxy. It should be in the
@@ -223,7 +283,7 @@ server.ext('onRequest', function (request, reply) {
         var origin = request.headers['origin'] || request.headers['referer'];
 
         if (localhosts.find(hst => hst.test(host))) {
-            winston.debug('Ignore local host: ' + host);
+            // Ignore local host
         } else if (!origin) {
             // OWASP recommends blocking requests for which neither
             // an origin or a referer is set. However there are a set
@@ -241,18 +301,28 @@ server.ext('onRequest', function (request, reply) {
                     winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
                     winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
                     request.setUrl('/start');
-                    reply.redirect();
+                    request.setMethod('GET');
+                    next();
                 }
             } else {
                 winston.info('Illegal: no host header found');
                 winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
                 request.setUrl('/start');
-                reply.redirect();
+                request.setMethod('GET');
+                next();
             }
         }
     }
-    return reply.continue();
-});
+    //
+    // Resume
+    //
+    return next.continue();
+};
+
+// Register the event handler for the CSRF and same origin checks
+// at the very start of the request cycle (onRequest)
+server.ext('onRequest', same_origin_check_function);
+server.ext('onPreHandler', csrf_check_function);
 
 //lint js files
 var exec = require('child_process').exec;
@@ -283,7 +353,9 @@ if (config.get('startup.runUnitTests')) {
 }
 
 // Remove the cached list metadata
-cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key);
+cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key)
+    .then(winston.info('Deleted old list metadata: '))
+    .catch(err => winston.info('Cannot delete old list metadata: ' + err));
 
 // Start the server.
 server.start(function (err) {

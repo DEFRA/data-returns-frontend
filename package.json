@@ -8,9 +8,10 @@
   },
   "dependencies": {
     "airbrake": "^1.2.0",
+    "base64url": "^2.0.0",
     "boom": "^4.2.0",
     "clamscan": "^0.8.4",
-    "crumb": "^6.0.3",
+    "cookies": "^0.6.2",
     "csv": "^1.1.0",
     "fs": "^0.0.2",
     "fs-extra": "^1.0.0",
