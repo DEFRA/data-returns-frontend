@@ -152,15 +152,15 @@ module.exports.deleteSession = function (request, reply) {
             let keyPattern = `${currentSessionId}*`;
             winston.info(`Removing redis keys for pattern ${keyPattern}`);
 
-            return cacheHandler.deleteKeys(keyPattern)
+            cacheHandler.deleteKeys(keyPattern)
                 .then(keys => {
                     winston.info(`Successfully removed keys ${keys} from redis`);
                     reply.unstate(DATA_RETURNS_COOKIE_ID);
-                    return resolve();
+                    resolve();
                 })
                 .catch(err => {
                     winston.error(err);
-                    return reject();
+                    reject();
                 });
 
         } else {
@@ -198,14 +198,14 @@ module.exports.newSession = function (request, reply, sessionKey) {
         // Set the session here for because otherwise it is not retrievable in the preResponse
         request._sessionId = newSessionId;
 
-        // Set the CSRF token for the session in redis
-        return cacheHandler.setValue(redisKeys.CSRF_TOKEN.compositeKey(newSessionId), token).then(function () {
+        cacheHandler.setValue(redisKeys.CSRF_TOKEN.compositeKey(newSessionId), token).then(function () {
             winston.debug(`Set CSRF token in session: ${newSessionId} `);
-            return resolve();
+            resolve();
         }).catch(function () {
             winston.error(`Unable to set CSRF token on session: ${newSessionId}`);
-            return reject();
+            reject();
         });
+
     });
 };
 
