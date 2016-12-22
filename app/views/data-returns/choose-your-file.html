@@ -75,11 +75,10 @@
         <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;" {{/hasInvalidUploads}}>
         You must correct any errors before your files can be sent to the Environment Agency.
         </p>
-        <a id="continueBtn" class="button" accesskey="C"
-           {{#canContinue}}href="/file/confirm" {{/canContinue}}
-           {{^canContinue}}disabled="disabled" {{/canContinue}}
-        >Continue</a>
-        </p>
+
+        <form action="/file/confirm" method="get">
+            <input class="button" type="submit" value="Continue" id="continueBtn" {{^canContinue}}disabled="disabled" {{/canContinue}} />
+        </form>
 
         {{>fineuploader_body}}
     </div><!-- /file-upload -->
