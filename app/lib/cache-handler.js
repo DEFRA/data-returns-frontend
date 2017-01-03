@@ -84,39 +84,40 @@ module.exports = {
         });
     },
     /**
-     * Retrieve all redis keys that match a given pattern
-     *
-     * @param pattern
-     * @returns {Promise}
-     */
-    findKeys: function (pattern) {
-        return new Promise(function (resolve, reject) {
-            client.keys(pattern, function (err, keys) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(keys);
-                }
-            });
-        });
-    },
-    /**
      * Delete all redis keys which match the given pattern
      *
      * @param pattern
      * @returns {Promise}
+     *
+     * GMW - this needs to return a promise as stated above
      */
     deleteKeys: function (pattern) {
-        this.findKeys(pattern).then(function (keys) {
-            if (keys.length > 0) {
-                client.del(keys, function (err) {
-                    if (err) {
-                        winston.error(err);
-                    }
-                });
-            }
+        return new Promise((resolve, reject) => {
+            client.keys(pattern, (err, keys) => {
+
+                if (err) {
+                    reject(err);
+                }
+
+                if (keys.length > 0) {
+                    client.del(keys, function (err) {
+
+                        if (err) {
+                            winston.error(err);
+                            reject(keys);
+                        }
+
+                        resolve(keys);
+                    });
+                } else {
+                    // Nothing to delete
+                    resolve();
+                }
+
+            });
         });
     },
+
     /**
      * Retrieve a JSON object for the specified key
      *

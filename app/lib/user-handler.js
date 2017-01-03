@@ -4,6 +4,7 @@ const winston = require("winston");
 const config = require('../lib/configuration-handler.js').Configuration;
 
 var cacheHandler = require('./cache-handler');
+var cryptoHandler = require('./crypto-handler');
 const redisKeys = require('./redis-keys');
 var utils = require('./utils');
 const DATA_RETURNS_COOKIE_ID = "data-returns-id";
@@ -49,7 +50,6 @@ module.exports.getUserMail = function (sessionID) {
 };
 
 module.exports.isAuthenticated = function (sessionID) {
-
     return new Promise(function (resolve, reject) {
         getUser(sessionID)
             .then(function (user) {
@@ -124,43 +124,101 @@ module.exports.getUploads = function (sessionID) {
 module.exports.getSessionID = function (request) {
     return request.state[DATA_RETURNS_COOKIE_ID];
 };
-module.exports.deleteSession = function (request, reply) {
-    // Cleanup current session
-    let currentSessionId = this.getSessionID(request, reply);
-    if (currentSessionId) {
-        let keyPattern = `${currentSessionId}*`;
-        winston.info(`Removing redis keys for pattern ${keyPattern}`);
-        cacheHandler.deleteKeys(keyPattern);
-        reply.unstate(DATA_RETURNS_COOKIE_ID);
-    }
+
+module.exports.emptyUploadList = function (currentSessionId) {
+    return new Promise(function (resolve, reject) {
+        // Cleanup current session
+        let keyPattern = `${redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)}*`;
+        winston.info(`Removing upload list keys for pattern ${keyPattern}...`);
+
+        cacheHandler.deleteKeys(keyPattern)
+            .then(function() {
+                winston.debug(`Completed removing upload list keys for pattern ${keyPattern}`);
+                resolve();
+            })
+            .catch(function(err) {
+                winston(err);
+                reject();
+            });
+    });
 };
 
-module.exports.emptyUploadList = function (request, reply) {
-    // Cleanup current session
-    let currentSessionId = this.getSessionID(request, reply);
-    let keyPattern = `${redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)}*`;
-    winston.info(`Removing upload list keys for pattern ${keyPattern}`);
-    cacheHandler.deleteKeys(keyPattern);
+module.exports.deleteSession = function (request, reply) {
+    return new Promise(function (resolve, reject) {
+        // Cleanup current session from the redis cache and unset the cookie
+        let currentSessionId = request.state[DATA_RETURNS_COOKIE_ID];
+        if (currentSessionId) {
+
+            let keyPattern = `${currentSessionId}*`;
+            winston.info(`Removing redis keys for pattern ${keyPattern}`);
+
+            cacheHandler.deleteKeys(keyPattern)
+                .then(keys => {
+                    winston.info(`Successfully removed keys ${keys} from redis`);
+                    reply.unstate(DATA_RETURNS_COOKIE_ID);
+                    resolve();
+                })
+                .catch(err => {
+                    winston.error(err);
+                    reject();
+                });
+
+        } else {
+            winston.debug('No session found for which to remove keys from redis');
+            resolve();
+        }
+    });
+};
+
+module.exports.newSession = function (request, reply, sessionKey) {
+    return new Promise(function (resolve, reject) {
+        // Generate new session
+        let newSessionId = sessionKey || utils.getNewUUID();
+
+        // Set up cookie details
+        var cookieOptions = {
+            "path": '/',
+            "ttl": 24 * 60 * 60 * 1000,
+            //"ttl": null,
+            "isSecure": false,
+            "isHttpOnly": true,
+            "encoding": "none", //base64json',
+            "ignoreErrors": false,
+            "clearInvalid": false,
+            "strictHeader": true
+        };
+
+        // Add a new CSRF token to the session
+        let token = cryptoHandler.generateCSRFToken();
+
+        // Set the session cookie in the reply state
+        winston.info(`Set a new session cookie: ${newSessionId} `);
+        reply.state(DATA_RETURNS_COOKIE_ID, newSessionId, cookieOptions);
+
+        // Set the session here for because otherwise it is not retrievable in the preResponse
+        request._sessionId = newSessionId;
+
+        cacheHandler.setValue(redisKeys.CSRF_TOKEN.compositeKey(newSessionId), token).then(function () {
+            winston.debug(`Set CSRF token in session: ${newSessionId} `);
+            resolve();
+        }).catch(function () {
+            winston.error(`Unable to set CSRF token on session: ${newSessionId}`);
+            reject();
+        });
+
+    });
 };
 
 module.exports.newUserSession = function (request, reply, sessionKey) {
-    // Cleanup current session
-    this.deleteSession(request, reply);
+    this.deleteSession(request, reply)
+        .then(() => {
+            return this.newSession(request, reply, sessionKey);
+        })
+        .catch(err => winston.error(err));
 
-    // Generate new session
-    let newSessionId = sessionKey || utils.getNewUUID();
-    var cookieOptions = {
-        "path": '/',
-        "ttl": 24 * 60 * 60 * 1000,
-        //"ttl": null,
-        "isSecure": false,
-        "isHttpOnly": true,
-        "encoding": "none", //base64json',
-        "ignoreErrors": false,
-        "clearInvalid": false,
-        "strictHeader": true
-    };
-    reply.state(DATA_RETURNS_COOKIE_ID, newSessionId, cookieOptions);
 };
+
 module.exports.getUser = getUser;
 module.exports.setUser = setUser;
+
+module.exports.DATA_RETURNS_COOKIE_ID = DATA_RETURNS_COOKIE_ID;

@@ -27,5 +27,6 @@ module.exports = {
     USER_DATA: newKey('UserData'),
     ERROR_PAGE_METADATA: newKey('error-page-metadata'),
     LIST_METADATA: newKey('list-meta-data'),
-    PRELOADED_SESSIONS: newKey('PreloadedSessions')
+    PRELOADED_SESSIONS: newKey('PreloadedSessions'),
+    CSRF_TOKEN: newKey('csrf')
 };
