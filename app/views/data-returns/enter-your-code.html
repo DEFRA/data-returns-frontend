@@ -1,12 +1,14 @@
 {{<layout}}
 
-{{$title}}Enter the code we sent to {{emailAddress}}{{/title}}
+{{$title}}Enter the confirmation code{{/title}}
 
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
     <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
-
+    <div class="text">
+        <p>We sent the email to {{emailAddress}}. It can sometimes take a while for the email to arrive. Keep this page open while you are waiting.</p>
+    </div>
     <form method="post" class="form">
         <input type="hidden" name="crumb" value="{{crumb}}"/>
         {{#invalidPin}}
@@ -39,10 +41,7 @@
                    autocomplete="off" autofocus maxlength="4">
         </div>
         {{/invalidPin}}
-        <p>
-            It can sometimes take a while for the email to arrive.<br>
-            Keep this page open while you are waiting.
-        </p>
+        
         <p>If you haven’t received the email you may need to:</p>
         <ul class="list list-bullet">
             <li>check your junk or spam folder</li>
