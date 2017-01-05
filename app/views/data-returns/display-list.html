@@ -5,10 +5,22 @@
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
-    <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
-
+    <a id="back.btn"  onclick="history.back(); return false;" href="{{back}}" class="link-back">Go back</a>
     <div class="grid-row">
         <div class="column-two-thirds">
+        <h1 class="heading-large"><span id="title">{{$title}}{{/title}} allowed values</span></h1>
+            <p>You can only use these values or the alternatives to report your data. They must be spelt exactly as they are in this list. When you upload your data we’ll convert any alternatives into the main value.</p>
+            <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
+        </div>
+        <div class="column-third">
+            <h2 class="heading-small">Version 1.0</h2>
+                <details>
+                    <summary><span class="summary">How we deal with changes</span></summary>
+                    <div class="panel panel-border-narrow">
+                        <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
+                    </div>
+                </details>
+            <!-- REMOVED SEARCH
             <div class="form-group">
                 <p><a id="back.btn" onclick="history.back(); return false;" href="{{back}}" class="button">Go back</a></p>
             </div>
@@ -23,25 +35,11 @@
                     {{/clear}}
                 </form>
             </div>
-        </div>
-
-        <div class="column-one-third">
-            <div class="form-group">
-                <section id="attachment" class="attachment embedded">
-                    <div class="attachment-thumb"> <a align="right" href="/csv/{{listMetaData.path}}"><img src="/public/images/pub-cover-spreadsheet.png" alt=""></a> </div>
-                    <div class="attachment-details">
-                        <!-- <h2 class="title">{{#tableHeadings}}{{description}}{{/tableHeadings}}.csv</h2> -->
-                        <p class="metadata">
-                  <span class="download">
-      			    <a align="right" href="/csv/{{listMetaData.path}}"><strong>Download as a CSV</strong></a>
-                  </span> </p>
-                    </div>
-                </section>
-            </div>
+            -->
         </div>
     </div>
 
-    <table id="controlled-list-table">
+    <table id="controlled-list-table" class="table-control mobile-format">
         <thead>
         <tr>
             {{#tableHeadings}}
@@ -73,3 +71,4 @@
 </main>
 {{/content}}
 {{/layout}}
+1`
