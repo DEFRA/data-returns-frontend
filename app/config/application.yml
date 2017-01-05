@@ -72,7 +72,7 @@ csv:
   validate: true
   virus_scan: true
   ignoreScanFailure: false
-  maxFileSizeMb: 2
+  maxFileSizeMb: 12
 
 client:
   port: ${DR_CLIENT_PORT}
