@@ -182,11 +182,11 @@ server.ext('onPreResponse', function (request, reply) {
             cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
 
                 if (!val) {
-                    winston.error(`No CSRF token found in session ${sessionID}`);
+                    winston.error(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
                     return reply(resp);
                 }
 
-                winston.debug(`For ${request.path} added CSRF token to session ${sessionID}`);
+                winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
 
                 // Make sure the source context is defined and set the csrf token on it
                 // so it becomes available in  the views as {{csrf}}
