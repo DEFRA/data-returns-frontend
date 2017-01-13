@@ -182,7 +182,7 @@ server.ext('onPreResponse', function (request, reply) {
             cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
 
                 if (!val) {
-                    winston.error(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
+                    winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
                     return reply(resp);
                 }
 
