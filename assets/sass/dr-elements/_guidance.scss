@@ -20,3 +20,15 @@ table.cookies-table {
 		white-space: nowrap;
 	}
 }
+
+
+.csv {
+	border-bottom:1px solid $grey-3;
+	h2 {
+	  @include bold-19();
+	  margin-top:$gutter-half;
+	}
+	p {
+	  @include core-16();
+	}
+}
