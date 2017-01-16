@@ -233,7 +233,8 @@ var csrf_check_function = function (request, next) {
             cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
                 if (request.payload.csrf !== val) {
                     winston.info(`CSRF: token check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
-                    return next.redirect('/start');
+                    // We have to redirect to forbidden as there is no access to the replay object at this point
+                    return next.redirect('/forbidden');
                 } else {
                     return next.continue();
                 }
@@ -300,14 +301,14 @@ var same_origin_check_function = function (request, next) {
                 if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
                     winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
                     winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
-                    request.setUrl('/start');
+                    request.setUrl('/forbidden');
                     request.setMethod('GET');
                     next();
                 }
             } else {
                 winston.info('Illegal: no host header found');
                 winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
-                request.setUrl('/start');
+                request.setUrl('/forbidden');
                 request.setMethod('GET');
                 next();
             }
