@@ -46,7 +46,7 @@ module.exports = {
                 clear: false,
                 back: request.info.referrer || "/controlled-lists"
             });
-        }).catch(winston.error);
+        }).catch(() => reply.redirect("/controlled-lists"));
     },
 
     getDisplayHandlerWithSearch: function (request, reply) {
@@ -68,7 +68,7 @@ module.exports = {
                 }, {field: metadata[list].defaultSearch, contains: request.payload.search}).catch(function (err) {
                     throw err.message;
                 });
-            }).catch(winston.error);
+            }).catch(() => reply.redirect("/controlled-lists"));
         }
     },
 

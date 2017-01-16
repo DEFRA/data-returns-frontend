@@ -156,7 +156,7 @@ module.exports.getListProcessor = function (extractorFunction, list, processor, 
             var listMetaData = { displayHeaders : undefined };
             listMetaData = result[list];
             var tableHeadings = [];
-            if (listMetaData.displayHeaders) {
+            if (listMetaData && listMetaData.displayHeaders) {
                 var displayHeaders = listMetaData.displayHeaders;
             } else {
                 throw "Expected: displayHeaders";
