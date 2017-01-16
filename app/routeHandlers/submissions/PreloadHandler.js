@@ -51,7 +51,7 @@ module.exports.getHandler = function (request, reply) {
             return cacheHandler.delete(preloadSessionKey).then(function () {
                 userHandler.newUserSession(request, reply, sessionData.internalKey)
                     .then(() => reply.redirect('/file/choose'))
-                    .catch(winston.error(err));
+                    .catch(winston.error);
             });
 
         }).catch(function (err) {

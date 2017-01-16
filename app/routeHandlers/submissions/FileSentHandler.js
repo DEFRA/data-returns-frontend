@@ -15,9 +15,6 @@ module.exports.getHandler = function (request, reply) {
             return userHandler.emptyUploadList(sessionID);
         })
         .then(() => reply.view('data-returns/file-sent', { userEmail: userEmail }))
-        .catch(err => {
-            winston.error(err);
-            reply.redirect('/email');
-        });
+        .catch(() => reply.redirect('/email'));
 
 };
