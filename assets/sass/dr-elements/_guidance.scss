@@ -21,7 +21,20 @@ table.cookies-table {
 	}
 }
 
+// Example file
+.example-file {
+  width:100%;
+  margin-bottom:60px;
+  margin-right:15px;
+  table {
+    th, td {
+      white-space: nowrap;
+    }
+  }
+}
 
+
+// CSV
 .csv {
 	border-bottom:1px solid $grey-3;
 	h2 {

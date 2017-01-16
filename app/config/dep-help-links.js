@@ -14,6 +14,7 @@ module.exports.links = {
     NorthernIrelandLink: 'https://www.doeni.gov.uk/',
     Help_SpecialCases: 'https://data-returns-help.herokuapp.com/#exceptions',
     Help_Operator_Lookup: '/lookup',
+    Example_Data_Return: '/guidance/example-data-return',
     fields: {
         Rtn_Type: "/display-list?list=Rtn_Type",
         Rtn_Period: "/display-list?list=Rtn_Period",
