@@ -24,5 +24,16 @@ module.exports.links = {
         Meth_Stand: "/display-list?list=Meth_Stand",
         Qualifier: "/display-list?list=Qualifier",
         Rel_Trans: "/display-list?list=Rel_Trans"
+    },
+    downloads: {
+        Rtn_Type: "/csv/Rtn_Type",
+        Rtn_Period: "/csv/Rtn_Period",
+        Parameter: "/csv/Parameter",
+        Txt_Value: "/csv/Txt_Value",
+        Unit: "/csv/Unit",
+        Ref_Period: "/csv/Ref_Period",
+        Meth_Stand: "/csv/Meth_Stand",
+        Qualifier: "/csv/Qualifier",
+        Rel_Trans: "/csv/Rel_Trans"
     }
 };
