@@ -6,9 +6,8 @@
 
 <main id="content" role="main">
     {{{feedbackbanner}}}
-    <a class="link-back" href="/">Back</a>
-    <header class="text">
-        <h1 class="form-title heading-large">
+    <header>
+        <h1 class="form-title heading-xlarge">
             <span id="title">{{$title}}{{/title}}</span>
         </h1>
     </header>
@@ -23,7 +22,7 @@
             <li><a href="#exceptions">Exceptions and special cases</a></li>
         </ul>
 
-    <h2 class="heading-medium" id="how-to-prepare">How to prepare your data file</h2>
+    <h2 class="heading-large" id="how-to-prepare">How to prepare your data file</h2>
     <ol class="list list-number text">
         <li>Your data file should be a comma-separated values (CSV) file. You can use spreadsheet software such as Excel to create a CSV file. Or you can set up your data management systems to produce an automated export of data in the correct format. </li>
         <li>Include column headings as the first row. Use the correct column heading shown in the data rules. The columns can be in any order. The column heading tells our system what data is in that column. </li>
@@ -34,7 +33,7 @@
     <!-- <p class="text"><a href="#">Example data return for landfill</a></p> -->
 
     <section class="group" id="data-rules">
-        <h2 class="heading-medium">Data rules</h2>
+        <h2 class="heading-large">Data rules</h2>
         <table class="table-control datarules">
             <thead>
                 <tr>
@@ -219,141 +218,147 @@
 
 
     <section class="group" id="exceptions">
-        <h2 class="heading-medium">Exceptions and special cases</h2>
+        <h2 class="heading-large">Exceptions and special cases</h2>
         <p class="text">There are some exceptions where you may not have to fill mandatory fields because of circumstances, or special cases where your data needs to be adapted. The table below describes these exceptions and explains how you must format your data in these circumstances. It also gives example data.</p>
-        <h4>When you need to give a ‘No result’ measurement</h4>
-        <p class="text">You should leave the Value field blank and enter ‘No result’ in the Txt_Value field if you’re reporting on a parameter but can’t give a measurement (eg, because a borehole is blocked). You should also give an explanation in the Comments field.</p>
-        <p class="text">You must give a line of data for each parameter, including instances where you couldn’t take a measurement.</p>
-        <div class="example-file-wrapper">
-            <div class="example-file">
-                <table class="table-control example">
-                    <thead>
-                        <tr>
-                            <th>EA_ID</th>
-                            <th>Site_Name</th>
-                            <th>Rtn_Period</th>
-                            <th>Rtn_Type</th>
-                            <th>Mon_Point</th>
-                            <th>Mon_Date</th>
-                            <th>Parameter</th>
-                            <th>Qualifier</th>
-                            <th>Ref_Period</th>
-                            <th>Value</th>
-                            <th>Txt_Value</th>
-                            <th>Unit</th>
-                            <th>Meth_Stand</th>
-                            <th>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>AB1234YZ</td>
-                            <td>Greendale Landfill</td>
-                            <td>Qtr 4 2016</td>
-                            <td>Landfill gas borehole</td>
-                            <td>Borehole 1</td>
-                            <td>2016-01-01T09:14</td>
-                            <td>Methane</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>No result</td>
-                            <td></td>
-                            <td></td>
-                            <td>Borehole is blocked</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <section class="exception">
+            <h3 class="heading-medium">When you need to give a ‘No result’ measurement</h3>
+            <p class="text">You should leave the Value field blank and enter ‘No result’ in the Txt_Value field if you’re reporting on a parameter but can’t give a measurement (eg, because a borehole is blocked). You should also give an explanation in the Comments field.</p>
+            <p class="text">You must give a line of data for each parameter, including instances where you couldn’t take a measurement.</p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas borehole</td>
+                                <td>Borehole 1</td>
+                                <td>2016-01-01T09:14</td>
+                                <td>Methane</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>No result</td>
+                                <td></td>
+                                <td></td>
+                                <td>Borehole is blocked</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <h4>When Ref_Period covers multiple measurements in a single calculation</h4>
-        <p class="text">Give date and time data from the end of a period if you’re reporting a Ref_Period measurement calculated across multiple readings such as ‘Average’, ‘Maximum daily’ or ‘Minimum daily’. In the example below the single date and time entered for a Ref_Period of ‘Hourly mean’ represents a set of readings taken from 3pm to 4pm on 1 August 2016.</p>
-        <div class="example-file-wrapper">
-            <div class="example-file">
-                <table class="table-control example">
-                    <thead>
-                        <tr>
-                            <th>EA_ID</th>
-                            <th>Site_Name</th>
-                            <th>Rtn_Period</th>
-                            <th>Rtn_Type</th>
-                            <th>Mon_Point</th>
-                            <th>Mon_Date</th>
-                            <th>Parameter</th>
-                            <th>Qualifier</th>
-                            <th>Ref_Period</th>
-                            <th>Value</th>
-                            <th>Txt_Value</th>
-                            <th>Unit</th>
-                            <th>Meth_Stand</th>
-                            <th>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>AB1234YZ</td>
-                            <td>Greendale Landfill</td>
-                            <td>Qtr 4 2016</td>
-                            <td>Landfill gas engine</td>
-                            <td>Eng1</td>
-                            <td>2016-08-01T16:00:00</td>
-                            <td>NOX</td>
-                            <td></td>
-                            <td>Hourly mean</td>
-                            <td>380</td>
-                            <td></td>
-                            <td>mg/m3</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+        </section>
+        <section class="exception">
+            <h3 class="heading-medium">When Ref_Period covers multiple measurements in a single calculation</h3>
+            <p class="text">Give date and time data from the end of a period if you’re reporting a Ref_Period measurement calculated across multiple readings such as ‘Average’, ‘Maximum daily’ or ‘Minimum daily’. In the example below the single date and time entered for a Ref_Period of ‘Hourly mean’ represents a set of readings taken from 3pm to 4pm on 1 August 2016.</p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas engine</td>
+                                <td>Eng1</td>
+                                <td>2016-08-01T16:00:00</td>
+                                <td>NOX</td>
+                                <td></td>
+                                <td>Hourly mean</td>
+                                <td>380</td>
+                                <td></td>
+                                <td>mg/m3</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <h4>When you need to report a descriptive measurement</h4>
-        <p class="text">You may need to report on parameters, for example ‘Weather conditions’, that have no numerical result so you should give a description instead. To do this leave the Value and Units fields blank and enter ‘See comment’ in Txt_Value. Then you must enter a description in the Comments field. </p>
-        <div class="example-file-wrapper">
-            <div class="example-file">
-                <table class="table-control example">
-                    <thead>
-                        <tr>
-                            <th>EA_ID</th>
-                            <th>Site_Name</th>
-                            <th>Rtn_Period</th>
-                            <th>Rtn_Type</th>
-                            <th>Mon_Point</th>
-                            <th>Mon_Date</th>
-                            <th>Parameter</th>
-                            <th>Qualifier</th>
-                            <th>Ref_Period</th>
-                            <th>Value</th>
-                            <th>Txt_Value</th>
-                            <th>Unit</th>
-                            <th>Meth_Stand</th>
-                            <th>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>AB1234YZ</td>
-                            <td>Greendale Landfill</td>
-                            <td>Qtr 4 2016</td>
-                            <td>Landfill gas borehole</td>
-                            <td>site</td>
-                            <td>2016-01-01</td>
-                            <td>Site weather conditions</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>See comments</td>
-                            <td></td>
-                            <td></td>
-                            <td>11°C sunny breezy 1022 mbs</td>
-                        </tr>
-                    </tbody>
-                </table>
+        </section>
+        <section class="exception">
+            <h3 class="heading-medium">When you need to report a descriptive measurement</h3>
+            <p class="text">You may need to report on parameters, for example ‘Weather conditions’, that have no numerical result so you should give a description instead. To do this leave the Value and Units fields blank and enter ‘See comment’ in Txt_Value. Then you must enter a description in the Comments field. </p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas borehole</td>
+                                <td>site</td>
+                                <td>2016-01-01</td>
+                                <td>Site weather conditions</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>See comments</td>
+                                <td></td>
+                                <td></td>
+                                <td>11°C sunny breezy 1022 mbs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </section>
     </section>
 </main>
 
