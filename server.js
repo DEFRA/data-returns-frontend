@@ -167,7 +167,7 @@ server.ext('onPreResponse', function (request, reply) {
 
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; " +
             "base-uri 'self'; connect-src 'self' localhost www.google-analytics.com " +
-            "www.googletagmanager.com dr-dev.envage.co.uk; style-src 'self' 'unsafe-inline';");
+            "www.googletagmanager.com style-src 'self' 'unsafe-inline';");
 
         // Get the session
         let cookies = new Cookies(request, reply);
