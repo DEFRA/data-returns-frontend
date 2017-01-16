@@ -1,0 +1,369 @@
+{{<layout}}
+
+{{$title}}Landfill reporting data file rules{{/title}}
+
+{{$content}}
+
+<main id="content" role="main">
+    {{{feedbackbanner}}}
+    <header>
+        <h1 class="form-title heading-xlarge">
+            <span id="title">{{$title}}{{/title}}</span>
+        </h1>
+    </header>
+
+
+<main id="content" role="main">
+
+        <h2 class="heading-small">Contents</h2>
+        <ul class="list">
+            <li><a href="#how-to-prepare">How to prepare your data file</a></li>
+            <li><a href="#data-rules">Data rules</a></li>
+            <li><a href="#exceptions">Exceptions and special cases</a></li>
+        </ul>
+
+    <h2 class="heading-large" id="how-to-prepare">How to prepare your data file</h2>
+    <ol class="list list-number text">
+        <li>Your data file should be a comma-separated values (CSV) file. You can use spreadsheet software such as Excel to create a CSV file. Or you can set up your data management systems to produce an automated export of data in the correct format. </li>
+        <li>Include column headings as the first row. Use the correct column heading shown in the data rules. The columns can be in any order. The column heading tells our system what data is in that column. </li>
+        <li>List each reading or measurement in its own row. </li>
+        <li>Check the data rules to make sure you have the correct data in each column. You can use the service to check the files before you send them. </li>
+    </ol>
+    <p class="text">If you wish to, you can send data returns for more than one permit type in the same file. The maximum file size allowed is {{config.csv.maxFileSizeMb}}MB. Split the files if they are larger than this. </p>
+    <!-- <p class="text"><a href="#">Example data return for landfill</a></p> -->
+
+    <section class="group" id="data-rules">
+        <h2 class="heading-large">Data rules</h2>
+        <table class="table-control datarules">
+            <thead>
+                <tr>
+                    <th class="cell-one-sixth th-field-heading">Column heading</th>
+                    <th class="cell-one-third th-description">Description</th>
+                    <th class="cell-one-third td-rules">Rules</th>
+                    <th class="cell-one-sixth-example">Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="dr_field">Return_ID </td>
+                    <td class="dr_description">A unique identifier for the reading. It's the permit or licence number that the reading relates to. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>For permits: 2 capital letters, 4 numbers and 2 capital letters</li>
+                            <li>For waste management licences: 5 or 6 numbers.</li>
+                            <li>Do not include any other text from your permit number before and after, for example "EPR/" or "/V002".</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">AB1234ZZ or 654321 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Site_Name </td>
+                    <td class="dr_description">The site name. It's used to check that the correct permit number has been used. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>Must be the installation site name on your permit.</li>
+                            <li>Should only include letters and numbers.</li>
+                            <li>Enter a maximum of 255 characters.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Leeds Landfill Site </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Rtn_Period </td>
+                    <td class="dr_description">The date range covering the entire return. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Give this information where possible.</li>
+                            <li>Text must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=rtn_period">return period allowed values list</a>. </li>
+                            <li>To give details of date and time for the individual monitoring item use Mon_Date.</li>
+                            <li>You can only submit data covering up to 18 months in the past.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Qtr 2 2016 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Rtn_Type </td>
+                    <td class="dr_description">The type of return the row of data relates to. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>Text must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=rtn_type">return type allowed value list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Landfill gas borehole </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Mon_Point </td>
+                    <td class="dr_description">The monitoring point reference where the sample was taken. The sampling or emission point is described in your permit or licence. For certain return types monitoring point is the same as site name. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>This should only contain letters, numbers and spaces.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Borehole 1 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Mon_Date </td>
+                    <td class="dr_description">Date and, where your permit asks for it or if you want to submit it, the time the measurement was taken. If you're monitoring for a period of time (for example, a week), give the date at the end of the monitoring period. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Date is required. Time is optional unless your permit requires it.</li>
+                            <li>Format the date as YYYY-MM-DD, DD-MM-YYYY or DD/MM/YYYY.</li>
+                            <li>Format time as hh:mm:ss using the 24-hour clock.</li>
+                            <li>If you're giving time put a 'T' or a space between date and time.</li>
+                            <li>You cannot submit a Mon_Date in the future. You can only submit data covering up to 18 months in the past.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">2016-08-31 15:28:02 2016-08-31T15:28:04 31-08-2016 31/08/2016 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Parameter </td>
+                    <td class="dr_description">The chemical substance or parameter you're monitoring. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=parameters">parameters allowed values list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">CH4 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Qualifier </td>
+                    <td class="dr_description">Use this field where there’s a basic parameter that can have different values (and different limits) depending on the specifics, for example, 'Dry weight' or 'Wet weight'. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Optional</li>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=qualifier">qualifier allowed values list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Filtered </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Ref_Period </td>
+                    <td class="dr_description">The reference period for the sample, as specified in your permit or licence. This explains how the sample was taken - eg, '24 hour total', 'Half hour average', 'Monthly mean'. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>You can leave this field blank if there are no reference period requirements in your permit or licence. You can also leave it blank for instantaneous or spot sample readings. Or you can enter these options from the allowed value
+                                list.</li>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=ref_period">reference period allowed value list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Daily mean </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Value </td>
+                    <td class="dr_description">The numerical value of your measurement in the units you used. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>Numerical values only but can include zeros or blanks (nulls).</li>
+                            <li>Can also include &gt; or &lt; symbol. </li>
+                            <li>No other characters are allowed. </li>
+                            <li>Text values such as 'BRT' or 'waterlogged' should be in 'comments' field.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">0.2 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Txt_Value </td>
+                    <td class="dr_description">Used for a text-based response, for example, ‘ Yes’, ‘No’, 'No result' and 'See comments'. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=txt_value">text value allowed value list</a>.</li>
+                            <li>Only use ‘See comments’ when the result is descriptive text. For example, appearance or site weather conditions.</li>
+                            <li>Do not use this to simply add comments about your result. (For more information see exceptions and special cases below.)</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">No result </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Unit </td>
+                    <td class="dr_description">The unit in which the measurement was taken. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Required.</li>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=units">unit or measure allowed value list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">m </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Meth_Stand </td>
+                    <td class="dr_description">The method or standard used for sampling. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Optional but give an entry where possible.</li>
+                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=method">monitoring standard or method allowed value list</a>.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">BS EN 14791 </td>
+                </tr>
+                <tr>
+                    <td class="dr_field">Comments </td>
+                    <td class="dr_description">Use this for comments about the row of data, for example, if you were unable to take a reading. You can also use this field if you wish to give your own system references to store with the results. </td>
+                    <td class="dr_rules">
+                        <ul>
+                            <li>Optional.</li>
+                            <li>You can enter a maximum of 255 characters.</li>
+                        </ul>
+                    </td>
+                    <td class="dr_example">Borehole blocked </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+
+    <section class="group" id="exceptions">
+        <h2 class="heading-large">Exceptions and special cases</h2>
+        <p class="text">There are some exceptions where you may not have to fill mandatory fields because of circumstances, or special cases where your data needs to be adapted. The table below describes these exceptions and explains how you must format your data in these circumstances. It also gives example data.</p>
+        <section class="exception">
+            <h3 class="heading-medium">When you need to give a ‘No result’ measurement</h3>
+            <p class="text">You should leave the Value field blank and enter ‘No result’ in the Txt_Value field if you’re reporting on a parameter but can’t give a measurement (eg, because a borehole is blocked). You should also give an explanation in the Comments field.</p>
+            <p class="text">You must give a line of data for each parameter, including instances where you couldn’t take a measurement.</p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas borehole</td>
+                                <td>Borehole 1</td>
+                                <td>2016-01-01T09:14</td>
+                                <td>Methane</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>No result</td>
+                                <td></td>
+                                <td></td>
+                                <td>Borehole is blocked</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section class="exception">
+            <h3 class="heading-medium">When Ref_Period covers multiple measurements in a single calculation</h3>
+            <p class="text">Give date and time data from the end of a period if you’re reporting a Ref_Period measurement calculated across multiple readings such as ‘Average’, ‘Maximum daily’ or ‘Minimum daily’. In the example below the single date and time entered for a Ref_Period of ‘Hourly mean’ represents a set of readings taken from 3pm to 4pm on 1 August 2016.</p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas engine</td>
+                                <td>Eng1</td>
+                                <td>2016-08-01T16:00:00</td>
+                                <td>NOX</td>
+                                <td></td>
+                                <td>Hourly mean</td>
+                                <td>380</td>
+                                <td></td>
+                                <td>mg/m3</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section class="exception">
+            <h3 class="heading-medium">When you need to report a descriptive measurement</h3>
+            <p class="text">You may need to report on parameters, for example ‘Weather conditions’, that have no numerical result so you should give a description instead. To do this leave the Value and Units fields blank and enter ‘See comment’ in Txt_Value. Then you must enter a description in the Comments field. </p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas borehole</td>
+                                <td>site</td>
+                                <td>2016-01-01</td>
+                                <td>Site weather conditions</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>See comments</td>
+                                <td></td>
+                                <td></td>
+                                <td>11°C sunny breezy 1022 mbs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </section>
+</main>
+
+
+
+</main>
+{{/content}}
+{{/layout}}

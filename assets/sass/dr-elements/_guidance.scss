@@ -4,3 +4,19 @@ table.cookies-table {
 		vertical-align: top;
 	}
 }
+
+.exception {
+	margin-top:$gutter;
+	overflow: hidden;
+}
+
+.example-file-wrapper {
+	overflow: auto;
+	margin-bottom:30px;
+	table, .example-file {
+		margin-bottom:0;
+	}
+	table.example {
+		white-space: nowrap;
+	}
+}
