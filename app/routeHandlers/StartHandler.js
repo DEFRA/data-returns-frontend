@@ -1,5 +1,6 @@
 "use strict";
 const userHandler = require('../lib/user-handler');
+const winston = require("winston");
 
 module.exports = {
     /*
@@ -14,7 +15,8 @@ module.exports = {
      * get handler for '/start' route
      */
     getHandler: function (request, reply) {
-        userHandler.newUserSession(request, reply);
-        reply.view('data-returns/start');
+        userHandler.newUserSession(request, reply)
+            .then(() => reply.view('data-returns/start'))
+            .catch(winston.error);
     }
 };
