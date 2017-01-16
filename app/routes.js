@@ -234,7 +234,16 @@ let handlers = [
         method: 'GET',
         path: '/failure',
         handler: basicTemplateHandler.getHandler
-    }
+    },
+
+    {
+        method: '*',
+        path: '/forbidden',
+        handler: function (request, reply) {
+            reply(require('boom').forbidden('This operation is not allowed'));
+        }
+    },
+
 ];
 
 if (process.env.NODE_ENV !== "production") {

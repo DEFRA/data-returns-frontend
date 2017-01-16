@@ -7,20 +7,17 @@ const winston = require("winston");
 module.exports.getHandler = function (request, reply) {
 
     let sessionID = userHandler.getSessionID(request);
+    let userEmail = null;
 
-    return userHandler.getUserMail(sessionID)
-        .then(function(userMail) {
-            userHandler.emptyUploadList(sessionID);
-            return userMail;
+    userHandler.getUserMail(sessionID)
+        .then(userMail => {
+            userEmail = userMail;
+            return userHandler.emptyUploadList(sessionID);
         })
-        .then(function(userMail) {
-            reply.view('data-returns/file-sent', { userEmail: userMail });
-            return;
-        })
-        .catch(function(err) {
+        .then(() => reply.view('data-returns/file-sent', { userEmail: userEmail }))
+        .catch(err => {
             winston.error(err);
             reply.redirect('/email');
-            return;
         });
 
 };
