@@ -12,26 +12,25 @@
         </h1>
     </header>
 
+    <h2 class="heading-small">Contents</h2>
+    <ul class="list">
+        <li><a href="#how-to-prepare">How to prepare your data file</a></li>
+        <li><a href="#data-rules">Data rules</a></li>
+        <li><a href="#exceptions">Exceptions and special cases</a></li>
+        <li><a href="#allowed-value-lists">Landfill data allowed value lists</a></li>
+    </ul>
 
-<main id="content" role="main">
-
-        <h2 class="heading-small">Contents</h2>
-        <ul class="list">
-            <li><a href="#how-to-prepare">How to prepare your data file</a></li>
-            <li><a href="#data-rules">Data rules</a></li>
-            <li><a href="#exceptions">Exceptions and special cases</a></li>
-        </ul>
-
-    <h2 class="heading-large" id="how-to-prepare">How to prepare your data file</h2>
-    <ol class="list list-number text">
-        <li>Your data file should be a comma-separated values (CSV) file. You can use spreadsheet software such as Excel to create a CSV file. Or you can set up your data management systems to produce an automated export of data in the correct format. </li>
-        <li>Include column headings as the first row. Use the correct column heading shown in the data rules. The columns can be in any order. The column heading tells our system what data is in that column. </li>
-        <li>List each reading or measurement in its own row. </li>
-        <li>Check the data rules to make sure you have the correct data in each column. You can use the service to check the files before you send them. </li>
-    </ol>
-    <p class="text">If you wish to, you can send data returns for more than one permit type in the same file. The maximum file size allowed is {{config.csv.maxFileSizeMb}}MB. Split the files if they are larger than this. </p>
-    <!-- <p class="text"><a href="#">Example data return for landfill</a></p> -->
-
+    <section class="group text" id="how-to-prepare">
+        <h2 class="heading-large">How to prepare your data file</h2>
+        <ol class="list list-number">
+            <li>Your data file should be a comma-separated values (CSV) file. You can use spreadsheet software such as Excel to create a CSV file. Or you can set up your data management systems to produce an automated export of data in the correct format. </li>
+            <li>Include column headings as the first row. Use the correct column heading shown in the data rules. The columns can be in any order. The column heading tells our system what data is in that column. </li>
+            <li>List each reading or measurement in its own row. </li>
+            <li>Check the data rules to make sure you have the correct data in each column. You can use the service to check the files before you send them. </li>
+        </ol>
+        <p>If you wish to, you can send data returns for more than one permit type in the same file. The maximum file size allowed is {{config.csv.maxFileSizeMb}}MB. Split the files if they are larger than this. </p>
+        <p><a href="{{links.Example_Data_Return}}">Example data return for landfill</a></p>
+    </section>
     <section class="group" id="data-rules">
         <h2 class="heading-large">Data rules</h2>
         <table class="table-control datarules">
@@ -76,7 +75,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Give this information where possible.</li>
-                            <li>Text must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=rtn_period">return period allowed values list</a>. </li>
+                            <li>Text must be taken from the <a href="{{links.fields.Rtn_Period}}">return period allowed values list</a>. </li>
                             <li>To give details of date and time for the individual monitoring item use Mon_Date.</li>
                             <li>You can only submit data covering up to 18 months in the past.</li>
                         </ul>
@@ -89,7 +88,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Required.</li>
-                            <li>Text must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=rtn_type">return type allowed value list</a>.</li>
+                            <li>Text must be taken from the <a href="{{links.fields.Rtn_Type}}">return type allowed value list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">Landfill gas borehole </td>
@@ -125,7 +124,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Required.</li>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=parameters">parameters allowed values list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Parameter}}">parameters allowed values list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">CH4 </td>
@@ -136,7 +135,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Optional</li>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=qualifier">qualifier allowed values list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Qualifier}}">qualifier allowed values list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">Filtered </td>
@@ -148,7 +147,7 @@
                         <ul>
                             <li>You can leave this field blank if there are no reference period requirements in your permit or licence. You can also leave it blank for instantaneous or spot sample readings. Or you can enter these options from the allowed value
                                 list.</li>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=ref_period">reference period allowed value list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Ref_Period}}">reference period allowed value list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">Daily mean </td>
@@ -172,7 +171,7 @@
                     <td class="dr_description">Used for a text-based response, for example, ‘ Yes’, ‘No’, 'No result' and 'See comments'. </td>
                     <td class="dr_rules">
                         <ul>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=txt_value">text value allowed value list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Txt_Value}}">text value allowed value list</a>.</li>
                             <li>Only use ‘See comments’ when the result is descriptive text. For example, appearance or site weather conditions.</li>
                             <li>Do not use this to simply add comments about your result. (For more information see exceptions and special cases below.)</li>
                         </ul>
@@ -185,7 +184,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Required.</li>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=units">unit or measure allowed value list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Unit}}">unit or measure allowed value list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">m </td>
@@ -196,7 +195,7 @@
                     <td class="dr_rules">
                         <ul>
                             <li>Optional but give an entry where possible.</li>
-                            <li>Must be taken from the <a href="https://data-returns-preprod.envage.co.uk/display-list?list=method">monitoring standard or method allowed value list</a>.</li>
+                            <li>Must be taken from the <a href="{{links.fields.Meth_Stand}}">monitoring standard or method allowed value list</a>.</li>
                         </ul>
                     </td>
                     <td class="dr_example">BS EN 14791 </td>
@@ -360,8 +359,83 @@
             </div>
         </section>
     </section>
-</main>
 
+    <section id="allowed-value-lists">
+        <article class="text">
+            <h2 class="heading-large">Landfill data allowed value lists</h2>
+            <p>You must to select the correct name from these controlled lists under certain field headings, such as parameter, when you prepare your data file.</p>
+            <section class="csv">
+                <h2>Unit or measure</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Unit}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Unit}}">Download CSV 19KB</a></span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Parameter (substance name)</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Parameter}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Parameter}}">Download CSV 79KB</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Reference period</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Ref_Period}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Ref_Period}}">Download CSV 2KB</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Return period</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Rtn_Period}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Rtn_Period}}">Download CSV 2KB</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Monitoring standard or method</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Meth_Stand}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Meth_Stand}}">Download CSV 4KB</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Return type</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Rtn_Type}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Rtn_Type}}">Download CSV 323Bytes</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Text value</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Txt_Value}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Txt_Value}}">Download CSV 219Bytes</a>
+                    </span>
+                </p>
+            </section>
+
+            <section class="csv">
+                <h2>Qualifier</h2>
+                <p>
+                    <span class="preview"><a href="{{links.fields.Qualifier}}">View online</a></span> or
+                    <span class="download"> <a href="{{links.downloads.Qualifier}}">Download CSV 11KB</a>
+                    </span>
+                </p>
+            </section>
+        </article>
+    <section>
 
 
 </main>
