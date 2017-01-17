@@ -252,7 +252,6 @@ var csrf_check_function = function (request, next) {
 };
 
 // Verifying Same-origin with standard Headers
-// See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
 var same_origin_check_function = function (request, next) {
 
     // List exclusions by wildcard in this array
@@ -320,9 +319,13 @@ var same_origin_check_function = function (request, next) {
     return next.continue();
 };
 
-// Register the event handler for the CSRF and same origin checks
-// at the very start of the request cycle (onRequest)
-server.ext('onRequest', same_origin_check_function);
+
+// Uncomment this line to perform same origin checks.
+// Not supported on the AWS ejnvironment because x-forwarded-host is not set by nginx
+//server.ext('onRequest', same_origin_check_function);
+// See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
+
+// Register the event handler for the CSRF
 server.ext('onPreHandler', csrf_check_function);
 
 //lint js files
