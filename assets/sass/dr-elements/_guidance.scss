@@ -20,3 +20,28 @@ table.cookies-table {
 		white-space: nowrap;
 	}
 }
+
+// Example file
+.example-file {
+  width:100%;
+  margin-bottom:60px;
+  margin-right:15px;
+  table {
+    th, td {
+      white-space: nowrap;
+    }
+  }
+}
+
+
+// CSV
+.csv {
+	border-bottom:1px solid $grey-3;
+	h2 {
+	  @include bold-19();
+	  margin-top:$gutter-half;
+	}
+	p {
+	  @include core-16();
+	}
+}
