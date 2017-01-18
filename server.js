@@ -176,7 +176,7 @@ server.ext('onPreResponse', function (request, reply) {
         let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
 
         // Ignore resource requests - we only need to set the CSRF token on the views
-        if (sessionID && resp.source && !request.path.startsWith('/public')) {
+        if (sessionID && resp.source && !request.path.startsWith('/public') && !request.path.startsWith('/csv')) {
 
             // Get the csrf token from the session
             cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
@@ -198,7 +198,7 @@ server.ext('onPreResponse', function (request, reply) {
             }).catch(function (err) {
 
                 // Log the error and continue
-                winston.error(err);
+                winston.error(`${request.path} has error: ${err}`);
                 return reply(resp);
             });
 
