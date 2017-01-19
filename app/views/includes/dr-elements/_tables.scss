@@ -95,6 +95,43 @@
 			.td-row 			{ &:before { content:"Row number(s): "; }}
 			.td-error 			{ &:before { content:"Error: "; }}
 			.td-data 			{ &:before { content:"Your data: "; }}
+			&.Rtn_Period {
+				.name 		{ &:before { content:"Rtn_Period: "; }}
+				.definition { &:before { content:"Definition: "; }}
+				.example 	{ &:before { content:"Example: "; }}
+			}
+			&.Meth_Stand {
+				.name 		{ &:before { content:"Meth_Stand: "; }}
+				.notes 		{ &:before { content:"Definition: "; }}
+			}
+			&.Txt_Value {
+				.name 		{ &:before { content:"Txt_Value: "; }}
+				.aliases 	{ &:before { content:"Alternatives: "; }}
+			}
+			&.Parameter {
+				.name 		{ &:before { content:"Parameter: "; }}
+				.aliases 	{ &:before { content:"Alternatives: "; }}
+				.cas 		{ &:before { content:"CAS: "; }}
+			}
+			&.Qualifier {
+				.name 				{ &:before { content:"Qualifier: "; }}
+				.notes 				{ &:before { content:"Notes: "; }}
+				.type 				{ &:before { content:"Type: "; }}
+				.singleOrMultiple 	{ &:before { content:"Single or multiple: "; }}
+			}
+			&.Ref_Period {
+				.name 		{ &:before { content:"Ref_Period: "; }}
+				.aliases 	{ &:before { content:"Alternatives: "; }}
+				.notes 		{ &:before { content:"Notes: "; }}
+			}
+			&.Unit {
+				.name 			{ &:before { content:"Unit: "; }}
+				.aliases 		{ &:before { content:"Alternatives: "; }}
+				.longName 		{ &:before { content:"Long Name: "; }}
+				.type 			{ &:before { content:"Measurement Type: "; }}
+				.unicode 		{ &:before { content:"Unicode: "; }}
+				.description 	{ &:before { content:"Definition: "; }}
+			}
 		}
 	}
 }

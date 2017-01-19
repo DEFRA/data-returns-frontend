@@ -12,6 +12,7 @@
             <p>You can only use these values and they must be spelt exactly as they are in this list. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the main value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group search-list">
+                <!--
                 <form action="display-list-search?list={{listMetaData.path}}" method="post">
                     <input type="hidden" name="crumb" value="{{crumb}}"/>
                     <label class="form-label" for="search">Filter this list:</label>
@@ -21,6 +22,7 @@
                     <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}">Clear filter</a>
                     {{/clear}}
                 </form>
+            -->
             </div>
         </div>
         <div class="column-third">
@@ -34,7 +36,7 @@
         </div>
     </div>
 
-    <table id="controlled-list-table" class="{{description}} table-control">
+    <table id="controlled-list-table" class="{{listMetaData.path}} table-control mobile-format">
         <thead>
         <tr>
             {{#tableHeadings}}
@@ -48,7 +50,7 @@
             {{#row}}
             <td class="{{cellCls}}">
                 {{#item.length}}
-                <ul style="white-space: nowrap;">
+                <ul>
                     {{#item}}<li>{{.}}</li>{{/item}}
                 </ul>
                 {{/item.length}}
