@@ -42,6 +42,13 @@ p + .help-notice {
  }
 }
 
+/* Used to display support links in footer. */
+.ea-footer {
+  @include core-16();
+  line-height: 1.25;
+  padding-bottom: 1em;
+}
+
 // Attachement image
 .attachment {
   float:right;
