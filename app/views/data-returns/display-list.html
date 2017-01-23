@@ -9,7 +9,7 @@
     <div class="grid-row">
         <div class="column-two-thirds">
         <h1 class="heading-large"><span id="title">{{$title}}{{/title}} allowed values</span></h1>
-            <p>You can only use these values and they must be spelt exactly as they are in this list. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the main value.</p>
+            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group search-list">
                 <!--
@@ -64,7 +64,6 @@
         {{/rows}}
         </tbody>
     </table>
-
 </main>
 {{/content}}
 {{/layout}}
