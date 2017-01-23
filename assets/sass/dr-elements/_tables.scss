@@ -111,7 +111,7 @@
 			&.Parameter {
 				.name 		{ &:before { content:"Parameter: "; }}
 				.aliases 	{ &:before { content:"Alternatives: "; }}
-				.cas 		{ &:before { content:"CAS: "; }}
+				.cas 		{ &:before { content:"CAS: "; } white-space: nowrap; }
 			}
 			&.Qualifier {
 				.name 				{ &:before { content:"Qualifier: "; }}
