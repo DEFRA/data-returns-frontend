@@ -26,8 +26,11 @@ const templateConfig = {
     insideHeader: "{{$insideHeader}}{{/insideHeader}}",
     licenceMessage: "{{$licenceMessage}}{{/licenceMessage}}",
     pageTitle: "{{$pageTitle}}GOV.UK - The best place to find government services and information{{/pageTitle}}",
-    propositionHeader: "{{$propositionHeader}}{{/propositionHeader}}"
+    propositionHeader: "{{$propositionHeader}}{{/propositionHeader}}",
+    skipLinkMessage: "{{$skipLinkMessage}}Skip to main content{{/skipLinkMessage}}"
 };
+
+
 
 module.exports = {
     build: function () {
