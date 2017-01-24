@@ -166,7 +166,7 @@ module.exports.newSession = function (request, reply, sessionKey) {
         // Set the session here for because otherwise it is not retrievable in the preResponse
         request._sessionId = newSessionId;
 
-        winston.debug(`Adding a new CSRF token to the cache for session: ${newSessionId}`)
+        winston.debug(`Adding a new CSRF token to the cache for session: ${newSessionId}`);
         cacheHandler.setValue(redisKeys.CSRF_TOKEN.compositeKey(newSessionId), token)
             .then(() => winston.debug(`New CSRF token is added for session: ${newSessionId}`))
             .then(resolve)

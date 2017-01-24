@@ -1,6 +1,7 @@
 "use strict";
 const winston = require("winston");
 const fs = require('fs-extra');
+const klaw = require('klaw');
 const gaze = require('gaze');
 const minimatch = require('minimatch');
 const sass = require('node-sass');
@@ -221,7 +222,7 @@ class PassthroughHandler extends AssetManager {
     synchroniseAll() {
         // Synchronise directories on startup
         AssetManager.empty(this.config.targetDir, function () {
-            fs.walk(this.config.sourceDir).on('data', function (item) {
+            klaw(this.config.sourceDir).on('data', function (item) {
                 if (item.stats.isFile() && minimatch(item.path, this.config.pattern)) {
                     let relPath = path.relative(this.config.sourceDir, item.path);
                     let targetPath = path.join(this.config.targetDir, relPath);
@@ -251,7 +252,7 @@ class PassthroughHandler extends AssetManager {
      */
     synchroniseFile(source, target) {
         let filename = path.basename(source);
-        let minifyIgnore = minifyIgnorePatterns.find(ptn => filename.match(ptn)) ? true : false;
+        let minifyIgnore = !!minifyIgnorePatterns.find(ptn => filename.match(ptn));
         let syncOp = this.config.minify && !minifyIgnore ? AssetManager.minify : AssetManager.copy;
         return syncOp(source, target);
     }
