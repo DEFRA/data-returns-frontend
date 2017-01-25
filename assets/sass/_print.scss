@@ -1,0 +1,25 @@
+/* Allowed values table */
+.table-control {
+    border-collapse: collapse;
+    th {
+        text-align: left;
+    }
+    th, td {
+        border-bottom: 1px solid #bfc1c3;
+        vertical-align: top;
+        border-spacing: 0;
+        padding: 0.63158em 1.05263em 0.47368em 0;
+        ul {
+           margin:0;
+           padding:0;
+           list-style-type: none;
+        }
+    }
+}
+
+/* Additional styles */
+.table-control {
+	&.Parameter {
+		.cas 		{ white-space: nowrap; }
+	}
+}
