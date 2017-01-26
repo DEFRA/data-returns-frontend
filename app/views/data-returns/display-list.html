@@ -1,5 +1,10 @@
 {{<layout}}
 
+{{$head}}
+    {{>head}}
+    {{$commonHead}}{{/commonHead}}
+    <script src="/public/javascripts/jquery.mark.min.js" type="text/javascript"></script>
+{{/head}}
 
 {{$title}}{{listMetaData.description}} allowed values{{/title}}
 
@@ -82,6 +87,14 @@
     </table>
     {{/rows.length}}
 
+    {{#query.terms.length}}
+    <script type="text/javascript">
+        var hlClasses = "{{listMetaData.searchFields}}";
+        hlClasses = hlClasses.split(",").map(function(field) {return "td." + field}).join(",");
+        var cells = $("#controlled-list-table").find(hlClasses);
+        cells.mark("{{query.terms}}".split(","));
+    </script>
+    {{/query.terms.length}}
 </main>
 {{/content}}
 {{/layout}}
