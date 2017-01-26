@@ -1,6 +1,5 @@
 "use strict";
-let userHandler = require('../../lib/user-handler');
-const winston = require("winston");
+const userHandler = require('../../lib/user-handler');
 /*
  * HTTP GET Handler for /file/sent
  */

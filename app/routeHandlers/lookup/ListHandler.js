@@ -68,45 +68,40 @@ module.exports = {
         if (searchString === '') {
             module.exports.getDisplayHandler(request, reply);
         } else {
-            handler.getListMetaData().then(function (metadata) {
-                let resultHandler = function (metadata, headings, data) {
-                    winston.info(`==> /display-list-search list=${list} search=${metadata.searchFields} for search=${searchString}`);
-                    let searchTerms = searchString.split(/\s+/);
-                    let entryText = data.length === 1 ? "entry" : "entries";
-                    let searchTermStrings = searchTerms.map(t => `"${t}"`).join(", ").replace(/,(?!.*,)/gmi, ' or');
-                    let searchableHeadings = metadata.searchFields.map(t => metadata.displayHeaders.find(d => d.field === t));
+            let resultHandler = function (metadata, headings, data) {
+                winston.info(`==> /display-list-search list=${list} search=${metadata.searchFields} for search=${searchString}`);
+                let searchTerms = searchString.split(/\s+/);
+                let entryText = data.length === 1 ? "entry" : "entries";
+                let searchTermStrings = searchTerms.map(t => `"${t}"`).join(", ").replace(/,(?!.*,)/gmi, ' or');
+                let searchableHeadings = metadata.searchFields.map(t => metadata.displayHeaders.find(d => d.field === t));
 
-                    let messages = [];
-                    messages.push(`Found ${data.length} ${entryText} matching ${searchTermStrings}`);
+                let messages = [];
+                messages.push(`Found ${data.length} ${entryText} matching ${searchTermStrings}`);
 
-                    if (data.length === 0 && headings.length > 1 && searchableHeadings.length < headings.length) {
-                        let searchableHeadingNames = searchableHeadings.map(t => `"${t.header}"`).join(", ").replace(/,(?!.*,)/gmi, ' and');
-                        messages.push(`You can search for entries under the ${searchableHeadingNames} ${searchableHeadings.length === 1 ? 'heading' : 'headings'}`);
+                if (data.length === 0 && headings.length > 1 && searchableHeadings.length < headings.length) {
+                    let searchableHeadingNames = searchableHeadings.map(t => `"${t.header}"`).join(", ").replace(/,(?!.*,)/gmi, ' and');
+                    messages.push(`You can search for entries under the ${searchableHeadingNames} ${searchableHeadings.length === 1 ? 'heading' : 'headings'}`);
+                }
+
+                reply.view('data-returns/display-list', {
+                    listMetaData: metadata,
+                    tableHeadings: headings,
+                    rows: data,
+                    clear: true,
+                    src: getNavigationSource(request),
+                    messages: messages,
+                    query: {
+                        string: searchString,
+                        terms: searchTerms
                     }
-
-                    reply.view('data-returns/display-list', {
-                        listMetaData: metadata,
-                        tableHeadings: headings,
-                        rows: data,
-                        clear: true,
-                        src: getNavigationSource(request),
-                        messages: messages,
-                        query: {
-                            string: searchString,
-                            terms: searchTerms
-                        }
-                    });
-                };
-
-                return handler.getListProcessor(handler.pageExtractor, list, resultHandler, {contains: searchString}).catch((err) => {
-                    winston.error(err);
-                    reply.view('data-returns/display-list', {
-                        messages: ["A problem occurred while attempting to filter the list, please try again later."]
-                    });
                 });
-            }).catch((err) => {
+            };
+
+            return handler.getListProcessor(handler.pageExtractor, list, resultHandler, {contains: searchString}).catch((err) => {
                 winston.error(err);
-                reply.redirect("/controlled-lists")
+                reply.view('data-returns/display-list', {
+                    messages: ["A problem occurred while attempting to filter the list, please try again later."]
+                });
             });
         }
     },
