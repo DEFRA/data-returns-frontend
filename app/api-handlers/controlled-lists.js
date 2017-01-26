@@ -18,47 +18,33 @@ function apiCallList(list, search) {
     winston.info('==> apiCallList() url: ' + endPoint);
 
     var apiData = null;
-    if (list)  {
+    if (list) {
         if (search) {
-            apiData = { url: encodeURI(endPoint + '/' + list + '?field=' + search.field + '&contains=' + search.contains) };
+            apiData = {url: encodeURI(endPoint + '/' + list + '?contains=' + search.contains)};
         } else {
-            apiData = { url: endPoint + '/' + list };
+            apiData = {url: endPoint + '/' + list};
         }
     } else {
-        apiData = { url: endPoint };
+        apiData = {url: endPoint};
     }
 
     return new Promise(function (resolve, reject) {
         Request.get(apiData, function (err, httpResponse) {
             if (!httpResponse) {
-                reject({
-                    isUserError: true,
-                    message: 'No response'
-                });
+                reject(new Error("Internal Error: No response from API"));
             } else if (err) {
-                reject({
-                    isUserError: true,
-                    message: 'Request Error',
-                    messageDetail: err.message
-                });
+                reject(err);
             } else {
+
                 if (httpResponse.statusCode !== 200) {
-                    reject({
-                        isUserError: true,
-                        message: 'Request Error: ' + httpResponse.statusCode,
-                        messageDetail: httpResponse.statusMessage
-                    });
+                    reject(new Error(`Internal Error: Unexpected response ${httpResponse.statusCode} from API: ${httpResponse.statusMessage}`));
                 } else {
                     try {
                         var parsedJson = JSON.parse(httpResponse.body);
                         // Return the result as an array
                         resolve(parsedJson);
                     } catch (err) {
-                        reject({
-                            isUserError: true,
-                            message: 'Invalid JSON Response: ',
-                            messageDetail: err.message
-                        });
+                        reject(err);
                     }
                 }
             }
@@ -104,7 +90,7 @@ module.exports.getListData = function (list, search) {
  * @param displayHeaders - an array the data object names
  * @returns {Array} The output data structure required by display-list.html
  */
-module.exports.pageExtractor = function(listData, displayHeaders) {
+module.exports.pageExtractor = function (listData, displayHeaders) {
     var rows = [];
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
@@ -126,7 +112,7 @@ module.exports.pageExtractor = function(listData, displayHeaders) {
  * @param displayHeaders - an array the data object names
  * @returns {Array} The output data structure required by the CSV processor
  */
-module.exports.csvExtractor = function(listData, displayHeaders) {
+module.exports.csvExtractor = function (listData, displayHeaders) {
     var rows = [];
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
@@ -153,7 +139,7 @@ module.exports.csvExtractor = function(listData, displayHeaders) {
 module.exports.getListProcessor = function (extractorFunction, list, processor, search) {
     return new Promise(function (resolve, reject) {
         module.exports.getListMetaData().then(function (result) {
-            var listMetaData = { displayHeaders : undefined };
+            var listMetaData = {displayHeaders: undefined};
             listMetaData = result[list];
             var tableHeadings = [];
             if (listMetaData && listMetaData.displayHeaders) {

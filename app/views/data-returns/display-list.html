@@ -1,6 +1,7 @@
 {{<layout}}
 
-{{$title}}{{listMetaData.description}}{{/title}}
+
+{{$title}}{{listMetaData.description}} allowed values{{/title}}
 
 {{$content}}
 <main id="content" role="main">
@@ -8,37 +9,47 @@
     <a id="back.btn"  onclick="history.back(); return false;" href="{{back}}" class="link-back">Go back</a>
     <div class="grid-row">
         <div class="column-two-thirds">
-        <h1 class="heading-large"><span id="title">{{$title}}{{/title}} allowed values</span></h1>
-            <p>You can only use these values and they must be spelt exactly as they are in this list. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the main value.</p>
+            <h1 class="heading-large" style="padding-top: 0; margin-top: 0;"><span id="title">{{$title}}{{/title}}</span></h1>
+            <p>You can only use these values and they must be spelt exactly as they are in this list. If there are
+                alternative values, you can also use those. When you upload your data we’ll convert alternatives into
+                the main value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
+
         </div>
         <div class="column-third">
             <h2 class="heading-small">Version 1.0</h2>
-                <details>
-                    <summary><span class="summary">How we deal with changes</span></summary>
-                    <div class="panel panel-border-narrow">
-                        <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
-                    </div>
-                </details>
-            <!-- REMOVED SEARCH
-            <div class="form-group">
-                <p><a id="back.btn" onclick="history.back(); return false;" href="{{back}}" class="button">Go back</a></p>
-            </div>
-            <div class="form-group search-list">
-                <form action="display-list-search?list={{listMetaData.path}}" method="post">
-                    <input type="hidden" name="crumb" value="{{crumb}}"/>
-                    <label class="form-label" for="search">Filter this list:</label>
-                    <input id="search" class="form-control" type="text" name="search">
-                    <input class="button button-secondary" type="submit" value="Submit">
-                    {{#clear}}
-                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}">Clear filter</a>
-                    {{/clear}}
-                </form>
-            </div>
-            -->
+            <details>
+                <summary><span class="summary">How we deal with changes</span></summary>
+                <div class="panel panel-border-narrow">
+                    <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems
+                        to use these values. If we need to make changes, we won't remove values but we may add missing
+                        values as alternatives or correct any mistakes.</p>
+                </div>
+            </details>
         </div>
     </div>
+    <div class="form-group search-list">
+        <form method="get">
+            <div class="form-hint">Filter this list:</div>
+            <input id="search" name="q" class="form-control" type="text" value="{{query.string}}"/>
+            <input class="button" type="submit" value="Find">
+            {{#clear}}
+            <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&src={{src}}">Clear</a>
+            {{/clear}}
+            <input type="hidden" name="list" value="{{listMetaData.path}}"/>
+            <input type="hidden" name="src" value="{{src}}"/>
+        </form>
+    </div>
 
+    {{#messages.length}}
+    {{#messages}}
+    <div class="panel panel-border-wide">
+        <p>{{.}}</p>
+    </div>
+    {{/messages}}
+    {{/messages.length}}
+
+    {{#rows.length}}
     <table id="controlled-list-table" class="{{description}} table-control">
         <thead>
         <tr>
@@ -47,19 +58,21 @@
             {{/tableHeadings}}
         </tr>
         </thead>
-        <tbody>
+        <tbody class="controlled-list-table-body">
         {{#rows}}
         <tr>
             {{#row}}
             <td class="{{cellCls}}">
                 {{#item.length}}
                 <ul style="white-space: nowrap;">
-                    {{#item}}<li>{{.}}</li>{{/item}}
+                    {{#item}}
+                    <li>{{.}}</li>
+                    {{/item}}
                 </ul>
                 {{/item.length}}
 
                 {{^item.length}}
-                    {{item}}
+                {{item}}
                 {{/item.length}}
             </td>
             {{/row}}
@@ -67,6 +80,7 @@
         {{/rows}}
         </tbody>
     </table>
+    {{/rows.length}}
 
 </main>
 {{/content}}
