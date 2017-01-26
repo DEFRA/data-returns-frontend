@@ -1,29 +1,22 @@
 {{<layout}}
 
-{{$title}}{{listMetaData.description}}{{/title}}
+{{$head}}
+    {{>head}}
+    {{$commonHead}}{{/commonHead}}
+    <script src="/public/javascripts/jquery.mark.min.js" type="text/javascript"></script>
+{{/head}}
+
+{{$title}}{{listMetaData.description}} allowed values{{/title}}
 
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
-    <a id="back.btn"  onclick="history.back(); return false;" href="{{back}}" class="link-back">Go back</a>
+    <a id="back.btn" href="{{src}}" class="link-back">Go back</a>
     <div class="grid-row">
         <div class="column-two-thirds">
-        <h1 class="heading-large"><span id="title">{{$title}}{{/title}} allowed values</span></h1>
+            <h1 class="heading-large" style="padding-top: 0; margin-top: 0;"><span id="title">{{$title}}{{/title}}</span></h1>
             <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
-            <div class="form-group search-list">
-                <!--
-                <form action="display-list-search?list={{listMetaData.path}}" method="post">
-                    <input type="hidden" name="crumb" value="{{crumb}}"/>
-                    <label class="form-label" for="search">Filter this list:</label>
-                    <input id="search" class="form-control" type="text" name="search">
-                    <input class="button button-secondary" type="submit" value="Submit">
-                    {{#clear}}
-                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}">Clear filter</a>
-                    {{/clear}}
-                </form>
-            -->
-            </div>
         </div>
         <div class="column-third">
             <h2 class="heading-small">Version 1.0</h2>
@@ -35,7 +28,28 @@
             </details>
         </div>
     </div>
+    <div class="form-group search-list">
+        <form method="get">
+            <div class="form-hint">Filter this list:</div>
+            <input id="search" name="q" class="form-control" type="text" value="{{query.string}}"/>
+            <input class="button" type="submit" value="Find">
+            {{#clear}}
+            <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&src={{src}}">Clear</a>
+            {{/clear}}
+            <input type="hidden" name="list" value="{{listMetaData.path}}"/>
+            <input type="hidden" name="src" value="{{src}}"/>
+        </form>
+    </div>
 
+    {{#messages.length}}
+    {{#messages}}
+    <div class="panel panel-border-wide">
+        <p>{{.}}</p>
+    </div>
+    {{/messages}}
+    {{/messages.length}}
+
+    {{#rows.length}}  
     <table id="controlled-list-table" class="{{listMetaData.path}} table-control mobile-format">
         <thead>
         <tr>
@@ -44,7 +58,7 @@
             {{/tableHeadings}}
         </tr>
         </thead>
-        <tbody>
+        <tbody class="controlled-list-table-body">
         {{#rows}}
         <tr>
             {{#row}}
@@ -56,7 +70,7 @@
                 {{/item.length}}
 
                 {{^item.length}}
-                    {{item}}
+                {{item}}
                 {{/item.length}}
             </td>
             {{/row}}
@@ -64,6 +78,16 @@
         {{/rows}}
         </tbody>
     </table>
+    {{/rows.length}}
+
+    {{#query.terms.length}}
+    <script type="text/javascript">
+        var hlClasses = "{{listMetaData.searchFields}}";
+        hlClasses = hlClasses.split(",").map(function(field) {return "td." + field}).join(",");
+        var cells = $("#controlled-list-table").find(hlClasses);
+        cells.mark("{{query.terms}}".split(","));
+    </script>
+    {{/query.terms.length}}
 </main>
 {{/content}}
 {{/layout}}
