@@ -4,6 +4,9 @@ const stringify = require('csv').stringify;
 let handler = require('../../api-handlers/controlled-lists.js');
 
 
+let getNavigationSource = function (request) {
+    return request.query.src || request.info.referrer || "/controlled-lists";
+};
 
 module.exports = {
     /*
@@ -52,7 +55,7 @@ module.exports = {
                 tableHeadings: header,
                 rows: data,
                 clear: false,
-                back: request.info.referrer || "/controlled-lists"
+                src: getNavigationSource(request)
             });
         }).catch(() => reply.redirect("/controlled-lists"));
     },
@@ -86,7 +89,7 @@ module.exports = {
                         tableHeadings: headings,
                         rows: data,
                         clear: true,
-                        back: request.info.referrer || "/controlled-lists"
+                        src: getNavigationSource(request),
                         messages: messages,
                         query: {
                             string: searchString,
