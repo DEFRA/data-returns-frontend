@@ -184,7 +184,7 @@ server.ext('onPreResponse', function (request, reply) {
             && accepts.find(ah => ah === 'text/html')) {
 
             // Get the csrf token from the session
-            cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+            cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
 
                 if (!val) {
                     winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
@@ -235,7 +235,7 @@ var csrf_check_function = function (request, next) {
         let cookies = new Cookies(request);
         let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
         if (sessionID) {
-            cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+            cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
                 if (request.payload.csrf !== val) {
                     winston.info(`CSRF: token check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
                     // We have to redirect to forbidden as there is no access to the replay object at this point
