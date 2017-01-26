@@ -49,7 +49,7 @@
                 </td>
                 <td class="details">
                     {{#status.moreDetailsUrl}}
-                    <a href="{{{status.moreDetailsUrl}}}"><span>{{status.moreDetailsTitle}}</span></a>
+                    <a href="{{{status.moreDetailsUrl}}}"><span>{{status.moreDetailsTitle}}</span><span class="visually-hidden"> for {{name}}</span></a>
                     {{/status.moreDetailsUrl}}
                 </td><td class="remove">
                     <form method="post" action="/file/choose" enctype="multipart/form-data">

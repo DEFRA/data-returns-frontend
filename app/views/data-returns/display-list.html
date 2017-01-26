@@ -15,20 +15,15 @@
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-large" style="padding-top: 0; margin-top: 0;"><span id="title">{{$title}}{{/title}}</span></h1>
-            <p>You can only use these values and they must be spelt exactly as they are in this list. If there are
-                alternative values, you can also use those. When you upload your data we’ll convert alternatives into
-                the main value.</p>
+            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
-
         </div>
         <div class="column-third">
             <h2 class="heading-small">Version 1.0</h2>
             <details>
                 <summary><span class="summary">How we deal with changes</span></summary>
                 <div class="panel panel-border-narrow">
-                    <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems
-                        to use these values. If we need to make changes, we won't remove values but we may add missing
-                        values as alternatives or correct any mistakes.</p>
+                    <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
                 </div>
             </details>
         </div>
@@ -54,8 +49,8 @@
     {{/messages}}
     {{/messages.length}}
 
-    {{#rows.length}}
-    <table id="controlled-list-table" class="{{description}} table-control">
+    {{#rows.length}}  
+    <table id="controlled-list-table" class="{{listMetaData.path}} table-control mobile-format">
         <thead>
         <tr>
             {{#tableHeadings}}
@@ -69,10 +64,8 @@
             {{#row}}
             <td class="{{cellCls}}">
                 {{#item.length}}
-                <ul style="white-space: nowrap;">
-                    {{#item}}
-                    <li>{{.}}</li>
-                    {{/item}}
+                <ul>
+                    {{#item}}<li>{{.}}</li>{{/item}}
                 </ul>
                 {{/item.length}}
 

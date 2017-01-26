@@ -57,7 +57,7 @@ utils.readFile('../config/email-confirmation-template.txt', function (err, resul
 
 /* used by Joi to validate the email address */
 var schema = {
-    address: joi.string().email()
+    address: joi.string().email({ minDomainAtoms : 2 })
 };
 
 /* checkLockOut
