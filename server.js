@@ -175,8 +175,13 @@ server.ext('onPreResponse', function (request, reply) {
         // If we have a new sessionId in this request we cannot get it from the cookie header yet
         let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
 
-        // Ignore resource requests - we only need to set the CSRF token on the views
-        if (sessionID && resp.source && !request.path.startsWith('/public') && !request.path.startsWith('/csv')) {
+        let accepts = request.headers.accept.split(',') || [];
+
+        // Ignore resource requests - we only need to set the CSRF token on the html views
+        if (sessionID && resp.source
+            && !request.path.startsWith('/public')
+            && !request.path.startsWith('/csv')
+            && accepts.find(ah => ah === 'text/html')) {
 
             // Get the csrf token from the session
             cacheHandler.getValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
