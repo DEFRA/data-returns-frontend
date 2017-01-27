@@ -175,7 +175,13 @@ server.ext('onPreResponse', function (request, reply) {
         // If we have a new sessionId in this request we cannot get it from the cookie header yet
         let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
 
-        let accepts = request.headers.accept.split(',') || [];
+        // Get the accepts content
+        let accepts = [];
+        try {
+            accepts = request.headers.accept.split(',');
+        } catch(err) {
+            // Do nothing
+        }
 
         // Ignore resource requests - we only need to set the CSRF token on the html views
         if (sessionID && resp.source
