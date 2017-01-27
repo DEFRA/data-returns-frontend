@@ -1,9 +1,9 @@
 "use strict";
 const winston = require("winston");
-var smtpHandler = require('../../lib/smtp-handler');
-var pinHandler = require('../../lib/pin-handler');
-var userHandler = require('../../lib/user-handler');
-var errorHandler = require('../../lib/error-handler');
+const smtpHandler = require('../../lib/smtp-handler');
+const pinHandler = require('../../lib/pin-handler');
+const userHandler = require('../../lib/user-handler');
+const errorHandler = require('../../lib/error-handler');
 
 module.exports = {
     /*
@@ -24,7 +24,7 @@ module.exports = {
             });
         };
 
-        userHandler.hasUploads(sessionID).then(function() {
+        userHandler.hasUploads(sessionID).then(function () {
             userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
                 if (isAuthenticated === true) {
                     reply.redirect("/file/send").rewritable(true);
@@ -35,7 +35,7 @@ module.exports = {
                 winston.error(err);
                 viewConfirmEmail();
             });
-        }).catch(function() {
+        }).catch(function () {
             // Show file-unavailable page if the file uploads array is empty
             reply.view('data-returns/file-unavailable');
         });
@@ -48,42 +48,35 @@ module.exports = {
      */
     postHandler: function (request, reply) {
         /* get the users email address */
-        var usermail = request.payload['user_email'];
-        var sessionID = userHandler.getSessionID(request);
-        usermail = usermail.trim();
+        let userMail = request.payload['user_email'];
+        let sessionID = userHandler.getSessionID(request);
+        userMail = userMail.trim();
         /* Validate the email address */
-        smtpHandler.validateEmailAddress(usermail).then(function (isValid) {
-            if (isValid === true) {
-                /* Get a new pin code */
-                pinHandler.newPin().then(function (newpin) {
-                    /* Store in REDIS */
-                    var datenow = new Date();
-
-                    var user = {
-                        authenticated: false,
-                        email: usermail,
-                        pin: newpin,
-                        pinCreationTime: datenow.toUTCString(),
-                        uploadCount: 0
-                    };
-
-                    userHandler.setUser(sessionID, user).then(function () {
-                        smtpHandler.sendPinEmail(usermail, newpin);
-                    }).then(function () {
-                        reply.redirect('/pin', {emailAddress: usermail});
-                    });
+        smtpHandler.validateEmailAddress(userMail).then(pinHandler.newPin).then(function (newpin) {
+            /* Store in REDIS */
+            let user = {
+                authenticated: false,
+                email: userMail,
+                pin: newpin,
+                pinCreationTime: new Date().toUTCString(),
+                uploadCount: 0
+            };
+            return userHandler.setUser(sessionID, user)
+                .then(() => smtpHandler.sendPinEmail(userMail, newpin))
+                .then(() => reply.redirect('/pin', {emailAddress: userMail}));
+        }).catch(function (errResult) {
+            if (errResult.errorCode === 3000) {
+                reply.redirect('data-returns/failure');
+            } else {
+                reply.view('data-returns/confirm-your-email-address', {
+                    invalidEmailAddress: true,
+                    showStartAgainButton: errResult.errorCode === 2055,
+                    showInput: errResult.errorCode !== 2055,
+                    showSendMailButton: errResult.errorCode !== 2055,
+                    invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
+                    errorcode: 'DR' + errResult.errorCode
                 });
             }
-
-        }).catch(function (errResult) {
-            reply.view('data-returns/confirm-your-email-address', {
-                invalidEmailAddress: true,
-                showStartAgainButton: errResult.errorCode === 2055 ? true : false,
-                showInput: errResult.errorCode === 2055 ? false : true,
-                showSendMailButton: errResult.errorCode === 2055 ? false : true,
-                invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
-                errorcode: 'DR' + errResult.errorCode
-            });
         });
     }
 };
