@@ -8,21 +8,22 @@ const winston = require("winston");
 const config = require('../lib/configuration-handler.js').Configuration;
 const smtp = config.get('smtp');
 
-var utils = require('./utils');
-var nodemailer = require('nodemailer');
-var joi = require('joi');
-var errorMsgs = require('./error-messages.js');
-var hogan = require('hogan.js');
-var cacheHandler = require('./cache-handler');
-var compiledPinTemplate;
-var compiledConfirmationEmailTemplate;
-var compiledPinTextTemplate;
-var compiledConfirmationEmailTextTemplate;
-var sender = smtp.fromEmailAddress;
+const util = require('util');
+const drUtils = require('./utils');
+const nodemailer = require('nodemailer');
+const joi = require('joi');
+const errorMsgs = require('./error-messages.js');
+const hogan = require('hogan.js');
+const cacheHandler = require('./cache-handler');
+let compiledPinTemplate;
+let compiledConfirmationEmailTemplate;
+let compiledPinTextTemplate;
+let compiledConfirmationEmailTextTemplate;
+let sender = smtp.fromEmailAddress;
 const path = require('path');
 
 //Read the pin code template files
-utils.readFile('../config/email-pin-code-template.html', function (err, result) {
+drUtils.readFile('../config/email-pin-code-template.html', function (err, result) {
     if (err) {
         winston.error(err);
     } else {
@@ -30,7 +31,7 @@ utils.readFile('../config/email-pin-code-template.html', function (err, result) 
     }
 });
 
-utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
+drUtils.readFile('../config/email-pin-code-template.txt', function (err, result) {
     if (err) {
         winston.error(err);
     } else {
@@ -39,7 +40,7 @@ utils.readFile('../config/email-pin-code-template.txt', function (err, result) {
 });
 
 //Read the confirmation email templates
-utils.readFile('../config/email-confirmation-template.html', function (err, result) {
+drUtils.readFile('../config/email-confirmation-template.html', function (err, result) {
     if (err) {
         winston.error(err);
     } else {
@@ -47,7 +48,7 @@ utils.readFile('../config/email-confirmation-template.html', function (err, resu
     }
 });
 
-utils.readFile('../config/email-confirmation-template.txt', function (err, result) {
+drUtils.readFile('../config/email-confirmation-template.txt', function (err, result) {
     if (err) {
         winston.error(err);
     } else {
@@ -56,7 +57,7 @@ utils.readFile('../config/email-confirmation-template.txt', function (err, resul
 });
 
 /* used by Joi to validate the email address */
-var schema = {
+let schema = {
     address: joi.string().email({minDomainAtoms: 2})
 };
 
@@ -65,9 +66,9 @@ var schema = {
  * @return A promise that resolves true if the user is not locked out
  * and rejects if the user is locked out
  */
-var checkLockOut = function (recipient) {
+let checkLockOut = function (recipient) {
     return new Promise(function (resolve, reject) {
-        var key = recipient + '-lockedout';
+        let key = recipient + '-lockedout';
         cacheHandler.getValue(key)
             .then(result => {
                 resolve({locked: result !== null});
@@ -84,14 +85,14 @@ var checkLockOut = function (recipient) {
  * @return a promise that resolves true if under the limit, rejects if over the limit
  * 
  */
-var checkEmailLimit = function (recipient) {
+let checkEmailLimit = function (recipient) {
     return new Promise(function (resolve, reject) {
 
-        var key = recipient + '-count';
+        let key = recipient + '-count';
 
         cacheHandler.getValue(key)
             .then(function (result) {
-                var expiry = utils.isInt(smtp.max_time_minutes) ? smtp.max_time_minutes * 60 : 600;
+                let expiry = drUtils.isInt(smtp.max_time_minutes) ? smtp.max_time_minutes * 60 : 600;
 
                 if (result) {
                     result = parseInt(result);
@@ -123,7 +124,7 @@ var checkEmailLimit = function (recipient) {
  * otherwise resolves to true
  *    
  *    */
-var validateEmailAddress = function (emailaddress) {
+let validateEmailAddress = function (emailaddress) {
     return new Promise(function (resolve, reject) {
         checkLockOut(emailaddress).then(function (result) {
             if (result.locked) {
@@ -141,7 +142,7 @@ var validateEmailAddress = function (emailaddress) {
                             errorCode: 2055
                         });
                     } else {
-                        var validationResult = joi.validate({'address': emailaddress}, schema);
+                        let validationResult = joi.validate({'address': emailaddress}, schema);
                         if (validationResult.error) {
                             winston.info('\t email address is invalid: ' + JSON.stringify(validationResult));
                             reject({
@@ -165,7 +166,7 @@ var validateEmailAddress = function (emailaddress) {
 };
 
 /* Default Transport (SMTP Connection) */
-var transporter = nodemailer.createTransport({
+let transporter = nodemailer.createTransport({
     host: smtp.useMailCatcher ? smtp.mailcatcher.host : smtp.host,
     port: smtp.useMailCatcher ? smtp.mailcatcher.port : smtp.port,
     ignoreTLS: smtp.useMailCatcher ? smtp.mailcatcher.ignoreTLS : smtp.ignoreTLS,
@@ -185,13 +186,10 @@ var transporter = nodemailer.createTransport({
  * An error sent back from the smtp server causes a reject.
  * Rejects return an object with an error message
  * */
-var sendPinEmail = function (recipient, newPin) {
+let sendPinEmail = function (recipient, newPin) {
     return new Promise(function (resolve, reject) {
         winston.info('==> sendPinEmail() ');
-
-        console.log('path: ' + path.join(__dirname, '../../assets/images/' + smtp.govuklogo));
-
-        var data = {
+        let data = {
             pin: newPin,
             EnquiryEmail: smtp.support.email,
             UKPhone: smtp.support.UKPhone,
@@ -203,11 +201,11 @@ var sendPinEmail = function (recipient, newPin) {
             useFooter: smtp.useFooter
         };
 
-        var emailBody = compiledPinTemplate.render(data);
-        var emailTextBody = compiledPinTextTemplate.render(data);
+        let emailBody = compiledPinTemplate.render(data);
+        let emailTextBody = compiledPinTextTemplate.render(data);
 
         /* Set per email options */
-        var mailOptions = {
+        let mailOptions = {
             from: sender,
             to: recipient,
             subject: newPin + ' ' + smtp.pinsubject,
@@ -219,6 +217,7 @@ var sendPinEmail = function (recipient, newPin) {
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
                 winston.error(err);
+                reject(err);
                 if (err.code === errorMsgs.SMTP.CONNECTION_REFUSED.code) {
                     reject({
                         isUserError: false, //TODO decide what to do with smtp server errors
@@ -227,19 +226,22 @@ var sendPinEmail = function (recipient, newPin) {
                 }
             } else if (info.response === smtp.success) {
                 winston.info('<== Pin email sent successfully to ' + recipient);
-                resolve(true);
+                resolve(info);
+            } else {
+                winston.warn(`Unexpected response from email server: \r\n${util.inspect(info, {depth: null, colors: true})}`);
+                resolve(info);
             }
         });
     });
 };
 
-var sendConfirmationEmail = function (metadata) {
+let sendConfirmationEmail = function (metadata) {
     return new Promise(function (resolve, reject) {
         winston.info('==> sendConfirmationEmail() ');
-        var date = new Date();
-        var displayDate = utils.getFormattedDate(date);
-        var time = utils.getFormattedTime(date);
-        var templatedata = {
+        let date = new Date();
+        let displayDate = drUtils.getFormattedDate(date);
+        let time = drUtils.getFormattedTime(date);
+        let templateData = {
             DATE: displayDate,
             TIME: time,
             files: metadata.files,
@@ -252,9 +254,9 @@ var sendConfirmationEmail = function (metadata) {
             crownLogo: smtp.crownLogo,
             useFooter: smtp.useFooter
         };
-        var emailBody = compiledConfirmationEmailTemplate.render(templatedata);
-        var emailTextBody = compiledConfirmationEmailTextTemplate.render(templatedata);
-        var mailOptions = {
+        let emailBody = compiledConfirmationEmailTemplate.render(templateData);
+        let emailTextBody = compiledConfirmationEmailTextTemplate.render(templateData);
+        let mailOptions = {
             from: sender,
             to: metadata.email,
             subject: smtp.confirmsubject,

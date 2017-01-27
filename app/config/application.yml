@@ -131,7 +131,8 @@ smtp:
   port:
   username:
   password:
-  fromEmailAddress: noreply-local@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" <noreply-local@environment-agency.gov.uk>
   useMailCatcher: true # set to false on AWS servers
   mailcatcher:
     host: localhost
@@ -196,7 +197,8 @@ smtp:
   port:
   username:
   password:
-  fromEmailAddress: noreply-local@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" noreply-local@environment-agency.gov.uk
   useMailCatcher: true # set to false on AWS servers
   mailcatcher:
     host: localhost
@@ -257,7 +259,8 @@ smtp:
   ealogo: https://dr-dev.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-dev.envage.co.uk/public/images/gov.uk_logotype_crown.png
-  fromEmailAddress: noreply-dev@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" noreply-dev@environment-agency.gov.uk
 
 # Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
 logging:
@@ -284,7 +287,8 @@ env: test
 
 # SMTP specializations
 smtp:
-  fromEmailAddress: noreply-test@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" noreply-test@environment-agency.gov.uk
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://dr-test.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-test.envage.co.uk/public/images/gov.uk_logotype_crown.png
@@ -310,7 +314,8 @@ env: preprod
 
 # SMTP specializations
 smtp:
-  fromEmailAddress: noreply@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" noreply@environment-agency.gov.uk
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://data-returns-preprod/public/images/govuk_logotype_email.png
   crownLogo: https://data-returns-preprod/public/images/gov.uk_logotype_crown.png
@@ -336,7 +341,8 @@ env: prod
 
 # SMTP specializations
 smtp:
-  fromEmailAddress: noreply@environment-agency.gov.uk
+  fromEmailAddress: >
+   "Environment Agency" noreply@environment-agency.gov.uk
   ealogo: https://dr-prod.envage.co.uk/public/images/public/images/EAlogo.png
   govuklogo: https://dr-prod.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-prod.envage.co.uk/public/images/gov.uk_logotype_crown.png

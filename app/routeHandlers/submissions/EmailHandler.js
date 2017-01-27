@@ -65,7 +65,7 @@ module.exports = {
                 .then(() => smtpHandler.sendPinEmail(userMail, newpin))
                 .then(() => reply.redirect('/pin', {emailAddress: userMail}));
         }).catch(function (errResult) {
-            if (errResult.errorCode === 3000) {
+            if (!errResult.errorCode || errResult.errorCode === 3000) {
                 reply.redirect('data-returns/failure');
             } else {
                 reply.view('data-returns/confirm-your-email-address', {
