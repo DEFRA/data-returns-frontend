@@ -57,7 +57,7 @@ utils.readFile('../config/email-confirmation-template.txt', function (err, resul
 
 /* used by Joi to validate the email address */
 var schema = {
-    address: joi.string().email({ minDomainAtoms : 2 })
+    address: joi.string().email({minDomainAtoms: 2})
 };
 
 /* checkLockOut
@@ -69,13 +69,11 @@ var checkLockOut = function (recipient) {
     return new Promise(function (resolve, reject) {
         var key = recipient + '-lockedout';
         cacheHandler.getValue(key)
-            .then(function (result) {
-                if (result) {
-                    // if a record exists they are locked out, the redis key will expire after an hour
-                    reject(true);
-                } else {
-                    resolve();
-                }
+            .then(result => {
+                resolve({locked: result !== null});
+            })
+            .catch(err => {
+                reject(err);
             });
     });
 };
@@ -93,7 +91,6 @@ var checkEmailLimit = function (recipient) {
 
         cacheHandler.getValue(key)
             .then(function (result) {
-
                 var expiry = utils.isInt(smtp.max_time_minutes) ? smtp.max_time_minutes * 60 : 600;
 
                 if (result) {
@@ -105,16 +102,16 @@ var checkEmailLimit = function (recipient) {
                         key = recipient + '-lockedout';
                         expiry = smtp.lockout_time_seconds;
                         cacheHandler.setValue(key, true, expiry);
-                        reject({attempts: result});
+                        resolve({locked: true, attempts: result});
                     } else {
-                        resolve();
+                        resolve({locked: false, attempts: result});
                     }
                 } else {
                     // not in redis, either first time in or expired
                     cacheHandler.setValue(key, 1, expiry);
-                    resolve();
+                    resolve({locked: false, attempts: 1});
                 }
-            });
+            }).catch(reject);
     });
 };
 
@@ -128,40 +125,42 @@ var checkEmailLimit = function (recipient) {
  *    */
 var validateEmailAddress = function (emailaddress) {
     return new Promise(function (resolve, reject) {
-        checkLockOut(emailaddress)
-            .then(function () {
-                checkEmailLimit(emailaddress)
-                    .then(function () {
-                        winston.info('==> validateEmailAddress');
-                        var result = joi.validate({'address': emailaddress}, schema);
-                        if (result.error) {
-                            winston.info('\t email address is invalid: ' + JSON.stringify(result));
+        checkLockOut(emailaddress).then(function (result) {
+            if (result.locked) {
+                //Locked out for an hour
+                reject({
+                    invalidEmailAddress: true,
+                    errorCode: 2055
+                });
+            } else {
+                return checkEmailLimit(emailaddress).then(function (result) {
+                    if (result.locked) {
+                        //too many attempts
+                        reject({
+                            invalidEmailAddress: true,
+                            errorCode: 2055
+                        });
+                    } else {
+                        var validationResult = joi.validate({'address': emailaddress}, schema);
+                        if (validationResult.error) {
+                            winston.info('\t email address is invalid: ' + JSON.stringify(validationResult));
                             reject({
                                 invalidEmailAddress: true,
                                 errorCode: 2050
                             });
                         } else {
                             winston.info('\t email address is valid');
-                            resolve(true);
+                            resolve();
                         }
-                    })
-                    .catch(function (err) {
-                        winston.info(err);
-                        //too many attempts
-                        reject({
-                            invalidEmailAddress: true,
-                            errorCode: 2055
-                        });
-                    });
-            })
-            .catch(function (err) {
-                winston.info(err);
-                //Locked out for an hour
-                reject({
-                    invalidEmailAddress: true,
-                    errorCode: 2055
+                    }
                 });
+            }
+        }).catch(function (err) {
+            winston.error(err);
+            reject({
+                errorCode: 3000
             });
+        });
     });
 };
 
@@ -215,7 +214,7 @@ var sendPinEmail = function (recipient, newPin) {
             text: emailTextBody,
             html: emailBody
         };
-        
+
         /* Send the email */
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
