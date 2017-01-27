@@ -5,7 +5,7 @@ let handler = require('../../api-handlers/controlled-lists.js');
 
 
 let getNavigationSource = function (request) {
-    return request.query.src || request.info.referrer || "/controlled-lists";
+    return request.query.src || request.info.referrer || "/guidance/landfill-data-rules";
 };
 
 module.exports = {
