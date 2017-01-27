@@ -12,9 +12,12 @@ module.exports.links = {
     ScottishLink: 'http://www.sepa.org.uk/',
     WelshLink: 'http://naturalresources.wales/splash?orig=/',
     NorthernIrelandLink: 'https://www.doeni.gov.uk/',
+    Information_Commissioners_Website:'https://ico.org.uk/for-the-public/online/cookies/',
     Help_SpecialCases: '/guidance/landfill-data-rules#exceptions',
+    Landfill_Data_Rules: '/guidance/landfill-data-rules',
     Help_Operator_Lookup: '/lookup',
     Example_Data_Return: '/guidance/example-data-return',
+    Privacy_Policy: '/guidance/privacy',
     fields: {
         Rtn_Type: "/display-list?list=Rtn_Type",
         Rtn_Period: "/display-list?list=Rtn_Period",
