@@ -1,11 +1,10 @@
 "use strict";
-
 const config = require('../../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
-var userHandler = require('../../lib/user-handler');
-var completionHandler = require('../../api-handlers/completion-handler');
-var smtpHandler = require('../../lib/smtp-handler');
-var errorHandler = require('../../lib/error-handler');
+const userHandler = require('../../lib/user-handler');
+const completionHandler = require('../../api-handlers/completion-handler');
+const smtpHandler = require('../../lib/smtp-handler');
+const errorHandler = require('../../lib/error-handler');
 
 module.exports = {
     /*
@@ -15,15 +14,15 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
-        userHandler.getUploads(sessionID).then(function(uploads) {
+        let sessionID = userHandler.getSessionID(request);
+        userHandler.getUploads(sessionID).then(function (uploads) {
             if (uploads && uploads.length > 0) {
-                reply.view('data-returns/send-your-file', {"files":  uploads});
+                reply.view('data-returns/send-your-file', {"files": uploads});
             } else {
                 // Show file-unavailable page if the file uploads array is empty
                 reply.view('data-returns/file-unavailable');
             }
-        }).catch(function() {
+        }).catch(function () {
             // Show file-unavailable page if the user hasn't uploaded any files
             reply.view('data-returns/file-unavailable');
         });
@@ -36,20 +35,20 @@ module.exports = {
      *
      */
     postHandler: function (request, reply) {
-        var sessionID = userHandler.getSessionID(request);
+        let sessionID = userHandler.getSessionID(request);
 
-        var exceptionHandler = function() {
-            var errorMessage = errorHandler.render(3000, {mailto: config.get('feedback.mailto')});
+        let exceptionHandler = function () {
+            let errorMessage = errorHandler.render(3000, {mailto: config.get('feedback.mailto')});
             reply.view('data-returns/failure', {'errorMessage': errorMessage});
         };
 
         userHandler.getUserMail(sessionID).then(function (userMail) {
-            userHandler.getUploads(sessionID).then(function(uploads) {
+            userHandler.getUploads(sessionID).then(function (uploads) {
                 let callbacks = 0;
-                var onFileSubmitted = function () {
+                let onFileSubmitted = function () {
                     if (++callbacks === uploads.length) {
                         winston.info("All uploads complete, sending confirmation emails");
-                        var metadata = {
+                        let metadata = {
                             "email": userMail,
                             "files": uploads
                         };
@@ -65,12 +64,12 @@ module.exports = {
                 };
 
                 for (let upload of uploads) {
-                    var fileKey = upload.status.server.uploadResult.fileKey;
+                    let fileKey = upload.status.server.uploadResult.fileKey;
                     completionHandler.confirmFileSubmission(fileKey, userMail, upload.name)
                         .then(onFileSubmitted)
                         .catch(exceptionHandler);
                 }
             }).catch(exceptionHandler);
-        });
+        }).catch(() => reply.redirect('/email'));
     }
 };
