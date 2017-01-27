@@ -83,11 +83,10 @@ module.exports.isAuthenticated = function (sessionID) {
 
 module.exports.setIsAuthenticated = function (sessionID, value) {
     winston.info('==> setIsAuthenticated() ', value, sessionID);
-    getUser(sessionID)
-        .then(function (user) {
-            user.authenticated = value;
-            setUser(sessionID, user);
-        });
+    getUser(sessionID).then(function (user) {
+        user.authenticated = value;
+        return setUser(sessionID, user);
+    }).catch(winston.error);
 };
 
 module.exports.incrementUploadCount = function (sessionID) {
