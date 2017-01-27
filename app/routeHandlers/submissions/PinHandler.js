@@ -1,8 +1,9 @@
 "use strict";
-let userHandler = require('../../lib/user-handler');
-let pinHandler = require('../../lib/pin-handler');
-let messages = require('../../lib/error-messages');
-let errorHandler = require('../../lib/error-handler');
+const winston = require("winston");
+const userHandler = require('../../lib/user-handler');
+const pinHandler = require('../../lib/pin-handler');
+const messages = require('../../lib/error-messages');
+const errorHandler = require('../../lib/error-handler');
 
 module.exports = {
 
@@ -14,17 +15,18 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
-        userHandler.hasUploads(sessionID).then(function() {
+        userHandler.hasUploads(sessionID).then(function () {
             userHandler.getUserMail(sessionID).then(function (emailAddress) {
                 reply.view('data-returns/enter-your-code', {
-                    errorMessage: null,
                     invalidPin: false,
-                    errorcode: null,
                     emailAddress: emailAddress,
                     startAgain: false
                 });
+            }).catch(() => {
+                // User email not in session, return to email page
+                reply.redirect('/email');
             });
-        }).catch(function() {
+        }).catch(function () {
             // Show file-unavailable page if the user hasn't uploaded any files
             reply.view('data-returns/file-unavailable');
         });
@@ -49,26 +51,25 @@ module.exports = {
                 }
             })
             .catch(function (errResult) {
+                userHandler.getUserMail(sessionID).then((emailAddress) => {
+                    let metadata = {
+                        emailAddress: emailAddress
+                    };
 
-                userHandler.getUserMail(sessionID)
-                    .then(function (emailAddress) {
+                    let errorMessage = errorHandler.render(errResult.code, metadata);
 
-                        let metadata = {
-                            emailAddress: emailAddress
-                        };
-
-                        let errorMessage = errorHandler.render(errResult.code, metadata);
-
-                        userHandler.setIsAuthenticated(sessionID, false);
-                        reply.view('data-returns/enter-your-code', {
-                            errorMessage: errorMessage,
-                            invalidPin: true,
-                            errorCode: errResult.code,
-                            emailAddress: emailAddress,
-                            startAgain: errResult.code === 2280
-                        });
+                    userHandler.setIsAuthenticated(sessionID, false);
+                    reply.view('data-returns/enter-your-code', {
+                        errorMessage: errorMessage,
+                        invalidPin: true,
+                        errorCode: errResult.code,
+                        emailAddress: emailAddress,
+                        startAgain: errResult.code === 2280
                     });
-
+                }).catch(() => {
+                    // User email not in session, return to email page
+                    reply.redirect('/email');
+                });
             });
     }
 };
