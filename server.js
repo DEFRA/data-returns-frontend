@@ -35,9 +35,9 @@ try {
 
 // Remove and recreate upload dir
 winston.info(`Removing old upload folder ${config.get('upload.path')}`);
-rimraf(config.get('upload.path'), function() {
-    mkdirp(config.get('upload.path'), function(err) {
-       winston.info(err);
+rimraf(config.get('upload.path'), function () {
+    mkdirp(config.get('upload.path'), function (err) {
+        winston.info(err);
     });
 });
 
@@ -155,69 +155,54 @@ server.route(require('./app/routes'));
 
 // Implement the pre-response
 // Add security headers and CSRF token to be available in any view
+let csrf_handler_config = {
+    paths: [
+        {
+            source: new RegExp('/email'),
+            target: new RegExp('/email')
+        },
+        {
+            source: new RegExp('/pin'),
+            target: new RegExp('/pin')
+        }
+    ]
+};
 server.ext('onPreResponse', function (request, reply) {
-
     let resp = request.response;
-
     if (resp && resp.header) {
-
         if (!request.path || !request.path.startsWith('/public')) {
             resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
         }
-
         resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; " +
             "base-uri 'self'; connect-src 'self' localhost www.google-analytics.com " +
             "www.googletagmanager.com style-src 'self' 'unsafe-inline';");
+    }
 
-        // Get the session
-        let cookies = new Cookies(request, reply);
-
-        // If we have a new sessionId in this request we cannot get it from the cookie header yet
-        let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
-
-        // Get the accepts content
-        let accepts = [];
-        try {
-            accepts = request.headers.accept.split(',');
-        } catch(err) {
-            // Do nothing
-        }
-
-        // Ignore resource requests - we only need to set the CSRF token on the html views
-        if (sessionID && resp.source
-            && !request.path.startsWith('/public')
-            && !request.path.startsWith('/csv')
-            && accepts.find(ah => ah === 'text/html')) {
-
-            // Get the csrf token from the session
-            cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
-
-                if (!val) {
-                    winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
-                    return reply(resp);
-                }
-
+    // Get the session
+    let cookies = new Cookies(request, reply);
+    // If we have a new sessionId in this request we cannot get it from the cookie header yet
+    let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
+    // Ignore resource requests - we only need to set the CSRF token on the html views
+    if (sessionID && resp.source && csrf_handler_config.paths.map(p => p.source).find(path => path.test(request.path))) {
+        // Get the csrf token from the session
+        cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+            if (!val) {
+                winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
+            } else {
                 winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
-
                 // Make sure the source context is defined and set the csrf token on it
                 // so it becomes available in  the views as {{csrf}}
                 resp.source.context = resp.source.context || {};
                 resp.source.context['csrf'] = val;
-
-                return reply(resp);
-
-            }).catch(function (err) {
-
-                // Log the error and continue
-                winston.error(`${request.path} has error: ${err}`);
-                return reply(resp);
-            });
-
-        } else {
-            return reply(resp);
-        }
+            }
+            reply(resp);
+        }).catch(function (err) {
+            // Log the error and continue
+            winston.error(`${request.path} has error: ${err}`);
+            reply(resp);
+        });
     } else {
-        return reply(resp);
+        reply(resp);
     }
 });
 
@@ -229,11 +214,8 @@ server.ext('onPreResponse', function (request, reply) {
 // or resume to the route handler for normal route processing
 //
 var csrf_check_function = function (request, next) {
-    var token_check = [
-        new RegExp('/email'), new RegExp('/pin')
-    ];
     // Token checker
-    if (request.headers && token_check.find(path => path.test(request.path)) && request.method === 'post') {
+    if (request.headers && request.method === 'post' && csrf_handler_config.paths.map(p => p.target).find(path => path.test(request.path))) {
         // Get the CSRF token from the session
         // Note that the response state is null as the request payload has not yet been parsed
         // - we therefore need to lift the sessionId directly from the request header
@@ -242,23 +224,22 @@ var csrf_check_function = function (request, next) {
         let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
         if (sessionID) {
             cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
+                winston.info("Retrieved CSRF token");
                 if (request.payload.csrf !== val) {
-                    winston.info(`CSRF: token check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
+                    winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
                     // We have to redirect to forbidden as there is no access to the replay object at this point
-                    return next.redirect('/forbidden');
+                    next.redirect('/forbidden');
                 } else {
-                    return next.continue();
+                    next.continue();
                 }
             }).catch(function (err) {
                 winston.error(err);
-                next.redirect('/start');
+                next.redirect('data-returns/failure');
             });
         }
     } else {
-        //
         // Resume
-        //
-        return next.continue();
+        next.continue();
     }
 };
 
