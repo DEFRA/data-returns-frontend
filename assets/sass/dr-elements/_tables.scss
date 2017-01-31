@@ -95,6 +95,12 @@
 			.td-row 			{ &:before { content:"Row number(s): "; }}
 			.td-error 			{ &:before { content:"Error: "; }}
 			.td-data 			{ &:before { content:"Your data: "; }}
+
+			.dr-field 			{ &:before { content:"Column heading: "; }}
+			.dr-description 	{ &:before { content:"Description: "; }}
+			.dr-rules 			{ &:before { content:"Rules: "; }}
+			.dr-example 		{ &:before { content:"Example: "; }}
+
 			&.Rtn_Period {
 				.name 		{ &:before { content:"Rtn_Period: "; }}
 				.definition { &:before { content:"Definition: "; }}
