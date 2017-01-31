@@ -66,7 +66,7 @@ module.exports = {
                 .then(() => reply.redirect('/pin', {emailAddress: userMail}));
         }).catch(function (errResult) {
             if (!errResult.errorCode || errResult.errorCode === 3000) {
-                reply.redirect('data-returns/failure');
+                reply.redirect('/failure');
             } else {
                 reply.view('data-returns/confirm-your-email-address', {
                     invalidEmailAddress: true,

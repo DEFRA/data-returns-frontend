@@ -234,7 +234,7 @@ var csrf_check_function = function (request, next) {
                 }
             }).catch(function (err) {
                 winston.error(err);
-                next.redirect('data-returns/failure');
+                next.redirect('/failure');
             });
         }
     } else {

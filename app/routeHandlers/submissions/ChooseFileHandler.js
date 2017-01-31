@@ -74,7 +74,7 @@ module.exports.postHandler = function (request, reply) {
         removeUpload(sessionID, request.payload.uuid).then(function () {
             reply.redirect('/file/choose').rewritable(true);
         }).catch(function () {
-            reply.redirect('data-returns/failure');
+            reply.redirect('/failure');
         });
     } else {
         let sessionID = userHandler.getSessionID(request);
