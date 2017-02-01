@@ -10,14 +10,13 @@
 		display: table-cell;
 		text-align: center;
 		vertical-align: middle;
-		@include core-48;
-		font-weight: bold;
+		@include bold-48;
 	}
 }
 
 .file-drop-active .drag-drop-indicator {
 	display: table;
-	background: rgba(255,255,255,0.8)
+	background: rgba(255,255,255,0.8);
 }
 
 .file-upload {
@@ -54,7 +53,7 @@
 			display: block;
 			.statusbar.statusbar-header::after {
 				content: "Your files";
-				font-weight: bold;
+				@include bold-24;
 			}
 			.statusbar.statusbar-header {
 				.filename {
@@ -93,7 +92,6 @@
 		.filename {
 			overflow: hidden;
 			text-overflow: ellipsis;
-			white-space: nowrap;
 		}
 		.remove {
 			text-align: right;
@@ -137,6 +135,7 @@
 	@include media(mobile) {
 		.statusbar {
 			padding: 10px 0;
+			border-bottom: 1px solid $grey-2;
 		}
 	}
 	.action {
