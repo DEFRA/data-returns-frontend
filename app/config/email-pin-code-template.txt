@@ -10,11 +10,11 @@ Your site officer will get a notification about this data return file and may ne
 
 Ignore this email if you didn’t ask for a code.
 
-{{#useFooter}}
-Telephone: {{UKPhone}}
-Telephone from outside the UK: {{PhoneFromAbroad}}
+{{#config.smtp.useFooter}}
+Telephone: {{config.smtp.support.UKPhone}}
+Telephone from outside the UK: {{config.smtp.support.PhoneFromAbroad}}
 (Mon to Fri, 8am to 6pm)
-Minicom service, for the hard of hearing: {{MiniCommNumber}} National Customer Contact Centre.
+Minicom service, for the hard of hearing: {{config.smtp.support.MiniCommNumber}} National Customer Contact Centre.
 Details of call charges can be found on the GOV.UK website
-Email address: {{EnquiryEmail}}
-{{/useFooter}}
+Email address: {{config.smtp.support.email}}
+{{/config.smtp.useFooter}}

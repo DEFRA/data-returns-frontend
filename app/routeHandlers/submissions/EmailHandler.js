@@ -48,35 +48,37 @@ module.exports = {
      */
     postHandler: function (request, reply) {
         /* get the users email address */
-        let userMail = request.payload['user_email'];
+        let userMail = request.payload['user_email'] ? request.payload['user_email'].trim() : '';
         let sessionID = userHandler.getSessionID(request);
-        userMail = userMail.trim();
+
         /* Validate the email address */
-        smtpHandler.validateEmailAddress(userMail).then(pinHandler.newPin).then(function (newpin) {
-            /* Store in REDIS */
-            let user = {
-                authenticated: false,
-                email: userMail,
-                pin: newpin,
-                pinCreationTime: new Date().toUTCString(),
-                uploadCount: 0
-            };
-            return userHandler.setUser(sessionID, user)
-                .then(() => smtpHandler.sendPinEmail(userMail, newpin))
-                .then(() => reply.redirect('/pin', {emailAddress: userMail}));
-        }).catch(function (errResult) {
-            if (!errResult.errorCode || errResult.errorCode === 3000) {
-                reply.redirect('/failure');
-            } else {
-                reply.view('data-returns/confirm-your-email-address', {
-                    invalidEmailAddress: true,
-                    showStartAgainButton: errResult.errorCode === 2055,
-                    showInput: errResult.errorCode !== 2055,
-                    showSendMailButton: errResult.errorCode !== 2055,
-                    invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
-                    errorcode: 'DR' + errResult.errorCode
-                });
-            }
-        });
+        smtpHandler.validateEmailAddress(userMail)
+            .then(pinHandler.newPin)
+            .then((newPin) => {
+                return {
+                    authenticated: false,
+                    email: userMail,
+                    pin: newPin,
+                    pinCreationTime: new Date().toUTCString(),
+                    uploadCount: 0
+                };
+            })
+            .then((metadata) => userHandler.setUser(sessionID, metadata))
+            .then((metadata) => smtpHandler.sendPinEmail(userMail, metadata.pin))
+            .then(() => reply.redirect('/pin', {emailAddress: userMail}))
+            .catch(function (errResult) {
+                if (!errResult.errorCode || errResult.errorCode === 3000) {
+                    reply.redirect('/failure');
+                } else {
+                    reply.view('data-returns/confirm-your-email-address', {
+                        invalidEmailAddress: true,
+                        showStartAgainButton: errResult.errorCode === 2055,
+                        showInput: errResult.errorCode !== 2055,
+                        showSendMailButton: errResult.errorCode !== 2055,
+                        invalidEmailAddressErrorMessage: errorHandler.render(errResult.errorCode, null, 'Invalid email address'),
+                        errorCode: 'DR' + errResult.errorCode
+                    });
+                }
+            });
     }
 };

@@ -17,11 +17,21 @@ module.exports = {
         let sessionID = userHandler.getSessionID(request);
         userHandler.hasUploads(sessionID).then(function () {
             userHandler.getUserMail(sessionID).then(function (emailAddress) {
-                reply.view('data-returns/enter-your-code', {
-                    invalidPin: false,
-                    emailAddress: emailAddress,
-                    startAgain: false
-                });
+                pinHandler.checkLock(sessionID).then((status) => {
+                    let errorCode = null;
+                    let errorMessage = null;
+                    if (status.locked) {
+                        errorCode = messages.PIN.PIN_ATTEMPTS_EXCEEDED;
+                        errorMessage = errorHandler.render(errorCode, {emailAddress: emailAddress});
+                    }
+                    reply.view('data-returns/enter-your-code', {
+                        errorMessage: errorMessage,
+                        invalidPin: status.locked,
+                        errorCode: errorCode,
+                        emailAddress: emailAddress,
+                        startAgain: status.locked
+                    });
+                }).catch(() => reply.redirect('/failure'));
             }).catch(() => {
                 // User email not in session, return to email page
                 reply.redirect('/email');
@@ -41,36 +51,32 @@ module.exports = {
      */
     postHandler: function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
-        let userPin = request.payload['validation_code'].toString().trim();
-        userPin = userPin ? parseInt(userPin) : 0;
-        pinHandler.validatePin(sessionID, userPin)
-            .then(function (result) {
-                if (result.code === messages.PIN.VALID_PIN) {
-                    userHandler.setIsAuthenticated(sessionID, true);
+        let userPin = request.payload['validation_code'].trim();
+        pinHandler.validatePin(sessionID, userPin).then(function (status) {
+            let modifyFn = (user) => user.authenticated = status.valid;
+            userHandler.modifyUser(sessionID, modifyFn).then((user) => {
+                if (status.valid) {
                     reply.redirect('/file/send');
-                }
-            })
-            .catch(function (errResult) {
-                userHandler.getUserMail(sessionID).then((emailAddress) => {
-                    let metadata = {
-                        emailAddress: emailAddress
-                    };
-
-                    let errorMessage = errorHandler.render(errResult.code, metadata);
-
-                    userHandler.setIsAuthenticated(sessionID, false);
+                } else {
+                    let errorCode = messages.PIN.INVALID_PIN;
+                    if (status.expired) {
+                        errorCode = messages.PIN.PIN_EXPIRED;
+                    } else if (status.locked) {
+                        errorCode = messages.PIN.PIN_ATTEMPTS_EXCEEDED;
+                    }
+                    let errorMessage = errorHandler.render(errorCode, {emailAddress: user.email});
                     reply.view('data-returns/enter-your-code', {
                         errorMessage: errorMessage,
-                        invalidPin: true,
-                        errorCode: errResult.code,
-                        emailAddress: emailAddress,
-                        startAgain: errResult.code === 2280
+                        invalidPin: !status.valid || status.locked,
+                        errorCode: errorCode,
+                        emailAddress: user.email,
+                        startAgain: status.locked
                     });
-                }).catch(() => {
-                    // User email not in session, return to email page
-                    reply.redirect('/email');
-                });
+                }
             });
+        }).catch((err) => {
+            winston.error(err);
+            reply.redirect('/failure');
+        });
     }
 };
-

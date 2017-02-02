@@ -83,6 +83,30 @@ module.exports = {
             }
         });
     },
+    /*
+     * Increments the number stored at key by increment. If the key does not exist, it is set to 0 before performing the
+     * operation. An error is returned if the key contains a value of the wrong type or contains a string that can not
+     * be represented as integer.
+     *
+     * @param key the key whose value should be incremented
+     * @param increment the amount to increment by, optional, defaults to 1
+     */
+    increment: function (key, increment) {
+        return new Promise(function (resolve, reject) {
+            if (!Number.isInteger(increment)) {
+                increment = 1;
+            }
+            client.incrby(key, increment, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    },
+
+
     /**
      * Delete all redis keys which match the given pattern
      *
@@ -218,7 +242,8 @@ module.exports = {
                 resolve(true);
             });
         });
-    }
+    },
+    setExpiry: setExpiry
 };
 
 client.on('error', winston.error);

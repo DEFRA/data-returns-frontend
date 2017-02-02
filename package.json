@@ -33,6 +33,7 @@
     "minimatch": "^3.0.3",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.17.1",
     "node-minify": "^2.0.2",
     "node-sass": "^4.3.0",
     "node-sass-loader": "^0.1.7",

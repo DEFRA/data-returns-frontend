@@ -1,53 +1,61 @@
 'use strict';
 const winston = require("winston");
+const fs = require("fs");
+const klaw = require("klaw");
 const hogan = require('hogan.js');
 const utils = require('../lib/utils');
 const path = require('path');
 const lodash = require('lodash');
 const commonViewData = require("../lib/common-view-data");
 const templateDir = path.resolve(__dirname, '../error-templates/');
-const filenames = utils.getFileListInDir(templateDir);
 
 //preload and compile error-templates
 let compiledTemplates = new Map();
 (function () {
     winston.info('==> Loading Templates...');
-    let templatesLoaded = 0;
-    filenames.forEach(function (filename) {
-        utils.readFile(filename, function (err, fileContents) {
-            if (err) {
-                winston.error(err);
-            } else {
-                let x = filename.lastIndexOf('/');
-                let y = filename.indexOf('.html');
-                let key = filename.substring(x + 1, y);
-                try {
-                    let errorCodeText = key;
-                    let violationType = null;
-                    if (key.includes('-')) {
-                        let keyParts = key.split('-');
-                        errorCodeText = keyParts[0];
-                        violationType = keyParts[1];
-                    }
-                    errorCodeText = errorCodeText.replace(/\D+/g, '');
+    let templateFiles = [];
+    klaw(templateDir).on('data', function (item) {
+        if (item.stats.isFile()) {
+            templateFiles.push(item.path);
+        }
+    }).on('end', () => {
+        winston.info(`Found ${templateFiles.length} templates to load`);
+        for (let filename of templateFiles) {
+            fs.readFile(filename, 'utf8', function (err, fileContents) {
+                if (err) {
+                    winston.error('Unable to read template file', err);
+                } else {
+                    let x = filename.lastIndexOf('/');
+                    let y = filename.indexOf('.html');
+                    let key = filename.substring(x + 1, y);
+                    try {
+                        let errorCodeText = key;
+                        let violationType = null;
+                        if (key.includes('-')) {
+                            let keyParts = key.split('-');
+                            errorCodeText = keyParts[0];
+                            violationType = keyParts[1];
+                        }
+                        errorCodeText = errorCodeText.replace(/\D+/g, '');
 
-                    let templateData = {
-                        errorCode: parseInt(errorCodeText),
-                        violationType: violationType,
-                        key: key,
-                        filename: filename,
-                        template: hogan.compile(fileContents)
-                    };
-                    winston.info("Added template for key " + key);
-                    compiledTemplates.set(key, templateData);
-                } catch (e) {
-                    winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
+                        let templateData = {
+                            errorCode: parseInt(errorCodeText),
+                            violationType: violationType,
+                            key: key,
+                            filename: filename,
+                            template: hogan.compile(fileContents)
+                        };
+                        winston.info("Added template for key " + key);
+                        compiledTemplates.set(key, templateData);
+                    } catch (e) {
+                        winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
+                    }
                 }
-            }
-        });
-        templatesLoaded++;
+            });
+        }
+
+
     });
-    winston.info(`<== ${templatesLoaded} templates loaded`);
 })();
 
 /**
