@@ -37,7 +37,7 @@ module.exports = {
             });
         }).catch((err) => {
             winston.error(err);
-            reply.redirect('data-returns/failure');
+            reply.redirect('/failure');
         });
     },
 
@@ -126,7 +126,7 @@ module.exports = {
             stringify(rows, {header: true, columns: columns, quoted: true}, function (err, output) {
                 if (err) {
                     winston.error("Failed to write downloadable CSV for controlled lists.", err);
-                    reply.redirect('data-returns/failure');
+                    reply.redirect('/failure');
                 } else {
                     // UTF8 BOM is required so as not to corrupt special UTF8 characters in Excel.
                     const UTF8_BOM = "\uFEFF";

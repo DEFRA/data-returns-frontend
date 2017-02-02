@@ -21,28 +21,18 @@
             <p>We sent the email to {{emailAddress}}. It can sometimes take a while for the email to arrive. Keep this page open while you are waiting.</p>
         </div>
 
-        {{^invalidPin}}
-        <div class="form-group">
-            <label class="form-label" for="validation-code">
+        <div class="form-group {{#invalidPin}}error{{/invalidPin}}">
+            <label class="form-label" for="validation_code">
                 Confirmation code
                 <span class="form-hint">For example, 1234</span>
             </label>
-            <input class="form-control validation-code" id="validation-code" name="validation_code" type="text"
-                   autocomplete="off" autofocus maxlength="4">
-        </div>
-        {{/invalidPin}}
-
-        {{#invalidPin}}
-        <div class="form-group error">
-            <label class="form-label" for="validation-code">
-                Confirmation code
-                <span class="form-hint">For example, 1234</span>
-            </label>
+            {{#invalidPin}}
             <span class="error-message" id="error-message-full-name">Enter a valid confirmation code</span>
-            <input class="form-control validation-code" id="validation-code_e" name="validation_code" type="text"
+            {{/invalidPin}}
+            <input class="form-control validation-code" id="validation_code" name="validation_code" type="text"
                    autocomplete="off" autofocus maxlength="4">
         </div>
-        {{/invalidPin}}
+
 
         <p>If you haven’t received the email you may need to:</p>
         <ul class="list list-bullet">

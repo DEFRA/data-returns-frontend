@@ -53,13 +53,21 @@ module.exports = {
                             "files": uploads
                         };
 
-                        smtpHandler.sendConfirmationEmail(metadata).then(function () {
-                            // Increment the count of uploads using the current pin number
-                            // TODO: This does not take multiple uploads into account - not sure if it really should?
-                            userHandler.incrementUploadCount(sessionID);
-                        }).then(function () {
-                            reply.redirect('/file/sent').rewritable(true);
-                        });
+                        smtpHandler.sendConfirmationEmail(metadata)
+                            .then(() => {
+                                // Increment the count of uploads using the current pin number
+                                return userHandler.modifyUser(sessionID, (user) => {
+                                    if (user) {
+                                        user.uploadCount++;
+                                    }
+                                });
+                            })
+                            .then(() => reply.redirect('/file/sent').rewritable(true))
+                            .catch((err) => {
+                                winston.error(err);
+                                reply.redirect('/failure');
+                            });
+
                     }
                 };
 

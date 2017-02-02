@@ -43,5 +43,6 @@ module.exports.REDIS = {
 module.exports.PIN = {
     VALID_PIN: 200,
     INVALID_PIN: 2225,
-    PIN_EXPIRED: 2275
+    PIN_EXPIRED: 2275,
+    PIN_ATTEMPTS_EXCEEDED: 2280
 };

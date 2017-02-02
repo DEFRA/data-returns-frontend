@@ -29,7 +29,7 @@ module.exports = {
                 let lineErrorsForErrorCode = fileData.correctionsData.lineErrors.filter(value => value.errorCode.toString() === errorId.toString());
                 if (lineErrorsForErrorCode.length !== 1) {
                     winston.error(new Error(`Found ${lineErrorsForErrorCode.length} errors for a single error code, should be exactly 1`));
-                    return reply.redirect('data-returns/failure');
+                    return reply.redirect('/failure');
                 }
 
                 // Set up metadata to display the corrections detail for the appropriate error code
@@ -62,7 +62,7 @@ module.exports = {
                 }));
             }).catch(function (err) {
                 winston.error(err);
-                return reply.redirect('data-returns/failure');
+                return reply.redirect('/failure');
             });
         } else {
             reply.redirect('/file/choose');

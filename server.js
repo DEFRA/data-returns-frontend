@@ -234,7 +234,7 @@ var csrf_check_function = function (request, next) {
                 }
             }).catch(function (err) {
                 winston.error(err);
-                next.redirect('data-returns/failure');
+                next.redirect('/failure');
             });
         }
     } else {
@@ -359,6 +359,5 @@ server.start(function (err) {
         winston.error("Data Returns frontend server failed to start: ", err);
         process.exit(1);
     }
-    utils.createUploadDirectory();
     winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
 });

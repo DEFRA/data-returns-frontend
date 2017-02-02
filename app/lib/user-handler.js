@@ -2,11 +2,11 @@
 
 const winston = require("winston");
 const config = require('../lib/configuration-handler.js').Configuration;
-
-var cacheHandler = require('./cache-handler');
-var cryptoHandler = require('./crypto-handler');
+const moment = require('moment');
+const uuid = require('uuid');
+const cacheHandler = require('./cache-handler');
+const cryptoHandler = require('./crypto-handler');
 const redisKeys = require('./redis-keys');
-var utils = require('./utils');
 const DATA_RETURNS_COOKIE_ID = "data-returns-id";
 
 /*
@@ -18,7 +18,7 @@ var setUser = function (sessionID, user) {
     return new Promise(function (resolve, reject) {
         user.last_updated = new Date().toUTCString();
         cacheHandler.setValue(redisKeys.USER_DATA.compositeKey(sessionID), user)
-            .then(resolve).catch(reject);
+            .then(() => resolve(user)).catch(reject);
     });
 };
 
@@ -66,9 +66,7 @@ module.exports.isAuthenticated = function (sessionID) {
                     // Is the pin in date
                     if (user.pinCreationTime) {
                         var pinCreationTime = new Date(user.pinCreationTime);
-                        var dateNow = new Date();
-                        var mins = utils.getMinutesBetweenDates(pinCreationTime, dateNow);
-
+                        let mins = moment().diff(pinCreationTime, 'minutes');
                         if (mins > config.get('pin.ValidTimePeriodMinutes')) {
                             authenticated = false;
                         }
@@ -81,23 +79,20 @@ module.exports.isAuthenticated = function (sessionID) {
     });
 };
 
-module.exports.setIsAuthenticated = function (sessionID, value) {
-    winston.info('==> setIsAuthenticated() ', value, sessionID);
-    getUser(sessionID).then(function (user) {
-        user.authenticated = value;
-        return setUser(sessionID, user);
-    }).catch(winston.error);
-};
 
-module.exports.incrementUploadCount = function (sessionID) {
-    getUser(sessionID)
-        .then(function (user) {
-            if (user !== null) {
-                user.uploadCount++;
-                setUser(sessionID, user);
-            }
+module.exports.modifyUser = function (sessionID, modifyHandler) {
+    return new Promise(
+        function (resolve, reject) {
+            getUser(sessionID).then(function (user) {
+                modifyHandler(user);
+                return setUser(sessionID, user);
+            }).then(resolve).catch((err) => {
+                winston.error(err);
+                reject(err);
+            });
         });
 };
+
 /**
  *
  * Determine if the user has uploaded files in this session.
@@ -140,7 +135,7 @@ module.exports.emptyUploadList = function (currentSessionId) {
 module.exports.newSession = function (request, reply, sessionKey) {
     return new Promise(function (resolve, reject) {
         // Generate new session
-        let newSessionId = sessionKey || utils.getNewUUID();
+        let newSessionId = sessionKey || uuid.v4();
 
         // Set up cookie details
         var cookieOptions = {
