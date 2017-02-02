@@ -56,13 +56,17 @@ module.exports = {
                         smtpHandler.sendConfirmationEmail(metadata)
                             .then(() => {
                                 // Increment the count of uploads using the current pin number
-                                userHandler.modifyUser(sessionID, (user) => {
+                                return userHandler.modifyUser(sessionID, (user) => {
                                     if (user) {
                                         user.uploadCount++;
                                     }
                                 });
                             })
-                            .then(() => reply.redirect('/file/sent').rewritable(true));
+                            .then(() => reply.redirect('/file/sent').rewritable(true))
+                            .catch((err) => {
+                                winston.error(err);
+                                reply.redirect('/failure');
+                            });
 
                     }
                 };
