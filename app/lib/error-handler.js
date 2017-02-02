@@ -12,50 +12,52 @@ const templateDir = path.resolve(__dirname, '../error-templates/');
 //preload and compile error-templates
 let compiledTemplates = new Map();
 (function () {
-    winston.info('==> Loading Templates...');
-    let templateFiles = [];
-    klaw(templateDir).on('data', function (item) {
-        if (item.stats.isFile()) {
-            templateFiles.push(item.path);
-        }
-    }).on('end', () => {
-        winston.info(`Found ${templateFiles.length} templates to load`);
-        for (let filename of templateFiles) {
-            fs.readFile(filename, 'utf8', function (err, fileContents) {
-                if (err) {
-                    winston.error('Unable to read template file', err);
-                } else {
-                    let x = filename.lastIndexOf('/');
-                    let y = filename.indexOf('.html');
-                    let key = filename.substring(x + 1, y);
-                    try {
-                        let errorCodeText = key;
-                        let violationType = null;
-                        if (key.includes('-')) {
-                            let keyParts = key.split('-');
-                            errorCodeText = keyParts[0];
-                            violationType = keyParts[1];
+    if (compiledTemplates.size === 0) {
+        winston.info('==> Loading Templates...');
+        let templateFiles = [];
+        klaw(templateDir).on('data', function (item) {
+            if (item.stats.isFile()) {
+                templateFiles.push(item.path);
+            }
+        }).on('end', () => {
+            winston.info(`Found ${templateFiles.length} templates to load`);
+            for (let filename of templateFiles) {
+                fs.readFile(filename, 'utf8', function (err, fileContents) {
+                    if (err) {
+                        winston.error('Unable to read template file', err);
+                    } else {
+                        let x = filename.lastIndexOf('/');
+                        let y = filename.indexOf('.html');
+                        let key = filename.substring(x + 1, y);
+                        try {
+                            let errorCodeText = key;
+                            let violationType = null;
+                            if (key.includes('-')) {
+                                let keyParts = key.split('-');
+                                errorCodeText = keyParts[0];
+                                violationType = keyParts[1];
+                            }
+                            errorCodeText = errorCodeText.replace(/\D+/g, '');
+
+                            let templateData = {
+                                errorCode: parseInt(errorCodeText),
+                                violationType: violationType,
+                                key: key,
+                                filename: filename,
+                                template: hogan.compile(fileContents)
+                            };
+                            winston.info("Added template for key " + key);
+                            compiledTemplates.set(key, templateData);
+                        } catch (e) {
+                            winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
                         }
-                        errorCodeText = errorCodeText.replace(/\D+/g, '');
-
-                        let templateData = {
-                            errorCode: parseInt(errorCodeText),
-                            violationType: violationType,
-                            key: key,
-                            filename: filename,
-                            template: hogan.compile(fileContents)
-                        };
-                        winston.info("Added template for key " + key);
-                        compiledTemplates.set(key, templateData);
-                    } catch (e) {
-                        winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
                     }
-                }
-            });
-        }
+                });
+            }
 
 
-    });
+        });
+    }
 })();
 
 /**

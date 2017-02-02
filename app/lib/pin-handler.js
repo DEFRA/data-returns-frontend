@@ -37,9 +37,7 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             let key = sessionID + '-invalid-pin-count';
             cacheHandler.getValue(key).then((attempts) => {
-                if (!attempts) {
-                    attempts = 0;
-                }
+                attempts = attempts || 0;
                 resolve({
                     locked: attempts > MAX_PIN_ATTEMPTS,
                     attempts: attempts

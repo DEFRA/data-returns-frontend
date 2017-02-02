@@ -84,6 +84,7 @@ module.exports.modifyUser = function (sessionID, modifyHandler) {
     return new Promise(
         function (resolve, reject) {
             getUser(sessionID).then(function (user) {
+                user = user || {};
                 modifyHandler(user);
                 return setUser(sessionID, user);
             }).then(resolve).catch((err) => {
