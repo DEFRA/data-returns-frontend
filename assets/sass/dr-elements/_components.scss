@@ -37,9 +37,12 @@ p + .help-notice {
 
 // Search list
 .search-list {
-  .button {
-   padding-top:0.35em
- }
+    .button {
+        padding-top:0.35em;
+        @include media(mobile) {
+            margin-top: 0.35em;
+        }
+    }
 }
 
 /* Used to display support links in footer. */
@@ -162,4 +165,12 @@ input.validation-code {
 mark {
     background-color: $yellow;
     color: $text-colour;
+}
+
+.float-right {
+    float:right;
+    @include media(mobile) {
+        float: none;
+        margin-bottom: $gutter-half;
+    }
 }
