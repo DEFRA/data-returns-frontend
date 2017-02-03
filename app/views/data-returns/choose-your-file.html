@@ -6,14 +6,14 @@
     {{>fineuploader_head}}
 {{/head}}
 
-{{$title}}Check your data{{/title}}
+{{$title}}Upload and check your data{{/title}}
 
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
     <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
-    <p class="lede text">This service checks your data for errors and explains how to make corrections. Once your data is correctly formatted you can submit it to the Environment Agency and get a receipt by email.</p>
+    <p class="lede text">You can upload more than one file at a time.</p>
 
     <div class="file-upload">
         <div id="uploader-container" class="uploader-container">
@@ -24,8 +24,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload files"  accesskey="S"
-                           name="submit"></input>
+                    <input id="submit-upload" class="upload-button button-secondary" type="submit" value="Upload file"  accesskey="S" name="submit"></input>
                 </div>
             </form>
         </div>
@@ -62,7 +61,7 @@
             {{/files}}
             {{^files}}
             <tr class="upload-list-no-files statusbar">
-                <td colspan="4" class="filename">No files uploaded</td>
+                <td colspan="4" class="filename">Upload at least one file to continue</td>
             </tr>
             {{/files}}
             </tbody>
@@ -71,10 +70,6 @@
         <div class="drag-drop-indicator">
             <div class="drag-drop-message">Drop your files here</div>
         </div>
-        <p>
-        <p id="invalid-upload-msg" {{^hasInvalidUploads}}style="display: none;" {{/hasInvalidUploads}}>
-        You must correct any errors before your files can be sent to the Environment Agency.
-        </p>
 
         <form action="/file/confirm" method="get">
             <input class="button" type="submit" accesskey="C" value="Continue" id="continueBtn" {{^canContinue}}disabled="disabled" {{/canContinue}} />
