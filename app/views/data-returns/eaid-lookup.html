@@ -14,35 +14,31 @@
     <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
 
-    {{#errors.length}}
+    {{#errorMessage}}
     <div class="error-summary" role="group" aria-labelledby="search-results" tabindex="-1">
-        {{#errors}}
-        <ul class="error-summary-list">
-            <li>
-                {{{message}}}
-            </li>
-        </ul>
-        {{/errors}}
+        {{{errorMessage}}}
     </div>
-    {{/errors.length}}
+    {{/errorMessage}}
 
-
-        <p class="lede">Use this tool to ensure your data is ready to send to the Environment Agency with the correct EA ID and site name.</p>
-        <details>
-            <summary><span class="summary">What's an EA ID?</span></summary>
-            <div class="panel panel-border-narrow">
-                <p>Your EA unique identifier. It's usually your permit number.</p>
-            </div>
-        </details>
-
-        <div class="form-group">
-            <form method="get" action="/lookup">
-                <p class="form-hint">Start typing your permit number or site name</p>
-                <input id="q" name="q" type="search" class="form-control" placeholder="Permit number or site name"
-                       aria-controls="search-results" value="{{query.string}}"/>
-                <input type="submit" class="button" value="Find"/>
-            </form>
+    <p class="lede">Use this tool to ensure your data is ready to send to the Environment Agency with the correct EA ID and site name.</p>
+    <details>
+        <summary><span class="summary">What's an EA ID?</span></summary>
+        <div class="panel panel-border-narrow">
+            <p>Your EA unique identifier. It's usually your permit number.</p>
         </div>
+    </details>
+
+    <div class="form-group {{#errorMessage}}error{{/errorMessage}}">
+        <form method="get" action="/lookup">
+            <p class="form-hint">Start typing your permit number or site name</p>
+            {{#errorMessage}}
+            <span class="error-message" id="error-message-full-name">Enter a search term</span>
+            {{/errorMessage}}
+            <input id="q" name="q" type="search" class="form-control" placeholder="Permit number or site name"
+                   aria-controls="search-results" value="{{query.string}}"/>
+            <input type="submit" class="button" value="Find"/>
+        </form>
+    </div>
 
     {{#messages.length}}
         {{#messages}}
