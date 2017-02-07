@@ -1,8 +1,10 @@
 'use strict';
+
 const winston = require("winston");
 const stringify = require('csv').stringify;
-let handler = require('../../api-handlers/controlled-lists.js');
-
+const handler = require('../../api-handlers/controlled-lists.js');
+const errorMessages = require('../../lib/error-messages');
+const errorHandler = require('../../lib/error-handler');
 
 let getNavigationSource = function (request) {
     return request.query.src || request.info.referrer || "/guidance/landfill-data-rules";
@@ -62,28 +64,51 @@ module.exports = {
 
     getDisplayHandlerWithSearch: function (request, reply) {
         let list = request.query.list;
-        // if no search term pass control back to the full list handler
+
+        if (!list) {
+            reply.redirect("/controlled-lists");
+        }
+
         let searchString = request.query.q || '';
-        searchString = searchString.trim();
-        if (searchString === '') {
-            module.exports.getDisplayHandler(request, reply);
+        let errorCode = null;
+        let errorMessage = null;
+        let resultHandler = null;
+
+        if (!searchString || !searchString.length) {
+            resultHandler = function (metadata, headings, data) {
+                errorCode = errorMessages.LIST_LOOKUP.NOTHING_TO_SEARCH_WITH;
+                errorMessage = errorHandler.render(errorCode);
+
+                reply.view('data-returns/display-list', {
+                    listMetaData: metadata,
+                    tableHeadings: headings,
+                    rows: data,
+                    clear: true,
+                    src: getNavigationSource(request),
+                    errorMessage: errorMessage
+                });
+
+            };
+
         } else {
-            let resultHandler = function (metadata, headings, data) {
+            searchString = searchString.trim();
+
+            resultHandler = function (metadata, headings, data) {
                 winston.info(`==> /display-list-search list=${list} search=${metadata.searchFields} for search=${searchString}`);
                 let searchTerms = searchString.split(/\s+/);
                 let entryText = data.length === 1 ? "entry" : "entries";
                 let searchTermStrings = searchTerms.map(t => `"${t}"`).join(", ").replace(/,(?!.*,)/gmi, ' or');
                 let searchableHeadings = metadata.searchFields.map(t => metadata.displayHeaders.find(d => d.field === t));
-
+                let searchableHeadingNames = null;
                 let messages = [];
+
                 messages.push(`Found ${data.length} ${entryText} matching ${searchTermStrings}`);
 
                 if (data.length === 0 && headings.length > 1 && searchableHeadings.length < headings.length) {
-                    let searchableHeadingNames = searchableHeadings.map(t => `"${t.header}"`).join(", ").replace(/,(?!.*,)/gmi, ' and');
-                    messages.push(`You can search for entries under the ${searchableHeadingNames} ${searchableHeadings.length === 1 ? 'heading' : 'headings'}`);
+                    searchableHeadingNames = searchableHeadings.map(t => `"${t.header}"`).join(", ").replace(/,(?!.*,)/gmi, ' and');
                 }
 
-                reply.view('data-returns/display-list', {
+                let replyObj = {
                     listMetaData: metadata,
                     tableHeadings: headings,
                     rows: data,
@@ -94,16 +119,36 @@ module.exports = {
                         string: searchString,
                         terms: searchTerms
                     }
-                });
+                };
+
+                if (data.length === 0) {
+                    errorCode = errorMessages.LIST_LOOKUP.NO_RESULTS;
+
+                    errorMessage = errorHandler.render(errorCode, {
+                        searchString : searchString
+                    });
+
+                    if (searchableHeadingNames) {
+                        replyObj.searchableHeadingNames = searchableHeadingNames;
+                    }
+
+                    replyObj.errorMessage = errorMessage
+                }
+
+                reply.view('data-returns/display-list', replyObj);
             };
 
-            return handler.getListProcessor(handler.pageExtractor, list, resultHandler, {contains: searchString}).catch((err) => {
-                winston.error(err);
-                reply.view('data-returns/display-list', {
-                    messages: ["A problem occurred while attempting to filter the list, please try again later."]
-                });
-            });
         }
+
+        return handler.getListProcessor(handler.pageExtractor, list, resultHandler, { contains: searchString }).catch((err) => {
+            winston.error(err);
+            errorCode = errorMessages.SERVICE.NO_SERVICE;
+            errorMessage = errorHandler.render(errorCode);
+
+            reply.view('data-returns/display-list', {
+                errorMessage: errorMessage
+            });
+        });
     },
 
     /**
