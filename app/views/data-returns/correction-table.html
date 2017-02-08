@@ -27,7 +27,7 @@
         {{#correctionsData.lineErrors}}
         <tr id="ERR_DR{{errorCode}}">
             <td class="td-field-heading">
-                <abbr title="{{definition}}">{{fieldName}}</abbr>
+                <abbr {{#definition}}title="{{definition}}"{{/definition}}>{{fieldName}}</abbr>
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
             <td class="td-errors">
