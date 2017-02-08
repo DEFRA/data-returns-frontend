@@ -19,10 +19,11 @@ function getHandler(request, reply) {
 }
 
 function searchHandler(request, reply) {
-    let searchString = request.query.q;
     let errorCode = null;
     let errorMessage = null;
     let data = null;
+
+    let searchString = request.query.q ? request.query.q.trim() : '';
 
     if (searchString && searchString.length) {
         let searchTerms = searchString.split(/\s+/);
@@ -53,9 +54,9 @@ function searchHandler(request, reply) {
             }
 
             reply.view('data-returns/eaid-lookup', data);
-
         }).catch(function (error) {
             winston.error(error);
+
             errorCode = errorMessages.SERVICE.NO_SERVICE;
             errorMessage = errorHandler.render(errorCode);
             reply.view('data-returns/eaid-lookup', {
