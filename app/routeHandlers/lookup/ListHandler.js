@@ -69,7 +69,7 @@ module.exports = {
             reply.redirect("/controlled-lists");
         }
 
-        let searchString = request.query.q || '';
+        let searchString = request.query.q ? request.query.q.trim() : '';
         let errorCode = null;
         let errorMessage = null;
         let resultHandler = null;
@@ -95,6 +95,7 @@ module.exports = {
 
             resultHandler = function (metadata, headings, data) {
                 winston.info(`==> /display-list-search list=${list} search=${metadata.searchFields} for search=${searchString}`);
+
                 let searchTerms = searchString.split(/\s+/);
                 let entryText = data.length === 1 ? "entry" : "entries";
                 let searchTermStrings = searchTerms.map(t => `"${t}"`).join(", ").replace(/,(?!.*,)/gmi, ' or');
@@ -105,7 +106,7 @@ module.exports = {
                 messages.push(`Found ${data.length} ${entryText} matching ${searchTermStrings}`);
 
                 if (data.length === 0 && headings.length > 1 && searchableHeadings.length < headings.length) {
-                    searchableHeadingNames = searchableHeadings.map(t => `"${t.header}"`).join(", ").replace(/,(?!.*,)/gmi, ' and');
+                    searchableHeadingNames = searchableHeadings.map(t => t.header).join(", ").replace(/,(?!.*,)/gmi, ' and');
                 }
 
                 let replyObj = {
@@ -125,12 +126,10 @@ module.exports = {
                     errorCode = errorMessages.LIST_LOOKUP.NO_RESULTS;
 
                     errorMessage = errorHandler.render(errorCode, {
-                        searchString : searchString
+                        searchString : searchString,
+                        errorMessage : errorMessage,
+                        searchableHeadingNames : searchableHeadingNames
                     });
-
-                    if (searchableHeadingNames) {
-                        replyObj.searchableHeadingNames = searchableHeadingNames;
-                    }
 
                     replyObj.errorMessage = errorMessage
                 }
