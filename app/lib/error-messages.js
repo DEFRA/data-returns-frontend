@@ -1,4 +1,9 @@
 'use strict';
+
+module.exports.SERVICE = {
+    NO_SERVICE: 3000
+};
+
 // File error messages
 module.exports.FILE_HANDLER = {
     INVALID_CONTENT_TYPE: 'The file is not a CSV file',
@@ -45,4 +50,14 @@ module.exports.PIN = {
     INVALID_PIN: 2225,
     PIN_EXPIRED: 2275,
     PIN_ATTEMPTS_EXCEEDED: 2280
+};
+
+module.exports.EA_ID_LOOKUP = {
+    NO_RESULTS: 2301,
+    NOTHING_TO_SEARCH_WITH: 2300
+};
+
+module.exports.LIST_LOOKUP = {
+    NO_RESULTS: 2311,
+    NOTHING_TO_SEARCH_WITH: 2310
 };

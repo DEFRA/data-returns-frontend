@@ -208,6 +208,11 @@ let handlers = [
     {
         method: 'GET',
         path: '/display-list',
+        handler: listHandler.getDisplayHandler
+    },
+    {
+        method: 'GET',
+        path: '/display-list/search',
         handler: listHandler.getDisplayHandlerWithSearch
     },
     {
