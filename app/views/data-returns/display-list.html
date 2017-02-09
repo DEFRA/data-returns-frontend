@@ -13,26 +13,9 @@
     {{{feedbackbanner}}}
     <a id="back.btn" href="{{src}}" class="link-back">Go back</a>
 
-    {{#errorMessage}}
-    <div class="error-summary" role="group" aria-labelledby="search-results" tabindex="-1">
-        {{{errorMessage}}}
-    </div>
-    {{/errorMessage}}
-
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
-        </div>
-        <div class="column-third float-right">
-            <h2 class="heading-small">Version 1.0</h2>
-            <details>
-                <summary><span class="summary">How we deal with changes</span></summary>
-                <div class="panel panel-border-narrow">
-                    <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
-                </div>
-            </details>
-        </div>
-        <div class="column-two-thirds">
             <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group search-list {{#errorMessage}}error{{/errorMessage}}">
@@ -47,6 +30,23 @@
                     <input type="hidden" name="src" value="{{src}}"/>
                 </form>
             </div>
+
+
+            {{#errorMessage}}
+            <div style="overflow:hidden" class="error-summary" role="group" aria-live="assertive" aria-labelledby="search-results" tabindex="-1">
+                {{{errorMessage}}}
+            </div>
+            {{/errorMessage}}
+
+        </div>
+        <div class="column-third float-right">
+            <h2 class="heading-small">Version 1.0</h2>
+            <details>
+                <summary><span class="summary">How we deal with changes</span></summary>
+                <div class="panel panel-border-narrow">
+                    <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
+                </div>
+            </details>
         </div>
     </div>
 
