@@ -15,7 +15,9 @@ function routeHandler(request, reply) {
 }
 
 function getHandler(request, reply) {
-    reply.view('data-returns/eaid-lookup', {});
+    reply.view('data-returns/eaid-lookup', {
+        src: request.info.referrer || '/eaid-lookup'
+    });
 }
 
 function searchHandler(request, reply) {
@@ -46,7 +48,8 @@ function searchHandler(request, reply) {
                     terms: searchTerms
                 },
                 messages: messages,
-                results: matches
+                results: matches,
+                src: request.info.referrer || '/eaid-lookup'
             };
 
             if (errorMessage) {
