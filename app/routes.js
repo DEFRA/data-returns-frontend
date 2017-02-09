@@ -72,7 +72,9 @@ let handlers = [
         method: 'GET',
         path: '/guidance/{page*}',
         handler: function (request, reply) {
-            reply.view(`data-returns/guidance/${request.params.page}`);
+            reply.view(`data-returns/guidance/${request.params.page}`, {
+                 src: request.info.referrer || '/guidance/landfill-data-rules'
+            });
         }
     },
     /*
