@@ -36,7 +36,7 @@ function searchHandler(request, reply) {
 
             if (matches.length === 0) {
                 errorCode = errorMessages.EA_ID_LOOKUP.NO_RESULTS;
-                errorMessage = errorHandler.render(errorCode, {searchString: searchString});
+                errorMessage = errorHandler.render(errorCode, { searchString: searchString });
             } else if (matches.length > MAX_RESULTS) {
                 messages.push(`Displaying the first ${MAX_RESULTS} results of ${matches.length} in total.`);
                 matches.splice(MAX_RESULTS, matches.length - MAX_RESULTS);
@@ -49,7 +49,7 @@ function searchHandler(request, reply) {
                 },
                 messages: messages,
                 results: matches,
-                src: request.info.referrer || '/eaid-lookup'
+                src: request.query.src || '/eaid-lookup'
             };
 
             if (errorMessage) {
@@ -63,14 +63,16 @@ function searchHandler(request, reply) {
             errorCode = errorMessages.SERVICE.NO_SERVICE;
             errorMessage = errorHandler.render(errorCode);
             reply.view('data-returns/eaid-lookup', {
-                errorMessage: errorMessage
+                errorMessage: errorMessage,
+                src: request.query.src || '/eaid-lookup'
             });
         });
     } else {
         errorCode = errorMessages.EA_ID_LOOKUP.NOTHING_TO_SEARCH_WITH;
         errorMessage = errorHandler.render(errorCode);
         reply.view('data-returns/eaid-lookup', {
-            errorMessage: errorMessage
+            errorMessage: errorMessage,
+            src: request.query.src || '/eaid-lookup'
         });
     }
 }
