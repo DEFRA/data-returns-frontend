@@ -20,9 +20,9 @@
             <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group search-list {{#errorMessage}}error{{/errorMessage}}">
                 <form method="get" action="/display-list/search" >
-                    <label class="form-label" for="search">Filter this list</label>
+                    <label class="form-label" for="search">Search this list</label>
                     <input id="search" name="q" class="form-control" type="text" value="{{query.string}}" />
-                    <input class="button" type="submit" value="Filter">
+                    <input class="button" type="submit" value="Search">
                     {{#clear}}
                     <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&src={{src}}">Clear</a>
                     {{/clear}}
