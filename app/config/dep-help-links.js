@@ -29,6 +29,16 @@ module.exports.links = {
         Qualifier: "/display-list?list=Qualifier",
         Rel_Trans: "/display-list?list=Rel_Trans"
     },
+    fieldDefinitions: {
+        EA_ID: "Your EA unique identifier: For permits - 2 capital letters, 4 numbers and 2 capital letters (eg, AB1234ZZ) or for Waste Management Licences - a 5 or 6 digit number (eg, 654321)",
+        Rtn_Type: "The type of data being returned",
+        Mon_Date: "Monitoring date/time. This is the date and (optionally) time (eg, for a spot sample). If you're monitoring for a period of time this is the date/time at the end of the monitoring period",
+        Rtn_Period: "Name of date range covering the entire return",
+        Mon_Point: "The monitoring point reference for where the sample was taken. Refer to the sampling or emission point described in your permit or licence",
+        Ref_Period: "The chemical substance or parameter you're monitoring. Select an entry from the parameter controlled list",
+        Meth_Stand: "Method or standard used for monitoring",
+        Rel_Trans: "Releases and Transfers"
+    },
     downloads: {
         Rtn_Type: "/csv/Rtn_Type",
         Rtn_Period: "/csv/Rtn_Period",

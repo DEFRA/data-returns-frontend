@@ -86,15 +86,18 @@ let checkEmailLimit = function (recipient) {
 };
 
 /* Default Transport (SMTP Connection) */
-let transporter = nodeMailer.createTransport({
+let transportSettings = {
     host: smtpConfig.host,
     port: smtpConfig.port,
-    ignoreTLS: smtpConfig.ignoreTLS,
-    auth: {
+    ignoreTLS: smtpConfig.ignoreTLS
+};
+if (smtpConfig.username || smtpConfig.password) {
+    transportSettings.auth = {
         user: smtpConfig.username,
         pass: smtpConfig.password
-    }
-}, {
+    };
+}
+let transporter = nodeMailer.createTransport(transportSettings, {
     // default values for sendMail method
     from: sender || '"Environment Agency (no-reply)" noreply@environment-agency.gov.uk'
 });

@@ -12,7 +12,7 @@
     </div>
 
     <p class="back">
-      <a id="back.btn" onclick="history.back(); return false;" href="/file/choose" class="button">Back to file list</a>
+      <a id="back.btn" href="/file/choose" class="button">Back to file list</a>
     </p>
 
     <table id="errorTableHeader" class="table-control mobile-format single-column corrections-table">
@@ -27,7 +27,7 @@
         {{#correctionsData.lineErrors}}
         <tr id="ERR_DR{{errorCode}}">
             <td class="td-field-heading">
-                <abbr title="{{definition}}">{{fieldName}}</abbr>
+                <abbr {{#definition}}title="{{definition}}"{{/definition}}>{{fieldName}}</abbr>
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </td>
             <td class="td-errors">
