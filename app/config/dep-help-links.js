@@ -30,14 +30,14 @@ module.exports.links = {
         Rel_Trans: "/display-list?list=Rel_Trans"
     },
     fieldDefinitions: {
-        EA_ID: "Your EA unique identifier: For permits - 2 capital letters, 4 numbers and 2 capital letters (eg, AB1234ZZ) or for Waste Management Licences - a 5 or 6 digit number (eg, 654321)",
-        Rtn_Type: "The type of data being returned",
-        Mon_Date: "Monitoring date/time. This is the date and (optionally) time (eg, for a spot sample). If you're monitoring for a period of time this is the date/time at the end of the monitoring period",
-        Rtn_Period: "Name of date range covering the entire return",
-        Mon_Point: "The monitoring point reference for where the sample was taken. Refer to the sampling or emission point described in your permit or licence",
-        Ref_Period: "The chemical substance or parameter you're monitoring. Select an entry from the parameter controlled list",
-        Meth_Stand: "Method or standard used for monitoring",
-        Rel_Trans: "Releases and Transfers"
+        EA_ID: "A unique identifier for the data. It's the permit or licence number that we have in our records. You need to look this up using our finder.",
+        Rtn_Type: "Return type: the type of data being reported.",
+        Mon_Date: "Monitoring date and time. Date and, where your permit asks for it or if you want to submit it, the time the measurement was taken. If you're monitoring for a period of time (for example, a week), give the date at the end of the monitoring period.",
+        Rtn_Period: "Return period: The date range for the data.",
+        Mon_Point: "The monitoring point reference where the sample was taken. The sampling or emission point is described in your permit or licence.",
+        Ref_Period: "The reference period for the sample, as specified in your permit or licence. This explains how the sample was taken.",
+        Meth_Stand: "The method or standard used for sampling.",
+        Rel_Trans: "Releases and transfers."
     },
     downloads: {
         Rtn_Type: "/csv/Rtn_Type",
