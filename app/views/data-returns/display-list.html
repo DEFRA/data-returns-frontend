@@ -16,8 +16,8 @@
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
-            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value. <a href="#contact">Contact us if you need to report using a value that is not in this list</a>.</p>
-            <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
+            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value. Contact us <a href="#contact">if you need to report using a value that is not in this list</a>.</p>
+            <p class="download"><i class="icon icon-file-download"></i> <a href="/csv/{{listMetaData.path}}"> Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group search-list {{#errorMessage}}error{{/errorMessage}}">
                 <form method="get" action="/display-list/search" >
                     <label class="form-label" for="search">Search this list</label>
@@ -83,17 +83,19 @@
     </table>
     {{/rows.length}}
 
-    <div id="contact" class="text">
-        <h2 class="heading-medium">If you need to report using a value that is not in this list</h2>
-        <p>If there is a value on the list that has the same meaning as the value you’ve used before, you should use that.</p>
-        <p>If you can’t report your data without having a new value added to the list, please contact the Environment Agency National Customer Contact Centre:</p>
-        <ul class="list">
-            <li><address>
-                <a href="enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a>
-            </address></li>
-            <li>Telephone <a href="tel:+443708506506">03708  506 506</a></li>
-        </ul>
-        <p><a href="#content">Back to top</a></p>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h2 class="heading-medium" id="contact">If you need to report using a value that is not in this list</h2>
+            <p>If there is a value on the list that has the same meaning as the value you’ve used before, you should use that.</p>
+            <p>If you can’t report your data without having a new value added to the list, please contact the Environment Agency National Customer Contact Centre:</p>
+            <ul class="list">
+                <li><address>
+                    <a href="enquiries@environment-agency.gov.uk">enquiries@environment-agency.gov.uk</a>
+                </address></li>
+                <li>Telephone <a href="tel:+443708506506">03708  506 506</a></li>
+            </ul>
+            <p><a href="#content">Back to top</a></p>
+        </div>
     </div>
 
 
