@@ -60,6 +60,21 @@ input.validation-code {
     }
 }
 
+//form-group inline
+.form-group.inline {
+    input.button {
+        line-height: 1.1;
+        @include media(mobile) {
+            margin-top: $gutter-one-third;
+        }
+    }
+}
+
+// Allowed value search
+.search-list {
+    margin-top:$gutter-half;
+}
+
 // Highlights words in the allowed values filter
 mark {
     background-color: $yellow;
