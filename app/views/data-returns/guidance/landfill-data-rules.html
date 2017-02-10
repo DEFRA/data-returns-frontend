@@ -46,7 +46,233 @@
                 </tr>
             </thead>
             <tbody>
+              <tr>
+                <td class="dr_field">EA_ID</td>
+                <td class="dr_description">This is the permit or licence number that we have in our records.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>You must use the EA_ID given by finding your permit number or site name in our records.</li>
+                    <li><a href="{{links.Help_Operator_Lookup}}">Find the correct EA_ID and Site_Name</a> using our search tool. </li>
+                    <li>Required.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">AB1234ZZ or 654321</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Site_Name</td>
+                <td class="dr_description">The site name in our records. It's used to check that you used the correct EA_ID. </td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Check that the site name in your data file matches our records. You must use the site name that you find in our records even if it’s different the site name on your permit.</li>
+                    <li><a href="{{links.Help_Operator_Lookup}}">Find the correct EA_ID and Site_Name</a> using our search tool. </li>
+                    <li>Required.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Leeds Landfill Site</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Rtn_Period</td>
+                <td class="dr_description">The week, month, quarter or year when you took the measurement.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Give this information where possible.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Rtn_Period}}">return period allowed values list</a>. </li>
+                    <li>To give details of date and time for the individual monitoring item use Mon_Date.</li>
+                    <li>You can only report data covering up to 18 months in the past.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Qtr 2 2016</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Rtn_Type</td>
+                <td class="dr_description">The type of data that you're reporting.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Required.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Rtn_Type}}">return type allowed value list</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Landfill gas borehole</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Mon_Point</td>
+                <td class="dr_description">The sampling or emission point where the sample was taken.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Required.</li>
+                    <li>Enter the monitoring point specified on your permit or licence.</li>
+                    <li>For certain return types the monitoring point on your permit may be 'site'.</li>
+                    <li>Maximum 50 characters.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Borehole 1</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Mon_Date</td>
+                <td class="dr_description">The date and, where your permit asks for it or if you want to submit it, the time you took the measurement. If you're monitoring for a period of time (for example, a week), give the date at the end of the monitoring period.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Date is required. Time is optional unless your permit requires it.</li>
+                    <li>Format the date as YYYY-MM-DD, DD-MM-YYYY or DD/MM/YYYY.</li>
+                    <li>Format time as hh:mm:ss using the 24-hour clock.</li>
+                    <li>If you're giving time put a 'T' or a space between date and time.</li>
+                    <li>You cannot submit a Mon_Date in the future. You can only submit data covering up to 18 months in the past.</li>
+                    <li>If you're using spreadsheet software it may change dates so they are in the wrong format. Fix this by setting the spreadsheet cell format to 'text'.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">2016-08-31 15:28:02 or 2016-08-31T15:28:04 or 31-08-2016 or 31/08/2016</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Parameter</td>
+                <td class="dr_description">The chemical substance or parameter you're monitoring.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Required.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Parameter}}">parameters allowed values list</a>.</li>
+                    <li>If the parameter is pH, use the unit pH.</li>
+                    <li>Special case: <a href="{{links.Help_SpecialCases}}">when you need to report a descriptive measurement</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">CH4</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Qualifier</td>
+                <td class="dr_description">Gives more information about the measurement, such as sample or operating condition, or the calculation used.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Use this where there’s a basic parameter that can have different values (and different limits) depending on how you measured it. For example, 'Dry weight' or 'Wet weight'.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Qualifier}}">qualifier allowed values list</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Filtered</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Ref_Period</td>
+                <td class="dr_description">The reference period for the sample, as specified in your permit or licence. This explains how you took the measurement, for example, '24 hour total', 'Half hour average' or 'Monthly mean'.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>You can leave this blank if there are no reference period requirements in your permit or licence. You can also leave it blank for instantaneous or spot sample readings.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Ref_Period}}">reference period allowed value list</a>.</li>
+                    <li>Special case: <a href="{{links.Help_SpecialCases}}">when Ref_Period covers multiple measurements in a single calculation</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Daily mean</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Value</td>
+                <td class="dr_description">The numerical value of your measurement in the units you used.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Required.</li>
+                    <li>Numerical values only but can include zeros, blanks (nulls) &gt; and &lt;.</li>
+                    <li>You can enter negative values.</li>
+                    <li>Values such as 'waterlogged' should be in 'comments' field.</li>
+                    <li>Special case: <a href="{{links.Help_SpecialCases}}">when you need to give a ‘No result’ measurement</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">0.2</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Txt_Value</td>
+                <td class="dr_description">Used for a text-based response, for example, ‘ Yes’, ‘No’, 'No result' and 'See comments'. </td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>You must use one of the values in the <a href="{{links.fields.Txt_Value}}">text value allowed value list</a>.</li>
+                    <li>Only use ‘See comments’ when the result is descriptive text. For example, appearance or site weather conditions.</li>
+                    <li>Do not use this to simply add comments about your result. For more information see <a href="{{links.Help_SpecialCases}}">exceptions and special cases</a> below.</li>
+                    <li>You cannot enter both a (numerical) value and a text value. </li>
+                  </ul>
+                </td>
+                <td class="dr_example">No result</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Unit</td>
+                <td class="dr_description">The unit for the measurement.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>Required.</li>
+                    <li>You must use one of the values in the <a href="{{links.fields.Unit}}">unit or measure allowed value list</a>.</li>
+                    <li>If the parameter is pH, use the unit pH.</li>
+                    <li>Units are case sensitive.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">m</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Meth_Stand</td>
+                <td class="dr_description">The method or standard used for sampling.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>You must report this if your permit requires it. If it does not, then leave it blank.</li>
+                    <li>If you need to report this you must use one of the values in the <a href="{{links.fields.Meth_Stand}}">monitoring standard or method allowed value list</a>.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">BS EN 14791</td>
+              </tr>
+              <tr>
+                <td class="dr_field">Comments</td>
+                <td class="dr_description">Use this for comments about the row of data. For example, if you were unable to take a reading. You can also use this field if you wish to give your own system references to store with the results.</td>
+                <td class="dr_rules">
+                  <ul class="list list-bullet">
+                    <li>You must provide this if Text_Value is 'See comments'. </li>
+                    <li>Desirable if Text_Value is 'No result'.</li>
+                    <li>You can also use this to provide extra information.</li>
+                    <li>Maximum 255 characters.</li>
+                    <li>Don't include any personal information such as names or contact details.</li>
+                  </ul>
+                </td>
+                <td class="dr_example">Borehole blocked</td>
+              </tr>
+            </tbody>
+        </table>
+    </section>
 
+
+    <section class="group" id="exceptions">
+        <h2 class="heading-large">Exceptions and special cases</h2>
+        <p class="text">There are some exceptions where you may not have to fill mandatory fields because of circumstances, or special cases where your data needs to be adapted. The table below describes these exceptions and explains how you must format your data in these circumstances. It also gives example data.</p>
+        <section class="exception">
+            <h3 class="heading-medium">When you need to give a ‘No result’ measurement</h3>
+            <p class="text">You should leave the Value field blank and enter ‘No result’ in the Txt_Value field if you’re reporting on a parameter but can’t give a measurement, for example, because a borehole is blocked. You should also give an explanation in the Comments field.</p>
+            <p class="text">You must give a line of data for each parameter, including instances where you couldn’t take a measurement.</p>
+            <div class="example-file-wrapper">
+                <div class="example-file">
+                    <table class="table-control example">
+                        <thead>
+                            <tr>
+                                <th>EA_ID</th>
+                                <th>Site_Name</th>
+                                <th>Rtn_Period</th>
+                                <th>Rtn_Type</th>
+                                <th>Mon_Point</th>
+                                <th>Mon_Date</th>
+                                <th>Parameter</th>
+                                <th>Qualifier</th>
+                                <th>Ref_Period</th>
+                                <th>Value</th>
+                                <th>Txt_Value</th>
+                                <th>Unit</th>
+                                <th>Meth_Stand</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas borehole</td>
+                                <td>Borehole 1</td>
+                                <td>2016-01-01T09:14</td>
+                                <td>Methane</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>No result</td>
+                                <td></td>
+                                <td></td>
+                                <td>Borehole is blocked</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -77,183 +303,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td class="dr_field">EA_ID</td>
-                            <td class="dr_description">This is the permit or licence number that we have in our records.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>You must use the EA_ID given by finding your permit number or site name in our records.</li>
-                                <li><a href="{{links.Help_Operator_Lookup}}">Find the correct EA_ID and Site_Name</a> using our search tool. </li>
-                                <li>Required.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">AB1234ZZ or 654321</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Site_Name</td>
-                            <td class="dr_description">The site name in our records. It's used to check that you used the correct EA_ID. </td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Check that the site name in your data file matches our records. You must use the site name that you find in our records even if it’s different the site name on your permit.</li>
-                                <li><a href="{{links.Help_Operator_Lookup}}">Find the correct EA_ID and Site_Name</a> using our search tool. </li>
-                                <li>Required.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Leeds Landfill Site</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Rtn_Period</td>
-                            <td class="dr_description">The week, month, quarter or year when you took the measurement.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Give this information where possible.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Rtn_Period}}">return period allowed values list</a>. </li>
-                                <li>To give details of date and time for the individual monitoring item use Mon_Date.</li>
-                                <li>You can only report data covering up to 18 months in the past.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Qtr 2 2016</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Rtn_Type</td>
-                            <td class="dr_description">The type of data that you're reporting.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Required.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Rtn_Type}}">return type allowed value list</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Landfill gas borehole</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Mon_Point</td>
-                            <td class="dr_description">The sampling or emission point where the sample was taken.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Required.</li>
-                                <li>Enter the monitoring point specified on your permit or licence.</li>
-                                <li>For certain return types the monitoring point on your permit may be 'site'.</li>
-                                <li>Maximum 50 characters.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Borehole 1</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Mon_Date</td>
-                            <td class="dr_description">The date and, where your permit asks for it or if you want to submit it, the time you took the measurement. If you're monitoring for a period of time (for example, a week), give the date at the end of the monitoring period.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Date is required. Time is optional unless your permit requires it.</li>
-                                <li>Format the date as YYYY-MM-DD, DD-MM-YYYY or DD/MM/YYYY.</li>
-                                <li>Format time as hh:mm:ss using the 24-hour clock.</li>
-                                <li>If you're giving time put a 'T' or a space between date and time.</li>
-                                <li>You cannot submit a Mon_Date in the future. You can only submit data covering up to 18 months in the past.</li>
-                                <li>If you're using spreadsheet software it may change dates so they are in the wrong format. Fix this by setting the spreadsheet cell format to 'text'.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">2016-08-31 15:28:02 or 2016-08-31T15:28:04 or 31-08-2016 or 31/08/2016</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Parameter</td>
-                            <td class="dr_description">The chemical substance or parameter you're monitoring.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Required.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Parameter}}">parameters allowed values list</a>.</li>
-                                <li>If the parameter is pH, use the unit pH.</li>
-                                <li>Special case: <a href="{{links.Help_SpecialCases}}">when you need to report a descriptive measurement</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">CH4</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Qualifier</td>
-                            <td class="dr_description">Gives more information about the measurement, such as sample or operating condition, or the calculation used.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Use this where there’s a basic parameter that can have different values (and different limits) depending on how you measured it. For example, 'Dry weight' or 'Wet weight'.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Qualifier}}">qualifier allowed values list</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Filtered</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Ref_Period</td>
-                            <td class="dr_description">The reference period for the sample, as specified in your permit or licence. This explains how you took the measurement, for example, '24 hour total', 'Half hour average' or 'Monthly mean'.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>You can leave this blank if there are no reference period requirements in your permit or licence. You can also leave it blank for instantaneous or spot sample readings.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Ref_Period}}">reference period allowed value list</a>.</li>
-                                <li>Special case: <a href="{{links.Help_SpecialCases}}">when Ref_Period covers multiple measurements in a single calculation</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Daily mean</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Value</td>
-                            <td class="dr_description">The numerical value of your measurement in the units you used.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Required.</li>
-                                <li>Numerical values only but can include zeros, blanks (nulls) &gt; and &lt;.</li>
-                                <li>You can enter negative values.</li>
-                                <li>Values such as 'waterlogged' should be in 'comments' field.</li>
-                                <li>Special case: <a href="{{links.Help_SpecialCases}}">when you need to give a ‘No result’ measurement</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">0.2</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Txt_Value</td>
-                            <td class="dr_description">Used for a text-based response, for example, ‘ Yes’, ‘No’, 'No result' and 'See comments'. </td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>You must use one of the values in the <a href="{{links.fields.Txt_Value}}">text value allowed value list</a>.</li>
-                                <li>Only use ‘See comments’ when the result is descriptive text. For example, appearance or site weather conditions.</li>
-                                <li>Do not use this to simply add comments about your result. For more information see <a href="{{links.Help_SpecialCases}}">exceptions and special cases</a> below.</li>
-                                <li>You cannot enter both a (numerical) value and a text value. </li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">No result</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Unit</td>
-                            <td class="dr_description">The unit for the measurement.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>Required.</li>
-                                <li>You must use one of the values in the <a href="{{links.fields.Unit}}">unit or measure allowed value list</a>.</li>
-                                <li>If the parameter is pH, use the unit pH.</li>
-                                <li>Units are case sensitive.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">m</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Meth_Stand</td>
-                            <td class="dr_description">The method or standard used for sampling.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>You must report this if your permit requires it. If it does not, then leave it blank.</li>
-                                <li>If you need to report this you must use one of the values in the <a href="{{links.fields.Meth_Stand}}">monitoring standard or method allowed value list</a>.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">BS EN 14791</td>
-                          </tr>
-                          <tr>
-                            <td class="dr_field">Comments</td>
-                            <td class="dr_description">Use this for comments about the row of data. For example, if you were unable to take a reading. You can also use this field if you wish to give your own system references to store with the results.</td>
-                            <td class="dr_rules">
-                              <ul class="list list-bullet">
-                                <li>You must provide this if Text_Value is 'See comments'. </li>
-                                <li>Desirable if Text_Value is 'No result'.</li>
-                                <li>You can also use this to provide extra information.</li>
-                                <li>Maximum 255 characters.</li>
-                                <li>Don't include any personal information such as names or contact details.</li>
-                              </ul>
-                            </td>
-                            <td class="dr_example">Borehole blocked</td>
-                          </tr>
+                            <tr>
+                                <td>AB1234YZ</td>
+                                <td>Greendale Landfill</td>
+                                <td>Qtr 4 2016</td>
+                                <td>Landfill gas engine</td>
+                                <td>Eng1</td>
+                                <td>2016-08-01T16:00:00</td>
+                                <td>NOX</td>
+                                <td></td>
+                                <td>Hourly mean</td>
+                                <td>380</td>
+                                <td></td>
+                                <td>mg/m3</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -383,7 +448,6 @@
             </section>
         </article>
     <section>
-
 
 </main>
 {{/content}}
