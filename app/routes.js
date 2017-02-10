@@ -72,7 +72,9 @@ let handlers = [
         method: 'GET',
         path: '/guidance/{page*}',
         handler: function (request, reply) {
-            reply.view(`data-returns/guidance/${request.params.page}`);
+            reply.view(`data-returns/guidance/${request.params.page}`, {
+                 src: request.info.referrer || '/guidance/landfill-data-rules'
+            });
         }
     },
     /*
@@ -208,6 +210,11 @@ let handlers = [
     {
         method: 'GET',
         path: '/display-list',
+        handler: listHandler.getDisplayHandler
+    },
+    {
+        method: 'GET',
+        path: '/display-list/search',
         handler: listHandler.getDisplayHandlerWithSearch
     },
     {

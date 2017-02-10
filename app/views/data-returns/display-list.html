@@ -1,9 +1,9 @@
 {{<layout}}
 
 {{$head}}
-    {{>head}}
-    {{$commonHead}}{{/commonHead}}
-    <script src="/public/javascripts/jquery.mark.min.js" type="text/javascript"></script>
+{{>head}}
+{{$commonHead}}{{/commonHead}}
+<script src="/public/javascripts/jquery.mark.min.js" type="text/javascript"></script>
 {{/head}}
 
 {{$title}}{{listMetaData.description}} allowed values{{/title}}
@@ -12,9 +12,32 @@
 <main id="content" role="main">
     {{{feedbackbanner}}}
     <a id="back.btn" href="{{src}}" class="link-back">Go back</a>
+
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
+            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
+            <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
+            <div class="form-group search-list {{#errorMessage}}error{{/errorMessage}}">
+                <form method="get" action="/display-list/search" >
+                    <label class="form-label" for="search">Search this list</label>
+                    <input id="search" name="q" class="form-control" type="text" value="{{query.string}}" />
+                    <input class="button" type="submit" value="Search">
+                    {{#clear}}
+                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&src={{src}}">Clear</a>
+                    {{/clear}}
+                    <input type="hidden" name="list" value="{{listMetaData.path}}"/>
+                    <input type="hidden" name="src" value="{{src}}"/>
+                </form>
+            </div>
+
+
+            {{#errorMessage}}
+            <div style="overflow:hidden" class="error-summary" role="group" aria-live="assertive" aria-labelledby="search-results" tabindex="-1">
+                {{{errorMessage}}}
+            </div>
+            {{/errorMessage}}
+
         </div>
         <div class="column-third float-right">
             <h2 class="heading-small">Version 1.0</h2>
@@ -24,22 +47,6 @@
                     <p>We aim to keep these allowed values fixed. This should allow you to adapt your software systems to use these values. If we need to make changes, we won't remove values but we may add missing values as alternatives or correct any mistakes.</p>
                 </div>
             </details>
-        </div>
-        <div class="column-two-thirds">
-            <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value.</p>
-            <p><a href="/csv/{{listMetaData.path}}">Download {{$title}}{{/title}} list (CSV)</a></p>
-            <div class="form-group search-list">
-                <form method="get">
-                    <label class="form-label" for="search">Filter this list</label>
-                    <input id="search" name="q" class="form-control" type="text" value="{{query.string}}"/>
-                    <input class="button" type="submit" value="Filter">
-                    {{#clear}}
-                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&src={{src}}">Clear</a>
-                    {{/clear}}
-                    <input type="hidden" name="list" value="{{listMetaData.path}}"/>
-                    <input type="hidden" name="src" value="{{src}}"/>
-                </form>
-            </div>
         </div>
     </div>
 

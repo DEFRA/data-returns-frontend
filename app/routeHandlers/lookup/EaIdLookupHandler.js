@@ -1,6 +1,9 @@
 'use strict';
 const winston = require("winston");
 const api = require('../../api-handlers/eaid-lookup');
+const errorMessages = require('../../lib/error-messages');
+const errorHandler = require('../../lib/error-handler');
+
 const MAX_RESULTS = 100;
 
 function routeHandler(request, reply) {
@@ -12,27 +15,28 @@ function routeHandler(request, reply) {
 }
 
 function getHandler(request, reply) {
-    reply.view('data-returns/eaid-lookup', {});
+    reply.view('data-returns/eaid-lookup', {
+        src: request.info.referrer || '/eaid-lookup'
+    });
 }
 
 function searchHandler(request, reply) {
-    let searchString = request.query.q;
-    let data = {
-        errors: [
-            {
-                message: "Please enter something to search for...."
-            }
-        ]
-    };
+    let errorCode = null;
+    let errorMessage = null;
+    let data = null;
+
+    let searchString = request.query.q ? request.query.q.trim() : '';
 
     if (searchString && searchString.length) {
         let searchTerms = searchString.split(/\s+/);
+
         api.lookup(searchString).then(function (response) {
             let matches = response.results;
             let messages = [];
 
             if (matches.length === 0) {
-                messages.push("No results were found.");
+                errorCode = errorMessages.EA_ID_LOOKUP.NO_RESULTS;
+                errorMessage = errorHandler.render(errorCode, { searchString: searchString });
             } else if (matches.length > MAX_RESULTS) {
                 messages.push(`Displaying the first ${MAX_RESULTS} results of ${matches.length} in total.`);
                 matches.splice(MAX_RESULTS, matches.length - MAX_RESULTS);
@@ -44,21 +48,32 @@ function searchHandler(request, reply) {
                     terms: searchTerms
                 },
                 messages: messages,
-                results: matches
+                results: matches,
+                src: request.query.src || '/eaid-lookup'
             };
+
+            if (errorMessage) {
+                data.errorMessage = errorMessage;
+            }
+
             reply.view('data-returns/eaid-lookup', data);
         }).catch(function (error) {
             winston.error(error);
+
+            errorCode = errorMessages.SERVICE.NO_SERVICE;
+            errorMessage = errorHandler.render(errorCode);
             reply.view('data-returns/eaid-lookup', {
-                errors: [
-                    {
-                        message: "We’re experiencing problems with the service, please try again later."
-                    }
-                ]
+                errorMessage: errorMessage,
+                src: request.query.src || '/eaid-lookup'
             });
         });
     } else {
-        reply.view('data-returns/eaid-lookup', data);
+        errorCode = errorMessages.EA_ID_LOOKUP.NOTHING_TO_SEARCH_WITH;
+        errorMessage = errorHandler.render(errorCode);
+        reply.view('data-returns/eaid-lookup', {
+            errorMessage: errorMessage,
+            src: request.query.src || '/eaid-lookup'
+        });
     }
 }
 
