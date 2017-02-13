@@ -28,7 +28,6 @@ p + .help-notice {
 // File Summary
 
 .file-summary {
-	margin-bottom:$gutter;
   .file-name {
    width:100%;
    overflow:hidden;
@@ -38,7 +37,7 @@ p + .help-notice {
     font-weight: 600;
   }
   ul {
-    margin: 0 0 $gutter $gutter;
+    margin: 0 0 $gutter;
   }
 }
 

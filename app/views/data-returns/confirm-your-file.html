@@ -15,8 +15,8 @@
 
     <p class="lede">The data return you’re going to send is about:</p>
 
-    <div class="text panel panel-border-wide file-summary">
       {{#files}}
+      <div class="text panel panel-border-wide file-summary">
         <div class="file-name">{{{name}}}</div>
         <ul>
             {{#status.server.parseResult.mappings}}
@@ -40,8 +40,8 @@
                 {{/identifiers}}
             {{/status.server.parseResult.mappings}}
         </ul>
+      </div>
       {{/files}}
-    </div>
 
     <p>Do you need to choose different files? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right files and details.</p>
 
