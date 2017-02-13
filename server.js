@@ -356,7 +356,7 @@ cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key)
 // Start the server.
 server.start(function (err) {
     if (err) {
-        winston.error("Data Returns frontend server failed to start: ", err);
+        winston.error("Hapi server failed to start: ", err);
         process.exit(1);
     }
     winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);

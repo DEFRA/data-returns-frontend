@@ -7,6 +7,11 @@
 # configurations which may be enabled to override the default values.
 #
 ###############################################################################
+application:
+  name: Report Landfill Data
+
+
+
 appversion: 1.0.17
 
 # Simple Mail Transfer Protocol (SMTP) settings
@@ -15,8 +20,8 @@ smtp:
   port: ${DR_SMTP_PORT}
   username: ${DR_SMTP_USER}
   password: ${DR_SMTP_PASS}
-  pinsubject: ' is your data returns online confirmation code'
-  confirmsubject: Send data returns online - your receipt
+  pinsubject: ' is your Report Landfill Data service confirmation code'
+  confirmsubject: Report Landfill Data - your receipt
   max_limit: 10
   max_time_minutes: 10
   lockout_time_seconds: 3600
@@ -51,10 +56,9 @@ log:
 # Feedback
 feedback:
   emailaddress: Data_Returns@environment-agency.gov.uk
-  subject: Feedback from Data Returns (default)
+  subject: Feedback on the Report Landfill Data service (default)
   mailto: >-
-    Data_Returns@environment-agency.gov.uk?Subject=Feedback from Data Returns
-    (default)
+    Data_Returns@environment-agency.gov.uk?Subject=Feedback on the Report Landfill Data service (default)
   template:
     feedbackbanner: >-
       <div class="phase-banner-beta"><p><strong
