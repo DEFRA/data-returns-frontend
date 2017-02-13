@@ -141,10 +141,10 @@
     <p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 45px 0 30px 0;">Your
         details:</p>
 
+
+		{{#files}}
+
 		<div style="width:100%; max-width: 565px; border-left: 10px #dee0e2 solid; padding:10px 0">
-
-			{{#files}}
-
 			<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin:15px 0 0; padding:0; vertical-align:top;">{{name}}</p>
 
 			{{#status.server.parseResult.mappings}}
@@ -176,9 +176,8 @@
 
 			{{/status.server.parseResult.mappings}}
 
-	    {{/files}}
-
 		</div>
+	    {{/files}}
 
 		<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 45px 0 30px 0;">By sending this data returns file, you agree that you acted on behalf of the permit holder and - to the best of your knowledge and belief  - the data is true, not false or misleading.</p>
 
