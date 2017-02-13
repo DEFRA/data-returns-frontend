@@ -1,5 +1,8 @@
 # Data returns frontend
 
+[![NSP Status](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba/badge)](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba)
+
+
 Frontend GOV.uk web interface to support the upload and validation of Data Exchange Protocol (DEP) compliant data returns.
 
 ## Contributing to this project
