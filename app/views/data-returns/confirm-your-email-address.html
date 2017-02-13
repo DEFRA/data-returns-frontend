@@ -18,9 +18,8 @@
     {{/invalidEmailAddress}}
 
 
-    <div class="text">
       {{^invalidEmailAddress}}
-      <p>We need to send you a code to confirm your email address is valid.</p>
+      <p class="text">We need to send you a code to confirm your email address is valid.</p>
       {{/invalidEmailAddress}}
 
 
@@ -41,9 +40,11 @@
       {{/showInput}}
 
       {{^invalidEmailAddress}}
-      <p>We’ll send a receipt to this email address after your data is uploaded.</p>
-      <p>Find out <a href="{{links.Privacy_Policy}}">how we use your personal information</a>.</p>
-      {{/invalidEmailAddress}}
+      <div class="text">
+          <p>We’ll send a receipt to this email address after your data is uploaded.</p>
+          <p>Find out <a href="{{links.Privacy_Policy}}">how we use your personal information</a>.</p>
+          {{/invalidEmailAddress}}
+      </div>
 
 
       {{#showSendMailButton}}
