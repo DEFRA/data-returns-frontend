@@ -118,7 +118,6 @@
 		.file-error, .file-ready {
 			display: inline-block;
 			font-weight: bold;
-			text-transform: uppercase;
 			padding: 2px 4px 0;
 			line-height: 1.1em;
 			@include border-radius(2px);
