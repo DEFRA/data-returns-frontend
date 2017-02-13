@@ -55,8 +55,12 @@ input.validation-code {
 // Download icon alignment (Allowed values)
 .download {
     .icon-file-download {
-        vertical-align: bottom;
+        vertical-align: middle;
         margin-right:5px;
+        @include media(mobile) {
+            width: 15px;
+            height: 19.5px;
+        }
     }
 }
 
