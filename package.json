@@ -37,7 +37,7 @@
     "node-minify": "^2.0.3",
     "node-sass": "^4.5.0",
     "node-sass-loader": "^0.1.7",
-    "nodemailer": "^3.0.2",
+    "nodemailer": "^2.7.2",
     "nodemailer-smtp-transport": "^2.7.2",
     "random-js": "^1.0.8",
     "redis": "^2.6.5",
