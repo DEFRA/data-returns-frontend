@@ -20,13 +20,13 @@
         {{{errorMessage}}}
     </div>
     {{/errorMessage}}
-    <div class="form-group {{#errorMessage}}error{{/errorMessage}}">
+    <div class="form-group inline {{#errorMessage}}error{{/errorMessage}}">
         <form method="get" action="/lookup">
             <label class="form-label" for="q">Enter the permit number or site name from your permit</label>
             {{#errorMessage}}
             <span class="error-message" id="error-message-full-name">Enter a permit number or site name</span>
             {{/errorMessage}}
-            <input id="q" name="q" type="search" class="form-control" aria-controls="search-results" value="{{query.string}}"/>
+            <input id="q" name="q" type="text" class="form-control" aria-controls="search-results" value="{{query.string}}"/>
             <input type="submit" class="button" value="Find"/>
             <input type="hidden" name="src" value="{{src}}">
         </form>

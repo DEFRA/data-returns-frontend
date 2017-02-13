@@ -1,3 +1,4 @@
+// Help notice
 .help-notice {
   background:none;
   background:url("/public/images/icons/icon-important.png") no-repeat scroll 0 0.2em;
@@ -18,7 +19,7 @@ p + .help-notice {
   margin-top: 2em;
 }
 
-/* Used to display support links in footer. */
+// Used to display support links in footer.
 .ea-footer {
   @include core-16();
   line-height: 1.25;
@@ -26,9 +27,7 @@ p + .help-notice {
 }
 
 // File Summary
-
 .file-summary {
-	margin-bottom:$gutter;
   .file-name {
    width:100%;
    overflow:hidden;
@@ -38,10 +37,11 @@ p + .help-notice {
     font-weight: 600;
   }
   ul {
-    margin: 0 0 $gutter $gutter;
+    margin: 0 0 $gutter;
   }
 }
 
+// Four digit validation code sizing
 input.validation-code {
 	width:100px;
 }
@@ -51,6 +51,32 @@ input.validation-code {
   padding: 2em 0 3em 0;
 }
 
+// Download icon alignment (Allowed values)
+.download {
+    .icon-file-download {
+        vertical-align: middle;
+        margin-right:5px;
+        @include media(mobile) {
+            width: 15px;
+            height: 19.5px;
+        }
+    }
+}
+
+//form-group inline
+.form-group.inline {
+    input.button {
+        line-height: 1.1;
+        @include media(mobile) {
+            margin-top: $gutter-one-third;
+        }
+    }
+}
+
+// Allowed value search
+.search-list {
+    margin-top:$gutter-half;
+}
 
 // Highlights words in the allowed values filter
 mark {
