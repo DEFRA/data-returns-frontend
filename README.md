@@ -1,4 +1,4 @@
-[![NPM Status](https://david-dm.org/DEFRA/data-returns-frontend.svg)](https://david-dm.org/DEFRA/data-returns-frontend.svg)
+[![NPM Status](https://david-dm.org/DEFRA/data-returns-frontend.svg)](https://david-dm.org/DEFRA/data-returns-frontend)
 [![NSP Status](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba/badge)](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba)
 
 # Data returns frontend
