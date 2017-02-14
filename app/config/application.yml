@@ -100,6 +100,10 @@ css:
 html:
   cached: true
 
+# Set the secure flag by default
+session:
+  secure: true
+
 # For Google analytics
 googleAnalytics:
   use: false
@@ -173,6 +177,10 @@ css:
 html:
   cached: false
 
+# Do not set the secure flag in the local environment
+session:
+  secure: false
+
 startup:
     runUnitTests: true
     runLinter: true
@@ -234,6 +242,9 @@ css:
 # HTML caching switched off locally
 html:
   cached: false
+
+session:
+  secure: false
 
 startup:
     runUnitTests: true

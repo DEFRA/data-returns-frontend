@@ -143,7 +143,7 @@ module.exports.newSession = function (request, reply, sessionKey) {
             "path": '/',
             "ttl": 24 * 60 * 60 * 1000,
             //"ttl": null,
-            "isSecure": false,
+            "isSecure": config.get('session.secure'),
             "isHttpOnly": true,
             "encoding": "none", //base64json',
             "ignoreErrors": false,
