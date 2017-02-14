@@ -72,7 +72,7 @@ let collapseArrayRanges = function (intArray) {
 let errorDataHelper = function (fieldData) {
     if (fieldData && Array.isArray(fieldData) && fieldData.length > 0) {
         let fieldNameArr = fieldData.map(i => i.name);
-        // fieldName will be a comma separated list of field headings
+        // fieldName will be a comma separated list of column headings
         let fieldName = fieldNameArr.join(", ");
         // fieldHeadingText will be a natural language "Field1, Field2 and Field3" string for use in sentences
         let fieldHeadingText = fieldName.replace(/,(?!.*,)/gmi, ' and');
