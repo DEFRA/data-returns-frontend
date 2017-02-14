@@ -175,7 +175,7 @@ css:
 
 # HTML caching switched off locally
 html:
-  cached: fals
+  cached: false
 
 # Do not set the secure flag in the local environment
 session:
