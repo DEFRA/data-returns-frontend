@@ -236,6 +236,9 @@ var csrf_check_function = function (request, next) {
                 winston.error(err);
                 next.redirect('/failure');
             });
+        } else {
+            // If there is no session cookie then then redirect to the cookie information page
+            next.redirect('/guidance/no-cookie');
         }
     } else {
         // Resume
