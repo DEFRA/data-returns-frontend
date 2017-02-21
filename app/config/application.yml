@@ -8,7 +8,7 @@
 #
 ###############################################################################
 application:
-  name: Report Landfill Data
+  name: Report landfill data
 
 
 
@@ -20,8 +20,8 @@ smtp:
   port: ${DR_SMTP_PORT}
   username: ${DR_SMTP_USER}
   password: ${DR_SMTP_PASS}
-  pinsubject: ' is your Report Landfill Data service confirmation code'
-  confirmsubject: Report Landfill Data - your receipt
+  pinsubject: ' is your report landfill data service confirmation code'
+  confirmsubject: Report landfill data - your receipt
   max_limit: 10
   max_time_minutes: 10
   lockout_time_seconds: 3600
@@ -56,9 +56,9 @@ log:
 # Feedback
 feedback:
   emailaddress: Data_Returns@environment-agency.gov.uk
-  subject: Feedback on the Report Landfill Data service (default)
+  subject: Feedback on the report landfill data service (default)
   mailto: >-
-    Data_Returns@environment-agency.gov.uk?Subject=Feedback on the Report Landfill Data service (default)
+    Data_Returns@environment-agency.gov.uk?Subject=Feedback on the report landfill data service (default)
   template:
     feedbackbanner: >-
       <div class="phase-banner-beta"><p><strong
