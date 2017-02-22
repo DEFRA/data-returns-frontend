@@ -248,7 +248,7 @@ let handlers = [
 
 ];
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "prod" && process.env.NODE_ENV !== "production") {
     // Add handler for content review
     handlers.push({
         method: 'GET',
