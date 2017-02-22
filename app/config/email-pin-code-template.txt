@@ -6,8 +6,6 @@ Go to your browser to enter this code from the Environment Agency to confirm you
 
 We’ll send a receipt to this email address.
 
-Your site officer will get a notification about this data and may need to get in touch with you directly.
-
 Ignore this email if you didn’t ask for a code.
 
 {{#config.smtp.useFooter}}
