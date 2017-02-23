@@ -19,6 +19,8 @@ module.exports.links = {
     Example_Data_Return: '/guidance/example-data-return',
     Privacy_Policy: '/guidance/privacy',
     Cookie_Guidance: 'http://www.aboutcookies.org/how-to-control-cookies/',
+    Cookie_Page: '/guidance/cookies.html',
+    Start_Page: '/start',
     fields: {
         Rtn_Type: "/display-list?list=Rtn_Type",
         Rtn_Period: "/display-list?list=Rtn_Period",
