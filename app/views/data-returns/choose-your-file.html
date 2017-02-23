@@ -67,13 +67,13 @@
             </tbody>
         </table>
 
-        <div class="drag-drop-indicator">
-            <div class="drag-drop-message">Drop your files here</div>
-        </div>
-
         <form action="/file/confirm" method="get">
             <input class="button" type="submit" accesskey="C" value="Continue" id="continueBtn" {{^canContinue}}disabled="disabled" {{/canContinue}} />
         </form>
+
+        <div class="drag-drop-indicator">
+            <div class="drag-drop-message">Drop your files here</div>
+        </div>
 
         {{>fineuploader_body}}
     </div><!-- /file-upload -->
