@@ -27,7 +27,7 @@ smtp:
   lockout_time_seconds: 3600
   support:
     email: enquiries@environment-agency.gov.uk
-    UKPhone: 03708 506 506
+    UKPhone: 03301 591 988
     PhoneFromAbroad: 00 44 1709 389 201
     MiniCommNumber: 03702 422 549
 
