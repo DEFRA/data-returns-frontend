@@ -41,6 +41,31 @@ p + .help-notice {
   }
 }
 
+// Links in error
+.error-summary {
+    .error-summary-list {
+        .panel {
+            .link {
+              @include core-19();
+              color: $link-colour;
+              text-decoration: underline;
+            }
+
+            .link:visited {
+              color: $link-visited-colour;
+            }
+
+            .link:hover {
+              color: $link-hover-colour;
+            }
+
+            .link:active {
+              color: $link-colour;
+            }
+        }
+    }
+}
+
 // Four digit validation code sizing
 input.validation-code {
 	width:100px;
