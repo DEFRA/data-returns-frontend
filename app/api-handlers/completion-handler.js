@@ -58,7 +58,7 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                     break;
                 default:
                     if (err) {
-                        winston.error(err);
+                        winston.error('Error communicating with data-exchange API', err);
                     }
                     winston.info('completion-handler processResponse statuscode:', statusCode);
                     reject();
