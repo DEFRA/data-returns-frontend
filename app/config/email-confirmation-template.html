@@ -139,7 +139,7 @@
         You successfully sent landfill data to the Environment Agency on: <span style="font-weight:600;">{{date}}</span> at <span style="font-weight:600;">{{time}}</p>
 
     <p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 45px 0 30px 0;">Your
-        details:</p>
+        data:</p>
 
 
 		{{#files}}
@@ -164,9 +164,9 @@
 				{{#identifiers}}
       	<li style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin:0; padding:0; vertical-align:top;">
             {{#substituted}}
-                We replaced
+                We replaced the alternative ID:
                 <span class="submittedUniqueIdentifier">{{submittedUniqueIdentifier}}</span>
-                with
+                with the EA_ID: 
             {{/substituted}}
             <span class="resolvedUniqueIdentifier">{{resolvedUniqueIdentifier}}</span>
 				</li>
@@ -179,18 +179,13 @@
 		</div>
 	    {{/files}}
 
-		<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 45px 0 30px 0;">By sending this data, you agree that you acted on behalf of the permit holder and - to the best of your knowledge and belief  - the data is true, not false or misleading.</p>
-
     <h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 24px; line-height: 1.315789474; font-weight: 700; margin: 58px 0 19px 0;">
         What happens next?</h2>
 
     <p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 0 0 30px 0;">
-        Now you’ve sent your data your compliance officer can check it for quality and regulatory compliance.  We may need to contact you using the email address you gave to discuss compliance.</p>
+        Your site officer will review your data. If the data is OK, we won't usually contact you. We'll contact you if we have any questions or if the data does not meet regulatory requirements.</p>
 
-				<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 0 0 30px 0;">You can use the service to send another data file online.</p>
-
-				<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 0 0 30px 0;">Send us feedback to help us improve this new service.</p>
-
+		<p style="font-family: Helvetica, Arial, sans-serif; font-size: 19px; line-height: 1.315789474; margin: 0 0 30px 0;"><a href="http://www.smartsurvey.co.uk/s/DRFeedback/">Give us feedback</a> to help us improve this service.</p>
 
     <img id="ea-masthead" class="ea-logo" style="margin: 15px 0; max-width: 200px;" alt="Environment Agency logo"
          src="{{config.smtp.ealogo}}"/>
