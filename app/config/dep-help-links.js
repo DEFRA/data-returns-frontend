@@ -21,6 +21,7 @@ module.exports.links = {
     Cookie_Guidance: 'http://www.aboutcookies.org/how-to-control-cookies/',
     Cookie_Page: '/guidance/cookies.html',
     Start_Page: '/start',
+    Done_Page: 'https://www.gov.uk/done/report-landfill-data',
     fields: {
         Rtn_Type: "/display-list?list=Rtn_Type",
         Rtn_Period: "/display-list?list=Rtn_Period",
