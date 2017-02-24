@@ -22,6 +22,7 @@ module.exports.links = {
     Cookie_Page: '/guidance/cookies.html',
     Start_Page: '/start',
     Done_Page: 'https://www.gov.uk/done/report-landfill-data',
+    Choose_File_Page: '/file/choose',
     fields: {
         Rtn_Type: "/display-list?list=Rtn_Type",
         Rtn_Period: "/display-list?list=Rtn_Period",
