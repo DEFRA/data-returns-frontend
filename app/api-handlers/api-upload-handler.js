@@ -47,7 +47,7 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
             winston.info("Received upload response for " + originalFileName);
             if (err) {
-                winston.error(err);
+                winston.error('Error communicating with data-exchange API', err);
                 reject({
                     isUserError: true,
                     errorCode: 3000

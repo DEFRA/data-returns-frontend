@@ -58,7 +58,7 @@ function searchHandler(request, reply) {
 
             reply.view('data-returns/eaid-lookup', data);
         }).catch(function (error) {
-            winston.error(error);
+            winston.error('Error communicating with operator lookup API', error);
 
             errorCode = errorMessages.SERVICE.NO_SERVICE;
             errorMessage = errorHandler.render(errorCode);

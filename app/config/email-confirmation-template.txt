@@ -1,32 +1,30 @@
-You successfully sent a data file to the Environment Agency.
+Your landfill data receipt
 
-Your details:
+You successfully sent landfill data to the Environment Agency on:
 
 Date: {{date}}
 Time: {{time}}
+
+Your data:
 
 {{#files}}
 _______________________________________
 File: {{name}}
 {{#status.server.parseResult.mappings}}
 {{#site}}  {{site}}{{/site}}{{^site}}  Not given{{/site}}
-{{#identifiers}} {{#substituted}}We replaced  {{submittedUniqueIdentifier}} with {{/substituted}}{{resolvedUniqueIdentifier}}
+{{#identifiers}} {{#substituted}}We replaced the alternative ID:  {{submittedUniqueIdentifier}} with the EA_ID: {{/substituted}}{{resolvedUniqueIdentifier}}
 {{/identifiers}}
 {{/status.server.parseResult.mappings}}
 {{/files}}
 _______________________________________
 
-By sending this data, you agree that you acted on behalf of the permit holder and - to the best of your knowledge and belief  - the data is true, not false or misleading.
-
 What happens next?
 
-Now you’ve sent your data your compliance officer can check it for
-quality and regulatory compliance. We may need to contact you using the email address
-you gave to discuss compliance.
+Your site officer will review your data. If the data is OK, we won't usually contact you. We'll contact you if we have any questions or if the data does not meet regulatory requirements.
 
-You can use the service to send another data file online.
 
-Send us feedback to help us improve this new service.
+Give us feedback to help us improve this new service:
+http://www.smartsurvey.co.uk/s/DRFeedback/
 
 {{#config.smtp.useFooter}}
 Telephone: {{config.smtp.support.UKPhone}}

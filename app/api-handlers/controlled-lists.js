@@ -33,6 +33,7 @@ function apiCallList(list, search) {
             if (!httpResponse) {
                 reject(new Error("Internal Error: No response from API"));
             } else if (err) {
+                winston.error('Error communicating with controlled list API.', err);
                 reject(err);
             } else {
 
