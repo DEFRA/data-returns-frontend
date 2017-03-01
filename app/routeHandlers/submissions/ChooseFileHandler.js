@@ -50,21 +50,16 @@ function removeUpload(sessionID, uuid) {
 module.exports.getHandler = function (request, reply) {
     let sessionID = userHandler.getSessionID(request);
 
-    if (!sessionID) {
-        reply.redirect('/guidance/no-cookie');
-    } else {
+    let loadPageCallback = function (status) {
+        reply.view('data-returns/choose-your-file', status);
+    };
 
-        let loadPageCallback = function (status) {
-            reply.view('data-returns/choose-your-file', status);
-        };
+    let statusJsonCallback = function (status) {
+        reply(status).type('application/json');
+    };
 
-        let statusJsonCallback = function (status) {
-            reply(status).type('application/json');
-        };
-
-        let handler = request.query.status === "true" ? statusJsonCallback : loadPageCallback;
-        buildStatusJson(sessionID).then(handler);
-    }
+    let handler = request.query.status === "true" ? statusJsonCallback : loadPageCallback;
+    buildStatusJson(sessionID).then(handler);
 };
 
 

@@ -32,7 +32,7 @@
             <li>You can use any filename provided it ends in '.csv'. You may find it helpful to use a descriptive filename.</li>
         </ol>
         <p>If you wish to, you can send data for more than one permit type in the same file. The maximum file size allowed is {{config.csv.maxFileSizeMb}}MB. Split the files if they are larger than this. </p>
-        <p><a href="{{links.Example_Data_Return}}">Example data file for landfill</a></p>
+        <p><a href="{{links.Example_Data_Return}}">Example data for landfill</a></p>
     </section>
     <section class="group" id="data-rules">
         <h2 class="heading-large">Data formatting rules</h2>
@@ -107,10 +107,12 @@
               </tr>
               <tr>
                 <td class="dr_field">Mon_Date</td>
-                <td class="dr_description">The date and, where your permit asks for it or if you want to submit it, the time you took the measurement. If you're monitoring for a period of time (for example, a week), give the date at the end of the monitoring period.</td>
+                <td class="dr_description">The date and, optionally, the time you took the measurement.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
-                    <li>Date is required. Time is optional unless your permit requires it.</li>
+                    <li>Date is required.</li>
+                    <li>Give the time if your permit requires it. If your permit does not require time, you can decide whether or not to add it.</li>
+                    <li>If you're monitoring for a period of time give the date, and time if required, at the end of the monitoring period.</li>
                     <li>Format the date as YYYY-MM-DD, DD-MM-YYYY or DD/MM/YYYY.</li>
                     <li>Format time as hh:mm:ss using the 24-hour clock.</li>
                     <li>If you're giving time put a 'T' or a space between date and time.</li>
