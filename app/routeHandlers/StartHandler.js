@@ -18,5 +18,16 @@ module.exports = {
         userHandler.newUserSession(request, reply)
             .then(() => reply.view('data-returns/start'))
             .catch(winston.error);
+    },
+    /*
+     * This is used to check we have been able to write a session cookie
+     * before redirecting to the file upload page
+     */
+    continueHandler: function (request, reply) {
+        if (userHandler.getSessionID(request)) {
+            reply.redirect('/file/choose');
+        } else {
+            reply.redirect('/guidance/no-cookie');
+        }
     }
 };
