@@ -47,7 +47,6 @@ let staticAssetDir = function (type, paths) {
     };
 };
 
-
 let handlers = [
     // Static assets.
     staticAssetDir('images', [
@@ -111,6 +110,11 @@ let handlers = [
         method: 'POST',
         path: '/start',
         handler: startHandler.postHandler
+    },
+    {
+        method: 'GET',
+        path: '/start/continue',
+        handler: startHandler.continueHandler
     },
     // /file/invalid
     {
