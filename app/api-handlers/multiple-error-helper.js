@@ -76,7 +76,8 @@ let errorDataHelper = function (fieldData) {
         let fieldName = fieldNameArr.join(", ");
         // fieldHeadingText will be a natural language "Field1, Field2 and Field3" string for use in sentences
         let fieldHeadingText = fieldName.replace(/,(?!.*,)/gmi, ' and');
-        let values = fieldData.length > 1 ? fieldData.map(i => `${i.name}: ${i.value || ''}`).join(", ") : fieldData[0].value;
+        let values = fieldData.length > 1 ? fieldData.filter(i => i.value).map(i => `${i.name}: ${i.value || ''}`).join(", ") : fieldData[0].value;
+
         return {fieldName: fieldName, fieldHeadingText: fieldHeadingText, errorValue: values};
     } else {
         return {fieldName: null, fieldHeadingText: null, errorValue: null};

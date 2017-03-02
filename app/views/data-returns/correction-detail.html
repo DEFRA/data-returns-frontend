@@ -12,7 +12,7 @@
         <ul class="error-summary-list">
             {{#summaries}}
             <li>
-                <a onclick="location.replace('{{link}}'); return false;" href="{{link}}">{{errorType.message}}</a>
+                <a href="{{link}}">{{errorType.message}}</a>
                 {{{guidance}}}
             </li>
             {{/summaries}}

@@ -1,10 +1,10 @@
 "use strict";
 const winston = require("winston");
-var cacheHandler = require('../../lib/cache-handler');
-var userHandler = require('../../lib/user-handler');
-var errorHandler = require('../../lib/error-handler');
-var redisKeys = require('../../lib/redis-keys');
 const lodash = require("lodash");
+let cacheHandler = require('../../lib/cache-handler');
+let userHandler = require('../../lib/user-handler');
+let errorHandler = require('../../lib/error-handler');
+let redisKeys = require('../../lib/redis-keys');
 
 module.exports = {
     /*
@@ -12,7 +12,7 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
-        var fileUuid = request.query.uuid;
+        let fileUuid = request.query.uuid;
         let errorId = request.query.id || -1;
 
         if (sessionID !== null && fileUuid !== null && errorId !== null) {
@@ -34,7 +34,7 @@ module.exports = {
 
                 // Set up metadata to display the corrections detail for the appropriate error code
                 let errorDetail = lineErrorsForErrorCode[0];
-                var errorSummaryData = {
+                let errorSummaryData = {
                     uuid: fileUuid,
                     filename: fileData.name,
                     fieldName: errorDetail.fieldName,
@@ -47,7 +47,7 @@ module.exports = {
                 for (let type of errorDetail.errorTypes) {
                     let summary = {
                         errorType: type,
-                        link: "#" + type.name,
+                        link: "#" + type.key,
                         guidance: errorHandler.renderCorrectionMessage(errorDetail.errorCode, type.name, errorSummaryData, type.message)
                     };
                     summaries.push(summary);
