@@ -16,15 +16,17 @@ table.datarules {
 	overflow: hidden;
 }
 
+// Special cases in rules
 .example-file-wrapper {
 	overflow: auto;
-	margin-bottom:30px;
-	table, .example-file {
-		margin-bottom:0;
-	}
+	margin:5px;
 	table.example {
 		white-space: nowrap;
 	}
+}
+.example-file-wrapper:focus {
+	outline: 5px solid $yellow;
+	margin:5px;
 }
 
 // Example file
