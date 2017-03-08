@@ -48,13 +48,17 @@
                 </td>
                 <td class="details">
                     {{#status.moreDetailsUrl}}
-                    <a href="{{{status.moreDetailsUrl}}}"><span>{{status.moreDetailsTitle}}</span><span class="visually-hidden"> for {{name}}</span></a>
+                    <a href="{{{status.moreDetailsUrl}}}">
+                        <span>{{status.moreDetailsTitle}}</span>
+                        <span class="visually-hidden"> for {{name}}</span>
+                    </a>
                     {{/status.moreDetailsUrl}}
                 </td><td class="remove">
                     <form method="post" action="/file/choose" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="remove"></input>
-                        <input type="hidden" name="uuid" class="file-uuid" value="{{{id}}}"></input>
-                        <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
+                        <input type="hidden" name="uuid" class="file-uuid" value="{{id}}"></input>
+                        <label for="{{id}}-remove-link" class="visually-hidden">Remove {{name}}</label>
+                        <input id="{{id}}-remove-link" type="submit" class="remove-uuid-submit link" value="Remove"></input>
                     </form>
                 </td>
             </tr>

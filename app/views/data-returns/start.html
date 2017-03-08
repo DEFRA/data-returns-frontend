@@ -43,7 +43,9 @@
             <p>We’ll send you a single-use confirmation code after you upload your data.</p>
 
             <!-- Primary button -->
-            <a id="continueBtn" role="button" href="/start/continue" class="button" accesskey="C">Continue <span class="visually-hidden">report landfill data</span></a>
+            <form action="/start/continue" method="get">
+                <input class="button" type="submit" accesskey="C" role="button" value="Continue" id="continueBtn"/>
+            </form>
         </div>
     </form>
 </main>

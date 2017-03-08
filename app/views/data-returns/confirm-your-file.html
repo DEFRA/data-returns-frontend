@@ -46,7 +46,9 @@
     <p>Do you need to choose different files? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right files and details.</p>
 
     <!-- Primary button -->
-    <a id="continueBtn" role="button" href="/email" class="button" accesskey="C">Continue <span class="visually-hidden">report landfill data</span></a>
+    <form action="/email" method="get">
+        <input class="button" type="submit" accesskey="C" role="button" value="Continue" id="continueBtn"/>
+    </form>
 </main>
 {{/content}}
 {{/layout}}

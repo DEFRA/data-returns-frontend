@@ -31,7 +31,10 @@
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
             </th>
             <td class="td-errors">
-                <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">View {{violationCount}} error{{#multipleViolations}}s{{/multipleViolations}}</a>
+                <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">
+                    <span>View {{violationCount}} error{{#multipleViolations}}s{{/multipleViolations}}</span>
+                    <span class="visually-hidden"> with {{fieldName}}</span>
+                </a>
             </td>
             <td class="td-correction">
                 {{{correction}}}

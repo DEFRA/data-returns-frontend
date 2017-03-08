@@ -23,11 +23,13 @@ const templateConfig = {
     head: "{{$head}}{{/head}}",
     headerClass: "{{$headerClass}}{{/headerClass}}",
     homepageUrl: "{{$homepageUrl}}https://www.gov.uk{{/homepageUrl}}",
+    htmlLang: "{{$htmlLang}}{{/htmlLang}}",
     insideHeader: "{{$insideHeader}}{{/insideHeader}}",
     licenceMessage: "{{$licenceMessage}}{{/licenceMessage}}",
     pageTitle: "{{$pageTitle}}GOV.UK - The best place to find government services and information{{/pageTitle}}",
     propositionHeader: "{{$propositionHeader}}{{/propositionHeader}}",
-    skipLinkMessage: "{{$skipLinkMessage}}Skip to main content{{/skipLinkMessage}}"
+    skipLinkMessage: "{{$skipLinkMessage}}Skip to main content{{/skipLinkMessage}}",
+    topOfPage: "{{$topOfPage}}{{/topOfPage}}"
 };
 
 

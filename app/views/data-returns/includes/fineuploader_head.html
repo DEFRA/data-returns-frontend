@@ -13,11 +13,13 @@
     <tr class="statusbar">
         <td class="filename"></td>
         <td class="status"></td>
-        <td class="details"></td><td class="remove">
+        <td class="details"></td>
+        <td class="remove">
             <form method="post" action="/file/choose" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="remove"></input>
                 <input type="hidden" name="uuid" class="file-uuid"></input>
-                <input type="submit" class="remove-uuid-submit link" value="Remove"></input>
+                <label for="##id##-remove-link" class="visually-hidden">Remove ##name##</label>
+                <input id="##id##-remove-link" type="submit" class="remove-uuid-submit link" value="Remove"></input>
             </form>
         </td>
     </tr>
@@ -39,13 +41,17 @@
 
             if (!$uploadRow.length) {
                 // No existing row for this file.  Create a new row
-                $uploadRow = $($resultTemplate.html());
+                var html = $resultTemplate.html();
+                html = html.replace(/##id##/g, details.id);
+                html = html.replace(/##name##/g, details.name);
+
+                $uploadRow = $(html);
                 $uploadRow.attr("id", rowId);
                 $uploadRow.attr("filename", details.name);
 
                 // Append to the list in an ordered position
                 var added = false;
-                $uploadList.children().not(".upload-list-no-files").each(function() {
+                $uploadList.children().not(".upload-list-no-files").each(function () {
                     if ($(this).find("td.filename").text().toUpperCase() > details.name.toUpperCase()) {
                         $uploadRow.insertBefore($(this));
                         added = true;
@@ -53,7 +59,7 @@
                     }
                 });
 
-                if(!added) {
+                if (!added) {
                     $uploadList.append($uploadRow);
                 }
             }
@@ -66,8 +72,8 @@
             $statusDiv.html(details.status.description);
             $statusDiv.attr("title", details.status.explanation);
             $statusDiv
-                    .removeClass("file-success file-error file-pending")
-                    .addClass("file-" + details.status.state);
+                .removeClass("file-success file-error file-pending")
+                .addClass("file-" + details.status.state);
             if (details.status.state === "pending") {
                 // Add aria tags
                 $statusDiv.attr("aria-live", "assertive");
@@ -83,7 +89,9 @@
             var moreDetailsHtml = "";
             if (details.status.moreDetailsUrl != null) {
                 moreDetailsHtml = "<a href=\"" + details.status.moreDetailsUrl + "\">";
-                moreDetailsHtml += details.status.moreDetailsTitle + "</a>";
+                moreDetailsHtml += "<span>" + details.status.moreDetailsTitle + "</span>";
+                moreDetailsHtml += "<span class=\"visually-hidden\"> for " + details.name + "</span>";
+                moreDetailsHtml += "</a>";
             }
             $uploadRow.find(".details").html(moreDetailsHtml);
             $uploadRow.find(".file-uuid").val(details.id);
