@@ -39,15 +39,15 @@
         <table class="table-control mobile-format datarules">
             <thead>
                 <tr>
-                    <th class="cell-one-sixth">Column heading</th>
-                    <th class="cell-one-third">Description</th>
-                    <th class="cell-one-third">Rules</th>
-                    <th class="cell-one-sixth">Example</th>
+                    <th class="cell-one-sixth" scope="col">Column heading</th>
+                    <th class="cell-one-third" scope="col">Description</th>
+                    <th class="cell-one-third" scope="col">Rules</th>
+                    <th class="cell-one-sixth" scope="col">Example</th>
                 </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="dr_field">EA_ID</td>
+                <th class="dr_field" scope="row">EA_ID</th>
                 <td class="dr_description">This is the permit or licence number that we have in our records.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -58,7 +58,7 @@
                 <td class="dr_example">AB1234ZZ or 654321</td>
               </tr>
               <tr>
-                <td class="dr_field">Site_Name</td>
+                <th class="dr_field" scope="row">Site_Name</th>
                 <td class="dr_description">The site name in our records. It's used to check that you used the correct EA_ID. </td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -70,7 +70,7 @@
                 <td class="dr_example">Leeds Landfill Site</td>
               </tr>
               <tr>
-                <td class="dr_field">Rtn_Period</td>
+                <th class="dr_field" scope="row">Rtn_Period</th>
                 <td class="dr_description">The week, month, quarter or year that your return covers.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -82,7 +82,7 @@
                 <td class="dr_example">Qtr 2 2016</td>
               </tr>
               <tr>
-                <td class="dr_field">Rtn_Type</td>
+                <th class="dr_field" scope="row">Rtn_Type</th>
                 <td class="dr_description">The type of data that you're reporting.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -93,7 +93,7 @@
                 <td class="dr_example">Landfill gas borehole</td>
               </tr>
               <tr>
-                <td class="dr_field">Mon_Point</td>
+                <th class="dr_field" scope="row">Mon_Point</th>
                 <td class="dr_description">The sampling or emission point where the sample was taken.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -106,7 +106,7 @@
                 <td class="dr_example">Borehole 1</td>
               </tr>
               <tr>
-                <td class="dr_field">Mon_Date</td>
+                <th class="dr_field" scope="row">Mon_Date</th>
                 <td class="dr_description">The date and, optionally, the time you took the measurement.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -127,7 +127,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="dr_field">Parameter</td>
+                <th class="dr_field" scope="row">Parameter</th>
                 <td class="dr_description">The chemical substance, biological or physical parameter you're monitoring.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -140,7 +140,7 @@
                 <td class="dr_example">CH4</td>
               </tr>
               <tr>
-                <td class="dr_field">Qualifier</td>
+                <th class="dr_field" scope="row">Qualifier</th>
                 <td class="dr_description">Gives more information about the measurement, such as sample or operating condition, or the calculation used.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -151,7 +151,7 @@
                 <td class="dr_example">Filtered</td>
               </tr>
               <tr>
-                <td class="dr_field">Ref_Period</td>
+                <th class="dr_field" scope="row">Ref_Period</th>
                 <td class="dr_description">The reference period for the sample, as specified in your permit or licence. This explains how you took the measurement, for example, '24 hour total', 'Half hour average' or 'Monthly mean'.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -163,7 +163,7 @@
                 <td class="dr_example">Daily mean</td>
               </tr>
               <tr>
-                <td class="dr_field">Value</td>
+                <th class="dr_field" scope="row">Value</th>
                 <td class="dr_description">The numerical value of your measurement.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -177,7 +177,7 @@
                 <td class="dr_example">0.2</td>
               </tr>
               <tr>
-                <td class="dr_field">Txt_Value</td>
+                <th class="dr_field" scope="row">Txt_Value</th>
                 <td class="dr_description">Used to enter text for a measurement, for example, ‘Yes’, ‘No’, 'No result' and 'See comments'. </td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -190,7 +190,7 @@
                 <td class="dr_example">No result</td>
               </tr>
               <tr>
-                <td class="dr_field">Unit</td>
+                <th class="dr_field" scope="row">Unit</th>
                 <td class="dr_description">The unit for the measurement.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -203,7 +203,7 @@
                 <td class="dr_example">m</td>
               </tr>
               <tr>
-                <td class="dr_field">Meth_Stand</td>
+                <th class="dr_field" scope="row">Meth_Stand</th>
                 <td class="dr_description">The method or standard used for sampling.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
@@ -214,7 +214,7 @@
                 <td class="dr_example">BS EN 14791</td>
               </tr>
               <tr>
-                <td class="dr_field">Comments</td>
+                <th class="dr_field" scope="row">Comments</th>
                 <td class="dr_description">Use this for comments about the row of data. For example, if you were unable to take a reading. You can also use this field if you wish to give your own system references to store with the results.</td>
                 <td class="dr_rules">
                   <ul class="list list-bullet">
