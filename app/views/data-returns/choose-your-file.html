@@ -33,16 +33,16 @@
         <table id="upload-list" class="table-control upload-list">
             <thead>
             <tr class="statusbar statusbar-header">
-                <th class="filename">File name</th>
-                <th class="status">Status</th>
-                <th class="details"><span class="visually-hidden">Action</span></th>
-                <th class="remove"><span class="visually-hidden">Remove</span></th>
+                <th class="filename" scope="col">File name</th>
+                <th class="status" scope="col">Status</th>
+                <th class="details" scope="col"><span class="visually-hidden">Action</span></th>
+                <th class="remove" scope="col"><span class="visually-hidden">Remove</span></th>
             </tr>
             </thead>
             <tbody>
             {{#files}}
             <tr id="summary-{{{id}}}" filename="{{name}}" class="statusbar">
-                <td class="filename">{{name}}</td>
+                <th class="filename" scope="row">{{name}}</th>
                 <td class="status">
                     <div class="file-{{{status.state}}}" title="{{status.explanation}}">{{status.description}}</div>
                 </td>

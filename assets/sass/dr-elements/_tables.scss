@@ -38,6 +38,10 @@
 	.cell-five-sixths {
 		width:percentage(5/6);
 	}
+	th[scope="row"] {
+		@include core-19;
+		vertical-align: top;
+	}
 	td {
 		vertical-align:top;
 		p:first-child {
@@ -62,6 +66,11 @@
 			}
 			th {
 				display: none;
+			}
+			th[scope="row"] {
+				@include bold-24;
+				border-bottom: 0;
+				display:block;
 			}
 			tr {
 				border-bottom: 1px solid $grey-2;
@@ -100,10 +109,10 @@
 			.td-data 			{ &:before { content:"Your data "; }}
 
 			/* Guidance */
-			.dr-field 			{ &:before { content:"Column heading "; }}
-			.dr-description 	{ &:before { content:"Description "; }}
-			.dr-rules 			{ &:before { content:"Rules "; }}
-			.dr-example 		{ &:before { content:"Example "; }}
+			.dr_field 			{ }
+			.dr_description 	{ &:before { content:"Description "; }}
+			.dr_rules 			{ &:before { content:"Rules "; }}
+			.dr_example 		{ &:before { content:"Example "; }}
 
 			&.Rtn_Type {
 				.name 		{ @include core-24; }
