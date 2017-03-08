@@ -18,18 +18,18 @@
     <table id="errorTableHeader" class="table-control mobile-format single-column corrections-table">
         <thead>
         <tr>
-            <th class="cell-one-sixth">Column heading</th>
-            <th class="cell-one-sixth">Errors</th>
-            <th class="cell-two-thirds">Correction</th>
+            <th class="cell-one-sixth" scope="col">Column heading</th>
+            <th class="cell-one-sixth" scope="col">Errors</th>
+            <th class="cell-two-thirds" scope="col">Correction</th>
         </tr>
         </thead>
         <tbody>
         {{#correctionsData.lineErrors}}
         <tr id="ERR_DR{{errorCode}}">
-            <td class="td-field-heading">
+            <th class="td-field-heading" scope="row">
                 <abbr {{#definition}}title="{{definition}}"{{/definition}}>{{fieldName}}</abbr>
                 <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
-            </td>
+            </th>
             <td class="td-errors">
                 <a href="/correction/detail?uuid={{id}}&id={{errorCode}}">View {{violationCount}} error{{#multipleViolations}}s{{/multipleViolations}}</a>
             </td>
