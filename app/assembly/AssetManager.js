@@ -14,8 +14,9 @@ const minifyTypes = {
         compressor: "uglifyjs",
         options: {
             // Mangling causes problems for IE8
-            mangle: false,
-            compress: true
+            'mangle': false,
+            'compress': false,
+            'support-ie8': true
         }
     },
     ".css": {
