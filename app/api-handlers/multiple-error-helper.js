@@ -3,7 +3,6 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
-const winston = require("winston");
 const helpLinks = require('../config/dep-help-links');
 
 let errorTypeInfo = {

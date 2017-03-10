@@ -131,7 +131,7 @@ module.exports = {
                         searchableHeadingNames : searchableHeadingNames
                     });
 
-                    replyObj.errorMessage = errorMessage
+                    replyObj.errorMessage = errorMessage;
                 }
 
                 reply.view('data-returns/display-list', replyObj);

@@ -73,6 +73,8 @@ module.exports = {
 
                 for (let upload of uploads) {
                     let fileKey = upload.status.server.uploadResult.fileKey;
+                    winston.info(`Submitting file with key ${fileKey}`);
+
                     completionHandler.confirmFileSubmission(fileKey, userMail, upload.name)
                         .then(onFileSubmitted)
                         .catch(exceptionHandler);
