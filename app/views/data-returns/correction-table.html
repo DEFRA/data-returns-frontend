@@ -28,7 +28,7 @@
         <tr id="ERR_DR{{errorCode}}">
             <th class="td-field-heading" scope="row">
                 <abbr {{#definition}}title="{{definition}}"{{/definition}}>{{fieldName}}</abbr>
-                <hidden id="{{fieldName}}_error_code" value="DR{{errorCode}}"></hidden>
+                <input type="hidden" id="{{fieldName}}_error_code" value="DR{{errorCode}}"/>
             </th>
             <td class="td-errors">
                 <a href="/correction/detail?uuid={{id}}&amp;id={{errorCode}}">
