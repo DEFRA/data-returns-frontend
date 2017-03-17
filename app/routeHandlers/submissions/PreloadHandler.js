@@ -23,6 +23,14 @@ function createSession() {
     });
 }
 
+function clearSession(sessionKey) {
+    // Clear session after a delay to avoid de-sync issues if a HEAD request occurs after a GET request
+    setTimeout(function () {
+        cacheHandler.delete(sessionKey)
+            .then(() => winston.info(`Deleted preloaded session data for key ${sessionKey}`))
+            .catch(err => winston.error(`Failed to delete preloaded session data from redis for key ${sessionKey}`, err));
+    }, 15 * 1000);
+}
 /*
  *  HTTP GET handler for /file/preload
  *  @Param request
@@ -35,24 +43,21 @@ module.exports.getHandler = function (request, reply) {
     };
 
     winston.info(`Attempting to retrieve session for sessionId=${reqInfo.sessionId} sessionKey=${reqInfo.sessionKey}`);
-
     let preloadSessionKey = redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId);
 
     cacheHandler.getJsonValue(preloadSessionKey).then(function (sessionData) {
         if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
             let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
-            winston.error(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
+            winston.warn(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
             return reply(Boom.unauthorized('Not permitted'));
         }
 
         if (request.method === 'head') {
-            winston.info(`Preload Handler: Processing HEAD request for session key ${reqInfo.sessionId}`);
             reply.redirect('/file/choose');
         } else {
-            winston.info(`Preload Handler: Processing GET request for session key ${reqInfo.sessionId}`);
-            return cacheHandler.delete(preloadSessionKey)
-                .then(() => userHandler.newUserSession(request, reply, sessionData.internalKey))
+            return userHandler.newUserSession(request, reply, sessionData.internalKey)
                 .then(() => reply.redirect('/file/choose'))
+                .then(() => clearSession(preloadSessionKey))
                 .catch(winston.error);
         }
     }).catch(function (err) {
