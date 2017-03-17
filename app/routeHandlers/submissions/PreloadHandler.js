@@ -23,42 +23,42 @@ function createSession() {
     });
 }
 
-
 /*
  *  HTTP GET handler for /file/preload
  *  @Param request
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    if (request.method === 'head') {
-        reply.redirect('/file/choose');
-    } else {
-        let reqInfo = {
-            "sessionId": request.query.sessionId,
-            "sessionKey": request.query.sessionKey
-        };
+    let reqInfo = {
+        "sessionId": request.query.sessionId,
+        "sessionKey": request.query.sessionKey
+    };
 
-        winston.info(`Attempting to retrieve session for sessionId=${reqInfo.sessionId} sessionKey=${reqInfo.sessionKey}`);
+    winston.info(`Attempting to retrieve session for sessionId=${reqInfo.sessionId} sessionKey=${reqInfo.sessionKey}`);
 
-        let preloadSessionKey = redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId);
+    let preloadSessionKey = redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId);
 
-        cacheHandler.getJsonValue(preloadSessionKey).then(function (sessionData) {
-            if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
-                winston.info("Preload Handler: Denied access to preload session (unauthorised)");
-                return reply(Boom.unauthorized('Not permitted'));
-            }
+    cacheHandler.getJsonValue(preloadSessionKey).then(function (sessionData) {
+        if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
+            let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
+            winston.error(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
+            return reply(Boom.unauthorized('Not permitted'));
+        }
 
-            return cacheHandler.delete(preloadSessionKey).then(function () {
-                userHandler.newUserSession(request, reply, sessionData.internalKey)
-                    .then(() => reply.redirect('/file/choose'))
-                    .catch(winston.error);
-            });
-
-        }).catch(function (err) {
-            winston.error(err);
-            return reply(Boom.internal("Unable to retrieve preloaded session data.", err, 500));
-        });
-    }
+        if (request.method === 'head') {
+            winston.info(`Preload Handler: Processing HEAD request for session key ${reqInfo.sessionId}`);
+            reply.redirect('/file/choose');
+        } else {
+            winston.info(`Preload Handler: Processing GET request for session key ${reqInfo.sessionId}`);
+            return cacheHandler.delete(preloadSessionKey)
+                .then(() => userHandler.newUserSession(request, reply, sessionData.internalKey))
+                .then(() => reply.redirect('/file/choose'))
+                .catch(winston.error);
+        }
+    }).catch(function (err) {
+        winston.error(err);
+        return reply(Boom.internal("Unable to retrieve preloaded session data.", err, 500));
+    });
 };
 
 /*
@@ -69,9 +69,7 @@ module.exports.getHandler = function (request, reply) {
 module.exports.postHandler = function (request, reply) {
     if (request.query.createSession) {
         winston.info("Preload Handler: Creating a new preload session.");
-        createSession().then(function (sessionData) {
-            return reply(sessionData).type('application/json');
-        });
+        createSession().then((sessionData) => reply(sessionData).type('application/json'));
     } else {
         winston.info("Preload Handler: Receiving a new file.");
         let reqInfo = {
@@ -81,7 +79,8 @@ module.exports.postHandler = function (request, reply) {
 
         cacheHandler.getJsonValue(redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId)).then(function (sessionData) {
             if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
-                winston.info("Preload Handler: Denied access to preload session (unauthorised)");
+                let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
+                winston.error(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
                 return reply(Boom.unauthorized('Not permitted'));
             }
 
