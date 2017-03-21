@@ -167,15 +167,38 @@ let csrf_handler_config = {
         }
     ]
 };
+
+
+
 server.ext('onPreResponse', function (request, reply) {
+    /*
+     * The content-security-policy is used by modern browsers to
+     * prevent XSS attacks.
+     *
+     * See https://content-security-policy.com/ for details
+     *
+     * We need to serve up images to anywhere (over https) because
+     * the email messages sent to users refer to the images and these
+     * maybe requested - for example - from google's servers.
+     *
+     * IE does not support content-security-policy but has limited support
+     * of X-Content-Security-Policy however it is not recommended to mix the depreciated
+     * X-headers.
+     *
+     */
+    let contentSecurityPolicy = "default-src 'none'; " +
+        "script-src 'self' 'unsafe-inline' www.google-analytics.com www.googletagmanager.com; " +
+        "font-src 'self' data:; connect-src 'self'; img-src *; style-src 'self';";
+
     let resp = request.response;
+
     if (resp && resp.header) {
         if (!request.path || !request.path.startsWith('/public')) {
             resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
         }
-        resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; " +
-            "base-uri 'self'; connect-src 'self' localhost www.google-analytics.com " +
-            "www.googletagmanager.com style-src 'self' 'unsafe-inline';");
+
+        resp.header('content-security-policy', contentSecurityPolicy);
+
     }
 
     // Get the session
