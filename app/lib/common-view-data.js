@@ -1,7 +1,7 @@
 "use strict";
-
 const config = require('../lib/configuration-handler.js').Configuration;
 const helpLinks = require('../config/dep-help-links');
+const uuidGen = require('uuid');
 
 module.exports = {
     'assetPath': '/public/',
@@ -16,5 +16,6 @@ module.exports = {
         "isCompressed": config.get('css.compress') || false
     },
     "links": helpLinks.links,
-    "config": config.getConfigObject()
+    "config": config.getConfigObject(),
+    "pgid": function() { return uuidGen.v4(); }
 };
