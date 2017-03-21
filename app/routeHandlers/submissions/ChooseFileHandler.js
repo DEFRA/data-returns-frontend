@@ -1,6 +1,5 @@
 "use strict";
 const winston = require("winston");
-const lodash = require("lodash");
 let userHandler = require('../../lib/user-handler');
 let fileUploadProcessor = require("../../lib/file-upload-processor");
 
@@ -59,7 +58,7 @@ module.exports.getHandler = function (request, reply) {
             if (returnJson) {
                 return statusJsonCallback({});
             } else {
-                return reply.view('data-returns/file-unavailable')
+                return reply.view('data-returns/file-unavailable');
             }
         });
 };
