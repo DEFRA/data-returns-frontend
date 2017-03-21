@@ -17,18 +17,20 @@ function createSession() {
         };
 
         let backendData = lodash.merge({"internalKey": uuidGen.v4()}, publicInfo);
-        cacheHandler.setValue(redisKeys.PRELOADED_SESSIONS.compositeKey(publicInfo.sessionId), backendData).then(function () {
-            resolve(publicInfo);
-        }).catch(reject);
+        redisKeys.PRELOADED_SESSIONS.compositeKey(publicInfo.sessionId)
+            .then((redisKey) => cacheHandler.setValue(redisKey, backendData))
+            .then(() => resolve(publicInfo))
+            .catch(reject);
     });
 }
 
-function clearSession(sessionKey) {
+function clearSession(sessionId) {
     // Clear session after a delay to avoid de-sync issues if a HEAD request occurs after a GET request
     setTimeout(function () {
-        cacheHandler.delete(sessionKey)
-            .then(() => winston.info(`Deleted preloaded session data for key ${sessionKey}`))
-            .catch(err => winston.error(`Failed to delete preloaded session data from redis for key ${sessionKey}`, err));
+        redisKeys.PRELOADED_SESSIONS.compositeKey(sessionId)
+            .then(cacheHandler.delete)
+            .then(() => winston.info(`Deleted preloaded session data for id ${sessionId}`))
+            .catch(err => winston.error(`Failed to delete preloaded session data from redis for id ${sessionId}`, err));
     }, 15 * 1000);
 }
 /*
@@ -43,27 +45,28 @@ module.exports.getHandler = function (request, reply) {
     };
 
     winston.info(`Attempting to retrieve session for sessionId=${reqInfo.sessionId} sessionKey=${reqInfo.sessionKey}`);
-    let preloadSessionKey = redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId);
+    redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId)
+        .then(cacheHandler.getJsonValue)
+        .then((sessionData) => {
+            if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
+                let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
+                winston.warn(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
+                return reply(Boom.unauthorized('Not permitted'));
+            }
 
-    cacheHandler.getJsonValue(preloadSessionKey).then(function (sessionData) {
-        if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
-            let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
-            winston.warn(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
-            return reply(Boom.unauthorized('Not permitted'));
-        }
-
-        if (request.method === 'head') {
-            reply.redirect('/file/choose');
-        } else {
-            return userHandler.newUserSession(request, reply, sessionData.internalKey)
-                .then(() => reply.redirect('/file/choose'))
-                .then(() => clearSession(preloadSessionKey))
-                .catch(winston.error);
-        }
-    }).catch(function (err) {
-        winston.error(err);
-        return reply(Boom.internal("Unable to retrieve preloaded session data.", err, 500));
-    });
+            if (request.method === 'head') {
+                reply.redirect('/file/choose');
+            } else {
+                return userHandler.newUserSession(request, reply, sessionData.internalKey)
+                    .then(() => reply.redirect('/file/choose'))
+                    .then(() => clearSession(reqInfo.sessionId))
+                    .catch(winston.error);
+            }
+        })
+        .catch(function (err) {
+            winston.error("Failed to retrieve upload session data", err);
+            return reply(Boom.internal("Unable to retrieve preloaded session data.", err, 500));
+        });
 };
 
 /*
@@ -82,32 +85,38 @@ module.exports.postHandler = function (request, reply) {
             "sessionKey": request.query.sessionKey || null
         };
 
-        cacheHandler.getJsonValue(redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId)).then(function (sessionData) {
-            if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
-                let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
-                winston.error(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
-                return reply(Boom.unauthorized('Not permitted'));
-            }
-
-            // Build a data structure to represent the uploaded files.
-            let fileData = fileUploadProcessor.getFileData(request, sessionData.internalKey);
-
-            winston.info("Preload Handler: Processing uploaded files.");
-            let callbacks = 0;
-            let result = lodash.merge({}, reqInfo, {
-                "files": new Array()
-            });
-            let resultHandler = function (processorResult) {
-                result.files.push(processorResult.details.name);
-                if (++callbacks === fileData.files.length) {
-                    winston.info("Preload Handler: File(s) completed processing.");
-                    reply(result).type('application/json');
+        redisKeys.PRELOADED_SESSIONS.compositeKey(reqInfo.sessionId)
+            .then(cacheHandler.getJsonValue)
+            .then((sessionData) => {
+                if (!sessionData || reqInfo.sessionKey !== sessionData.sessionKey) {
+                    let reason = !sessionData ? 'No session data' : `Session key mismatch.  Requested: ${reqInfo.sessionKey}, Found: ${sessionData.sessionKey}`;
+                    winston.error(`Preload Handler: Denied access to preload session (unauthorised).  Requested session id ${reqInfo.sessionId}.  Reason ${reason}`);
+                    return reply(Boom.unauthorized('Not permitted'));
                 }
-            };
-            fileData.files.forEach(function (upload) {
-                winston.info(`Preload Handler: Processing file ${upload.clientFilename}`);
-                fileUploadProcessor.processUploadedFile(upload).then(resultHandler).catch(resultHandler);
+
+                // Build a data structure to represent the uploaded files.
+                let fileData = fileUploadProcessor.getFileData(request, sessionData.internalKey);
+
+                winston.info("Preload Handler: Processing uploaded files.");
+                let callbacks = 0;
+                let result = lodash.merge({}, reqInfo, {
+                    "files": new Array()
+                });
+                let resultHandler = function (processorResult) {
+                    result.files.push(processorResult.details.name);
+                    if (++callbacks === fileData.files.length) {
+                        winston.info("Preload Handler: File(s) completed processing.");
+                        reply(result).type('application/json');
+                    }
+                };
+                fileData.files.forEach(function (upload) {
+                    winston.info(`Preload Handler: Processing file ${upload.clientFilename}`);
+                    fileUploadProcessor.processUploadedFile(upload).then(resultHandler).catch(resultHandler);
+                });
+            })
+            .catch(function (err) {
+                winston.error("Unable to upload file to preload session.", err);
+                return reply(Boom.internal("Unable to retrieve upload file to preload session.", err, 500));
             });
-        });
     }
 };

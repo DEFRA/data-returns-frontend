@@ -15,6 +15,7 @@ let fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
 let correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
 let correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
 let fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
+let fileUnavailableHandler = require('./routeHandlers/submissions/FileUnavailableHandler');
 
 // Reference material lookup handlers
 let listHandler = require('./routeHandlers/lookup/ListHandler');
@@ -121,6 +122,12 @@ let handlers = [
         method: 'GET',
         path: '/file/invalid',
         handler: fileInvalidHandler.getHandler
+    },
+    // /file/unavailable
+    {
+        method: 'GET',
+        path: '/file/unavailable',
+        handler: fileUnavailableHandler.getHandler
     },
     // /file/choose
     {

@@ -185,22 +185,25 @@ server.ext('onPreResponse', function (request, reply) {
     // Ignore resource requests - we only need to set the CSRF token on the html views
     if (sessionID && resp.source && csrf_handler_config.paths.map(p => p.source).find(path => path.test(request.path))) {
         // Get the csrf token from the session
-        cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
-            if (!val) {
-                winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
-            } else {
-                winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
-                // Make sure the source context is defined and set the csrf token on it
-                // so it becomes available in  the views as {{csrf}}
-                resp.source.context = resp.source.context || {};
-                resp.source.context['csrf'] = val;
-            }
-            reply(resp);
-        }).catch(function (err) {
-            // Log the error and continue
-            winston.error(`${request.path} has error: ${err}`);
-            reply(resp);
-        });
+        redisKeys.CSRF_TOKEN.compositeKey(sessionID)
+            .then(cacheHandler.getJsonValue)
+            .then(function (val) {
+                if (!val) {
+                    winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
+                } else {
+                    winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
+                    // Make sure the source context is defined and set the csrf token on it
+                    // so it becomes available in  the views as {{csrf}}
+                    resp.source.context = resp.source.context || {};
+                    resp.source.context['csrf'] = val;
+                }
+                reply(resp);
+            })
+            .catch(function (err) {
+                // Log the error and continue
+                winston.error(`${request.path} has error: ${err}`);
+                reply(resp);
+            });
     } else {
         reply(resp);
     }
@@ -223,19 +226,22 @@ var csrf_check_function = function (request, next) {
         let cookies = new Cookies(request);
         let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
         if (sessionID) {
-            cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
-                winston.info("Retrieved CSRF token");
-                if (request.payload.csrf !== val) {
-                    winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
-                    // We have to redirect to forbidden as there is no access to the replay object at this point
-                    next.redirect('/forbidden');
-                } else {
-                    next.continue();
-                }
-            }).catch(function (err) {
-                winston.error(err);
-                next.redirect('/failure');
-            });
+            redisKeys.CSRF_TOKEN.compositeKey(sessionID)
+                .then(cacheHandler.getJsonValue)
+                .then(function (val) {
+                    winston.info("Retrieved CSRF token");
+                    if (request.payload.csrf !== val) {
+                        winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
+                        // We have to redirect to forbidden as there is no access to the replay object at this point
+                        next.redirect('/forbidden');
+                    } else {
+                        next.continue();
+                    }
+                })
+                .catch(function (err) {
+                    winston.error(err);
+                    next.redirect('/failure');
+                });
         } else {
             // If there is no session cookie then then redirect to the cookie information page
             next.redirect('/guidance/no-cookie');

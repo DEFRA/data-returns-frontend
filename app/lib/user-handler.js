@@ -14,23 +14,20 @@ const DATA_RETURNS_COOKIE_ID = "data-returns-id";
  * @param sessionID the session id used as the key
  * @param user the JSON object representing a user object
  */
-var setUser = function (sessionID, user) {
-    return new Promise(function (resolve, reject) {
-        user.last_updated = new Date().toUTCString();
-        cacheHandler.setValue(redisKeys.USER_DATA.compositeKey(sessionID), user)
-            .then(() => resolve(user)).catch(reject);
-    });
+let setUser = function (sessionID, user) {
+    return redisKeys.USER_DATA.compositeKey(sessionID)
+        .then((redisKey) => {
+            user.last_updated = new Date().toUTCString();
+            return cacheHandler.setValue(redisKey, user);
+        });
 };
 
 /*
  * gets a user from Redis based on a key
  * @param sessionID used as the key
  */
-var getUser = function (sessionID) {
-    return new Promise(function (resolve, reject) {
-        cacheHandler.getJsonValue(redisKeys.USER_DATA.compositeKey(sessionID))
-            .then(resolve).catch(reject);
-    });
+let getUser = function (sessionID) {
+    return redisKeys.USER_DATA.compositeKey(sessionID).then(cacheHandler.getJsonValue);
 };
 
 module.exports.getUserMail = function (sessionID) {
@@ -102,8 +99,7 @@ module.exports.modifyUser = function (sessionID, modifyHandler) {
  * @returns {*|Promise} resolved with the number of uploads if there are any, rejected otherwise
  */
 module.exports.hasUploads = function (sessionID) {
-    let uploadsKey = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-    return cacheHandler.arrayNotEmpty(uploadsKey);
+    return redisKeys.UPLOADED_FILES.compositeKey(sessionID).then(cacheHandler.arrayNotEmpty);
 };
 /**
  * Retrieve an array of files that the user has uploaded
@@ -112,8 +108,7 @@ module.exports.hasUploads = function (sessionID) {
  * @returns {*|Promise} resolved with an array of uploaded file information if present, rejected otherwise
  */
 module.exports.getUploads = function (sessionID) {
-    let uploadsKey = redisKeys.UPLOADED_FILES.compositeKey(sessionID);
-    return cacheHandler.arrayGet(uploadsKey);
+    return redisKeys.UPLOADED_FILES.compositeKey(sessionID).then(cacheHandler.arrayGet);
 };
 
 module.exports.getSessionID = function (request) {
@@ -121,17 +116,17 @@ module.exports.getSessionID = function (request) {
 };
 
 module.exports.emptyUploadList = function (currentSessionId) {
-    return new Promise(function (resolve, reject) {
-        // Cleanup current session
-        let keyPattern = `${redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)}*`;
-        winston.info(`Removing upload list keys for pattern ${keyPattern}...`);
-
-        cacheHandler.deleteKeys(keyPattern)
-            .then(() => winston.debug(`Completed removing upload list keys for pattern ${keyPattern}`))
-            .then(resolve)
-            .catch(reject);
-    });
+    return redisKeys.UPLOADED_FILES.compositeKey(currentSessionId)
+        .then((keyPattern) => {
+            winston.debug(`Removing upload list keys for pattern ${keyPattern}`);
+            return cacheHandler.deleteKeys(keyPattern);
+        });
 };
+
+module.exports.removeUpload = function (sessionID, uploadData) {
+    redisKeys.UPLOADED_FILES.compositeKey(sessionID).then((redisKey) => cacheHandler.arrayRemove(redisKey, uploadData));
+};
+
 
 module.exports.newSession = function (request, reply, sessionKey) {
     return new Promise(function (resolve, reject) {
@@ -162,11 +157,11 @@ module.exports.newSession = function (request, reply, sessionKey) {
         request._sessionId = newSessionId;
 
         winston.debug(`Adding a new CSRF token to the cache for session: ${newSessionId}`);
-        cacheHandler.setValue(redisKeys.CSRF_TOKEN.compositeKey(newSessionId), token)
+        redisKeys.CSRF_TOKEN.compositeKey(newSessionId)
+            .then((redisKey) => cacheHandler.setValue(redisKey, token))
             .then(() => winston.debug(`New CSRF token is added for session: ${newSessionId}`))
             .then(resolve)
             .catch(reject);
-
     });
 };
 

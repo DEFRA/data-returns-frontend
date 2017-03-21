@@ -29,7 +29,7 @@ const setExpiry = function (key, expiry) {
     }
 };
 
-module.exports = {
+let self = module.exports = {
     /*
      * Gets a value from REDIS
      * @param key
@@ -112,8 +112,6 @@ module.exports = {
      *
      * @param pattern
      * @returns {Promise}
-     *
-     * GMW - this needs to return a promise as stated above
      */
     deleteKeys: function (pattern) {
         return new Promise((resolve, reject) => {
@@ -149,7 +147,7 @@ module.exports = {
      * @returns {*}
      */
     getJsonValue: function (key) {
-        return this.getValue(key).then(JSON.parse);
+        return self.getValue(key).then(JSON.parse);
     },
     /*
      * Persists a new value for a given key
@@ -159,7 +157,7 @@ module.exports = {
      */
     setPersistedValue: function (key, value) {
         // Pass expiry: null to setValue to persist
-        return this.setValue(key, value, null);
+        return self.setValue(key, value, null);
     },
     /**
      * Retrieve an array of json objects
