@@ -293,7 +293,7 @@ env: test
 # SMTP specializations
 smtp:
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply@email.dr-test.envage.co.uk*
+   "Environment Agency (no-reply)" noreply@email.dr-test.envage.co.uk
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://dr-test.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-test.envage.co.uk/public/images/gov.uk_logotype_crown.png
@@ -320,7 +320,7 @@ env: preprod
 # SMTP specializations
 smtp:
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply@email.dr-pre-prod.envage.co.uk*
+   "Environment Agency (no-reply)" noreply@email.dr-pre-prod.envage.co.uk
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://data-returns-preprod/public/images/govuk_logotype_email.png
   crownLogo: https://data-returns-preprod/public/images/gov.uk_logotype_crown.png
@@ -347,7 +347,7 @@ env: prod
 # SMTP specializations
 smtp:
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply@environment-agency.gov.uk
+   "Environment Agency (no-reply)" noreply@email.report-landfill-data.service.gov.uk
   ealogo: https://dr-prod.envage.co.uk/public/images/public/images/EAlogo.png
   govuklogo: https://dr-prod.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-prod.envage.co.uk/public/images/gov.uk_logotype_crown.png
