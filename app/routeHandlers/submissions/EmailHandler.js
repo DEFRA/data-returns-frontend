@@ -63,8 +63,10 @@ module.exports = {
                     uploadCount: 0
                 };
             })
-            .then((metadata) => userHandler.setUser(sessionID, metadata))
-            .then((metadata) => smtpHandler.sendPinEmail(userMail, metadata.pin))
+            .then((metadata) => {
+                return userHandler.setUser(sessionID, metadata)
+                    .then(smtpHandler.sendPinEmail(userMail, metadata.pin));
+            })
             .then(() => reply.redirect('/pin', {emailAddress: userMail}))
             .catch(function (errResult) {
                 if (!errResult.errorCode || errResult.errorCode === 3000) {
