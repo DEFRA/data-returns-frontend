@@ -205,7 +205,7 @@ smtp:
   password:
   ignoreTLS: true
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply-local@environment-agency.gov.uk
+   "Environment Agency (no-reply)" noreply-local@envage.co.uk
 
   # Static images are used in the HTML emails
   ealogo: http://localhost:3000/public/images/EAlogo.png
@@ -265,7 +265,7 @@ smtp:
   govuklogo: https://dr-dev.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-dev.envage.co.uk/public/images/gov.uk_logotype_crown.png
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply-dev@environment-agency.gov.uk
+   "Environment Agency (no-reply)" noreply@email.dr-dev.envage.co.uk
 
 # Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
 logging:
@@ -293,7 +293,7 @@ env: test
 # SMTP specializations
 smtp:
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply-test@environment-agency.gov.uk
+   "Environment Agency (no-reply)" noreply@email.dr-test.envage.co.uk*
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://dr-test.envage.co.uk/public/images/govuk_logotype_email.png
   crownLogo: https://dr-test.envage.co.uk/public/images/gov.uk_logotype_crown.png
@@ -320,7 +320,7 @@ env: preprod
 # SMTP specializations
 smtp:
   fromEmailAddress: >
-   "Environment Agency (no-reply)" noreply@environment-agency.gov.uk
+   "Environment Agency (no-reply)" noreply@email.dr-pre-prod.envage.co.uk*
   ealogo: https://dr-test.envage.co.uk/public/images/EAlogo.png
   govuklogo: https://data-returns-preprod/public/images/govuk_logotype_email.png
   crownLogo: https://data-returns-preprod/public/images/gov.uk_logotype_crown.png
