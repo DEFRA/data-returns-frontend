@@ -17,7 +17,10 @@ module.exports = {
     getHandler: function (request, reply) {
         userHandler.newUserSession(request, reply)
             .then(() => reply.view('data-returns/start'))
-            .catch(winston.error);
+            .catch((e) => {
+                winston.error(e);
+                reply.redirect('/failure');
+            });
     },
     /*
      * This is used to check we have been able to write a session cookie

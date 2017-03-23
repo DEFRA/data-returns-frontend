@@ -1,4 +1,5 @@
 "use strict";
+const winston = require("winston");
 let userHandler = require('../../lib/user-handler');
 
 function testForEaIdSubstitution(uploads) {
@@ -22,8 +23,7 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
-
-        userHandler.getUploads(sessionID).then(function(uploads) {
+        userHandler.getUploads(sessionID).then(function (uploads) {
             if (uploads && uploads.length > 0) {
                 let displayEaIdSubstitutionsMsg = testForEaIdSubstitution(uploads);
                 reply.view('data-returns/confirm-your-file', {
@@ -34,8 +34,9 @@ module.exports = {
                 // Show file-unavailable page if the file uploads array is empty
                 reply.view('data-returns/file-unavailable');
             }
-        }).catch(function() {
-            reply.view('data-returns/file-unavailable');
+        }).catch((e) => {
+            winston.error(e);
+            reply.redirect("/failure");
         });
     }
 };

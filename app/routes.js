@@ -1,8 +1,11 @@
 'use strict';
 const winston = require("winston");
 const config = require('./lib/configuration-handler.js').Configuration;
+const userSession = require('./lib/user-handler');
+
 let basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 let startHandler = require('./routeHandlers/StartHandler');
+
 
 // Submission route handlers
 let chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
@@ -72,9 +75,16 @@ let handlers = [
         method: 'GET',
         path: '/guidance/{page*}',
         handler: function (request, reply) {
-            reply.view(`data-returns/guidance/${request.params.page}`, {
-                src: request.info.referrer || '/guidance/landfill-data-rules'
-            });
+            if (request.params.page) {
+                reply.view(`data-returns/guidance/${request.params.page}`, {
+                    src: request.info.referrer || '/guidance/landfill-data-rules'
+                });
+            } else {
+                // TODO: At some point we should make the default page index.html and communicate this to Martin
+                reply.redirect("/guidance/landfill-data-rules.html");
+            }
+
+
         }
     },
     /*
@@ -117,29 +127,11 @@ let handlers = [
         path: '/start/continue',
         handler: startHandler.continueHandler
     },
-    // /file/invalid
-    {
-        method: 'GET',
-        path: '/file/invalid',
-        handler: fileInvalidHandler.getHandler
-    },
     // /file/unavailable
     {
         method: 'GET',
         path: '/file/unavailable',
         handler: fileUnavailableHandler.getHandler
-    },
-    // /file/choose
-    {
-        method: 'GET',
-        path: '/file/choose',
-        handler: chooseFileHandler.getHandler
-    },
-    {
-        method: 'POST',
-        path: '/file/choose',
-        config: fileUploadConfig,
-        handler: chooseFileHandler.postHandler
     },
     // /file/preload
     {
@@ -152,6 +144,94 @@ let handlers = [
         path: '/file/preload',
         config: fileUploadConfig,
         handler: preloadHandler.postHandler
+    },
+
+
+    // Controlled list handlers
+    {
+        method: 'GET',
+        path: '/controlled-lists',
+        handler: listHandler.getHandler
+    },
+    {
+        method: 'GET',
+        path: '/display-list',
+        handler: listHandler.getDisplayHandler
+    },
+    {
+        method: 'GET',
+        path: '/display-list/search',
+        handler: listHandler.getDisplayHandlerWithSearch
+    },
+    {
+        method: 'GET',
+        path: '/csv/{list*}',
+        handler: listHandler.getCSVHandler
+    },
+
+    // EA_ID lookup tool#
+    {
+        method: 'GET',
+        path: '/lookup',
+        handler: eaIdLookupHandler.routeHandler
+    },
+
+
+    // /failure
+    {
+        method: 'GET',
+        path: '/failure',
+        handler: basicTemplateHandler.getHandler
+    },
+
+    {
+        method: '*',
+        path: '/forbidden',
+        handler: function (request, reply) {
+            reply(require('boom').forbidden('This operation is not allowed'));
+        }
+    },
+];
+
+/**
+ * These handlers require a session cookie to be in place and will not be called if a session cookie is not present,
+ * instead they will be redirected to the no-cookie page.
+ *
+ * @type {[*]}
+ */
+const requireCookie = function(handlers) {
+    let preRouteHandlers = [
+        {
+            method: function(request, reply) {
+                let sessionID = userSession.getSessionID(request);
+                if (!sessionID) {
+                    return reply.redirect('/guidance/no-cookie.html').takeover();
+                }
+                return reply();
+            }
+        }
+    ];
+
+    for (let handler of handlers) {
+        handler.config = handler.config || {};
+        handler.config.pre = preRouteHandlers.concat(handler.config.pre || []);
+    }
+    return handlers;
+};
+
+
+let statefulHandlers = requireCookie([
+    // /file/choose
+    {
+        method: 'GET',
+        path: '/file/choose',
+        handler: chooseFileHandler.getHandler
+    },
+    {
+        method: 'POST',
+        path: '/file/choose',
+        config: fileUploadConfig,
+        handler: chooseFileHandler.postHandler
     },
     // /file/confirm
     {
@@ -212,52 +292,17 @@ let handlers = [
         handler: correctionDetailHandler.getHandler
     },
 
-    // Controlled list handlers
+    // /file/invalid
     {
         method: 'GET',
-        path: '/controlled-lists',
-        handler: listHandler.getHandler
-    },
-    {
-        method: 'GET',
-        path: '/display-list',
-        handler: listHandler.getDisplayHandler
-    },
-    {
-        method: 'GET',
-        path: '/display-list/search',
-        handler: listHandler.getDisplayHandlerWithSearch
-    },
-    {
-        method: 'GET',
-        path: '/csv/{list*}',
-        handler: listHandler.getCSVHandler
-    },
-
-    // EA_ID lookup tool#
-    {
-        method: 'GET',
-        path: '/lookup',
-        handler: eaIdLookupHandler.routeHandler
-    },
+        path: '/file/invalid',
+        handler: fileInvalidHandler.getHandler
+    }
+]);
 
 
-    // /failure
-    {
-        method: 'GET',
-        path: '/failure',
-        handler: basicTemplateHandler.getHandler
-    },
 
-    {
-        method: '*',
-        path: '/forbidden',
-        handler: function (request, reply) {
-            reply(require('boom').forbidden('This operation is not allowed'));
-        }
-    },
 
-];
 
 if (process.env.NODE_ENV !== "prod" && process.env.NODE_ENV !== "production") {
     // Add handler for content review
@@ -290,4 +335,4 @@ if (process.env.NODE_ENV !== "prod" && process.env.NODE_ENV !== "production") {
     });
 }
 
-module.exports = handlers;
+module.exports = [].concat(handlers, statefulHandlers);
