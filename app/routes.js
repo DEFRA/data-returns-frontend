@@ -2,6 +2,7 @@
 const winston = require("winston");
 const config = require('./lib/configuration-handler.js').Configuration;
 const userSession = require('./lib/user-handler');
+const lodash = require("lodash");
 
 let basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
 let startHandler = require('./routeHandlers/StartHandler');
@@ -213,7 +214,7 @@ const requireCookie = function(handlers) {
     ];
 
     for (let handler of handlers) {
-        handler.config = handler.config || {};
+        handler.config = lodash.defaultsDeep({}, handler.config);
         handler.config.pre = preRouteHandlers.concat(handler.config.pre || []);
     }
     return handlers;
