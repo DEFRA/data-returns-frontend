@@ -333,7 +333,7 @@ smtp:
 
 googleAnalytics:
   use: true
-  tagManagerId: GTM-MLJ3NJ
+  tagManagerId: GTM-P34JJQ
 
 logging:
   level: warn
@@ -354,12 +354,13 @@ env: prod
 smtp:
   fromEmailAddress: >
    "Environment Agency (no-reply)" noreply@email.report-landfill-data.service.gov.uk
-  ealogo: https://dr-prod.envage.co.uk/public/images/public/images/EAlogo.png
-  govuklogo: https://dr-prod.envage.co.uk/public/images/govuk_logotype_email.png
-  crownLogo: https://dr-prod.envage.co.uk/public/images/gov.uk_logotype_crown.png
+  ealogo: https://report-landfill-data.service.gov.uk/public/images/EAlogo.png
+  govuklogo: https://report-landfill-data.service.gov.uk/public/images/govuk_logotype_email.png
+  crownLogo: https://report-landfill-data.service.gov.uk/public/images/gov.uk_logotype_crown.png
 
 googleAnalytics:
-  use: false
+  use: true
+  tagManagerId: GTM-MLJ3NJ
 
 logging:
   level: warn
