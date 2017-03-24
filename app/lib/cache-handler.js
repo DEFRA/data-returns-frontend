@@ -118,7 +118,7 @@ let self = module.exports = {
             client.keys(pattern, (err, keys) => {
 
                 if (err) {
-                    reject(err);
+                    return reject(err);
                 }
 
                 if (keys.length > 0) {
@@ -126,7 +126,7 @@ let self = module.exports = {
 
                         if (err) {
                             winston.error(err);
-                            reject(keys);
+                            return reject(keys);
                         }
 
                         resolve(keys);
@@ -163,7 +163,7 @@ let self = module.exports = {
      * Retrieve an array of json objects
      *
      * @param key the key used to lookup the array
-     * @returns {Promise} resolved with the array on success, rejected with the error/exception object on failure
+     * @returns {Promise} resolved with the array on success. if no data can be retrieved then an empty array is returned
      */
     arrayGet: function (key) {
         return new Promise(function (resolve, reject) {
@@ -174,7 +174,8 @@ let self = module.exports = {
                     try {
                         resolve(arr.map(JSON.parse));
                     } catch (e) {
-                        reject(e);
+                        winston.error("Unable to parse data from redis JSON array", e);
+                        resolve([]);
                     }
                 }
             });
@@ -184,15 +185,15 @@ let self = module.exports = {
      * Ensures that an array is not empty
      *
      * @param key the key used to lookup the array
-     * @returns {Promise} resolved with the array length if the array is not empty, rejected if the array is empty
+     * @returns {*|Promise} resolved with boolean true if there are uploads, false otherwise.  rejected on error
      */
     arrayNotEmpty: function (key) {
         return new Promise(function (resolve, reject) {
-            client.llen(key, function(error, len) {
-                if (error || !(len > 0)) {
-                    reject();
+            client.llen(key, function (error, len) {
+                if (error) {
+                    reject(error);
                 } else {
-                    resolve(len);
+                    resolve(len > 0);
                 }
             });
         });

@@ -31,19 +31,14 @@ let getUser = function (sessionID) {
 };
 
 module.exports.getUserMail = function (sessionID) {
-    return new Promise(function (resolve, reject) {
-        getUser(sessionID)
-            .then(function (user) {
-                if (user && user.email) {
-                    resolve(user.email);
-                } else {
-                    reject(false);
-                }
-            })
-            .catch(function () {
-                reject(false);
-            });
-    });
+    return getUser(sessionID)
+        .then(function (user) {
+            if (user && user.email) {
+                return user.email;
+            } else {
+                return Promise.reject(new Error('Email address not set'));
+            }
+        });
 };
 
 module.exports.isAuthenticated = function (sessionID) {
@@ -96,7 +91,7 @@ module.exports.modifyUser = function (sessionID, modifyHandler) {
  * Determine if the user has uploaded files in this session.
  *
  * @param sessionID the user's session ID
- * @returns {*|Promise} resolved with the number of uploads if there are any, rejected otherwise
+ * @returns {*|Promise} resolved with boolean true if there are uploads, false otherwise.  rejected on error
  */
 module.exports.hasUploads = function (sessionID) {
     return redisKeys.UPLOADED_FILES.compositeKey(sessionID).then(cacheHandler.arrayNotEmpty);

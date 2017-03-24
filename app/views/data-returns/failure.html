@@ -5,14 +5,13 @@
 {{$content}}
 <main id="content" role="main">
     {{{feedbackbanner}}}
-    <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
     <div tabindex="-1" aria-labelledby="make-corrections" role="group" class="error-summary">
-        <h1 id="make-corrections" class="heading-medium error-summary-heading">Sorry, the service isn't working</h1>
+        <h1 class="heading-medium error-summary-heading"><span id="title">{{$title}}{{/title}}</span></h1>
         <p>We’re experiencing problems. This means you can’t send your file right now. Please contact us directly to
             tell us about this problem.</p>
     </div>
-    <p><a id="startagain.btn" href="/file/choose" class="button">Upload and check another file</a></p>
+    <p><a id="startagain.btn" href="/start" class="button">Start again</a></p>
 </main>
 {{/content}}
 {{/layout}}

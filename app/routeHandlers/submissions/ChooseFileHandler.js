@@ -54,11 +54,15 @@ module.exports.getHandler = function (request, reply) {
     let handler = returnJson ? statusJsonCallback : loadPageCallback;
     buildStatusJson(sessionID)
         .then(handler)
-        .catch(() => {
+        .catch((e) => {
+            winston.error(e);
             if (returnJson) {
-                return statusJsonCallback({});
+                return statusJsonCallback({
+                    "canContinue": false,
+                    "files": []
+                });
             } else {
-                return reply.view('data-returns/file-unavailable');
+                reply.redirect("/failure");
             }
         });
 };

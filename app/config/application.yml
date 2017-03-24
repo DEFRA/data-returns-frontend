@@ -44,6 +44,8 @@ pin:
 redis:
   host: ${DR_REDIS_HOST}
   port: ${DR_REDIS_PORT}
+  # Do not use the offline queue - fail with an exception if commands cannot be executed due to a connection problem
+  enable_offline_queue: false
 
 # Initial File upload directory where virus checker can find the files
 upload:
@@ -168,6 +170,8 @@ pin:
 redis:
   host: localhost
   port: 6379
+  # Do not use the offline queue - fail with an exception if commands cannot be executed due to a connection problem
+  enable_offline_queue: false
 
 # Compress the CSV data used in the views - false locally
 css:
@@ -234,6 +238,8 @@ pin:
 redis:
   host: localhost
   port: 6379
+  # Do not use the offline queue - fail with an exception if commands cannot be executed due to a connection problem
+  enable_offline_queue: false
 
 # Compress the CSV data used in the views - false locally
 css:
