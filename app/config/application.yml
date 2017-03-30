@@ -333,7 +333,7 @@ smtp:
 
 googleAnalytics:
   use: true
-  tagManagerId: GTM-P34JJQ
+  tagManagerId: GTM-MLJ3NJ
 
 logging:
   level: warn
@@ -360,7 +360,8 @@ smtp:
 
 googleAnalytics:
   use: true
-  tagManagerId: GTM-MLJ3NJ
+  tagManagerId: GTM-ML52ZHC
+
 
 logging:
   level: warn
