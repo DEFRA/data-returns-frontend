@@ -164,7 +164,7 @@ module.exports = {
         let filename = request.params.list + '.csv';
         winston.info('==> /csv-list ' + filename);
 
-        handler.getListProcessor(handler.csvExtractor, request.params.list, function (metadata, header, data) {
+        handler.getListProcessor(handler.csvExtractorPivot, request.params.list, function (metadata, header, data) {
             let columns = header.map(h => h.description);
             let rows = data.map(r => r.row);
             stringify(rows, {header: true, columns: columns, quoted: true}, function (err, output) {
