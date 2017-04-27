@@ -191,9 +191,9 @@ module.exports.csvExtractorPivot = function (listData, displayHeaders) {
         let cols = [];
         for (let c = 0; c < displayHeaders.length; c++) {
             let item = [];
-            if (Array.isArray(listData[r][displayHeaders[c].field])) {
-                for (let a = 0; a < listData[r][displayHeaders[c].field].length; a++) {
-                    item = listData[r][displayHeaders[c].field][a];
+            if (Array.isArray(displayHeaders[c].pivotHeaders) && displayHeaders[c].pivotHeaders.length > 1) {
+                for (let a = 0; a < displayHeaders[c].pivotHeaders.length; a++) {
+                    item = Array.isArray(listData[r][displayHeaders[c].field]) ? listData[r][displayHeaders[c].field][a] : null;
                     cols.push(item);
                 }
             } else {
