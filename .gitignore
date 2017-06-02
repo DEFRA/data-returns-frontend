@@ -7,3 +7,5 @@
 /.start.pid
 /public/
 tmp/
+/.nyc_output/
+/npm-debug.log

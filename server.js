@@ -168,6 +168,7 @@ let csrf_handler_config = {
 };
 
 
+
 server.ext('onPreResponse', function (request, reply) {
     /*
      * The content-security-policy is used by modern browsers to
@@ -273,111 +274,8 @@ var csrf_check_function = function (request, next) {
     }
 };
 
-// Verifying Same-origin with standard Headers
-var same_origin_check_function = function (request, next) {
-
-    // List exclusions by wildcard in this array
-    let same_origin_ignore = [
-        new RegExp('^/$'),
-        new RegExp('^/start$')
-    ];
-
-    // List exclusions by hostname or IP address in this array
-    let localhosts = [
-        new RegExp('.*localhost.*'),
-        new RegExp('.*0\.0\.0\.0.*'),
-        new RegExp('.*127\.0\.0\.1.*')
-    ];
-
-    let url = require('url');
-
-    //
-    // Same origin check
-    //
-    if (request.headers && !same_origin_ignore.find(path => path.test(request.path))) {
-        // x-forwarded-host should be set by proxies to
-        // preserve the original host where 'host' is
-        // populated with the IP of the proxy. It should be in the
-        // form hostname:port
-        var x_host = request.headers['x-forwarded-host'];
-        var first_xhost = x_host ? x_host.split(",")[0] : undefined;
-        var host = first_xhost || request.headers['host'];
-        var origin = request.headers['origin'] || request.headers['referer'];
-
-        if (localhosts.find(hst => hst.test(host))) {
-            // Ignore local host
-        } else if (!origin) {
-            // OWASP recommends blocking requests for which neither
-            // an origin or a referer is set. However there are a set
-            // of scenarios in which this system; unexpected navigations
-            // start page handlers etc do not set either so we have to ignore
-            winston.debug('Origin check: No origin');
-            winston.debug('Headers: ' + JSON.stringify(request.headers, null, 4));
-        } else {
-            if (host) {
-                var p_host = host.split(":");
-                var p_origin = url.parse(origin);
-                // Ignore for localhost because using mailcatcher in the same browser
-                // as the service resets the origin
-                if (p_origin.hostname != p_host[0] || p_origin.port != p_host[1]) {
-                    winston.info('Cross origin request disallowed: ' + p_origin.hostname + ":" + p_origin.port);
-                    winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
-                    request.setUrl('/forbidden');
-                    request.setMethod('GET');
-                    next();
-                }
-            } else {
-                winston.info('Illegal: no host header found');
-                winston.info('Headers: ' + JSON.stringify(request.headers, null, 4));
-                request.setUrl('/forbidden');
-                request.setMethod('GET');
-                next();
-            }
-        }
-    }
-    //
-    // Resume
-    //
-    return next.continue();
-};
-
-
-// Uncomment this line to perform same origin checks.
-// Not supported on the AWS ejnvironment because x-forwarded-host is not set by nginx
-//server.ext('onRequest', same_origin_check_function);
-// See https://www.owasp.org/index.php?title=Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet&setlang=en
-
 // Register the event handler for the CSRF
 server.ext('onPreHandler', csrf_check_function);
-
-//lint js files
-var exec = require('child_process').exec;
-function forEachLine (content, lineCallback) {
-    for (let line of content.split("\n")) {
-        lineCallback(line);
-    }
-}
-
-if (config.get('startup.runLinter')) {
-    exec(__dirname + '/node_modules/eslint/bin/eslint.js app/** test/** -f tap', function (error, stdout) {
-        winston.info('Checking javascript files ');
-        forEachLine(stdout, winston.info);
-        if (error) {
-            forEachLine(error.message, winston.warn)
-        }
-    });
-}
-
-if (config.get('startup.runUnitTests')) {
-    exec('lab -e ' + process.env.NODE_ENV + ' -r console -o stdout -r html -o reports/data-returns-front-end-test-results.html', function (error, stdout) {
-        winston.info('Running Unit Tests:');
-        forEachLine(stdout, winston.info);
-        if (error) {
-            forEachLine(error.message, winston.warn);
-        }
-    });
-}
-
 
 cacheHandler.connectionReady()
     .then(() => {

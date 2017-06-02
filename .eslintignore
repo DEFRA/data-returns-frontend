@@ -1,0 +1,7 @@
+./*
+!*.js
+!app/**/*.js
+
+assets/*
+public/*
+node_modules/*
