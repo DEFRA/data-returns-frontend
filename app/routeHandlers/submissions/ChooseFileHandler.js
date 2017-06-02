@@ -1,30 +1,30 @@
-"use strict";
-const winston = require("winston");
-let userHandler = require('../../lib/user-handler');
-let fileUploadProcessor = require("../../lib/file-upload-processor");
+'use strict';
+const winston = require('winston');
+const userHandler = require('../../lib/user-handler');
+const fileUploadProcessor = require('../../lib/file-upload-processor');
 
-function buildStatusJson(sessionID) {
+function buildStatusJson (sessionID) {
     return new Promise(function (resolve, reject) {
         userHandler.getUploads(sessionID).then(function (uploads) {
-            let hasInvalidUploads = uploads.filter(u => u.status.state !== "ready").length > 0;
+            const hasInvalidUploads = uploads.filter(u => u.status.state !== 'ready').length > 0;
             // Sort by filename
             uploads.sort((a, b) => {
                 return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
             });
-            let status = {
-                "canContinue": uploads.length > 0 && !hasInvalidUploads,
-                "hasInvalidUploads": hasInvalidUploads,
-                "files": uploads
+            const status = {
+                'canContinue': uploads.length > 0 && !hasInvalidUploads,
+                'hasInvalidUploads': hasInvalidUploads,
+                'files': uploads
             };
             resolve(status);
         }).catch(reject);
     });
 }
 
-function removeUpload(sessionID, uuid) {
+function removeUpload (sessionID, uuid) {
     return new Promise(function (resolve, reject) {
         userHandler.getUploads(sessionID).then(function (uploads) {
-            for (let upload of uploads) {
+            for (const upload of uploads) {
                 if (upload.id === uuid) return upload;
             }
             return null;
@@ -42,31 +42,30 @@ function removeUpload(sessionID, uuid) {
  *  @Param reply
  */
 module.exports.getHandler = function (request, reply) {
-    let sessionID = userHandler.getSessionID(request);
-    let loadPageCallback = function (status) {
+    const sessionID = userHandler.getSessionID(request);
+    const loadPageCallback = function (status) {
         reply.view('data-returns/choose-your-file', status);
     };
 
-    let statusJsonCallback = function (status) {
+    const statusJsonCallback = function (status) {
         reply(status).type('application/json');
     };
-    let returnJson = request.query.status === "true";
-    let handler = returnJson ? statusJsonCallback : loadPageCallback;
+    const returnJson = request.query.status === 'true';
+    const handler = returnJson ? statusJsonCallback : loadPageCallback;
     buildStatusJson(sessionID)
         .then(handler)
         .catch((e) => {
             winston.error(e);
             if (returnJson) {
                 return statusJsonCallback({
-                    "canContinue": false,
-                    "files": []
+                    'canContinue': false,
+                    'files': []
                 });
             } else {
-                reply.redirect("/failure");
+                reply.redirect('/failure');
             }
         });
 };
-
 
 /*
  *  HTTP POST handler for /file/choose
@@ -74,29 +73,29 @@ module.exports.getHandler = function (request, reply) {
  *  @Param reply
  */
 module.exports.postHandler = function (request, reply) {
-    let sessionID = userHandler.getSessionID(request);
-    let usingFineUploader = request.query.fineuploader === 'true';
+    const sessionID = userHandler.getSessionID(request);
+    const usingFineUploader = request.query.fineuploader === 'true';
 
     // Request payload present - handle normal upload request
-    if (request.payload && request.payload.action === "remove") {
+    if (request.payload && request.payload.action === 'remove') {
         removeUpload(sessionID, request.payload.uuid).then(function () {
             reply.redirect('/file/choose').rewritable(true);
         }).catch(function () {
             reply.redirect('/failure');
         });
     } else {
-        let sessionID = userHandler.getSessionID(request);
-        let fileData = fileUploadProcessor.getFileData(request, sessionID);
+        const sessionID = userHandler.getSessionID(request);
+        const fileData = fileUploadProcessor.getFileData(request, sessionID);
 
-        let legacyUploaderOnComplete = function () {
+        const legacyUploaderOnComplete = function () {
             reply.redirect('/file/choose').rewritable(true);
         };
-        let fineUploaderOnComplete = function (processorResponse) {
+        const fineUploaderOnComplete = function (processorResponse) {
             reply(processorResponse).type('text/plain').code(processorResponse.httpCode || 200);
         };
 
         let callbacks = 0;
-        let resultHandler = function (processorResponse) {
+        const resultHandler = function (processorResponse) {
             if (++callbacks === fileData.files.length) {
                 usingFineUploader ? fineUploaderOnComplete(processorResponse) : legacyUploaderOnComplete(processorResponse);
             }

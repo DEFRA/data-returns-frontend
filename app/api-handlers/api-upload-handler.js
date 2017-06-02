@@ -1,11 +1,11 @@
-"use strict";
-const winston = require("winston");
+'use strict';
+const winston = require('winston');
 const config = require('../lib/configuration-handler.js').Configuration;
 
-var fs = require('fs');
-var request = require('request');
-var validationErrorHelper = require('./multiple-error-helper');
-var crypto = require('../lib/crypto-handler');
+const fs = require('fs');
+const request = require('request');
+const validationErrorHelper = require('./multiple-error-helper');
+const crypto = require('../lib/crypto-handler');
 
 /**
  * Uploads a file to the Data Exchange service.
@@ -18,15 +18,15 @@ var crypto = require('../lib/crypto-handler');
  *   'eaId', 'siteName' and 'returnType' as returned from the API.
  */
 module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, originalFileName) {
-    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUpload');
+    const endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUpload');
 
     winston.info('==> uploadFileToService() url: ' + endPoint);
     return new Promise(function (resolve, reject) {
         // Define data to send to the Data Exchange service.
-        var apiData = {
+        const apiData = {
             url: endPoint,
             gzip: true,
-            timeout: 60000, //ms 60 seconds
+            timeout: 60000, // ms 60 seconds
             headers: {
                 'Authorization': crypto.calculateAuthorizationHeader(filePath),
                 'filename': filePath
@@ -43,9 +43,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
 
         // Make REST call into the Data Exchange service, and handle the result.
         request.post(apiData, function (err, httpResponse, body) {
-            var statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
+            const statusCode = (!err && httpResponse && httpResponse.statusCode) ? httpResponse.statusCode : 3000;
 
-            winston.info("Received upload response for " + originalFileName);
+            winston.info('Received upload response for ' + originalFileName);
             if (err) {
                 winston.error('Error communicating with data-exchange API', err);
                 reject({
@@ -53,9 +53,9 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                     errorCode: 3000
                 });
             } else if (statusCode === 200) {
-                //File sent, received and processed successfully
+                // File sent, received and processed successfully
                 if (body) {
-                    let bodyData = JSON.parse(body);
+                    const bodyData = JSON.parse(body);
                     if (bodyData) {
                         bodyData.originalFileName = originalFileName;
                         resolve(bodyData);
@@ -66,9 +66,8 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                         errorCode: 3000
                     });
                 }
-
             } else {
-                //There are validation errors
+                // There are validation errors
                 let bodyData = {};
                 try {
                     bodyData = JSON.parse(body);
@@ -84,11 +83,11 @@ module.exports.uploadFileToService = function (filePath, sessionID, fileUuid, or
                     });
                 }
 
-                let appStatusCode = (bodyData && bodyData.appStatusCode) ? bodyData.appStatusCode : 3000;
+                const appStatusCode = (bodyData && bodyData.appStatusCode) ? bodyData.appStatusCode : 3000;
                 switch (appStatusCode) {
                     case 900: {
-                        //Line errors
-                        let groupedLineErrorData = validationErrorHelper.groupErrorData(bodyData.validationErrors);
+                        // Line errors
+                        const groupedLineErrorData = validationErrorHelper.groupErrorData(bodyData.validationErrors);
 
                         reject({
                             isUserError: true,

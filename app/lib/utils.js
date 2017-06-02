@@ -5,8 +5,7 @@ module.exports = {
      * @param num the number to zero pad
      * @param len the total length num should be with leading zero's
      */
-    pad: function pad(num, len) {
+    pad: function pad (num, len) {
         return (Array(len).join('0') + num).slice(-len);
-    },
+    }
 };
-

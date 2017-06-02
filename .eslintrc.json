@@ -5,6 +5,7 @@
         "semi": ["error", "always"],
         "no-var": "warn",
         "prefer-const": "warn",
+        "prefer-promise-reject-errors": "warn",
         "require-jsdoc": ["warn", {
             "require": {
                 "FunctionDeclaration": true,

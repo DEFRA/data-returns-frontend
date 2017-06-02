@@ -1,7 +1,7 @@
-const lodash = require("lodash");
-const winston = require("winston");
+const lodash = require('lodash');
+const winston = require('winston');
 
-function newKey(keyId) {
+function newKey (keyId) {
     return {
         key: keyId,
         /**
@@ -13,20 +13,20 @@ function newKey(keyId) {
         compositeKey: function (keys) {
             return new Promise(function (resolve, reject) {
                 if (lodash.isNil(keys)) {
-                    let err = new Error("Rejecting use of null or undefined key");
+                    const err = new Error('Rejecting use of null or undefined key');
                     winston.warn(err);
                     return reject(err);
                 }
                 let lookup = keys;
                 if (Array.isArray(keys)) {
                     if (keys.find(lodash.isNil)) {
-                        let err = new Error("Rejecting use of null or undefined composite key component");
+                        const err = new Error('Rejecting use of null or undefined composite key component');
                         winston.warn(err);
                         return reject(err);
                     }
                     lookup = keys.join('_');
                 }
-                winston.info("Using redis key " + (lookup + "_" + keyId));
+                winston.info('Using redis key ' + (lookup + '_' + keyId));
                 resolve(lookup + '_' + keyId);
             });
         }

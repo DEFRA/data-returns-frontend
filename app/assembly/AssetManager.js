@@ -1,5 +1,5 @@
-"use strict";
-const winston = require("winston");
+'use strict';
+const winston = require('winston');
 const fs = require('fs-extra');
 const klaw = require('klaw');
 const gaze = require('gaze');
@@ -10,8 +10,8 @@ const compressor = require('node-minify');
 const rootPath = path.resolve(__dirname, '../../');
 
 const minifyTypes = {
-    ".js": {
-        compressor: "uglifyjs",
+    '.js': {
+        compressor: 'uglifyjs',
         options: {
             // Mangling causes problems for IE8
             'mangle': false,
@@ -19,10 +19,10 @@ const minifyTypes = {
             'ie8': true
         }
     },
-    ".css": {
-        compressor: "clean-css",
+    '.css': {
+        compressor: 'clean-css',
         options: {
-            compatibility: "ie8"
+            compatibility: 'ie8'
         }
     }
 };
@@ -37,22 +37,22 @@ const minifyIgnorePatterns = [
  * AssetManager base class
  */
 class AssetManager {
-    constructor(config) {
+    constructor (config) {
         this.config = config;
 
         winston.info(`Registering asset directory ${config.sourceDir} for changes.`);
-        let match = config.pattern || "**/*";
+        const match = config.pattern || '**/*';
 
-        let watcher = this;
+        const watcher = this;
         // listen for subsequent changes
-        gaze(match, {"cwd": config.sourceDir}, function (err) {
+        gaze(match, {'cwd': config.sourceDir}, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Failed to gaze at asset directory ${config.sourceDir}, reason ${err.message}`, err);
             }
             // On changed/added/deleted
             this.on('all', function (event, absolutePath) {
                 try {
-                    let relPath = path.relative(config.sourceDir, absolutePath);
+                    const relPath = path.relative(config.sourceDir, absolutePath);
                     winston.info(`AssetManager: Detected a change to ${relPath} inside ${config.sourceDir} (${event})`);
                     this.onChange(event, absolutePath, relPath);
                 } catch (e) {
@@ -68,7 +68,7 @@ class AssetManager {
      * @param targetDir the directory to empty
      * @param onComplete optional completion callback
      */
-    static empty(targetDir, onComplete) {
+    static empty (targetDir, onComplete) {
         fs.emptyDir(targetDir, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Unable to empty target directory ${targetDir}, reason ${err.message}`, err);
@@ -86,8 +86,8 @@ class AssetManager {
      * @param targetPath the target file/directory for the copy operation
      * @param onComplete optional completion callback
      */
-    static copy(sourcePath, targetPath, onComplete) {
-        fs.copy(sourcePath, targetPath, {"clobber": true}, function (err) {
+    static copy (sourcePath, targetPath, onComplete) {
+        fs.copy(sourcePath, targetPath, {'clobber': true}, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Failed to copy ${sourcePath} to ${targetPath}, reason ${err.message}`, err);
             }
@@ -103,9 +103,9 @@ class AssetManager {
      * @param targetPath the target file/directory for the minify operation
      * @param onComplete optional completion callback
      */
-    static minify(sourcePath, targetPath, onComplete) {
-        let ext = path.extname(sourcePath).toLowerCase();
-        let minifyType = minifyTypes[ext] || null;
+    static minify (sourcePath, targetPath, onComplete) {
+        const ext = path.extname(sourcePath).toLowerCase();
+        const minifyType = minifyTypes[ext] || null;
 
         if (minifyType !== null) {
             compressor.minify({
@@ -132,7 +132,7 @@ class AssetManager {
      * @param targetPath the file/directory to be deleted
      * @param onComplete optional completion callback
      */
-    static delete(targetPath, onComplete) {
+    static delete (targetPath, onComplete) {
         fs.unlink(targetPath, function (err) {
             if (err) {
                 return winston.error(`AssetManager: Failed to delete ${targetPath}, reason ${err.message}`, err);
@@ -142,7 +142,6 @@ class AssetManager {
         });
     }
 
-
     /**
      * The onChange method is an override point.  This method is called whenever the AssetManager detects a change
      * in one of the watched asset directories.
@@ -151,7 +150,7 @@ class AssetManager {
      * @param absolutePath the absolute path to the file that was changed
      * @param relPath the relative path from the asset directory being watched
      */
-    onChange() {
+    onChange () {
         // Override point
     }
 }
@@ -160,7 +159,7 @@ class AssetManager {
  * SassHandler implementation of the AssetManager
  */
 class SassHandler extends AssetManager {
-    constructor(config) {
+    constructor (config) {
         super(config);
         this.mainFile = path.join(this.config.sourceDir, this.config.mainFile);
         this.outFile = path.join(this.config.targetDir, this.config.outFile);
@@ -171,7 +170,7 @@ class SassHandler extends AssetManager {
     /**
      * Fired when a change to any SASS asset occurs
      */
-    onChange() {
+    onChange () {
         // When a change to a SASS asset occurs we need to delete the last output and recompile all SASS
         AssetManager.empty(this.config.targetDir, this.compileSass.bind(this));
     }
@@ -179,8 +178,8 @@ class SassHandler extends AssetManager {
     /**
      * Recompile the output CSS from the SASS source.
      */
-    compileSass() {
-        let onCompiled = function (err, result) {
+    compileSass () {
+        const onCompiled = function (err, result) {
             if (err) {
                 return winston.error(`AssetManager: Failed to compile SASS from ${this.mainFile}, reason: ${err.message}`, err);
             }
@@ -212,7 +211,7 @@ class SassHandler extends AssetManager {
  * running minification on the assets as they are passed through
  */
 class PassthroughHandler extends AssetManager {
-    constructor(config) {
+    constructor (config) {
         super(config);
         this.synchroniseAll();
     }
@@ -220,13 +219,13 @@ class PassthroughHandler extends AssetManager {
     /**
      * Synchronise all assets between the source and target folders
      */
-    synchroniseAll() {
+    synchroniseAll () {
         // Synchronise directories on startup
         AssetManager.empty(this.config.targetDir, function () {
             klaw(this.config.sourceDir).on('data', function (item) {
                 if (item.stats.isFile() && minimatch(item.path, this.config.pattern)) {
-                    let relPath = path.relative(this.config.sourceDir, item.path);
-                    let targetPath = path.join(this.config.targetDir, relPath);
+                    const relPath = path.relative(this.config.sourceDir, item.path);
+                    const targetPath = path.join(this.config.targetDir, relPath);
                     this.synchroniseFile(item.path, targetPath);
                 }
             }.bind(this));
@@ -236,10 +235,10 @@ class PassthroughHandler extends AssetManager {
     /**
      * Fired when a change to a source asset is detected
      */
-    onChange(event, absolutePath, relPath) {
+    onChange (event, absolutePath, relPath) {
         // Something changed in the source directory
-        let targetPath = path.join(this.config.targetDir, relPath);
-        if (event === "deleted") {
+        const targetPath = path.join(this.config.targetDir, relPath);
+        if (event === 'deleted') {
             AssetManager.delete(targetPath);
         } else {
             this.synchroniseFile(absolutePath, targetPath);
@@ -251,45 +250,46 @@ class PassthroughHandler extends AssetManager {
      *
      * Determines whether to use a minify or copy operation.
      */
-    synchroniseFile(source, target) {
-        let filename = path.basename(source);
-        let minifyIgnore = !!minifyIgnorePatterns.find(ptn => filename.match(ptn));
-        let syncOp = this.config.minify && !minifyIgnore ? AssetManager.minify : AssetManager.copy;
+    synchroniseFile (source, target) {
+        const filename = path.basename(source);
+        const minifyIgnore = !!minifyIgnorePatterns.find(ptn => filename.match(ptn));
+        const syncOp = this.config.minify && !minifyIgnore ? AssetManager.minify : AssetManager.copy;
         return syncOp(source, target);
     }
 }
 
-
 module.exports = {
     start: function () {
-        new PassthroughHandler({
-            "pattern": "**/*",
-            "sourceDir": `${rootPath}/assets/images`,
-            "targetDir": `${rootPath}/public/images`,
-            "assetType": "image",
-            "minify": false
+        const imgHandler = new PassthroughHandler({
+            'pattern': '**/*',
+            'sourceDir': `${rootPath}/assets/images`,
+            'targetDir': `${rootPath}/public/images`,
+            'assetType': 'image',
+            'minify': false
         });
 
-        new PassthroughHandler({
-            "pattern": "**/*.js",
-            "sourceDir": `${rootPath}/assets/javascripts`,
-            "targetDir": `${rootPath}/public/javascripts`,
-            "assetType": "javascript",
-            "minify": true
+        const jsHandler = new PassthroughHandler({
+            'pattern': '**/*.js',
+            'sourceDir': `${rootPath}/assets/javascripts`,
+            'targetDir': `${rootPath}/public/javascripts`,
+            'assetType': 'javascript',
+            'minify': true
         });
 
-        new SassHandler({
-            "pattern": "**/*.scss",
-            "sourceDir": `${rootPath}/assets/sass`,
-            "targetDir": `${rootPath}/public/stylesheets`,
-            "mainFile": "main.scss",
-            "outFile": "main.css",
-            "minifiedFile": "main-min.css",
-            "includePaths": [
+        const sassHandler = new SassHandler({
+            'pattern': '**/*.scss',
+            'sourceDir': `${rootPath}/assets/sass`,
+            'targetDir': `${rootPath}/public/stylesheets`,
+            'mainFile': 'main.scss',
+            'outFile': 'main.css',
+            'minifiedFile': 'main-min.css',
+            'includePaths': [
                 `${rootPath}/assets/sass/dr-elements`,
                 `${rootPath}/node_modules/govuk-elements-sass/public/sass`,
                 `${rootPath}/node_modules/govuk_frontend_toolkit/stylesheets`
             ]
         });
+
+        module.exports.handlers = [imgHandler, jsHandler, sassHandler];
     }
 };

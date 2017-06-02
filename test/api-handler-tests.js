@@ -1,22 +1,21 @@
-const winston = require("winston");
-var Code = require('code');
-var Lab = require('lab');
-var lab = exports.lab = Lab.script();
-var expect = Code.expect;
+/* eslint no-unused-expressions: "off", no-path-concat: "off" */
+const winston = require('winston');
+const Code = require('code');
+const Lab = require('lab');
+const lab = exports.lab = Lab.script();
+const expect = Code.expect;
 
-var fileUploadHandler = require('../app/api-handlers/api-upload-handler');
-var fileName = 'success.csv';
-var filePath = __dirname + '/data/' + fileName;
-var sessionID = 'testsession';
-var completionHandler = require('../app/api-handlers/completion-handler');
-var testFileKey;
-var testEmail = 'eanhathaway@gmail.com';
-var controlledListsHandler = require('../app/api-handlers/controlled-lists');
+const fileUploadHandler = require('../app/api-handlers/api-upload-handler');
+let fileName = 'success.csv';
+let filePath = __dirname + '/data/' + fileName;
+const sessionID = 'testsession';
+const completionHandler = require('../app/api-handlers/completion-handler');
+let testFileKey;
+const testEmail = 'eanhathaway@gmail.com';
+const controlledListsHandler = require('../app/api-handlers/controlled-lists');
 
 lab.experiment('error-handler.js library', function () {
-
     lab.test('File upload test - good file', function (done) {
-
         fileUploadHandler.uploadFileToService(filePath, sessionID, fileName)
             .then(function (result) {
                 testFileKey = result.uploadResult.fileKey;
@@ -39,7 +38,6 @@ lab.experiment('error-handler.js library', function () {
             });
     });
 
-
     /*
      * send an empty file to api
      * should be rejected with 500 error code
@@ -53,7 +51,7 @@ lab.experiment('error-handler.js library', function () {
                 done();
             })
             .catch(function (err) {
-                //console.log('Error' + JSON.stringify(err));
+                // console.log('Error' + JSON.stringify(err));
                 expect(err.isUserError).to.be.true;
                 expect(err.errorCode).to.equal(500);
                 done();
@@ -73,7 +71,7 @@ lab.experiment('error-handler.js library', function () {
                 done();
             })
             .catch(function (err) {
-                //console.log('Error' + JSON.stringify(err));
+                // console.log('Error' + JSON.stringify(err));
                 expect(err.isUserError).to.be.true;
                 expect(err.errorCode).to.equal(400);
                 done();
@@ -93,7 +91,7 @@ lab.experiment('error-handler.js library', function () {
                 done();
             })
             .catch(function (err) {
-                //console.log('Error' + JSON.stringify(err));
+                // console.log('Error' + JSON.stringify(err));
                 expect(err.isUserError).to.be.true;
                 done();
             });
@@ -102,16 +100,15 @@ lab.experiment('error-handler.js library', function () {
     /*
      * Test for the controlled list metadata
      */
-    lab.test('Controlled lists metadata test', function(done) {
-        "use strict";
-        controlledListsHandler.getListMetaData().then(function(result) {
+    lab.test('Controlled lists metadata test', function (done) {
+        'use strict';
+        controlledListsHandler.getListMetaData().then(function (result) {
             expect(typeof result === 'object').to.be.true;
             done();
         }).catch(function (err) {
-            //console.log('Error' + JSON.stringify(err));
+            // console.log('Error' + JSON.stringify(err));
             expect(err.isUserError).to.be.true;
             done();
         });
     });
-
 });

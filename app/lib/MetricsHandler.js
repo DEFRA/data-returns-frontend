@@ -1,5 +1,4 @@
-var cacheHandler = require('../lib/cache-handler');
-
+const cacheHandler = require('../lib/cache-handler');
 
 module.exports = {
     /* setFileSizeHighWaterMark
@@ -8,7 +7,7 @@ module.exports = {
      * @returns none
      */
     setFileSizeHighWaterMark: function (fileSizeBytes) {
-        var key = 'data-returns-high-water-mark';
+        const key = 'data-returns-high-water-mark';
 
         cacheHandler.getValue(key)
             .then(function (data) {
@@ -19,11 +18,9 @@ module.exports = {
                     if (fileSizeBytes > data) {
                         cacheHandler.setPersistedValue(key, fileSizeBytes);
                     }
-
                 } else {
                     cacheHandler.setPersistedValue(key, fileSizeBytes);
                 }
-
             });
     }
 };

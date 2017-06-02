@@ -1,14 +1,15 @@
 /*
  * Module to handle Redis calls
- * 
- * 
+ *
+ *
  */
-"use strict";
+'use strict';
 
 const config = require('../lib/configuration-handler.js').Configuration;
-const winston = require("winston");
-var redis = require('redis');
-var client = redis.createClient(config.get('redis'));
+const winston = require('winston');
+
+const redis = require('redis');
+const client = redis.createClient(config.get('redis'));
 
 /**
  * Set a key to expire.
@@ -21,12 +22,12 @@ var client = redis.createClient(config.get('redis'));
  */
 const setExpiry = function (key, expiry) {
     if (expiry !== null) {
-        var expireBy = expiry || ((60 * 60) * 24);
+        const expireBy = expiry || ((60 * 60) * 24);
         client.EXPIRE(key, expireBy);
     }
 };
 
-let self = module.exports = {
+const self = module.exports = {
     connectionReady: function () {
         return new Promise(function (resolve, reject) {
             const interval = 500;
@@ -69,7 +70,6 @@ let self = module.exports = {
             });
         });
     },
-
     /*
      * Sets a new value for a given key
      * @param key
@@ -86,7 +86,6 @@ let self = module.exports = {
                         setExpiry(key, expiry);
                         resolve(true);
                     }
-
                 });
             } else {
                 resolve(true);
@@ -116,7 +115,6 @@ let self = module.exports = {
         });
     },
 
-
     /**
      * Delete all redis keys which match the given pattern
      *
@@ -132,7 +130,6 @@ let self = module.exports = {
 
                 if (keys.length > 0) {
                     client.del(keys, function (err) {
-
                         if (err) {
                             winston.error(err);
                             return reject(keys);
@@ -144,7 +141,6 @@ let self = module.exports = {
                     // Nothing to delete
                     resolve();
                 }
-
             });
         });
     },
@@ -183,7 +179,7 @@ let self = module.exports = {
                     try {
                         resolve(arr.map(JSON.parse));
                     } catch (e) {
-                        winston.error("Unable to parse data from redis JSON array", e);
+                        winston.error('Unable to parse data from redis JSON array', e);
                         resolve([]);
                     }
                 }
@@ -218,7 +214,7 @@ let self = module.exports = {
      */
     arrayRPush: function (key, item) {
         return new Promise(function (resolve, reject) {
-            let value = (typeof item === "string") ? item : JSON.stringify(item);
+            const value = (typeof item === 'string') ? item : JSON.stringify(item);
             client.rpush(key, value, function (error) {
                 if (error) reject(error); else resolve(item);
                 setExpiry(key);
@@ -234,7 +230,7 @@ let self = module.exports = {
      */
     arrayRemove: function (key, item) {
         return new Promise(function (resolve, reject) {
-            let value = (typeof item === "string") ? item : JSON.stringify(item);
+            const value = (typeof item === 'string') ? item : JSON.stringify(item);
             client.lrem(key, 0, value, function (error, removedCount) {
                 if (error) reject(error); else resolve(removedCount);
             });
@@ -245,7 +241,7 @@ let self = module.exports = {
             client.DEL(key, function (err) {
                 if (err) {
                     winston.error(err);
-                    reject();
+                    reject(err);
                 }
                 resolve(true);
             });

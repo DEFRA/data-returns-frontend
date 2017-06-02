@@ -1,5 +1,5 @@
-"use strict";
-const winston = require("winston");
+'use strict';
+const winston = require('winston');
 const smtpHandler = require('../../lib/smtp-handler');
 const pinHandler = require('../../lib/pin-handler');
 const userHandler = require('../../lib/user-handler');
@@ -13,9 +13,9 @@ module.exports = {
      * @returns {undefined}
      */
     getHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
+        const sessionID = userHandler.getSessionID(request);
 
-        let viewConfirmEmail = function () {
+        const viewConfirmEmail = function () {
             reply.view('data-returns/confirm-your-email-address', {
                 invalidEmailAddress: false,
                 showStartAgainButton: false,
@@ -28,7 +28,7 @@ module.exports = {
             if (hasUploads) {
                 userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
                     if (isAuthenticated === true) {
-                        reply.redirect("/file/send").rewritable(true);
+                        reply.redirect('/file/send').rewritable(true);
                     } else {
                         viewConfirmEmail();
                     }
@@ -41,7 +41,7 @@ module.exports = {
                 reply.view('data-returns/file-unavailable');
             }
         }).catch(function () {
-            reply.redirect("/failure");
+            reply.redirect('/failure');
         });
     },
     /*
@@ -52,8 +52,8 @@ module.exports = {
      */
     postHandler: function (request, reply) {
         /* get the users email address */
-        let userMail = request.payload['user_email'] ? request.payload['user_email'].trim() : '';
-        let sessionID = userHandler.getSessionID(request);
+        const userMail = request.payload['user_email'] ? request.payload['user_email'].trim() : '';
+        const sessionID = userHandler.getSessionID(request);
 
         /* Validate the email address */
         smtpHandler.validateEmailAddress(userMail)

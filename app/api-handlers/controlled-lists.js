@@ -1,23 +1,22 @@
 'use strict';
 
-const winston = require("winston");
+const winston = require('winston');
 const config = require('../lib/configuration-handler.js').Configuration;
 
-var Request = require('request');
-var cacheHandler = require('../lib/cache-handler');
-var redisKeys = require('../lib/redis-keys.js');
+const Request = require('request');
+const cacheHandler = require('../lib/cache-handler');
+const redisKeys = require('../lib/redis-keys.js');
 
 /**
  * Generalized async call to fetch data from the API
  * @param the list to be fetch or null for the list metadata
  * @returns {Promise}
  */
-function apiCallList(list, search) {
-
-    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.controlledLists');
+function apiCallList (list, search) {
+    const endPoint = config.get('api.base') + '/' + config.get('api.endpoints.controlledLists');
     winston.info('==> apiCallList() url: ' + endPoint);
 
-    var apiData = null;
+    let apiData = null;
     if (list) {
         if (search) {
             apiData = {url: encodeURI(endPoint + '/' + list + '?contains=' + search.contains)};
@@ -31,17 +30,16 @@ function apiCallList(list, search) {
     return new Promise(function (resolve, reject) {
         Request.get(apiData, function (err, httpResponse) {
             if (!httpResponse) {
-                reject(new Error("Internal Error: No response from API"));
+                reject(new Error('Internal Error: No response from API'));
             } else if (err) {
                 winston.error('Error communicating with controlled list API.', err);
                 reject(err);
             } else {
-
                 if (httpResponse.statusCode !== 200) {
                     reject(new Error(`Internal Error: Unexpected response ${httpResponse.statusCode} from API: ${httpResponse.statusMessage}`));
                 } else {
                     try {
-                        var parsedJson = JSON.parse(httpResponse.body);
+                        const parsedJson = JSON.parse(httpResponse.body);
                         // Return the result as an array
                         resolve(parsedJson);
                     } catch (err) {
@@ -92,12 +90,12 @@ module.exports.getListData = function (list, search) {
  * @returns { headers: { description: description: name: name }, rows: rows }
  */
 module.exports.pageExtractor = function (listData, displayHeaders) {
-    var rows = [];
+    const rows = [];
 
     // Iterate and collect the output data
-    for (var r = 0; r < listData.length; r++) {
-        var cols = [];
-        for (var c = 0; c < displayHeaders.length; c++) {
+    for (let r = 0; r < listData.length; r++) {
+        const cols = [];
+        for (let c = 0; c < displayHeaders.length; c++) {
             cols.push({
                 item: listData[r][displayHeaders[c].field],
                 cellCls: displayHeaders[c].field
@@ -109,7 +107,7 @@ module.exports.pageExtractor = function (listData, displayHeaders) {
     // Return the specified structure
     return {
         headers: displayHeaders.map(e => {
-            return { name: e.field, description: e.header };
+            return {name: e.field, description: e.header};
         }),
         rows: rows
     };
@@ -122,15 +120,15 @@ module.exports.pageExtractor = function (listData, displayHeaders) {
  * @returns { headers: { description: description: name: name }, rows: rows }
  */
 module.exports.csvExtractor = function (listData, displayHeaders) {
-    var rows = [];
+    const rows = [];
 
     // Iterate and collect the output data
-    for (var r = 0; r < listData.length; r++) {
-        var cols = [];
-        for (var c = 0; c < displayHeaders.length; c++) {
-            var item = [];
+    for (let r = 0; r < listData.length; r++) {
+        const cols = [];
+        for (let c = 0; c < displayHeaders.length; c++) {
+            let item = [];
             if (Array.isArray(listData[r][displayHeaders[c].field])) {
-                item = listData[r][displayHeaders[c].field].join(", ");
+                item = listData[r][displayHeaders[c].field].join(', ');
             } else {
                 item = listData[r][displayHeaders[c].field];
             }
@@ -143,7 +141,7 @@ module.exports.csvExtractor = function (listData, displayHeaders) {
     // Return the specified structure
     return {
         headers: displayHeaders.map(e => {
-            return { name: e.field, description: e.header };
+            return {name: e.field, description: e.header};
         }),
         rows: rows
     };
@@ -163,7 +161,7 @@ module.exports.csvExtractor = function (listData, displayHeaders) {
  * @returns { headers: { description: description: name: name }, rows: rows }
  */
 module.exports.csvExtractorPivot = function (listData, displayHeaders) {
-    var rows = [];
+    const rows = [];
 
     // Calculate the number of columns and append a counter to the array header
     // names.
@@ -174,12 +172,18 @@ module.exports.csvExtractorPivot = function (listData, displayHeaders) {
                 if (Array.isArray(listData[r][displayHeaders[c].field])) {
                     if (listData[r][displayHeaders[c].field].length > displayHeaders[c].pivotHeaders.length) {
                         for (let i = displayHeaders[c].pivotHeaders.length; i < listData[r][displayHeaders[c].field].length; i++) {
-                            displayHeaders[c].pivotHeaders.push({ name: displayHeaders[c].field, description: displayHeaders[c].header + `(${i+1})`});
+                            displayHeaders[c].pivotHeaders.push({
+                                name: displayHeaders[c].field,
+                                description: displayHeaders[c].header + `(${i + 1})`
+                            });
                         }
                     }
                 } else {
                     if (displayHeaders[c].pivotHeaders.length === 0) {
-                        displayHeaders[c].pivotHeaders.push({ name: displayHeaders[c].field, description: displayHeaders[c].header});
+                        displayHeaders[c].pivotHeaders.push({
+                            name: displayHeaders[c].field,
+                            description: displayHeaders[c].header
+                        });
                     }
                 }
             }
@@ -188,7 +192,7 @@ module.exports.csvExtractorPivot = function (listData, displayHeaders) {
 
     // Iterate and collect the output data
     for (let r = 0; r < listData.length; r++) {
-        let cols = [];
+        const cols = [];
         for (let c = 0; c < displayHeaders.length; c++) {
             let item = [];
             if (Array.isArray(displayHeaders[c].pivotHeaders) && displayHeaders[c].pivotHeaders.length > 1) {
@@ -220,20 +224,20 @@ module.exports.csvExtractorPivot = function (listData, displayHeaders) {
 module.exports.getListProcessor = function (extractorFunction, list, processor, search) {
     return new Promise(function (resolve, reject) {
         module.exports.getListMetaData().then(function (result) {
-            var listMetaData = {displayHeaders: undefined};
+            let listMetaData = {displayHeaders: undefined};
             listMetaData = result[list];
+            let displayHeaders = {};
             if (listMetaData && listMetaData.displayHeaders) {
-                var displayHeaders = listMetaData.displayHeaders;
+                displayHeaders = listMetaData.displayHeaders;
             } else {
-                throw "Expected: displayHeaders";
+                throw new Error('Expected: displayHeaders');
             }
             // Now the actual list data
             module.exports.getListData(list, search).then(function (listData) {
-                let result = extractorFunction(listData, displayHeaders);
+                const result = extractorFunction(listData, displayHeaders);
                 processor(listMetaData, result.headers, result.rows);
                 resolve(true);
             }).catch(reject);
         }).catch(reject);
     });
 };
-

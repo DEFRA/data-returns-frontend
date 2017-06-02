@@ -1,11 +1,11 @@
-"use strict";
-const winston = require("winston");
-let userHandler = require('../../lib/user-handler');
+'use strict';
+const winston = require('winston');
+const userHandler = require('../../lib/user-handler');
 
-function testForEaIdSubstitution(uploads) {
-    for (let file of uploads) {
-        for (let mapping of file.status.server.parseResult.mappings) {
-            for (let identifier of mapping.identifiers) {
+function testForEaIdSubstitution (uploads) {
+    for (const file of uploads) {
+        for (const mapping of file.status.server.parseResult.mappings) {
+            for (const identifier of mapping.identifiers) {
                 if (identifier.substituted) {
                     return true;
                 }
@@ -22,13 +22,13 @@ module.exports = {
      * @param reply
      */
     getHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
+        const sessionID = userHandler.getSessionID(request);
         userHandler.getUploads(sessionID).then(function (uploads) {
             if (uploads && uploads.length > 0) {
-                let displayEaIdSubstitutionsMsg = testForEaIdSubstitution(uploads);
+                const displayEaIdSubstitutionsMsg = testForEaIdSubstitution(uploads);
                 reply.view('data-returns/confirm-your-file', {
-                    "files": uploads,
-                    "displayEaIdSubstitutionsMsg": displayEaIdSubstitutionsMsg
+                    'files': uploads,
+                    'displayEaIdSubstitutionsMsg': displayEaIdSubstitutionsMsg
                 });
             } else {
                 // Show file-unavailable page if the file uploads array is empty
@@ -36,7 +36,7 @@ module.exports = {
             }
         }).catch((e) => {
             winston.error(e);
-            reply.redirect("/failure");
+            reply.redirect('/failure');
         });
     }
 };

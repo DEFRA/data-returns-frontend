@@ -1,45 +1,44 @@
 'use strict';
-const winston = require("winston");
+const winston = require('winston');
 const config = require('./lib/configuration-handler.js').Configuration;
 const userSession = require('./lib/user-handler');
-const lodash = require("lodash");
+const lodash = require('lodash');
 
-let basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
-let startHandler = require('./routeHandlers/StartHandler');
-
+const basicTemplateHandler = require('./routeHandlers/BasicTemplateHandler');
+const startHandler = require('./routeHandlers/StartHandler');
 
 // Submission route handlers
-let chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
-let preloadHandler = require('./routeHandlers/submissions/PreloadHandler');
-let confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
-let emailHandler = require('./routeHandlers/submissions/EmailHandler');
-let pinHandler = require('./routeHandlers/submissions/PinHandler');
-let fileSendHandler = require('./routeHandlers/submissions/FileSendHandler');
-let fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
-let correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
-let correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
-let fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
-let fileUnavailableHandler = require('./routeHandlers/submissions/FileUnavailableHandler');
+const chooseFileHandler = require('./routeHandlers/submissions/ChooseFileHandler');
+const preloadHandler = require('./routeHandlers/submissions/PreloadHandler');
+const confirmFileHandler = require('./routeHandlers/submissions/ConfirmFileHandler');
+const emailHandler = require('./routeHandlers/submissions/EmailHandler');
+const pinHandler = require('./routeHandlers/submissions/PinHandler');
+const fileSendHandler = require('./routeHandlers/submissions/FileSendHandler');
+const fileSentHandler = require('./routeHandlers/submissions/FileSentHandler');
+const correctionTableHandler = require('./routeHandlers/submissions/CorrectionTableHandler');
+const correctionDetailHandler = require('./routeHandlers/submissions/CorrectionDetailHandler');
+const fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandler');
+const fileUnavailableHandler = require('./routeHandlers/submissions/FileUnavailableHandler');
 
 // Reference material lookup handlers
-let listHandler = require('./routeHandlers/lookup/ListHandler');
-let eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
+const listHandler = require('./routeHandlers/lookup/ListHandler');
+const eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
 
-let contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
+const contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
 
-let fileUploadConfig = {
+const fileUploadConfig = {
     payload: {
         maxBytes: config.get('csv.maxFileSizeMb') * Math.pow(2, 20),
         timeout: false,
-        output: "file",
+        output: 'file',
         parse: true,
         uploads: config.get('upload.path'),
         // Fail action is set to ignore so that we can handle errors inside the handler
-        failAction: "ignore"
+        failAction: 'ignore'
     }
 };
 
-let staticAssetDir = function (type, paths) {
+const staticAssetDir = function (type, paths) {
     return {
         method: 'GET',
         path: `/public/${type}/{param*}`,
@@ -52,18 +51,18 @@ let staticAssetDir = function (type, paths) {
     };
 };
 
-let handlers = [
+const handlers = [
     // Static assets.
     staticAssetDir('images', [
         'public/images',
         'node_modules/govuk_template_mustache/assets/images',
-        'node_modules/govuk_frontend_toolkit/images',
+        'node_modules/govuk_frontend_toolkit/images'
 
     ]),
     staticAssetDir('javascripts', [
         'public/javascripts',
         'node_modules/govuk_template_mustache/assets/javascripts',
-        'node_modules/govuk_frontend_toolkit/javascripts',
+        'node_modules/govuk_frontend_toolkit/javascripts'
 
     ]),
     staticAssetDir('stylesheets', [
@@ -82,10 +81,8 @@ let handlers = [
                 });
             } else {
                 // TODO: At some point we should make the default page index.html and communicate this to Martin
-                reply.redirect("/guidance/landfill-data-rules.html");
+                reply.redirect('/guidance/landfill-data-rules.html');
             }
-
-
         }
     },
     /*
@@ -147,7 +144,6 @@ let handlers = [
         handler: preloadHandler.postHandler
     },
 
-
     // Controlled list handlers
     {
         method: 'GET',
@@ -177,7 +173,6 @@ let handlers = [
         handler: eaIdLookupHandler.routeHandler
     },
 
-
     // /failure
     {
         method: 'GET',
@@ -191,7 +186,7 @@ let handlers = [
         handler: function (request, reply) {
             reply(require('boom').forbidden('This operation is not allowed'));
         }
-    },
+    }
 ];
 
 /**
@@ -200,11 +195,11 @@ let handlers = [
  *
  * @type {[*]}
  */
-const requireCookie = function(handlers) {
-    let preRouteHandlers = [
+const requireCookie = function (handlers) {
+    const preRouteHandlers = [
         {
-            method: function(request, reply) {
-                let sessionID = userSession.getSessionID(request);
+            method: function (request, reply) {
+                const sessionID = userSession.getSessionID(request);
                 if (!sessionID) {
                     return reply.redirect('/guidance/no-cookie.html').takeover();
                 }
@@ -213,15 +208,14 @@ const requireCookie = function(handlers) {
         }
     ];
 
-    for (let handler of handlers) {
+    for (const handler of handlers) {
         handler.config = lodash.defaultsDeep({}, handler.config);
         handler.config.pre = preRouteHandlers.concat(handler.config.pre || []);
     }
     return handlers;
 };
 
-
-let statefulHandlers = requireCookie([
+const statefulHandlers = requireCookie([
     // /file/choose
     {
         method: 'GET',
@@ -301,11 +295,7 @@ let statefulHandlers = requireCookie([
     }
 ]);
 
-
-
-
-
-if (process.env.NODE_ENV !== "prod" && process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'production') {
     // Add handler for content review
     handlers.push({
         method: 'GET',
@@ -318,18 +308,18 @@ if (process.env.NODE_ENV !== "prod" && process.env.NODE_ENV !== "production") {
         method: 'GET',
         path: '/logging/test',
         handler: function (request, reply) {
-            winston.debug("Test debug logging");
-            winston.info("Test info logging");
-            winston.warn("Test warn logging");
-            winston.error("Test error message", new Error("Test error logging"));
+            winston.debug('Test debug logging');
+            winston.info('Test info logging');
+            winston.warn('Test warn logging');
+            winston.error('Test error message', new Error('Test error logging'));
 
-            let Request = require('request');
-            let apiData = {url: config.get('api.endpoints.testLogging')};
+            const Request = require('request');
+            const apiData = {url: config.get('api.endpoints.testLogging')};
             Request.get(apiData, function (err, httpResponse) {
                 if (err) {
-                    reply({status: "failed", "backend": err});
+                    reply({status: 'failed', 'backend': err});
                 } else {
-                    reply({status: "ok", "backend": httpResponse});
+                    reply({status: 'ok', 'backend': httpResponse});
                 }
             });
         }

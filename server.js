@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 const config = require('./app/lib/configuration-handler.js').Configuration;
-const winston = require("./app/lib/winston-setup");
+const winston = require('./app/lib/winston-setup');
 const Hapi = require('hapi');
 const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
@@ -9,7 +9,7 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const AssetManager = require('./app/assembly/AssetManager');
 const TemplateBuilder = require('./app/assembly/TemplateBuilder');
-var server = new Hapi.Server();
+const server = new Hapi.Server();
 const Cookies = require('cookies');
 
 const cacheHandler = require('./app/lib/cache-handler');
@@ -18,7 +18,7 @@ const userHandler = require('./app/lib/user-handler.js');
 
 // Display banner and startup information
 winston.info(fs.readFileSync('app/config/banner.txt', 'utf8'));
-winston.info("Starting the Data-Returns Frontend Server.  Environment: " + JSON.stringify(process.env, null, 4));
+winston.info('Starting the Data-Returns Frontend Server.  Environment: ' + JSON.stringify(process.env, null, 4));
 
 // Build gov.uk templates and start the asset manager
 TemplateBuilder.build();
@@ -41,52 +41,52 @@ rimraf(config.get('upload.path'), function () {
 });
 
 server.connection({
-    "host": '0.0.0.0',
-    "port": config.get('client.port'),
-    "routes": {
-        "cors": false,  // Disallow CORS - There is no requirement to allow cross origin requests in data returns.
-        "security": {
+    'host': '0.0.0.0',
+    'port': config.get('client.port'),
+    'routes': {
+        'cors': false,  // Disallow CORS - There is no requirement to allow cross origin requests in data returns.
+        'security': {
             // Set the 'Strict-Transport-Security' header
-            "hsts": true,
+            'hsts': true,
             // Set the X-Frame-Options: sameorigin header
-            "xframe": {
-                "rule": "sameorigin"
+            'xframe': {
+                'rule': 'sameorigin'
             },
             // TODO: xss: true is the default but we may need to make this false due to IE8 and prior security vulnerability - see http://hapijs.com/api/6.2.0#server-options
-            "xss": true,
-            "noSniff": true
+            'xss': true,
+            'noSniff': true
         }
     }
 });
 
 const goodWinstonOptions = {
     levels: {
-        ops: "debug",
-        response: "debug",
-        log: "info",
-        error: "error",
-        request: "debug"
+        ops: 'debug',
+        response: 'debug',
+        log: 'info',
+        error: 'error',
+        request: 'debug'
     }
 };
 
 // Setup logging.
 server.register({
-    register: require("good"),
+    register: require('good'),
     options: {
         ops: {
             interval: 60000
         },
         reporters: {
             winston: [{
-                module: "hapi-good-winston",
-                name: "goodWinston",
-                args: [winston, goodWinstonOptions],
+                module: 'hapi-good-winston',
+                name: 'goodWinston',
+                args: [winston, goodWinstonOptions]
             }]
         }
     }
 }, (err) => {
     if (err) {
-        throw(err);
+        throw (err);
     }
 });
 
@@ -100,7 +100,7 @@ server.register(require('inert'), function (err) {
 
 // Setup serving of dynamic views.
 server.register(require('vision'), function (err) {
-    var partialsCache = {};
+    const partialsCache = {};
     if (err) {
         throw err;
     }
@@ -110,7 +110,7 @@ server.register(require('vision'), function (err) {
                 compile: function (template, info) {
                     winston.info(`Compiling template ${info.filename}`);
                     try {
-                        var compiledTemplate = Hogan.compile(template);
+                        const compiledTemplate = Hogan.compile(template);
                         return function (context) {
                             try {
                                 return compiledTemplate.render(context, partialsCache);
@@ -123,7 +123,6 @@ server.register(require('vision'), function (err) {
                         winston.error(`Failed to compile template for ${info.filename}: ${e.message}`, e);
                         throw e;
                     }
-
                 },
                 registerPartial: function (name, template) {
                     // There is a bug in Hogan.js that caus es compiled partials to cache
@@ -144,7 +143,7 @@ server.register(require('vision'), function (err) {
             './app/views/data-returns/includes',
             TemplateBuilder.GOV_UK_TEMPLATE_PATH
         ],
-        context: require("./app/lib/common-view-data"),
+        context: require('./app/lib/common-view-data'),
         isCached: config.get('html.cached')
     });
 });
@@ -154,7 +153,7 @@ server.route(require('./app/routes'));
 
 // Implement the pre-response
 // Add security headers and CSRF token to be available in any view
-let csrf_handler_config = {
+const csrfConfig = {
     paths: [
         {
             source: new RegExp('/email'),
@@ -166,8 +165,6 @@ let csrf_handler_config = {
         }
     ]
 };
-
-
 
 server.ext('onPreResponse', function (request, reply) {
     /*
@@ -185,11 +182,11 @@ server.ext('onPreResponse', function (request, reply) {
      * X-headers.
      *
      */
-    let contentSecurityPolicy = "default-src 'none'; " +
+    const contentSecurityPolicy = "default-src 'none'; " +
         "script-src 'self' 'unsafe-inline' www.google-analytics.com www.googletagmanager.com; " +
         "font-src 'self' data:; connect-src 'self'; img-src *; style-src 'self';";
 
-    let resp = request.response;
+    const resp = request.response;
 
     if (resp && resp.header) {
         if (!request.path || !request.path.startsWith('/public')) {
@@ -197,15 +194,14 @@ server.ext('onPreResponse', function (request, reply) {
         }
 
         resp.header('content-security-policy', contentSecurityPolicy);
-
     }
 
     // Get the session
-    let cookies = new Cookies(request, reply);
+    const cookies = new Cookies(request, reply);
     // If we have a new sessionId in this request we cannot get it from the cookie header yet
-    let sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
+    const sessionID = request._sessionId || cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
     // Ignore resource requests - we only need to set the CSRF token on the html views
-    if (sessionID && resp.source && csrf_handler_config.paths.map(p => p.source).find(path => path.test(request.path))) {
+    if (sessionID && resp.source && csrfConfig.paths.map(p => p.source).find(path => path.test(request.path))) {
         // Get the csrf token from the session
         redisKeys.CSRF_TOKEN.compositeKey(sessionID)
             .then(cacheHandler.getJsonValue)
@@ -238,20 +234,19 @@ server.ext('onPreResponse', function (request, reply) {
 // We redirect to the start page failing a token check
 // or resume to the route handler for normal route processing
 //
-var csrf_check_function = function (request, next) {
+const csrfCheckHandler = function (request, next) {
     // Token checker
-    if (request.headers && request.method === 'post' && csrf_handler_config.paths.map(p => p.target).find(path => path.test(request.path))) {
+    if (request.headers && request.method === 'post' && csrfConfig.paths.map(p => p.target).find(path => path.test(request.path))) {
         // Get the CSRF token from the session
         // Note that the response state is null as the request payload has not yet been parsed
         // - we therefore need to lift the sessionId directly from the request header
-        winston.debug('csrf_check_function:' + request.path);
-        let cookies = new Cookies(request);
-        let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
+        const cookies = new Cookies(request);
+        const sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
         if (sessionID) {
             redisKeys.CSRF_TOKEN.compositeKey(sessionID)
                 .then(cacheHandler.getJsonValue)
                 .then(function (val) {
-                    winston.info("Retrieved CSRF token");
+                    winston.info('Retrieved CSRF token');
                     if (request.payload.csrf !== val) {
                         winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
                         // We have to redirect to forbidden as there is no access to the replay object at this point
@@ -275,7 +270,7 @@ var csrf_check_function = function (request, next) {
 };
 
 // Register the event handler for the CSRF
-server.ext('onPreHandler', csrf_check_function);
+server.ext('onPreHandler', csrfCheckHandler);
 
 cacheHandler.connectionReady()
     .then(() => {
@@ -300,4 +295,6 @@ cacheHandler.connectionReady()
     .catch((err) => {
         winston.error("Redis connection failed.  Not starting server.", err);
         process.exit(1);
-    });
+    }
+    winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
+});

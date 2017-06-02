@@ -1,9 +1,9 @@
 'use strict';
-const winston = require("winston");
+const winston = require('winston');
 const config = require('../lib/configuration-handler.js').Configuration;
 
-var request = require('request');
-var crypto = require('../lib/crypto-handler');
+const request = require('request');
+const crypto = require('../lib/crypto-handler');
 
 /**
  * Asks the Data Exchange service to submit a file that has previously been
@@ -19,12 +19,11 @@ var crypto = require('../lib/crypto-handler');
  *   details see processApiResponse().
  */
 module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFileName) {
+    const endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUploadComplete');
 
-    let endPoint = config.get('api.base') + '/' + config.get('api.endpoints.fileUploadComplete');
-    
     return new Promise(function (resolve, reject) {
         // Define data to send to the Data Exchange service.
-        var apiData = {
+        const apiData = {
             url: endPoint,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -37,13 +36,13 @@ module.exports.confirmFileSubmission = function (fileKey, userEmail, originalFil
                 orgFileName: originalFileName
             }
         };
-        
+
         winston.info('==> confirmFileSubmission() url: ' + endPoint);
         winston.info('\t calling api- apiData: ' + JSON.stringify(apiData));
 
         // Make REST call into the Data Exchange service.
         request.post(apiData, function (err, response, body) {
-            var statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
+            const statusCode = (!err && response && response.statusCode) ? response.statusCode : 3000;
 
             switch (statusCode) {
                 case 200:

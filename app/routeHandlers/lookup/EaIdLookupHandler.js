@@ -1,12 +1,12 @@
 'use strict';
-const winston = require("winston");
+const winston = require('winston');
 const api = require('../../api-handlers/eaid-lookup');
 const errorMessages = require('../../lib/error-messages');
 const errorHandler = require('../../lib/error-handler');
 
 const MAX_RESULTS = 100;
 
-function routeHandler(request, reply) {
+function routeHandler (request, reply) {
     if (request.query.q !== undefined) {
         searchHandler(request, reply);
     } else {
@@ -14,25 +14,25 @@ function routeHandler(request, reply) {
     }
 }
 
-function getHandler(request, reply) {
+function getHandler (request, reply) {
     reply.view('data-returns/eaid-lookup', {
         src: request.info.referrer || '/eaid-lookup'
     });
 }
 
-function searchHandler(request, reply) {
+function searchHandler (request, reply) {
     let errorCode = null;
     let errorMessage = null;
     let data = null;
 
-    let searchString = request.query.q ? request.query.q.trim() : '';
+    const searchString = request.query.q ? request.query.q.trim() : '';
 
     if (searchString && searchString.length) {
-        let searchTerms = searchString.split(/\s+/);
+        const searchTerms = searchString.split(/\s+/);
 
         api.lookup(searchString).then(function (response) {
-            let matches = response.results;
-            let messages = [];
+            const matches = response.results;
+            const messages = [];
 
             if (matches.length === 0) {
                 errorCode = errorMessages.EA_ID_LOOKUP.NO_RESULTS;

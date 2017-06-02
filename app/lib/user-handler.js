@@ -1,20 +1,20 @@
-"use strict";
+'use strict';
 
-const winston = require("winston");
+const winston = require('winston');
 const config = require('../lib/configuration-handler.js').Configuration;
 const moment = require('moment');
 const uuid = require('uuid');
 const cacheHandler = require('./cache-handler');
 const cryptoHandler = require('./crypto-handler');
 const redisKeys = require('./redis-keys');
-const DATA_RETURNS_COOKIE_ID = "data-returns-id";
+const DATA_RETURNS_COOKIE_ID = 'data-returns-id';
 
 /*
  * Saves a user object JSON to Redis
  * @param sessionID the session id used as the key
  * @param user the JSON object representing a user object
  */
-let setUser = function (sessionID, user) {
+const setUser = function (sessionID, user) {
     return redisKeys.USER_DATA.compositeKey(sessionID)
         .then((redisKey) => {
             user.last_updated = new Date().toUTCString();
@@ -26,7 +26,7 @@ let setUser = function (sessionID, user) {
  * gets a user from Redis based on a key
  * @param sessionID used as the key
  */
-let getUser = function (sessionID) {
+const getUser = function (sessionID) {
     return redisKeys.USER_DATA.compositeKey(sessionID).then(cacheHandler.getJsonValue);
 };
 
@@ -45,7 +45,7 @@ module.exports.isAuthenticated = function (sessionID) {
     return new Promise(function (resolve, reject) {
         getUser(sessionID)
             .then(function (user) {
-                var authenticated = false;
+                let authenticated = false;
 
                 if (user !== null) {
                     // Pin validation
@@ -57,8 +57,8 @@ module.exports.isAuthenticated = function (sessionID) {
                     }
                     // Is the pin in date
                     if (user.pinCreationTime) {
-                        var pinCreationTime = new Date(user.pinCreationTime);
-                        let mins = moment().diff(pinCreationTime, 'minutes');
+                        const pinCreationTime = new Date(user.pinCreationTime);
+                        const mins = moment().diff(pinCreationTime, 'minutes');
                         if (mins > config.get('pin.ValidTimePeriodMinutes')) {
                             authenticated = false;
                         }
@@ -70,7 +70,6 @@ module.exports.isAuthenticated = function (sessionID) {
             .catch(reject);
     });
 };
-
 
 module.exports.modifyUser = function (sessionID, modifyHandler) {
     return new Promise(
@@ -122,27 +121,26 @@ module.exports.removeUpload = function (sessionID, uploadData) {
     redisKeys.UPLOADED_FILES.compositeKey(sessionID).then((redisKey) => cacheHandler.arrayRemove(redisKey, uploadData));
 };
 
-
 module.exports.newSession = function (request, reply, sessionKey) {
     return new Promise(function (resolve, reject) {
         // Generate new session
-        let newSessionId = sessionKey || uuid.v4();
+        const newSessionId = sessionKey || uuid.v4();
 
         // Set up cookie details
-        var cookieOptions = {
-            "path": '/',
-            "ttl": 24 * 60 * 60 * 1000,
-            //"ttl": null,
-            "isSecure": config.get('session.secure'),
-            "isHttpOnly": true,
-            "encoding": "none", //base64json',
-            "ignoreErrors": false,
-            "clearInvalid": false,
-            "strictHeader": true
+        const cookieOptions = {
+            'path': '/',
+            'ttl': 24 * 60 * 60 * 1000,
+            // "ttl": null,
+            'isSecure': config.get('session.secure'),
+            'isHttpOnly': true,
+            'encoding': 'none', // base64json',
+            'ignoreErrors': false,
+            'clearInvalid': false,
+            'strictHeader': true
         };
 
         // Add a new CSRF token to the session
-        let token = cryptoHandler.generateCSRFToken();
+        const token = cryptoHandler.generateCSRFToken();
 
         // Set the session cookie in the reply state
         winston.debug(`Set a new session cookie: ${newSessionId} `);
@@ -164,9 +162,9 @@ module.exports.deleteSession = function (request, reply) {
     return new Promise(
         function (resolve, reject) {
             // Cleanup current session from the redis cache and unset the cookie
-            let currentSessionId = request.state[DATA_RETURNS_COOKIE_ID];
+            const currentSessionId = request.state[DATA_RETURNS_COOKIE_ID];
             if (currentSessionId) {
-                let keyPattern = `${currentSessionId}*`;
+                const keyPattern = `${currentSessionId}*`;
                 winston.debug(`Removing keys in cache for pattern ${keyPattern}`);
                 cacheHandler.deleteKeys(keyPattern)
                     .then(keys => {

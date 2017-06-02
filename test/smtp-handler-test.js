@@ -1,10 +1,11 @@
-var smtpMailer = require('../app/lib/smtp-handler.js');
-var goodaddress = 'someone@somewhere.com';
-var Code = require('code');
-var Lab = require('lab');
-var lab = exports.lab = Lab.script();
-var expect = Code.expect;
+/* eslint no-unused-expressions: "off" */
 
+const smtpMailer = require('../app/lib/smtp-handler.js');
+const goodaddress = 'someone@somewhere.com';
+const Code = require('code');
+const Lab = require('lab');
+const lab = exports.lab = Lab.script();
+const expect = Code.expect;
 
 lab.test('Good email address ', function (done) {
     smtpMailer.validateEmailAddress(goodaddress)
@@ -18,7 +19,6 @@ lab.test('Good email address ', function (done) {
                 done();
             }
         });
-
 });
 
 lab.test('Bad email address', function (done) {
@@ -33,5 +33,4 @@ lab.test('Bad email address', function (done) {
                 done();
             }
         });
-
 });

@@ -1,21 +1,22 @@
-var Code = require('code');
-var Lab = require('lab');
-var lab = exports.lab = Lab.script();
-var expect = Code.expect;
-var errorHandler = require('../app/lib/error-handler');
-var path = require('path');
-var templateDir = path.resolve(__dirname, '../app/error-templates/');
-const klaw = require("klaw");
+/* eslint no-unused-expressions: "off" */
+const Code = require('code');
+const Lab = require('lab');
+const lab = exports.lab = Lab.script();
+const expect = Code.expect;
+const errorHandler = require('../app/lib/error-handler');
+const path = require('path');
+const templateDir = path.resolve(__dirname, '../app/error-templates/');
+const klaw = require('klaw');
 
-var errCode;
+let errCode;
 
 lab.experiment('error-handler.js library', function () {
     klaw(templateDir).on('data', function (item) {
         if (item.stats.isFile()) {
-            let filename = item.path;
+            const filename = item.path;
             lab.test('Test render ' + filename, function (done) {
-                var f = filename.split('/');
-                var s = f.length;
+                const f = filename.split('/');
+                const s = f.length;
 
                 errCode = f[s - 1];
 
@@ -27,7 +28,7 @@ lab.experiment('error-handler.js library', function () {
 
                 errCode = errCode.replace('.html', '');
 
-                var message = errorHandler.render(errCode, {}, 'default error message');
+                const message = errorHandler.render(errCode, {}, 'default error message');
                 if (message) {
                     expect(message).to.be.a.String;
                     done();

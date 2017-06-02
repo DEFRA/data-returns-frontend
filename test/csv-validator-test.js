@@ -15,7 +15,7 @@ const Path = require('path');
 const lab = exports.lab = Lab.script();
 const expect = Code.expect;
 // Define the parameters of each test.
-var testConfig = [
+const testConfig = [
     {
         title: 'allows a valid CSV file',
         testFilePath: Path.join(__dirname, 'data/success.csv'),

@@ -2,9 +2,9 @@
 
 const config = require('../lib/configuration-handler.js').Configuration;
 const crypto = require('crypto');
-var base64url = require('base64url');
+const base64url = require('base64url');
 
-function encodeHmac(key, data) {
+function encodeHmac (key, data) {
     const func = crypto.createHmac(config.get('crypto.sha_function'), key);
     const encoded = func.update(data);
     return encoded.digest('hex');
@@ -20,7 +20,7 @@ function encodeHmac(key, data) {
  *
  */
 module.exports.calculateAuthorizationHeader = function (dataToSign) {
-    var signedData = '';
+    let signedData = '';
     if (config.get('api.key')) {
         const today = new Date().toISOString().substr(0, 10).replace('-', '').replace('-', '');
         const dateKey = encodeHmac(config.get('api.key'), today);
@@ -33,6 +33,6 @@ module.exports.calculateAuthorizationHeader = function (dataToSign) {
  * To calculate a random string used for the CSRF token. 32 bytes is usually deemed sufficient.
  * We generate a base64 string from the random number
  */
-module.exports.generateCSRFToken = function() {
+module.exports.generateCSRFToken = function () {
     return base64url(crypto.randomBytes(256));
 };

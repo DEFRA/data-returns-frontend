@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 const userHandler = require('../lib/user-handler');
-const winston = require("winston");
+const winston = require('winston');
 
 module.exports = {
     /*

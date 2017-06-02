@@ -1,5 +1,5 @@
 'use strict';
-const winston = require("winston");
+const winston = require('winston');
 const moment = require('moment');
 const config = require('../lib/configuration-handler.js').Configuration;
 const random = require('random-js')();
@@ -13,9 +13,9 @@ const PIN_LENGTH = Number.isInteger(config.get('pin.maxDigits')) ? config.get('p
  *
  * @returns {Promise}
  */
-let incrementAndCheckLock = function (sessionID) {
+const incrementAndCheckLock = function (sessionID) {
     return new Promise(function (resolve, reject) {
-        let key = sessionID + '-invalid-pin-count';
+        const key = sessionID + '-invalid-pin-count';
 
         cacheHandler.increment(key).then((attempts) => {
             resolve({
@@ -26,7 +26,6 @@ let incrementAndCheckLock = function (sessionID) {
     });
 };
 
-
 module.exports = {
     /**
      * Check if a session is locked out due to exceeding the allowed pin entry attempts
@@ -35,7 +34,7 @@ module.exports = {
      */
     checkLock: function (sessionID) {
         return new Promise(function (resolve, reject) {
-            let key = sessionID + '-invalid-pin-count';
+            const key = sessionID + '-invalid-pin-count';
             cacheHandler.getValue(key).then((attempts) => {
                 attempts = attempts || 0;
                 resolve({
@@ -64,16 +63,18 @@ module.exports = {
     validatePin: function (sessionID, pin) {
         return new Promise(function (resolve, reject) {
             winston.info('==> validatePin()');
-            let response = {valid: false, locked: false, expired: false};
+            const response = {valid: false, locked: false, expired: false};
 
             incrementAndCheckLock(sessionID)
-                .then((status) => response.locked = status.locked)
+                .then(function (status) {
+                    response.locked = status.locked;
+                })
                 .then(() => userHandler.getUser(sessionID))
                 .then((user) => {
                     response.valid = pin === `${config.get('pin.defaultPin')}` || user.pin === pin;
                     if (!response.valid && user.pinCreationTime) {
-                        let pinCreationTime = new Date(user.pinCreationTime);
-                        let mins = moment().diff(pinCreationTime, 'minutes');
+                        const pinCreationTime = new Date(user.pinCreationTime);
+                        const mins = moment().diff(pinCreationTime, 'minutes');
                         response.expired = mins > config.get('pin.ValidTimePeriodMinutes');
                     }
                     winston.debug(`PIN Validation Response: ${JSON.stringify(response)}`);

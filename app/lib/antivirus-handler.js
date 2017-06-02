@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 const config = require('../lib/configuration-handler.js').Configuration;
-const winston = require("winston");
+const winston = require('winston');
 
 /*
  * @Name: isInfected
@@ -17,7 +17,7 @@ module.exports.isInfected = function (filePath) {
         if (config.get('csv.virus_scan')) {
             winston.info('==> av is scanning ' + filePath);
 
-            let handleError = function(err) {
+            const handleError = function (err) {
                 if (config.get('csv.ignoreScanFailure')) {
                     winston.warn(`Virus scanning failed but set to ignore failures.`);
                     return resolve(false);
@@ -28,7 +28,7 @@ module.exports.isInfected = function (filePath) {
             };
 
             try {
-                var clam = require('clamscan')(
+                const clam = require('clamscan')(
                     {
                         remove_infected: false,
                         quarantine_infected: false,
@@ -45,23 +45,22 @@ module.exports.isInfected = function (filePath) {
                             reload_db: false,
                             active: true
                         },
-                        preference: 'clamdscan'//'clamscan'
+                        preference: 'clamdscan'// 'clamscan'
                     }
                 );
 
                 // Do the av scan
-                clam.is_infected(filePath, function (err, file, is_infected) {
+                clam.is_infected(filePath, function (err, file, isInfected) {
                     if (err) {
                         return handleError(err);
                     }
 
-                    winston.info('<== av scanning complete, infected: ' + is_infected);
-                    if (is_infected === true) {
+                    winston.info('<== av scanning complete, infected: ' + isInfected);
+                    if (isInfected === true) {
                         return reject(true);
-                    } else if (is_infected === false) {
+                    } else if (isInfected === false) {
                         return resolve(false);
                     }
-
                 });
             } catch (err) {
                 return handleError(err);
@@ -71,4 +70,3 @@ module.exports.isInfected = function (filePath) {
         }
     });
 };
-

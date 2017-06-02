@@ -1,52 +1,52 @@
 'use strict';
-const winston = require("winston");
-const fs = require("fs");
-const klaw = require("klaw");
+const winston = require('winston');
+const fs = require('fs');
+const klaw = require('klaw');
 const hogan = require('hogan.js');
 const utils = require('../lib/utils');
 const path = require('path');
 const lodash = require('lodash');
-const commonViewData = require("../lib/common-view-data");
+const commonViewData = require('../lib/common-view-data');
 const templateDir = path.resolve(__dirname, '../error-templates/');
 
-//preload and compile error-templates
-let compiledTemplates = new Map();
+// preload and compile error-templates
+const compiledTemplates = new Map();
 (function () {
     if (compiledTemplates.size === 0) {
         winston.info('==> Loading Templates...');
-        let templateFiles = [];
+        const templateFiles = [];
         klaw(templateDir).on('data', function (item) {
             if (item.stats.isFile()) {
                 templateFiles.push(item.path);
             }
         }).on('end', () => {
             winston.info(`Found ${templateFiles.length} templates to load`);
-            for (let filename of templateFiles) {
+            for (const filename of templateFiles) {
                 fs.readFile(filename, 'utf8', function (err, fileContents) {
                     if (err) {
                         winston.error('Unable to read template file', err);
                     } else {
-                        let x = filename.lastIndexOf('/');
-                        let y = filename.indexOf('.html');
-                        let key = filename.substring(x + 1, y);
+                        const x = filename.lastIndexOf('/');
+                        const y = filename.indexOf('.html');
+                        const key = filename.substring(x + 1, y);
                         try {
                             let errorCodeText = key;
                             let violationType = null;
                             if (key.includes('-')) {
-                                let keyParts = key.split('-');
+                                const keyParts = key.split('-');
                                 errorCodeText = keyParts[0];
                                 violationType = keyParts[1];
                             }
                             errorCodeText = errorCodeText.replace(/\D+/g, '');
 
-                            let templateData = {
+                            const templateData = {
                                 errorCode: parseInt(errorCodeText),
                                 violationType: violationType,
                                 key: key,
                                 filename: filename,
                                 template: hogan.compile(fileContents)
                             };
-                            winston.info("Added template for key " + key);
+                            winston.info('Added template for key ' + key);
                             compiledTemplates.set(key, templateData);
                         } catch (e) {
                             winston.error(`Failed to compile template for ${filename}: ${e.message}`, e);
@@ -54,8 +54,6 @@ let compiledTemplates = new Map();
                     }
                 });
             }
-
-
         });
     }
 })();
@@ -70,9 +68,9 @@ let compiledTemplates = new Map();
  * @returns the result of rendering the mustache template
  */
 module.exports.render = function (errorCode, metadata, defaultErrorMessage) {
-    let viewData = lodash.merge({}, commonViewData, metadata);
-    let key = 'DR' + utils.pad(errorCode, 4);
-    let templateData = compiledTemplates.get(key);
+    const viewData = lodash.merge({}, commonViewData, metadata);
+    const key = 'DR' + utils.pad(errorCode, 4);
+    const templateData = compiledTemplates.get(key);
     if (templateData) {
         return templateData.template.render(viewData);
     } else {
@@ -96,15 +94,15 @@ module.exports.compiledTemplates = compiledTemplates;
  * @returns the result of rendering the mustache template
  */
 module.exports.renderCorrectionMessage = function (errorCode, violationType, metadata, defaultErrorMessage) {
-    let viewData = lodash.merge({}, commonViewData, metadata);
-    let snippetCode = `DR${utils.pad(errorCode, 4)}`;
+    const viewData = lodash.merge({}, commonViewData, metadata);
+    const snippetCode = `DR${utils.pad(errorCode, 4)}`;
     let key = `${snippetCode}`;
     if (violationType) {
         key += `-${violationType}`;
     }
 
-    let templateData = compiledTemplates.get(key);
-    let defaultTemplateData = compiledTemplates.get(`Default-${violationType}`);
+    const templateData = compiledTemplates.get(key);
+    const defaultTemplateData = compiledTemplates.get(`Default-${violationType}`);
     if (templateData) {
         return templateData.template.render(viewData);
     } else if (defaultTemplateData) {

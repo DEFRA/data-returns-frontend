@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 // const winston = require("winston");
-var errorHandler = require('../lib/error-handler');
+const errorHandler = require('../lib/error-handler');
 
 module.exports = {
     /*
@@ -11,10 +11,10 @@ module.exports = {
     getHandler: function (request, reply) {
         if (request.query.errorCode || request.query.violationType) {
             reply.view('data-returns/content-review', {
-                result: errorHandler.renderCorrectionMessage(request.query.errorCode, request.query.violationType, {}, "Content review default error message")
+                result: errorHandler.renderCorrectionMessage(request.query.errorCode, request.query.violationType, {}, 'Content review default error message')
             });
         } else {
-            let data = {
+            const data = {
                 compiledTemplates: Array.from(errorHandler.compiledTemplates.values())
             };
             reply.view('data-returns/content-review', data);

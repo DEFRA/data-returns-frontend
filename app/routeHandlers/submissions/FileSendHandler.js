@@ -1,5 +1,5 @@
-"use strict";
-const winston = require("winston");
+'use strict';
+const winston = require('winston');
 const userHandler = require('../../lib/user-handler');
 const completionHandler = require('../../api-handlers/completion-handler');
 const smtpHandler = require('../../lib/smtp-handler');
@@ -12,17 +12,17 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
+        const sessionID = userHandler.getSessionID(request);
         userHandler.getUploads(sessionID).then(function (uploads) {
             if (uploads && uploads.length > 0) {
-                reply.view('data-returns/send-your-file', {"files": uploads});
+                reply.view('data-returns/send-your-file', {'files': uploads});
             } else {
                 // Show file-unavailable page if the file uploads array is empty
                 reply.view('data-returns/file-unavailable');
             }
         }).catch((e) => {
             winston.error(e);
-            reply.redirect("/failure");
+            reply.redirect('/failure');
         });
     },
 
@@ -33,20 +33,20 @@ module.exports = {
      *
      */
     postHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
+        const sessionID = userHandler.getSessionID(request);
 
         userHandler.getUserMail(sessionID).then(function (userMail) {
             userHandler.getUploads(sessionID).then(function (uploads) {
-                let uploadJobs = uploads.map(upload => {
-                    let fileKey = upload.status.server.uploadResult.fileKey;
+                const uploadJobs = uploads.map(upload => {
+                    const fileKey = upload.status.server.uploadResult.fileKey;
                     return completionHandler.confirmFileSubmission(fileKey, userMail, upload.name);
                 });
 
                 Promise.all(uploadJobs).then(() => {
-                    winston.info("All uploads complete, sending confirmation emails");
-                    let metadata = {
-                        "email": userMail,
-                        "files": uploads
+                    winston.info('All uploads complete, sending confirmation emails');
+                    const metadata = {
+                        'email': userMail,
+                        'files': uploads
                     };
 
                     smtpHandler.sendConfirmationEmail(metadata)

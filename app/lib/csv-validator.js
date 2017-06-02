@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const config = require('../lib/configuration-handler.js').Configuration;
-const winston = require("winston");
-var avHandler = require('./antivirus-handler');
-var fs = require('fs');
+const winston = require('winston');
+const avHandler = require('./antivirus-handler');
+const fs = require('fs');
 /**
  * Inspects an uploaded file to see if it's a valid CSV file.
  * @param filePath Full path to the local copy of the file.
@@ -15,10 +15,10 @@ var fs = require('fs');
  *     message      - A string message suitable for displaying to the user;
  *     err          - A JavaScript error, not intended for display to the user.
  */
-var validateFile = function (filePath, fileSize) {
+const validateFile = function (filePath, fileSize) {
     return new Promise(function (resolve, reject) {
         try {
-            if (fileSize === 0  || (!fileSize && fs.statSync(filePath).size === 0)) {
+            if (fileSize === 0 || (!fileSize && fs.statSync(filePath).size === 0)) {
                 // Reject all empty files
                 reject({
                     isUserError: true,
@@ -28,7 +28,7 @@ var validateFile = function (filePath, fileSize) {
                 // If validation disabled, go no further!
                 resolve(true);
             } else if ((filePath === null) || (typeof filePath !== 'string') || (filePath.length === 0)) {
-                winston.error("Invalid file path passed to csv-validator");
+                winston.error('Invalid file path passed to csv-validator');
                 // Test that a filePath has been specified.
                 reject({
                     isUserError: false,

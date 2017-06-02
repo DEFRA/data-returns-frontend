@@ -1,5 +1,5 @@
-"use strict";
-const winston = require("winston");
+'use strict';
+const winston = require('winston');
 const userHandler = require('../../lib/user-handler');
 const pinHandler = require('../../lib/pin-handler');
 const messages = require('../../lib/error-messages');
@@ -14,7 +14,7 @@ module.exports = {
      *
      */
     getHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
+        const sessionID = userHandler.getSessionID(request);
         userHandler.hasUploads(sessionID).then(function (hasUploads) {
             if (hasUploads) {
                 userHandler.getUserMail(sessionID).then(function (emailAddress) {
@@ -43,10 +43,9 @@ module.exports = {
             }
         }).catch((e) => {
             winston.error(e);
-            reply.redirect("/failure");
+            reply.redirect('/failure');
         });
     },
-
 
     /*
      * HTTP POST handler for /pin
@@ -55,10 +54,12 @@ module.exports = {
      * @returns {undefined}
      */
     postHandler: function (request, reply) {
-        let sessionID = userHandler.getSessionID(request);
-        let userPin = request.payload['validation_code'].trim();
+        const sessionID = userHandler.getSessionID(request);
+        const userPin = request.payload['validation_code'].trim();
         pinHandler.validatePin(sessionID, userPin).then(function (status) {
-            let modifyFn = (user) => user.authenticated = status.valid;
+            const modifyFn = function (user) {
+                user.authenticated = status.valid;
+            };
             userHandler.modifyUser(sessionID, modifyFn).then((user) => {
                 if (status.valid) {
                     reply.redirect('/file/send');
@@ -69,7 +70,7 @@ module.exports = {
                     } else if (status.locked) {
                         errorCode = messages.PIN.PIN_ATTEMPTS_EXCEEDED;
                     }
-                    let errorMessage = errorHandler.render(errorCode, {emailAddress: user.email});
+                    const errorMessage = errorHandler.render(errorCode, {emailAddress: user.email});
                     reply.view('data-returns/enter-your-code', {
                         errorMessage: errorMessage,
                         invalidPin: !status.valid || status.locked,
