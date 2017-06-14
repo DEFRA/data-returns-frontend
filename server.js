@@ -7,7 +7,6 @@ const Hogan = require('hogan.js');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-var utils = require('./app/lib/utils');
 const AssetManager = require('./app/assembly/AssetManager');
 const TemplateBuilder = require('./app/assembly/TemplateBuilder');
 var server = new Hapi.Server();
@@ -167,7 +166,6 @@ let csrf_handler_config = {
         }
     ]
 };
-
 
 
 server.ext('onPreResponse', function (request, reply) {
@@ -354,7 +352,7 @@ server.ext('onPreHandler', csrf_check_function);
 
 //lint js files
 var exec = require('child_process').exec;
-function forEachLine(content, lineCallback) {
+function forEachLine (content, lineCallback) {
     for (let line of content.split("\n")) {
         lineCallback(line);
     }
@@ -380,16 +378,28 @@ if (config.get('startup.runUnitTests')) {
     });
 }
 
-// Remove the cached list metadata
-cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key)
-    .then(winston.info('Deleted old list metadata: '))
-    .catch(err => winston.info('Cannot delete old list metadata: ' + err));
 
-// Start the server.
-server.start(function (err) {
-    if (err) {
-        winston.error("Hapi server failed to start: ", err);
+cacheHandler.connectionReady()
+    .then(() => {
+        // Connection established!
+
+        // Remove the cached list metadata
+        cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key)
+            .then(winston.info('Deleted old list metadata: '))
+            .catch(err => winston.info('Cannot delete old list metadata: ' + err));
+
+
+        // Start the web server.
+        server.start(function (err) {
+            if (err) {
+                winston.error("Hapi server failed to start: ", err);
+                process.exit(1);
+            }
+
+            winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
+        });
+    })
+    .catch((err) => {
+        winston.error("Redis connection failed.  Not starting server.", err);
         process.exit(1);
-    }
-    winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
-});
+    });

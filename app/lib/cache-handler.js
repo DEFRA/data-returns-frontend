@@ -7,9 +7,6 @@
 
 const config = require('../lib/configuration-handler.js').Configuration;
 const winston = require("winston");
-
-var errorMessages = require('./error-messages.js');
-
 var redis = require('redis');
 var client = redis.createClient(config.get('redis'));
 
@@ -30,6 +27,27 @@ const setExpiry = function (key, expiry) {
 };
 
 let self = module.exports = {
+    connectionReady: function () {
+        return new Promise(function (resolve, reject) {
+            const interval = 500;
+            let attempts = 0;
+            const timer = setInterval(function () {
+                winston.info('Checking redis connection state');
+                if (client && client.connected) {
+                    winston.info('Redis connection established');
+                    clearInterval(timer);
+                    resolve();
+                } else if (attempts++ > 20) {
+                    clearInterval(timer);
+                    let err = new Error(`Redis connection not established within ${attempts * interval}ms, giving up`);
+                    winston.error(err);
+                    reject(err);
+
+                }
+            }, interval);
+        });
+    },
+
     /*
      * Gets a value from REDIS
      * @param key
@@ -38,28 +56,20 @@ let self = module.exports = {
     getValue: function (key) {
         return new Promise(function (resolve, reject) {
             key = key.replace(/"/g, '');
-
-            if (client && client.connected) {
-                client.get(key, function (err, reply) {
-                    if (err) {
-                        winston.error(err);
-                        reject({
-                            error: true,
-                            message: err.message
-                        });
-                    } else {
-                        resolve(reply);
-                    }
-                });
-            } else {
-                winston.error(new Error(errorMessages.REDIS.NOT_CONNECTED));
-                reject({
-                    error: true,
-                    message: errorMessages.REDIS.NOT_CONNECTED
-                });
-            }
+            client.get(key, function (err, reply) {
+                if (err) {
+                    winston.error(err);
+                    reject({
+                        error: true,
+                        message: err.message
+                    });
+                } else {
+                    resolve(reply);
+                }
+            });
         });
     },
+
     /*
      * Sets a new value for a given key
      * @param key
@@ -116,7 +126,6 @@ let self = module.exports = {
     deleteKeys: function (pattern) {
         return new Promise((resolve, reject) => {
             client.keys(pattern, (err, keys) => {
-
                 if (err) {
                     return reject(err);
                 }

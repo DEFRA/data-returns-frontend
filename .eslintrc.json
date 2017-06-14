@@ -15,8 +15,5 @@
     "browser": false,
     "es6": true
   },
-  "extends": "eslint:recommended",
-  "ecmaFeatures": {
-    "blockBindings": true
-  }
+  "extends": "eslint:recommended"
 }

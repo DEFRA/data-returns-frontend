@@ -16,7 +16,7 @@ const minifyTypes = {
             // Mangling causes problems for IE8
             'mangle': false,
             'compress': false,
-            'support-ie8': true
+            'ie8': true
         }
     },
     ".css": {

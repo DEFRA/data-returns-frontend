@@ -105,7 +105,7 @@ function traverseObject(obj, callback, depth) {
  */
 function envVarSubstitution(elem) {
     if (typeof elem === "string") {
-        const pattern = /\$\{([A-Za-z0-9()*+-_\/"#',;.@!?]*)\}/; // Pattern to find the environment variables in YMAL file
+        const pattern = /\$\{([A-Za-z0-9()*+-_/"#',;.@!?]*)\}/; // Pattern to find the environment variables in YMAL file
         var match = pattern.exec(elem);
         if (match) {
             let evaluate = process.env[match[1]];
