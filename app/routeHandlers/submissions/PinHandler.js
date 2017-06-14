@@ -15,30 +15,35 @@ module.exports = {
      */
     getHandler: function (request, reply) {
         let sessionID = userHandler.getSessionID(request);
-        userHandler.hasUploads(sessionID).then(function () {
-            userHandler.getUserMail(sessionID).then(function (emailAddress) {
-                pinHandler.checkLock(sessionID).then((status) => {
-                    let errorCode = null;
-                    let errorMessage = null;
-                    if (status.locked) {
-                        errorCode = messages.PIN.PIN_ATTEMPTS_EXCEEDED;
-                        errorMessage = errorHandler.render(errorCode, {emailAddress: emailAddress});
-                    }
-                    reply.view('data-returns/enter-your-code', {
-                        errorMessage: errorMessage,
-                        invalidPin: status.locked,
-                        errorCode: errorCode,
-                        emailAddress: emailAddress,
-                        startAgain: status.locked
-                    });
-                }).catch(() => reply.redirect('/failure'));
-            }).catch(() => {
-                // User email not in session, return to email page
-                reply.redirect('/email');
-            });
-        }).catch(function () {
-            // Show file-unavailable page if the user hasn't uploaded any files
-            reply.view('data-returns/file-unavailable');
+        userHandler.hasUploads(sessionID).then(function (hasUploads) {
+            if (hasUploads) {
+                userHandler.getUserMail(sessionID).then(function (emailAddress) {
+                    pinHandler.checkLock(sessionID).then((status) => {
+                        let errorCode = null;
+                        let errorMessage = null;
+                        if (status.locked) {
+                            errorCode = messages.PIN.PIN_ATTEMPTS_EXCEEDED;
+                            errorMessage = errorHandler.render(errorCode, {emailAddress: emailAddress});
+                        }
+                        reply.view('data-returns/enter-your-code', {
+                            errorMessage: errorMessage,
+                            invalidPin: status.locked,
+                            errorCode: errorCode,
+                            emailAddress: emailAddress,
+                            startAgain: status.locked
+                        });
+                    }).catch(() => reply.redirect('/failure'));
+                }).catch(() => {
+                    // User email not in session, return to email page
+                    reply.redirect('/email');
+                });
+            } else {
+                // Show file-unavailable page if the user hasn't uploaded any files
+                reply.view('data-returns/file-unavailable');
+            }
+        }).catch((e) => {
+            winston.error(e);
+            reply.redirect("/failure");
         });
     },
 

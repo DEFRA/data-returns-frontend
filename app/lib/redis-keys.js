@@ -1,7 +1,5 @@
-/**
- * Created by sam on 08/07/16.
- */
-
+const lodash = require("lodash");
+const winston = require("winston");
 
 function newKey(keyId) {
     return {
@@ -10,14 +8,27 @@ function newKey(keyId) {
          * Create a composite key based on a number of different identifiers
          *
          * @param keys an array of identifiers used to form the key, can be a string or an array of strings
-         * @returns {string} the composite key to use for lookup
+         * @returns {Promise} resolved with the composite key to use for lookup, or rejected if any part of the key is null or undefined
          */
         compositeKey: function (keys) {
-            var lookup = keys;
-            if (Array.isArray(keys)) {
-                lookup = keys.join('_');
-            }
-            return lookup + '_' + keyId;
+            return new Promise(function (resolve, reject) {
+                if (lodash.isNil(keys)) {
+                    let err = new Error("Rejecting use of null or undefined key");
+                    winston.warn(err);
+                    return reject(err);
+                }
+                let lookup = keys;
+                if (Array.isArray(keys)) {
+                    if (keys.find(lodash.isNil)) {
+                        let err = new Error("Rejecting use of null or undefined composite key component");
+                        winston.warn(err);
+                        return reject(err);
+                    }
+                    lookup = keys.join('_');
+                }
+                winston.info("Using redis key " + (lookup + "_" + keyId));
+                resolve(lookup + '_' + keyId);
+            });
         }
     };
 }

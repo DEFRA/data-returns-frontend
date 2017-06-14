@@ -10,6 +10,19 @@ const errorDescs = require('./error-descriptions');
 const metricsHandler = require('./MetricsHandler');
 const redisKeys = require('./redis-keys');
 
+let persistFileWithErrors = function (sessionId, fileUuid, fileDetails) {
+    return redisKeys.ERROR_PAGE_METADATA.compositeKey([sessionId, fileUuid])
+        .then((redisKey) => cacheHandler.setValue(redisKey, fileDetails))
+        .then(persistFile(sessionId, fileDetails));
+
+};
+
+let persistFile = function (sessionId, fileDetails) {
+    return redisKeys.UPLOADED_FILES.compositeKey(sessionId)
+        .then((redisKey) => cacheHandler.arrayRPush(redisKey, fileDetails));
+};
+
+
 /**
  * Handle uploads from the fineuploader JS client library.  Each file is uploaded individually to the service and the
  * service responds with a JSON document which is processed by the client library.
@@ -17,7 +30,6 @@ const redisKeys = require('./redis-keys');
  * @param fileData JSON structure describing the request - see extractUploadDetails
  * @returns {Promise}
  */
-
 module.exports = {
 
     createFileDetailsJson: function (uuid, clientFilename, errorCode) {
@@ -70,7 +82,7 @@ module.exports = {
 
     getFileUUid: function (request) {
         // UUID's are generated server-side for the legacy file uploader or supplied in the uuid param for fineuploader
-        return request.query.uuid  || uuidGen.v4();
+        return request.query.uuid || uuidGen.v4();
     },
 
     getClientFilename: function (request, fileUpload) {
@@ -120,10 +132,7 @@ module.exports = {
                     "errorCode": fileData.errorCode,
                     "details": fileDetails
                 };
-                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileDetails.id]), fileDetails).then(function () {
-                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), fileDetails);
-                });
-                return reject(response);
+                return persistFileWithErrors(fileData.sessionID, fileDetails.id, fileDetails).then(() => reject(response));
             }
 
             let fileSize = fs.statSync(fileData.localFilename).size;
@@ -135,7 +144,7 @@ module.exports = {
                 let processingResult = self.createFileDetailsJson(fileData.id, fileData.clientFilename);
                 processingResult.sid = backendResult.uploadResult.fileKey;
                 processingResult.status.server = backendResult;
-                return cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
+                return persistFile(fileData.sessionID, processingResult);
             }).then(function (fileData) {
                 resolve({"success": true, "details": fileData});
             }).catch(function (errorData) {
@@ -155,14 +164,14 @@ module.exports = {
                 let processingResult = self.createFileDetailsJson(fileData.id, fileData.clientFilename, errorCode);
                 processingResult.correctionsData = errorData;
 
-                cacheHandler.setValue(redisKeys.ERROR_PAGE_METADATA.compositeKey([fileData.sessionID, fileData.id]), processingResult).then(function () {
-                    cacheHandler.arrayRPush(redisKeys.UPLOADED_FILES.compositeKey(fileData.sessionID), processingResult);
-                    resolve({
-                        "success": false,
-                        "preventRetry": true,
-                        "details": processingResult
+                persistFileWithErrors(fileData.sessionID, fileData.id, processingResult)
+                    .then(() => {
+                        resolve({
+                            "success": false,
+                            "preventRetry": true,
+                            "details": processingResult
+                        });
                     });
-                });
             }).then(function () {
                 // Finally delete the uploaded file - we can delete it here because any valid file will be stored on the
                 // backend API and we don't care about invalid files

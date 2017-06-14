@@ -167,15 +167,38 @@ let csrf_handler_config = {
         }
     ]
 };
+
+
+
 server.ext('onPreResponse', function (request, reply) {
+    /*
+     * The content-security-policy is used by modern browsers to
+     * prevent XSS attacks.
+     *
+     * See https://content-security-policy.com/ for details
+     *
+     * We need to serve up images to anywhere (over https) because
+     * the email messages sent to users refer to the images and these
+     * maybe requested - for example - from google's servers.
+     *
+     * IE does not support content-security-policy but has limited support
+     * of X-Content-Security-Policy however it is not recommended to mix the depreciated
+     * X-headers.
+     *
+     */
+    let contentSecurityPolicy = "default-src 'none'; " +
+        "script-src 'self' 'unsafe-inline' www.google-analytics.com www.googletagmanager.com; " +
+        "font-src 'self' data:; connect-src 'self'; img-src *; style-src 'self';";
+
     let resp = request.response;
+
     if (resp && resp.header) {
         if (!request.path || !request.path.startsWith('/public')) {
             resp.header('cache-control', 'no-store, max-age=0, must-revalidate');
         }
-        resp.header('content-security-policy', "font-src *  data:; default-src * 'unsafe-inline'; " +
-            "base-uri 'self'; connect-src 'self' localhost www.google-analytics.com " +
-            "www.googletagmanager.com style-src 'self' 'unsafe-inline';");
+
+        resp.header('content-security-policy', contentSecurityPolicy);
+
     }
 
     // Get the session
@@ -185,22 +208,25 @@ server.ext('onPreResponse', function (request, reply) {
     // Ignore resource requests - we only need to set the CSRF token on the html views
     if (sessionID && resp.source && csrf_handler_config.paths.map(p => p.source).find(path => path.test(request.path))) {
         // Get the csrf token from the session
-        cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
-            if (!val) {
-                winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
-            } else {
-                winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
-                // Make sure the source context is defined and set the csrf token on it
-                // so it becomes available in  the views as {{csrf}}
-                resp.source.context = resp.source.context || {};
-                resp.source.context['csrf'] = val;
-            }
-            reply(resp);
-        }).catch(function (err) {
-            // Log the error and continue
-            winston.error(`${request.path} has error: ${err}`);
-            reply(resp);
-        });
+        redisKeys.CSRF_TOKEN.compositeKey(sessionID)
+            .then(cacheHandler.getJsonValue)
+            .then(function (val) {
+                if (!val) {
+                    winston.warn(`For path: ${request.path} no CSRF token was found in the cache ${sessionID}`);
+                } else {
+                    winston.debug(`For path: ${request.path} added CSRF token to session ${sessionID}`);
+                    // Make sure the source context is defined and set the csrf token on it
+                    // so it becomes available in  the views as {{csrf}}
+                    resp.source.context = resp.source.context || {};
+                    resp.source.context['csrf'] = val;
+                }
+                reply(resp);
+            })
+            .catch(function (err) {
+                // Log the error and continue
+                winston.error(`${request.path} has error: ${err}`);
+                reply(resp);
+            });
     } else {
         reply(resp);
     }
@@ -223,19 +249,22 @@ var csrf_check_function = function (request, next) {
         let cookies = new Cookies(request);
         let sessionID = cookies.get(userHandler.DATA_RETURNS_COOKIE_ID);
         if (sessionID) {
-            cacheHandler.getJsonValue(redisKeys.CSRF_TOKEN.compositeKey(sessionID)).then(function (val) {
-                winston.info("Retrieved CSRF token");
-                if (request.payload.csrf !== val) {
-                    winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
-                    // We have to redirect to forbidden as there is no access to the replay object at this point
-                    next.redirect('/forbidden');
-                } else {
-                    next.continue();
-                }
-            }).catch(function (err) {
-                winston.error(err);
-                next.redirect('/failure');
-            });
+            redisKeys.CSRF_TOKEN.compositeKey(sessionID)
+                .then(cacheHandler.getJsonValue)
+                .then(function (val) {
+                    winston.info("Retrieved CSRF token");
+                    if (request.payload.csrf !== val) {
+                        winston.info(`CSRF: token (${request.payload.csrf}) check failure, POST request disallowed path: ${request.path} host: ${request.headers['host']}`);
+                        // We have to redirect to forbidden as there is no access to the replay object at this point
+                        next.redirect('/forbidden');
+                    } else {
+                        next.continue();
+                    }
+                })
+                .catch(function (err) {
+                    winston.error(err);
+                    next.redirect('/failure');
+                });
         } else {
             // If there is no session cookie then then redirect to the cookie information page
             next.redirect('/guidance/no-cookie');

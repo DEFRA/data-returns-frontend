@@ -24,20 +24,24 @@ module.exports = {
             });
         };
 
-        userHandler.hasUploads(sessionID).then(function () {
-            userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
-                if (isAuthenticated === true) {
-                    reply.redirect("/file/send").rewritable(true);
-                } else {
+        userHandler.hasUploads(sessionID).then(function (hasUploads) {
+            if (hasUploads) {
+                userHandler.isAuthenticated(sessionID).then(function (isAuthenticated) {
+                    if (isAuthenticated === true) {
+                        reply.redirect("/file/send").rewritable(true);
+                    } else {
+                        viewConfirmEmail();
+                    }
+                }).catch(function (err) {
+                    winston.error(err);
                     viewConfirmEmail();
-                }
-            }).catch(function (err) {
-                winston.error(err);
-                viewConfirmEmail();
-            });
+                });
+            } else {
+                // Show file-unavailable page if the file uploads array is empty
+                reply.view('data-returns/file-unavailable');
+            }
         }).catch(function () {
-            // Show file-unavailable page if the file uploads array is empty
-            reply.view('data-returns/file-unavailable');
+            reply.redirect("/failure");
         });
     },
     /*
@@ -63,8 +67,10 @@ module.exports = {
                     uploadCount: 0
                 };
             })
-            .then((metadata) => userHandler.setUser(sessionID, metadata))
-            .then((metadata) => smtpHandler.sendPinEmail(userMail, metadata.pin))
+            .then((metadata) => {
+                return userHandler.setUser(sessionID, metadata)
+                    .then(smtpHandler.sendPinEmail(userMail, metadata.pin));
+            })
             .then(() => reply.redirect('/pin', {emailAddress: userMail}))
             .catch(function (errResult) {
                 if (!errResult.errorCode || errResult.errorCode === 3000) {

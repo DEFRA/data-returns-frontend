@@ -89,32 +89,42 @@ module.exports.getListData = function (list, search) {
  * This function outputs cells as arrays or objects so the generic page can process either
  * @param listData
  * @param displayHeaders - an array the data object names
- * @returns {Array} The output data structure required by display-list.html
+ * @returns { headers: { description: description: name: name }, rows: rows }
  */
 module.exports.pageExtractor = function (listData, displayHeaders) {
     var rows = [];
+
+    // Iterate and collect the output data
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
         for (var c = 0; c < displayHeaders.length; c++) {
             cols.push({
                 item: listData[r][displayHeaders[c].field],
                 cellCls: displayHeaders[c].field
-
             });
         }
         rows.push({row: cols});
     }
-    return rows;
+
+    // Return the specified structure
+    return {
+        headers: displayHeaders.map(e => {
+            return { name: e.field, description: e.header };
+        }),
+        rows: rows
+    };
 };
 
 /**
  * This function outputs every individual cell as an object so the CSV processor can act upon it
  * @param listData
  * @param displayHeaders - an array the data object names
- * @returns {Array} The output data structure required by the CSV processor
+ * @returns { headers: { description: description: name: name }, rows: rows }
  */
 module.exports.csvExtractor = function (listData, displayHeaders) {
     var rows = [];
+
+    // Iterate and collect the output data
     for (var r = 0; r < listData.length; r++) {
         var cols = [];
         for (var c = 0; c < displayHeaders.length; c++) {
@@ -128,13 +138,83 @@ module.exports.csvExtractor = function (listData, displayHeaders) {
         }
         rows.push({row: cols});
     }
-    return rows;
+
+    // Return the specified structure
+    // Return the specified structure
+    return {
+        headers: displayHeaders.map(e => {
+            return { name: e.field, description: e.header };
+        }),
+        rows: rows
+    };
+};
+
+/**
+ * This function outputs every individual cell as an object so the CSV processor can act upon it.
+ * This version of the csv handler will put all the aliases (alternatives) into
+ * individual cells. The aliases will be counted and given headers of
+ * Alternative 1, Alternative 2, Alternative 3.
+ *
+ * The extractor functions are now responsible for creating the headers
+ * - the extractor functions will return an object describing the headers and listing the data
+ *
+ * @param listData
+ * @param displayHeaders - an array the data object names
+ * @returns { headers: { description: description: name: name }, rows: rows }
+ */
+module.exports.csvExtractorPivot = function (listData, displayHeaders) {
+    var rows = [];
+
+    // Calculate the number of columns and append a counter to the array header
+    // names.
+    for (let r = 0; r < listData.length; r++) {
+        for (let c = 0; c < displayHeaders.length; c++) {
+            if (listData[r][displayHeaders[c].field]) {
+                displayHeaders[c].pivotHeaders = displayHeaders[c].pivotHeaders || [];
+                if (Array.isArray(listData[r][displayHeaders[c].field])) {
+                    if (listData[r][displayHeaders[c].field].length > displayHeaders[c].pivotHeaders.length) {
+                        for (let i = displayHeaders[c].pivotHeaders.length; i < listData[r][displayHeaders[c].field].length; i++) {
+                            displayHeaders[c].pivotHeaders.push({ name: displayHeaders[c].field, description: displayHeaders[c].header + `(${i+1})`});
+                        }
+                    }
+                } else {
+                    if (displayHeaders[c].pivotHeaders.length === 0) {
+                        displayHeaders[c].pivotHeaders.push({ name: displayHeaders[c].field, description: displayHeaders[c].header});
+                    }
+                }
+            }
+        }
+    }
+
+    // Iterate and collect the output data
+    for (let r = 0; r < listData.length; r++) {
+        let cols = [];
+        for (let c = 0; c < displayHeaders.length; c++) {
+            let item = [];
+            if (Array.isArray(displayHeaders[c].pivotHeaders) && displayHeaders[c].pivotHeaders.length > 1) {
+                for (let a = 0; a < displayHeaders[c].pivotHeaders.length; a++) {
+                    item = Array.isArray(listData[r][displayHeaders[c].field]) ? listData[r][displayHeaders[c].field][a] : null;
+                    cols.push(item);
+                }
+            } else {
+                item = listData[r][displayHeaders[c].field];
+                cols.push(item);
+            }
+        }
+        rows.push({row: cols});
+    }
+
+    // Return the specified structure
+    return {
+        headers: [].concat.apply([], displayHeaders.map(e => e.pivotHeaders)),
+        rows: rows
+    };
 };
 
 /**
  * Process the results of the API call for controlled list data and
  * @param processor the list to processor
- * @param processor a function(metadata, header[], data[]) to act the result of the API
+ * @param processdisplayHeaders["0"]or a function(metadata, header[], data[]) to act the result of the API
  * call for controlled list information. Returns via a promise
  */
 module.exports.getListProcessor = function (extractorFunction, list, processor, search) {
@@ -142,20 +222,15 @@ module.exports.getListProcessor = function (extractorFunction, list, processor, 
         module.exports.getListMetaData().then(function (result) {
             var listMetaData = {displayHeaders: undefined};
             listMetaData = result[list];
-            var tableHeadings = [];
             if (listMetaData && listMetaData.displayHeaders) {
                 var displayHeaders = listMetaData.displayHeaders;
             } else {
                 throw "Expected: displayHeaders";
             }
-            // Generate an array for the column headings...hogan cannot handle maps/objects
-            for (var i = 0; i < displayHeaders.length; i++) {
-                tableHeadings.push({name: displayHeaders[i].field, description: displayHeaders[i].header});
-            }
             // Now the actual list data
             module.exports.getListData(list, search).then(function (listData) {
-                var rows = extractorFunction(listData, displayHeaders);
-                processor(listMetaData, tableHeadings, rows);
+                let result = extractorFunction(listData, displayHeaders);
+                processor(listMetaData, result.headers, result.rows);
                 resolve(true);
             }).catch(reject);
         }).catch(reject);
