@@ -256,6 +256,30 @@ startup:
     runUnitTests: true
     runLinter: true
 
+###############################################################################
+#
+# Profile: Docker
+#
+###############################################################################
+---
+env: docker
+
+
+# Logging and Errbit notifications - requires an apikey set in the environment variable ERRBIT_API_KEY
+logging:
+  level: debug
+  errbit:
+    enabled: false
+
+session:
+  secure: false
+
+pin:
+  defaultPin: 1960
+
+googleAnalytics:
+  use: true
+  tagManagerId: GTM-P34JJQ
 
 ###############################################################################
 #
