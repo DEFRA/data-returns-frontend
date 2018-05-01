@@ -1,7 +1,7 @@
 'use strict';
 const winston = require('winston');
 const userHandler = require('../../lib/user-handler');
-const completionHandler = require('../../api-handlers/completion-handler');
+const completionHandler = require('../../api-handlers/api-completion-handler');
 const smtpHandler = require('../../lib/smtp-handler');
 
 module.exports = {
@@ -38,8 +38,7 @@ module.exports = {
         userHandler.getUserMail(sessionID).then(function (userMail) {
             userHandler.getUploads(sessionID).then(function (uploads) {
                 const uploadJobs = uploads.map(upload => {
-                    const fileKey = upload.status.server.uploadResult.fileKey;
-                    return completionHandler.confirmFileSubmission(fileKey, userMail, upload.name);
+                    return completionHandler.confirmFileSubmission(upload, userMail);
                 });
 
                 Promise.all(uploadJobs).then(() => {
@@ -63,7 +62,10 @@ module.exports = {
                             winston.error(err);
                             reply.redirect('/failure');
                         });
-                }).catch(() => reply.redirect('/failure'));
+                }).catch((err) => {
+                    winston.error('Failed to submit files to backend', err);
+                    reply.redirect('/failure');
+                });
             }).catch(() => reply.view('data-returns/file-unavailable'));
         }).catch(() => reply.redirect('/email'));
     }

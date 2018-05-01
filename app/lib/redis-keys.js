@@ -37,6 +37,7 @@ module.exports = {
     UPLOADED_FILES: newKey('Files'),
     USER_DATA: newKey('UserData'),
     ERROR_PAGE_METADATA: newKey('error-page-metadata'),
+    PIN_ATTEMPTS: newKey('PinAttempts'),
     LIST_METADATA: newKey('list-meta-data'),
     PRELOADED_SESSIONS: newKey('PreloadedSessions'),
     CSRF_TOKEN: newKey('csrf')

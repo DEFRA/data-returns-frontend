@@ -32,7 +32,7 @@ VOLUME /usr/src/app/tmp
 RUN mkdir -p /usr/src/app/logs
 VOLUME /usr/src/app/logs
 
-EXPOSE 8080
+EXPOSE 3000
 CMD [ "node", "server.js" ]
 
 USER node

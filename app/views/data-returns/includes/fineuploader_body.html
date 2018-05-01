@@ -25,7 +25,8 @@
             multiple: true,
             disableCancelForFormUploads: true,
             validation: {
-                stopOnFirstInvalidFile: false
+                stopOnFirstInvalidFile: false,
+                allowEmpty: true
             },
             request: {
                 endpoint: "/file/choose?fineuploader=true",
@@ -97,5 +98,5 @@
                 }
             }
         });
-    }())
+    }());
 </script>

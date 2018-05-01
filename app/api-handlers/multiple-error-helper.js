@@ -3,6 +3,7 @@
  * Helper module to help handle multiple errors returned from the backend API
  */
 const lodash = require('lodash');
+const sequence = require('../lib/array/sequence');
 const helpLinks = require('../config/dep-help-links');
 
 const errorTypeInfo = {
@@ -65,22 +66,17 @@ const collapseArrayRanges = function (intArray) {
 
 /**
  * Helper function - currently the front-end does not support multi-object validation messages
- * @param fieldData
+ * @param invalidValues
  * @returns Object The display field and value
  */
-const errorDataHelper = function (fieldData) {
-    if (fieldData && Array.isArray(fieldData) && fieldData.length > 0) {
-        const fieldNameArr = fieldData.map(i => i.name);
-        // fieldName will be a comma separated list of column headings
-        const fieldName = fieldNameArr.join(', ');
-        // fieldHeadingText will be a natural language "Field1, Field2 and Field3" string for use in sentences
-        const fieldHeadingText = fieldName.replace(/,(?!.*,)/gmi, ' and');
-        const values = fieldData.length > 1 ? fieldData.filter(i => i.value).map(i => `${i.name}: ${i.value || ''}`).join(', ') : fieldData[0].value;
-
-        return {fieldName: fieldName, fieldHeadingText: fieldHeadingText, errorValue: values};
-    } else {
-        return {fieldName: null, fieldHeadingText: null, errorValue: null};
-    }
+const errorDataHelper = function (invalidValues) {
+    const fieldNameArr = Object.keys(invalidValues);
+    // fieldName will be a comma separated list of column headings
+    const fieldName = fieldNameArr.join(', ');
+    // fieldHeadingText will be a natural language "Field1, Field2 and Field3" string for use in sentences
+    const fieldHeadingText = sequence.humanisedJoin(fieldNameArr);
+    const values = fieldNameArr.length > 1 ? fieldNameArr.map(name => `${name}: ${invalidValues[name] || ''}`).join(', ') : invalidValues[fieldNameArr[0]];
+    return {fieldName: fieldName, fieldHeadingText: fieldHeadingText, errorValue: values || null};
 };
 
 module.exports = {
@@ -98,11 +94,16 @@ module.exports = {
     groupErrorData: function (data) {
         // The backend may return multiple violations for a single field (e.g. permit format invalid and also
         // not a controlled list item) so collapse these down so as not to confuse the output in the table
-        const sortedData = lodash.sortBy(data, ['errorCode', 'errorType']);
-
+        const sortedData = lodash.sortBy(data, ['error_class']);
         const correctionTableData = [];
         let lastTableItem = null;
         for (const dataItem of sortedData) {
+            const errorClsMatches = dataItem['error_class'].match(/^DR(\d+)-(\w+)$/);
+            if (errorClsMatches) {
+                dataItem.errorCode = errorClsMatches[1];
+                dataItem.errorType = errorClsMatches[2];
+            }
+
             let tableItem = null;
 
             if (lastTableItem === null || lastTableItem.errorCode !== dataItem.errorCode) {
@@ -120,7 +121,7 @@ module.exports = {
 
             // Record list of error types on the display item (e.g. Missing, Incorrect, Conflicting)
             tableItem.errorTypes = tableItem.errorTypes || [];
-            tableItem.errorTypes.push(lodash.merge({key: dataItem.errorType, message: dataItem.errorMessage},
+            tableItem.errorTypes.push(lodash.merge({key: dataItem.errorType, message: dataItem.detail},
                 getErrorTypeInfo(dataItem.errorType)));
             tableItem.errorTypes = lodash.uniqBy(tableItem.errorTypes, 'key');
 
@@ -130,13 +131,13 @@ module.exports = {
             let firstItem = true;
 
             // Sort instances by the first occurrence
-            dataItem.instances = lodash.sortBy(dataItem.instances, (instance) => instance.recordIndices[0]);
+            dataItem.instances = lodash.sortBy(dataItem.instances, (instance) => instance.line_numbers[0]);
             for (const violationInstance of dataItem.instances) {
                 // Count the number of record indexes with this error
-                tableItem.violationCount += violationInstance.recordIndices.length;
+                tableItem.violationCount += violationInstance.line_numbers.length;
 
                 // Violation information for the lower level corrections detail
-                const errorData = errorDataHelper(violationInstance.fields);
+                const errorData = errorDataHelper(violationInstance.invalid_values);
 
                 // Pull field name and text from the first available violation instance.
                 tableItem.fieldName = tableItem.fieldName || errorData.fieldName;
@@ -146,7 +147,7 @@ module.exports = {
                 const violation = {
                     'errorType': dataItem.errorType,
                     'errorTypeInfo': getErrorTypeInfo(dataItem.errorType),
-                    'rows': collapseArrayRanges(violationInstance.recordIndices.map(r => r + 2)),
+                    'rows': collapseArrayRanges(violationInstance.line_numbers),
                     'errorValue': errorData.errorValue
                 };
                 if (firstItem) {

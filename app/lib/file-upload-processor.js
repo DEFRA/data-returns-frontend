@@ -138,7 +138,6 @@ module.exports = {
                 return apiHandler.uploadFileToService(fileData.localFilename, fileData.sessionID, fileData.id, fileData.clientFilename);
             }).then(function (backendResult) {
                 const processingResult = self.createFileDetailsJson(fileData.id, fileData.clientFilename);
-                processingResult.sid = backendResult.uploadResult.fileKey;
                 processingResult.status.server = backendResult;
                 return persistFile(fileData.sessionID, processingResult);
             }).then(function (fileData) {

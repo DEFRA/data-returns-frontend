@@ -1,3 +1,4 @@
+'use strict';
 /*
  * This module contains links that would otherwise be hard coded in the view.
  */

@@ -6,7 +6,7 @@
 <script src="/public/javascripts/jquery.mark.min.js" type="text/javascript"></script>
 {{/head}}
 
-{{$title}}{{listMetaData.description}} allowed values{{/title}}
+{{$title}}{{listMetaData.title}} allowed values{{/title}}
 
 {{$content}}
 <main id="content" role="main">
@@ -28,16 +28,16 @@
         </div>
         <div class="column-two-thirds">
             <p>Use only these values, spelt exactly as they are in this list. Use the preferred value if you can. If there are alternative values, you can also use those. When you upload your data we’ll convert alternatives into the preferred value. Contact us <a href="#contact">if you need to report using a value that is not in this list</a>.</p>
-            <p class="download"><i class="icon icon-file-download"></i> <a href="/csv/{{listMetaData.path}}"> Download {{$title}}{{/title}} list (CSV)</a></p>
+            <p class="download"><i class="icon icon-file-download"></i> <a href="/csv/{{listMetaData.heading}}"> Download {{$title}}{{/title}} list (CSV)</a></p>
             <div class="form-group inline search-list {{#errorMessage}}error{{/errorMessage}}">
                 <form method="get" action="/display-list/search" >
                     <label class="form-label" for="search">Search this list</label>
                     <input id="search" name="q" class="form-control" type="text" value="{{query.string}}" />
                     <input class="button" type="submit" value="Search">
                     {{#clear}}
-                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.path}}&amp;src={{src}}">Clear</a>
+                    <a id="clear" class="button button-secondary" href="/display-list?list={{listMetaData.heading}}&amp;src={{src}}">Clear</a>
                     {{/clear}}
-                    <input type="hidden" name="list" value="{{listMetaData.path}}"/>
+                    <input type="hidden" name="list" value="{{listMetaData.heading}}"/>
                     <input type="hidden" name="src" value="{{src}}"/>
                 </form>
             </div>
@@ -60,24 +60,28 @@
     {{/messages.length}}
 
     {{#rows.length}}
-    <table id="controlled-list-table" class="{{listMetaData.path}} table-control mobile-format">
+    <table id="controlled-list-table" class="{{listMetaData.heading}} table-control mobile-format">
         <thead>
         <tr>
             {{#tableHeadings}}
-            <th scope="col">{{description}}</th>
+            <th scope="col">{{.}}</th>
             {{/tableHeadings}}
         </tr>
         </thead>
         <tbody class="controlled-list-table-body">
         {{#rows}}
         <tr>
-            {{#row}}
-            <td class="{{cellCls}}">{{#item.length}}
+            {{#cells.length}}
+            {{#cells}}
+            <td class="{{cellCls}}">
                 <ul>
-                    {{#item}}<li>{{.}}</li>{{/item}}
+                    {{#values}}
+                    <li>{{.}}</li>
+                    {{/values}}
                 </ul>
-                {{/item.length}}{{^item.length}}{{item}}{{/item.length}}</td>
-            {{/row}}
+            </td>
+            {{/cells}}
+            {{/cells.length}}
         </tr>
         {{/rows}}
         </tbody>

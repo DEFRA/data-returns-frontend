@@ -87,23 +87,19 @@ module.exports.postHandler = function (request, reply) {
         const sessionID = userHandler.getSessionID(request);
         const fileData = fileUploadProcessor.getFileData(request, sessionID);
 
-        const legacyUploaderOnComplete = function () {
-            reply.redirect('/file/choose').rewritable(true);
-        };
-        const fineUploaderOnComplete = function (processorResponse) {
-            reply(processorResponse).type('text/plain').code(processorResponse.httpCode || 200);
-        };
-
-        let callbacks = 0;
         const resultHandler = function (processorResponse) {
-            if (++callbacks === fileData.files.length) {
-                usingFineUploader ? fineUploaderOnComplete(processorResponse) : legacyUploaderOnComplete(processorResponse);
+            if (usingFineUploader) {
+                // When using fine uploader each file is sent individually so there should only be one response.
+                // On successful resolution, processorResponse is an array, on rejection it is the rejected value
+                const response = Array.isArray(processorResponse) ? processorResponse.pop() : processorResponse;
+                reply(response).type('text/plain').code(response.httpCode || 200);
+            } else {
+                reply.redirect('/file/choose').rewritable(true);
             }
         };
-
-        fileData.files.forEach(function (upload) {
-            winston.info(`ChooseFileHandler: Processing file ${upload.clientFilename}`);
-            fileUploadProcessor.processUploadedFile(upload).then(resultHandler).catch(resultHandler);
+        const uploadJobs = fileData.files.map(upload => {
+            return fileUploadProcessor.processUploadedFile(upload);
         });
+        Promise.all(uploadJobs).then(resultHandler).catch(resultHandler);
     }
 };

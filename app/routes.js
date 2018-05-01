@@ -21,7 +21,7 @@ const fileInvalidHandler = require('./routeHandlers/submissions/FileInvalidHandl
 const fileUnavailableHandler = require('./routeHandlers/submissions/FileUnavailableHandler');
 
 // Reference material lookup handlers
-const listHandler = require('./routeHandlers/lookup/ListHandler');
+const controlledListHandler = require('./routeHandlers/lookup/ControlledListHandler');
 const eaIdLookupHandler = require('./routeHandlers/lookup/EaIdLookupHandler');
 
 const contentReviewHandler = require('./routeHandlers/ContentReviewHandler');
@@ -148,22 +148,22 @@ const handlers = [
     {
         method: 'GET',
         path: '/controlled-lists',
-        handler: listHandler.getHandler
+        handler: controlledListHandler.availableLists
     },
     {
         method: 'GET',
         path: '/display-list',
-        handler: listHandler.getDisplayHandler
+        handler: controlledListHandler.getDisplayHandler
     },
     {
         method: 'GET',
         path: '/display-list/search',
-        handler: listHandler.getDisplayHandlerWithSearch
+        handler: controlledListHandler.getDisplayHandlerWithSearch
     },
     {
         method: 'GET',
         path: '/csv/{list*}',
-        handler: listHandler.getCSVHandler
+        handler: controlledListHandler.getCSVHandler
     },
 
     // EA_ID lookup tool#

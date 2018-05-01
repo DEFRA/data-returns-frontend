@@ -40,10 +40,9 @@ const self = module.exports = {
                     resolve();
                 } else if (attempts++ > 20) {
                     clearInterval(timer);
-                    let err = new Error(`Redis connection not established within ${attempts * interval}ms, giving up`);
+                    const err = new Error(`Redis connection not established within ${attempts * interval}ms, giving up`);
                     winston.error(err);
                     reject(err);
-
                 }
             }, interval);
         });

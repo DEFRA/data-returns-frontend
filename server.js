@@ -40,11 +40,15 @@ rimraf(config.get('upload.path'), function () {
     });
 });
 
+process.on('unhandledRejection', (reason, p) => {
+    winston.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});
+
 server.connection({
     'host': '0.0.0.0',
     'port': config.get('client.port'),
     'routes': {
-        'cors': false,  // Disallow CORS - There is no requirement to allow cross origin requests in data returns.
+        'cors': false, // Disallow CORS - There is no requirement to allow cross origin requests in data returns.
         'security': {
             // Set the 'Strict-Transport-Security' header
             'hsts': true,
@@ -279,13 +283,12 @@ cacheHandler.connectionReady()
         // Remove the cached list metadata
         cacheHandler.deleteKeys(redisKeys.LIST_METADATA.key)
             .then(winston.info('Deleted old list metadata: '))
-            .catch(err => winston.info('Cannot delete old list metadata: ' + err));
-
+            .catch(err => winston.error('Cannot delete old list metadata: ' + err));
 
         // Start the web server.
         server.start(function (err) {
             if (err) {
-                winston.error("Hapi server failed to start: ", err);
+                winston.error('Hapi server failed to start: ', err);
                 process.exit(1);
             }
 
@@ -293,8 +296,6 @@ cacheHandler.connectionReady()
         });
     })
     .catch((err) => {
-        winston.error("Redis connection failed.  Not starting server.", err);
+        winston.error('Redis connection failed.  Not starting server.', err);
         process.exit(1);
-    }
-    winston.info(`Data-Returns Service: listening on port ${config.get('client.port')}, NODE_ENV: ${process.env.NODE_ENV}`);
-});
+    });

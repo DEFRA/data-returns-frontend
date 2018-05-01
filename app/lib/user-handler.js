@@ -118,7 +118,7 @@ module.exports.emptyUploadList = function (currentSessionId) {
 };
 
 module.exports.removeUpload = function (sessionID, uploadData) {
-    redisKeys.UPLOADED_FILES.compositeKey(sessionID).then((redisKey) => cacheHandler.arrayRemove(redisKey, uploadData));
+    return redisKeys.UPLOADED_FILES.compositeKey(sessionID).then((redisKey) => cacheHandler.arrayRemove(redisKey, uploadData));
 };
 
 module.exports.newSession = function (request, reply, sessionKey) {

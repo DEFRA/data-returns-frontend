@@ -7,41 +7,41 @@
     {{{feedbackbanner}}}
     <h1 class="heading-large"><span id="title">{{$title}}{{/title}}</span></h1>
 
-    {{#displayEaIdSubstitutionsMsg}}
+    {{#summary.substitutions}}
         <div id="eaid-substitutions-message" class="panel panel-border-wide">
             You’ve put your permit or licence number in the EA_ID field. We’ve replaced it with the correct EA_ID to match the one we use to identify your data. Please use the replacement EA_ID in future return files. Your permit number is valid for other uses.
         </div>
-    {{/displayEaIdSubstitutionsMsg}}
+    {{/summary.substitutions}}
 
     <p class="lede">The data you’re going to send is about:</p>
 
-      {{#files}}
+      {{#summary.files}}
       <div class="text panel panel-border-wide file-summary">
         <div class="file-name">{{{name}}}</div>
         <ul>
-            {{#status.server.parseResult.mappings}}
+            {{#sites}}
                 <li class="site-name">
-                    {{#site}}
-                        {{site}}
-                    {{/site}}
-                    {{^site}}
+                    {{#name}}
+                        {{name}}
+                    {{/name}}
+                    {{^name}}
                         Not given
-                    {{/site}}
+                    {{/name}}
                 </li>
                 {{#identifiers}}
                 <li class="ea-id">
                     {{#substituted}}
                         We replaced
-                        <span class="submittedUniqueIdentifier">{{submittedUniqueIdentifier}}</span>
+                        <span class="submittedUniqueIdentifier">{{submitted_ea_id}}</span>
                         with
                     {{/substituted}}
-                    <span class="resolvedUniqueIdentifier">{{resolvedUniqueIdentifier}}</span>
+                    <span class="resolvedUniqueIdentifier">{{resolved_ea_id}}</span>
                 </li>
                 {{/identifiers}}
-            {{/status.server.parseResult.mappings}}
+            {{/sites}}
         </ul>
       </div>
-      {{/files}}
+      {{/summary.files}}
 
     <p>Do you need to choose different files? <a href="/file/choose" id="details-wrong-link">Start again</a> so you can send the right files and details.</p>
 

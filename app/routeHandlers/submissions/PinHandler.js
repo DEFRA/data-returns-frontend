@@ -32,7 +32,10 @@ module.exports = {
                             emailAddress: emailAddress,
                             startAgain: status.locked
                         });
-                    }).catch(() => reply.redirect('/failure'));
+                    }).catch((err) => {
+                        winston.error(err);
+                        reply.redirect('/failure');
+                    });
                 }).catch(() => {
                     // User email not in session, return to email page
                     reply.redirect('/email');

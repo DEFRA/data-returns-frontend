@@ -1,18 +1,39 @@
 'use strict';
 const winston = require('winston');
+const lodash = require('lodash');
 const userHandler = require('../../lib/user-handler');
 
-function testForEaIdSubstitution (uploads) {
+function prepareSummary (uploads) {
+    const summaryData = {
+        substitutions: false,
+        files: []
+    };
+
     for (const file of uploads) {
-        for (const mapping of file.status.server.parseResult.mappings) {
-            for (const identifier of mapping.identifiers) {
-                if (identifier.substituted) {
-                    return true;
+        const fileSummary = {
+            name: file.name,
+            sites: []
+        };
+        summaryData.files.push(fileSummary);
+
+        if (file.status.server.parser_summary) {
+            const summariesBySite = lodash.groupBy(file.status.server.parser_summary, 'site_name');
+
+            for (const siteName of Object.keys(summariesBySite)) {
+                const identifiers = summariesBySite[siteName];
+                for (const summary of identifiers) {
+                    if (summary.submitted_ea_id !== summary.resolved_ea_id) {
+                        summary.substituted = true;
+                        summaryData.substitutions = true;
+                    }
                 }
             }
+            fileSummary.sites = Object.keys(summariesBySite).map(name => {
+                return {name: name, identifiers: summariesBySite[name]};
+            });
         }
     }
-    return false;
+    return summaryData;
 }
 
 module.exports = {
@@ -25,10 +46,9 @@ module.exports = {
         const sessionID = userHandler.getSessionID(request);
         userHandler.getUploads(sessionID).then(function (uploads) {
             if (uploads && uploads.length > 0) {
-                const displayEaIdSubstitutionsMsg = testForEaIdSubstitution(uploads);
                 reply.view('data-returns/confirm-your-file', {
                     'files': uploads,
-                    'displayEaIdSubstitutionsMsg': displayEaIdSubstitutionsMsg
+                    'summary': prepareSummary(uploads)
                 });
             } else {
                 // Show file-unavailable page if the file uploads array is empty

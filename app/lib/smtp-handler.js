@@ -117,6 +117,10 @@ const sendMail = function (mailOptions, onSuccess, onFailure) {
     });
 };
 
+const buildError = function (msg, props) {
+    return lodash.defaultsDeep(new Error(msg), props);
+};
+
 module.exports = {
     /* validateEmailAddress
      * @param emailAddress - the email address to validate
@@ -129,37 +133,36 @@ module.exports = {
         return new Promise(function (resolve, reject) {
             const validationResult = joi.validate({'address': emailAddress}, schema);
             if (validationResult.error) {
-                winston.debug(`Email address is invalid: ${emailAddress}`);
-                reject({
+                const err = buildError(`Email address is invalid: ${emailAddress}`, {
                     invalidEmailAddress: true,
                     errorCode: 2050
                 });
+                reject(err);
             } else {
                 lockout.get(emailAddress).then(function (locked) {
                     if (locked) {
                         // Locked out for an hour
-                        reject({
+                        reject(buildError(`Email address locked: ${emailAddress}`, {
                             invalidEmailAddress: true,
                             errorCode: 2055
-                        });
+                        }));
                     } else {
                         return checkEmailLimit(emailAddress).then(function (result) {
                             if (result.exceeded) {
                                 // too many attempts
-                                reject({
+                                reject(buildError(`Too many attempts for ${emailAddress}`, {
                                     invalidEmailAddress: true,
                                     errorCode: 2055
-                                });
+                                }));
                             } else {
                                 resolve();
                             }
                         });
                     }
                 }).catch(function (err) {
+                    err.errorCode = 3000;
                     winston.error(err);
-                    reject({
-                        errorCode: 3000
-                    });
+                    reject(err);
                 });
             }
         });

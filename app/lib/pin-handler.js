@@ -4,6 +4,7 @@ const moment = require('moment');
 const config = require('../lib/configuration-handler.js').Configuration;
 const random = require('random-js')();
 const userHandler = require('./user-handler');
+const redisKeys = require('./redis-keys');
 const cacheHandler = require('./cache-handler');
 const MAX_PIN_ATTEMPTS = Number.isInteger(config.get('pin.maxretries')) ? config.get('pin.maxretries') : 10;
 const PIN_LENGTH = Number.isInteger(config.get('pin.maxDigits')) ? config.get('pin.maxDigits') : 4;
@@ -15,14 +16,15 @@ const PIN_LENGTH = Number.isInteger(config.get('pin.maxDigits')) ? config.get('p
  */
 const incrementAndCheckLock = function (sessionID) {
     return new Promise(function (resolve, reject) {
-        const key = sessionID + '-invalid-pin-count';
-
-        cacheHandler.increment(key).then((attempts) => {
-            resolve({
-                locked: attempts > MAX_PIN_ATTEMPTS,
-                attempts: attempts
-            });
-        }).catch(reject);
+        redisKeys.PIN_ATTEMPTS.compositeKey(sessionID)
+            .then(cacheHandler.increment)
+            .then((attempts) => {
+                resolve({
+                    locked: attempts > MAX_PIN_ATTEMPTS,
+                    attempts: attempts
+                });
+            })
+            .catch(reject);
     });
 };
 
@@ -34,14 +36,16 @@ module.exports = {
      */
     checkLock: function (sessionID) {
         return new Promise(function (resolve, reject) {
-            const key = sessionID + '-invalid-pin-count';
-            cacheHandler.getValue(key).then((attempts) => {
-                attempts = attempts || 0;
-                resolve({
-                    locked: attempts > MAX_PIN_ATTEMPTS,
-                    attempts: attempts
-                });
-            }).catch(reject);
+            redisKeys.PIN_ATTEMPTS.compositeKey(sessionID)
+                .then(cacheHandler.getValue)
+                .then((attempts) => {
+                    attempts = attempts || 0;
+                    resolve({
+                        locked: attempts > MAX_PIN_ATTEMPTS,
+                        attempts: attempts
+                    });
+                })
+                .catch(reject);
         });
     },
     /*
